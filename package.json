@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Enonic Main App",
   "scripts": {
-    "build": "webpack --hide-modules"
+    "build": "webpack --hide-modules",
+    "clean": "rm -Rf node_modules/ && rm -f ./package-lock.json && npm cache clean -f"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.6",
@@ -22,7 +23,7 @@
     "webpack": "^3.8.1"
   },
   "dependencies": {
-    "jquery": "^2.2.4",
+    "jquery": "^3.3.1",
     "webcomponentsjs": "^1.0.2"
   },
   "browserslist": [
