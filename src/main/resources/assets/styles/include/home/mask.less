@@ -1,0 +1,55 @@
+.@{_COMMON_PREFIX}mask {
+  .reset(true);
+
+  position: absolute;
+  background-color: @admin-black;
+  display: none;
+  z-index: @z-index-mask;
+  .opacity(0.6);
+
+  .mask-splash {
+    position: absolute;
+    padding: 10px;
+    left: 50%;
+    top: 50%;
+    display: none;
+
+    .text {
+      margin-left: 10px;
+      color: @admin-black;
+      line-height: 48px; // equal to that of the spinner animation
+    }
+  }
+
+  &.body-mask {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+
+  }
+
+  &.load-mask {
+    background-color: white;
+  }
+
+  &.opaque {
+    .opacity(1);
+  }
+
+  &.small {
+    .mask-splash {
+      .spinner {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+
+      .text {
+        line-height: 24px;
+      }
+
+    }
+  }
+}

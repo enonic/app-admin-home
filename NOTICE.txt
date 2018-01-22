@@ -1,0 +1,23 @@
+Licenses used by Enonic XP Home app
+
+    JQuery
+    MIT License
+    https://jquery.org/license/
+
+    Mousetrap
+    Apache 2.0
+    https://github.com/ccampbell/mousetrap
+
+    Q.js
+    MIT License
+    https://github.com/kriskowal/q/blob/v1/LICENSE
+
+    Web Components
+    BSD "style" license:
+    https://github.com/webcomponents/webcomponentsjs/blob/master/LICENSE.md
+
+Artwork licenses used by this product:
+
+    IcoMoon icons (Free Pack)
+    https://icomoon.io/#icons-icomoon/license
+

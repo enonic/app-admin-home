@@ -1,0 +1,397 @@
+// Variables
+@import "include/colors";
+@import "include/mixins";
+@import "include/variables";
+@import "include/home/reset";
+@import "include/home/button";
+@import "include/home/mask";
+@import "include/home/modal-dialog";
+@import "include/home/variables";
+@import "include/home/progress-bar";
+
+.home-main-container {
+  .home-main-container-mixin();
+
+  background-color: @admin-dark-gray;
+
+  .home-main-dashboard {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    color: @admin-white;
+
+    a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .dashboard-item {
+      text-align: center;
+      display: inline-block;
+      margin: 15px;
+      cursor: pointer;
+      font-family: "Open Sans", sans-serif;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+
+      img {
+        width: 32px;
+        height: 32px; // For IE
+      }
+
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+}
+
+.xp-about-dialog {
+  max-width: 496px;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 0 !important;
+
+  .modal-dialog-header {
+    padding: 0;
+  }
+
+  .modal-dialog-content-wrapper {
+    margin-bottom: -4em;
+  }
+
+  .cancel-button-top {
+    background-color: rgba(0, 0, 0, 0) !important;
+
+    &:hover {
+      &:before, &:after {
+        background-color: @admin-white !important;
+      }
+    }
+  }
+
+  .xp-about-dialog-content {
+    color: #bfbfbf;
+  }
+
+  .modal-dialog-body {
+    padding: 30px;
+    padding-bottom: 20px;
+  }
+
+  .xp-about-dialog-app-icon {
+    float: left;
+    margin: 0 30px 50px 0px;
+  }
+
+  h1 {
+    margin: 0 0 12px 0;
+  }
+
+  .xp-about-dialog-version-block {
+    font-size: 14px;
+    margin-bottom: 15px;
+    a {
+      color: #70879e;
+    }
+
+    .xp-about-dialog-version {
+      font-weight: bold;
+    }
+  }
+
+  .xp-about-dialog-text {
+    font-size: 13px;
+    font-weight: 700;
+    text-align: justify;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .xp-about-dialog-button-close {
+    background-color: #DB4437;
+  }
+
+  .dialog-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .modal-dialog-footer {
+    display: none;
+  }
+
+  .xp-about-dialog-footer {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 40px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.3);
+
+    a {
+      flex: 33%;
+      margin-top: 10px;
+      text-align: center;
+      color: @admin-white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 13px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-outline: none;
+      -moz-outline: none;
+      -ms-outline: none;
+      -o-outline: none;
+      outline: none;
+    }
+  }
+
+}
+
+.xp-tour-dialog {
+  max-width: 560px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  .modal-dialog-header h2 {
+    font-size: 26px;
+  }
+
+  .dialog-content {
+    overflow: auto;
+
+    .subtitle {
+      padding: 10px;
+      color: @admin-white;
+      background-color: @form-button-bg;
+      margin-bottom: 10px;
+      font-weight: bold;
+
+      .subtitle-part-1 {
+        font-size: 13px;
+      }
+    }
+
+    .caption {
+      font-size: 16px;
+      padding: 10px 0px 15px 0px;
+    }
+
+    img {
+      float: left;
+      height: 196px;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    li {
+      list-style: inside;
+    }
+
+    .text {
+      .paragraph2, .paragraph3 {
+        margin-top: 15px;
+      }
+
+      div {
+        text-align: justify;
+      }
+    }
+
+    .step-1 {
+      img {
+        margin-right: 10px;
+      }
+      ul {
+        margin-top: 10px;
+      }
+    }
+
+    .step-2 {
+      img {
+        float: right;
+        margin-left: 10px;
+      }
+    }
+
+    .step-3 {
+      img {
+        margin-right: 10px;
+        box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3),
+        0px 2px 3px 0px rgba(0, 0, 0, 0.5);
+      }
+    }
+
+    .step-4 {
+      img {
+        float: right;
+        margin-left: 10px;
+        box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3),
+        0px 2px 3px 0px rgba(0, 0, 0, 0.5);
+      }
+    }
+
+    .step-5 {
+      .demo-apps {
+        margin: 10px 0px 49px 0px;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        min-height: 103px;
+
+        .demo-app {
+          display: inline-block;
+          text-align: center;
+          position: relative;
+
+          img {
+            float: none;
+            height: 82px;
+          }
+
+          .demo-app-title {
+            text-transform: uppercase;
+          }
+
+          .progress-bar {
+            position: absolute;
+            width: 100%;
+            bottom: -23px;
+
+            .progress-indicator {
+              background-color: @admin-green;
+            }
+          }
+
+          .demo-app-status {
+            position: absolute;
+            width: 100%;
+            bottom: -28px;
+            font-size: 16px;
+            color: @admin-green;
+
+            &.install, &.update {
+              display: none;
+            }
+
+            &.failure {
+              color: @input-red-text;
+            }
+          }
+        }
+
+        .demo-apps-text {
+          color: @admin-font-gray1;
+        }
+
+        &:not(.failed) {
+          .demo-apps-text {
+            display: none;
+          }
+        }
+
+
+      }
+
+      .install-apps {
+        display: flex;
+        justify-content: space-around;
+
+        .install-apps-button {
+          margin-top: 15px;
+          display: flex;
+          justify-content: space-around;
+          background-color: @admin-green;
+
+          &:hover {
+            background-color: #79c82d;
+          }
+        }
+      }
+
+    }
+  }
+
+  .dialog-buttons {
+    .button-container {
+      width: 100%;
+
+      button {
+        height: 36px;
+        text-align: center;
+        margin-left: 0px;
+
+        span {
+          font-weight: bold;
+          white-space: nowrap;
+        }
+
+        &:first-child {
+          float: left;
+          background-color: @form-button-bg;
+
+          &:hover {
+            background-color: #b3b3b3;
+          }
+        }
+
+        &:last-child {
+          float: right;
+          background-color: @admin-green;
+
+          &:hover {
+            background-color: #79c82d;
+          }
+
+          &.last-step {
+            background-color: @form-button-bg;
+
+            &:hover {
+              background-color: #b3b3b3;
+            }
+          }
+        }
+      }
+
+    }
+  }
+
+}
+
+.load-mask {
+  z-index: 2002;
+}
+
+.xp-tour-dialog + .body-mask,
+.xp-about-dialog + .body-mask {
+  background-color: @admin-black;
+}
+
+.notification-container {
+  z-index: 2500;
+}
+
+body {
+  &._0-240, &._240-360, &._360-540, &._540-720 {
+    .xp-about-dialog {
+      .modal-dialog-body {
+        padding-bottom: 40px;
+        padding-top: 0;
+      }
+      .cancel-button-top {
+
+        background-color: rgba(0, 0, 0, 0.8);
+
+        &:before, &:after {
+          background-color: #fff;
+        }
+
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+plugins {
+    id 'java'
+    id 'maven'
+    id 'com.enonic.defaults' version '1.0.3'
+    id 'com.enonic.xp.app' version '1.0.15'
+    id 'com.moowork.node' version '1.1.1'
+}
+
+apply from: "$rootDir/gradle/defaults.gradle"
+
+app {
+    name = 'com.enonic.xp.app.main'
+    group = 'com.enonic.xp'
+    displayName = 'Enonic XP Home App'
+    systemVersion = "${xpVersion}"
+}
+
+dependencies {
+    compile "com.enonic.xp:admin-api:${xpVersion}"
+    include "com.enonic.xp:lib-admin:${xpVersion}"
+    include "com.enonic.xp:lib-mustache:${xpVersion}"
+    include "com.enonic.xp:lib-portal:${xpVersion}"
+    include "com.enonic.xp:lib-auth:${xpVersion}"
+    include "com.enonic.xp:lib-i18n:${xpVersion}"
+    include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
+}
+
+node {
+    download = true
+    version = '6.9.2'
+}
+
+task webpack( type: NodeTask, dependsOn: npmInstall ) {
+    description = 'Build UI resources (ts, css, etc).'
+    inputs.dir 'src/main'
+    outputs.dir "${buildDir}/resources/main"
+    script = file( './node_modules/webpack/bin/webpack' )
+}
+
+task cleanNode( type: Delete ) {
+    delete 'node_modules'
+}
+
+jar.dependsOn += webpack
+jar.outputs.dir "${buildDir}/resources/main"
