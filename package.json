@@ -20,7 +20,8 @@
     "postcss-loader": "^2.0.8",
     "postcss-normalize": "^4.0.0",
     "style-loader": "^0.18.2",
-    "webpack": "^3.8.1"
+    "webpack": "^3.10.0",
+    "workbox-webpack-plugin": "^2.1.0"
   },
   "dependencies": {
     "jquery": "^3.3.1",

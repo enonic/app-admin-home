@@ -1,5 +1,18 @@
 const ErrorLoggerPlugin = require('error-logger-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const workboxPlugin = require('workbox-webpack-plugin');
+const path = require('path');
+
+const paths = {
+    assets: 'src/main/resources/assets/',
+    buildAssets: 'build/resources/main/assets/',
+    buildPwaLib: 'build/resources/main/js/pwa/'
+};
+
+const assetsPath = path.join(__dirname, paths.assets);
+const buildAssetsPath = path.join(__dirname, paths.buildAssets);
+const buildPwaLibPath = path.join(__dirname, paths.buildPwaLib);
+
 
 module.exports = {
     context: `${__dirname}/src/main/resources/assets`,
@@ -40,6 +53,18 @@ module.exports = {
             filename: './styles/[name].css',
             allChunks: true,
             disable: false
+        }),
+        new workboxPlugin({
+            globDirectory: buildAssetsPath,
+            globPatterns: [
+                'icons/*',
+                'images/*',
+                '**\/bundle.*',
+                '**\/*.css'
+            ],
+            globIgnores: [],
+            swSrc: path.join(assetsPath, 'js/pwa/sw-dev.js'),
+            swDest: path.join(buildPwaLibPath, 'sw-template.js')
         })
     ],
     devtool: 'source-map'
