@@ -4,8 +4,8 @@ var portal = require('/lib/xp/portal');
 var i18n = require('/lib/xp/i18n');
 var admin = require('/lib/xp/admin');
 
-var uriHelperBean = __.newBean('com.enonic.xp.app.main.UriScriptHelper');
 var adminToolsBean = __.newBean('com.enonic.xp.app.main.GetAdminToolsScriptBean');
+var locales = admin.getLocales();
 
 function getAdminTools() {
     var result = __.toNativeObject(adminToolsBean.execute());
@@ -14,8 +14,12 @@ function getAdminTools() {
     });
 }
 
-function generateAdminToolUri(app, name) {
-    return uriHelperBean.generateAdminToolUri(app, name);
+function localise(key) {
+    return i18n.localize({
+        key: key,
+        bundles: ['i18n/common'],
+        locale: locales
+    });
 }
 
 exports.get = function () {
@@ -23,16 +27,15 @@ exports.get = function () {
     var adminTools = getAdminTools();
     for (var i = 0; i < adminTools.length; i++) {
         adminTools[i].appId = adminTools[i].key.application;
-        adminTools[i].uri = generateAdminToolUri(adminTools[i].key.application, adminTools[i].key.name);
+        adminTools[i].uri = admin.getToolUrl(adminTools[i].key.application, adminTools[i].key.name);
     }
 
     var userIconUrl = portal.assetUrl({path: "icons/user.svg"});
     var logoutUrl = portal.logoutUrl({
-        redirect: portal.url({path: "/admin/tool", type: "absolute"})
+        redirect: admin.getHomeToolUrl()
     });
 
     var user = auth.getUser();
-    var locales = admin.getLocales();
 
     var view = resolve('./launcher.html');
     var params = {
@@ -42,24 +45,11 @@ exports.get = function () {
         userIconUrl: userIconUrl,
         user: user,
         logoutUrl: logoutUrl,
-        homeUrl: uriHelperBean.generateAdminToolUri(),
-        installation: uriHelperBean.getInstallation() || "Tools",
-        homeToolCaption: i18n.localize({
-            key: 'launcher.tools.home.caption',
-            bundles: ['admin/i18n/common'],
-            locale: locales
-        }),
-        homeToolDescription: i18n.localize({
-            key: 'launcher.tools.home.description',
-            bundles: ['admin/i18n/common'],
-            locale: locales
-        }),
-        logOutLink: i18n.localize({
-            key: 'launcher.link.logout',
-            bundles: ['admin/i18n/common'],
-            locale: locales
-        }),
-        adminAssetsUri: admin.getAssetsUri(),
+        homeUrl: admin.getHomeToolUrl(),
+        installation: admin.getInstallation() || "Tools",
+        homeToolCaption: localise('launcher.tools.home.caption'),
+        homeToolDescription: localise('launcher.tools.home.description'),
+        logOutLink: localise('launcher.link.logout'),
         assetsUri: portal.assetUrl({
             path: ''
         })
