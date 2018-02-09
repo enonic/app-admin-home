@@ -74,6 +74,7 @@ exports.get = function () {
             path: 'images/background.jpg'
         }),
         launcherUrl: admin.getLauncherUrl(),
+        launcherPath: admin.getLauncherPath(),
         xpVersion: app.version,
         docLinkPrefix: docLinkPrefix,
         tourEnabled: tourEnabled,

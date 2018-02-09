@@ -1,6 +1,6 @@
 require('webcomponentsjs/lite');
 
-var launcherUrl = window.CONFIG && window.CONFIG.launcherUrl || 'tool/com.enonic.xp.app.main/launcher';
+var launcherUrl = window.CONFIG && window.CONFIG.launcherUrl || null;
 var autoOpenLauncher = window.CONFIG && window.CONFIG.autoOpenLauncher;
 var appId = window.CONFIG ? window.CONFIG.appId : '';
 
@@ -409,6 +409,11 @@ function isHomeAppActive() {
 }
 
 exports.init = function () {
+
+    if (launcherUrl == null) {
+        throw "CONFIG.launcherUrl is not defined";
+    }
+
     appendLauncherButton();
     appendLauncherPanel();
     addApplicationsListeners();

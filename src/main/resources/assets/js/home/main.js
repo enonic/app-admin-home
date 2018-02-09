@@ -12,9 +12,6 @@ $(function () {
 
     setupWebSocketListener();
 
-    var launcher = require('./launcher');
-    launcher.init();
-
     setupAboutDialog();
 
     var sessionExpiredDetector = require('./sessionExpiredDetector');
