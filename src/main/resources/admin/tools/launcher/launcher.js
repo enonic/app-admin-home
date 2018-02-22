@@ -32,8 +32,7 @@ exports.get = function () {
 
     var userIconUrl = portal.assetUrl({path: "icons/user.svg"});
     var logoutUrl = portal.logoutUrl({
-        //TODO The function admin.getHomeToolUrl is missing the type parameter. Replace when done.
-        redirect: portal.url({path:'/admin/tool', type:'absolute'})
+        redirect: admin.getHomeToolUrl({type: 'absolute'})
     });
 
     var user = auth.getUser();
