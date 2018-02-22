@@ -28,7 +28,7 @@ exports.init = function () {
 
 function appendInstallAppStep() {
     tourSteps.push(createStep5());
-    tourDialog.setTitle(i18n('tour.title.stepXofY', 1, 5));
+    tourDialog.setTitle(i18n('tour.title.stepXofY', 1, 4));
 }
 
 function checkAdminRights() {
@@ -40,7 +40,7 @@ function checkAdminRights() {
 }
 
 function initDialog() {
-    tourDialog = new api.ui.dialog.ModalDialog({title: i18n('tour.title.stepXofY', 1, 4), skipTabbable: true});
+    tourDialog = new api.ui.dialog.ModalDialog({title: i18n('tour.title.stepXofY', 1, 3), skipTabbable: true});
     tourDialog.addClass("xp-tour-dialog");
 
     initNavigation();
@@ -108,7 +108,7 @@ function initNavigation() {
 
             if (currentStep === tourSteps.length) {
 
-                if (tourSteps.length === 5 && !demoAppsInstalled) {
+                if (tourSteps.length === 4 && !demoAppsInstalled) {
                     var demoAppsContainer = api.dom.Element.fromHtmlElement(document.querySelector(".demo-apps"));
 
                     if (!demoAppsLoadMask) {
@@ -168,38 +168,14 @@ function initNavigation() {
 }
 
 function initTourSteps() {
-    tourSteps = [createStep1(), createStep2(), createStep3(), createStep4()];
-}
-
-function createStep1() {
-    var html = '<div class="xp-tour-step step-1">' +
-               '    <div class="subtitle">' +
-               '        <div class="subtitle-part-1">' + i18n('tour.step1.subtitle1') + '</div>' +
-               '        <div class="subtitle-part-2">' + i18n('tour.step1.subtitle2') + '</div>' +
-               '    </div>' +
-               '    <div class="caption">' + i18n('tour.step1.caption') + '</div>' +
-               '    <img src="' + CONFIG.assetsUri + '/icons/app-icon.svg">' +
-               '    <div class="text">' +
-               '        <div class="paragraph1">' + i18n('tour.step1.paragraph1') + '</div>' +
-               '        <ul>' +
-               '            <li>' + i18n('tour.step1.system1') + '</li>' +
-               '            <li>' + i18n('tour.step1.system2') + '</li>' +
-               '            <li>' + i18n('tour.step1.system3') + '</li>' +
-               '            <li>' + i18n('tour.step1.system4') + '</li>' +
-               '            <li>' + i18n('tour.step1.system5') + '</li>' +
-               '        </ul>' +
-               '        <div class="paragraph2">' + i18n('tour.step1.paragraph2') + '</div>' +
-               '    </div>' +
-               '</div>';
-    var element = api.dom.Element.fromString(html);
-    return element;
+    tourSteps = [createStep2(), createStep3(), createStep4()];
 }
 
 function createStep2() {
     var html = '<div class="xp-tour-step step-2">' +
                '    <div class="subtitle">' +
-               '        <div class="subtitle-part-1">' + i18n('tour.step2.subtitle1') + '</div>' +
-               '        <div class="subtitle-part-2">' + i18n('tour.step2.subtitle2') + '</div>' +
+               '        <div class="subtitle-part-1">' + i18n('tour.step1.subtitle1') + '</div>' +
+               '        <div class="subtitle-part-2">' + i18n('tour.step1.subtitle2') + '</div>' +
                '    </div>' +
                '    <div class="caption">' + i18n('tour.step2.caption') + '</div>' +
                '    <img src="' + CONFIG.assetsUri + '/images/launcher.svg">' +
@@ -290,7 +266,7 @@ function fetchDemoAppsFromMarket() {
         new api.application.ListMarketApplicationsRequest()
             .setStart(0)
             .setCount(40)
-            .setVersion(CONFIG.xpVersion)
+            .setVersion(CONFIG.xpVersion.replace('-SNAPSHOT', ''))
             .setIds(demoAppsNames)
             .sendAndParse()
     );
@@ -392,7 +368,7 @@ function loadApp(marketDemoApp) {
 }
 
 function updateHeaderStep(step) {
-    const totalSteps = isSystemAdmin ? "5" : "4";
+    const totalSteps = isSystemAdmin ? "4" : "3";
     tourDialog.setTitle(i18n('tour.title.stepXofY', step, totalSteps));
 }
 
