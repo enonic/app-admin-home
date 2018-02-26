@@ -12,12 +12,13 @@ exports.get = function () {
     var marketIconUrl = portal.assetUrl({path: "icons/market.svg"});
 
     var docLinkPrefix = 'http://docs.enonic.com/en/';
-    var isLatestSnapshot = app.version.endsWith('.0.SNAPSHOT');
+    var xpVersion = admin.getVersion();
+    var isLatestSnapshot = xpVersion.endsWith('.0.SNAPSHOT');
 
     if (isLatestSnapshot) {
         docLinkPrefix += 'latest';
     } else {
-        var versionParts = app.version.split('.');
+        var versionParts = xpVersion.split('.');
         docLinkPrefix += versionParts[0] + '.' + versionParts[1];
     }
 
@@ -75,7 +76,7 @@ exports.get = function () {
         }),
         launcherUrl: admin.getLauncherUrl(),
         launcherPath: admin.getLauncherPath(),
-        xpVersion: app.version,
+        xpVersion: xpVersion,
         docLinkPrefix: docLinkPrefix,
         tourEnabled: tourEnabled,
         messages: admin.getPhrases(),
