@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.enonic.xp.admin.tool.AdminToolDescriptor;
 import com.enonic.xp.admin.tool.AdminToolDescriptorService;
 import com.enonic.xp.context.ContextAccessor;
+import com.enonic.xp.i18n.LocaleService;
 import com.enonic.xp.script.bean.BeanContext;
 import com.enonic.xp.script.bean.ScriptBean;
 import com.enonic.xp.script.serializer.MapSerializable;
@@ -16,6 +17,8 @@ public final class GetAdminToolsScriptBean
 {
     private AdminToolDescriptorService adminToolDescriptorService;
 
+    private LocaleService localeService;
+
     public List<MapSerializable> execute()
     {
         final PrincipalKeys principals = ContextAccessor.current().
@@ -25,7 +28,8 @@ public final class GetAdminToolsScriptBean
             stream().
             filter( AdminToolDescriptor::isAppLauncherApplication ).
             map( adminToolDescriptor -> new AdminToolMapper( adminToolDescriptor,
-                                                             adminToolDescriptorService.getIconByKey( adminToolDescriptor.getKey() ) ) ).
+                                                             adminToolDescriptorService.getIconByKey( adminToolDescriptor.getKey() ),
+                                                             new StringTranslator( this.localeService ) ) ).
             collect( Collectors.toList() );
     }
 
@@ -33,5 +37,6 @@ public final class GetAdminToolsScriptBean
     public void initialize( final BeanContext context )
     {
         this.adminToolDescriptorService = context.getService( AdminToolDescriptorService.class ).get();
+        this.localeService = context.getService( LocaleService.class ).get();
     }
 }

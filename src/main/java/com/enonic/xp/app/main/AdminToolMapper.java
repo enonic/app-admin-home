@@ -11,10 +11,13 @@ final class AdminToolMapper
 
     private final String icon;
 
-    AdminToolMapper( final AdminToolDescriptor value, final String icon )
+    private final StringTranslator stringTranslator;
+
+    AdminToolMapper( final AdminToolDescriptor value, final String icon, final StringTranslator stringTranslator )
     {
         this.value = value;
         this.icon = icon;
+        this.stringTranslator = stringTranslator;
     }
 
     private void serialize( final MapGenerator gen, final AdminToolDescriptor value )
@@ -24,10 +27,13 @@ final class AdminToolMapper
         gen.value( "name", value.getKey().getName() );
         gen.end();
 
-        gen.value( "displayName", value.getDisplayName() );
-        gen.value( "description", value.getDescription() );
+        gen.value( "displayName", this.stringTranslator.localize( value.getKey().getApplicationKey(), value.getDisplayNameI18nKey(),
+                                                                  value.getDisplayName() ) );
+        gen.value( "description", this.stringTranslator.localize( value.getKey().getApplicationKey(), value.getDescriptionI18nKey(),
+                                                                  value.getDescription() ) );
         gen.value( "icon", icon );
     }
+
 
     @Override
     public void serialize( final MapGenerator gen )
