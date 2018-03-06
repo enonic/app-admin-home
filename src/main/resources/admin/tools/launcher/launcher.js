@@ -3,18 +3,35 @@ var mustache = require('/lib/xp/mustache');
 var portal = require('/lib/xp/portal');
 var i18n = require('/lib/xp/i18n');
 var admin = require('/lib/xp/admin');
+var cacheLib = require('/lib/cache');
+var eventLib = require('/lib/xp/event');
+
+var adminToolsCache = cacheLib.newCache({size: 100});
+
+eventLib.listener({
+    type: 'application',
+    localOnly: false,
+    callback: function (e) {
+        adminToolsCache.clear();
+    }
+});
 
 var adminToolsBean = __.newBean('com.enonic.xp.app.main.GetAdminToolsScriptBean');
-var locales = admin.getLocales();
 
-function getAdminTools() {
-    var result = __.toNativeObject(adminToolsBean.execute());
-    return result.sort(function (tool1, tool2) {
-        return (tool1.displayName > tool2.displayName) ? 1 : -1;
+function getAdminTools(locales) {
+    var browserLanguagesKey = locales.join(',');
+
+    return adminToolsCache.get(browserLanguagesKey, function () {
+
+        var result = __.toNativeObject(adminToolsBean.execute());
+        return result.sort(function (tool1, tool2) {
+            return (tool1.displayName > tool2.displayName) ? 1 : -1;
+        });
+
     });
 }
 
-function localise(key) {
+function localise(key, locales) {
     return i18n.localize({
         key: key,
         bundles: ['i18n/common'],
@@ -23,8 +40,9 @@ function localise(key) {
 }
 
 exports.get = function () {
+    var locales = admin.getLocales();
 
-    var adminTools = getAdminTools();
+    var adminTools = getAdminTools(locales);
     for (var i = 0; i < adminTools.length; i++) {
         adminTools[i].appId = adminTools[i].key.application;
         adminTools[i].uri = admin.getToolUrl(adminTools[i].key.application, adminTools[i].key.name);
@@ -47,9 +65,9 @@ exports.get = function () {
         logoutUrl: logoutUrl,
         homeUrl: admin.getHomeToolUrl(),
         installation: admin.getInstallation() || "Tools",
-        homeToolCaption: localise('launcher.tools.home.caption'),
-        homeToolDescription: localise('launcher.tools.home.description'),
-        logOutLink: localise('launcher.link.logout'),
+        homeToolCaption: localise('launcher.tools.home.caption', locales),
+        homeToolDescription: localise('launcher.tools.home.description', locales),
+        logOutLink: localise('launcher.link.logout', locales),
         assetsUri: portal.assetUrl({
             path: ''
         })
