@@ -23,6 +23,8 @@ dependencies {
     include "com.enonic.xp:lib-portal:${xpVersion}"
     include "com.enonic.xp:lib-auth:${xpVersion}"
     include "com.enonic.xp:lib-i18n:${xpVersion}"
+    include "com.enonic.xp:lib-event:${xpVersion}"
+    include 'com.enonic.lib:lib-cache:1.1.0'
     include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
 }
 
