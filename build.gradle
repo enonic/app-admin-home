@@ -52,7 +52,7 @@ task lint( type: NpmTask, dependsOn: npmInstall ) {
 
 task webpack( type: NodeTask, dependsOn: lint ) {
     environment = [ 'NODE_ENV': nodeEnvironment() ]
-    description = 'Build UI resources (ts, css, etc).'
+    description = 'Build UI resources (js, css, etc).'
     inputs.dir 'src/main'
     outputs.dir "$buildDir/resources/main"
     script = file( './node_modules/webpack/bin/webpack' )
@@ -63,8 +63,13 @@ task cleanNode( type: Delete ) {
 }
 
 jar {
-    exclude 'assets/**/*.ts'
     exclude 'assets/**/*.less'
+    // exclude js sources
+    def assetsDir = file('build/resources/main')
+    println "$assetsDir/assets/js"
+    fileTree("$assetsDir/assets/js") {
+        exclude '**/bundle.js'
+    }.each { f -> exclude assetsDir.toURI().relativize( file( f.path ).toURI() ).toString() }
 
     dependsOn += webpack
 }
