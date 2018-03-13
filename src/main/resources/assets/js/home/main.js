@@ -1,13 +1,11 @@
 require('../../styles/home.less');
 
-var $ = require('jquery');
+window.wemjq = require('jquery').noConflict(true);
+window.wemQ = require('q');
+window.Mousetrap = require('mousetrap');
+require('mousetrap/plugins/global-bind/mousetrap-global-bind');
 
-window.wemjq = $.noConflict(true);
-window.wemQ = require('../../lib/q');
-window.Mousetrap = require('../../lib/mousetrap');
-require('../../lib/mousetrap-global-bind.min');
-
-$(function() {
+wemjq(function() {
     api.util.i18nInit(CONFIG.messages);
 
     setupWebSocketListener();
