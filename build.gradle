@@ -43,12 +43,6 @@ task npmInstallForce( type: NpmTask ) {
     args = [ 'install', '--force' ]
 }
 
-if ( hasProperty( 'env' ) )
-{
-    addBuildDependency()
-    applyExcludedTasks()
-}
-
 task lint( type: NpmTask, dependsOn: npmInstall ) {
     args = [ 'run', 'lint' ]
     inputs.files fileTree( dir: 'modules', include: '**/src/main/**.*' )
@@ -77,6 +71,12 @@ jar {
 
 jar.outputs.dir "${buildDir}/resources/main"
 
+if ( hasProperty( 'env' ) )
+{
+    addBuildDependency()
+    applyExcludedTasks()
+}
+
 def applyExcludedTasks() {
     def libAdminUi = gradle.includedBuild( 'lib-admin-ui' )
     Closure permittedTasks = { it == 'lint' || it == 'test' }
@@ -86,18 +86,13 @@ def applyExcludedTasks() {
 
 def addBuildDependency() {
     def buildTask = gradle.includedBuild( 'lib-admin-ui' ).task( ':build' )
+    def unpackDevResources = tasks.findByPath( ":unpackDevResources" )
 
     build.dependsOn += buildTask
     clean.dependsOn += gradle.includedBuild( 'lib-admin-ui' ).task( ':clean' )
     flush.dependsOn += gradle.includedBuild( 'lib-admin-ui' ).task( ':flush' )
-
-    subprojects.each {
-        def webpackTask = tasks.findByPath( ":${it.name}:webpack" )
-        def unpackDevResources = tasks.findByPath( ":${it.name}:unpackDevResources" )
-
-        if ( webpackTask != null ) webpackTask.dependsOn += unpackDevResources
-        unpackDevResources.dependsOn += buildTask
-    }
+    webpack.dependsOn += unpackDevResources
+    unpackDevResources.dependsOn += buildTask
 }
 
 def nodeEnvironment() {
