@@ -1,17 +1,15 @@
-var statusUrl = CONFIG.adminUrl + "/rest/status";
-var adminToolUrl = CONFIG.adminUrl + "/tool";
+var statusUrl = CONFIG.adminUrl + '/rest/status';
+var adminToolUrl = CONFIG.adminUrl + '/tool';
 var connectionLostMessageId;
 
 function doPoll() {
-
     var request = createGetStatusRequest();
 
-    request.onreadystatechange = function () {
+    request.onreadystatechange = function() {
         if (request.readyState === 4) {
             if (request.status >= 200 && request.status < 300) {
                 checkAuthenticated(request.response);
-            }
-            else {
+            } else {
                 alertConnectionLost();
             }
         }
@@ -43,11 +41,12 @@ function logout() {
 
 function alertConnectionLost() {
     if (!connectionLostMessageId) {
-        connectionLostMessageId = api.notify.showError(api.util.i18n('notify.connection.loss'));
+        connectionLostMessageId = api.notify.showError(
+            api.util.i18n('notify.connection.loss')
+        );
     }
-
 }
 
-exports.startPolling = function () {
+exports.startPolling = function() {
     setInterval(doPoll, 15000);
 };

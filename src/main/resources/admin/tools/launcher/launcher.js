@@ -6,28 +6,28 @@ var admin = require('/lib/xp/admin');
 var cacheLib = require('/lib/cache');
 var eventLib = require('/lib/xp/event');
 
-var adminToolsCache = cacheLib.newCache({size: 100});
+var adminToolsCache = cacheLib.newCache({ size: 100 });
 
 eventLib.listener({
     type: 'application',
     localOnly: false,
-    callback: function (e) {
+    callback: function() {
         adminToolsCache.clear();
     }
 });
 
-var adminToolsBean = __.newBean('com.enonic.xp.app.main.GetAdminToolsScriptBean');
+var adminToolsBean = __.newBean(
+    'com.enonic.xp.app.main.GetAdminToolsScriptBean'
+);
 
 function getAdminTools(locales) {
     var browserLanguagesKey = locales.join(',');
 
-    return adminToolsCache.get(browserLanguagesKey, function () {
-
+    return adminToolsCache.get(browserLanguagesKey, function() {
         var result = __.toNativeObject(adminToolsBean.execute());
-        return result.sort(function (tool1, tool2) {
-            return (tool1.displayName > tool2.displayName) ? 1 : -1;
+        return result.sort(function(tool1, tool2) {
+            return tool1.displayName > tool2.displayName ? 1 : -1;
         });
-
     });
 }
 
@@ -39,18 +39,21 @@ function localise(key, locales) {
     });
 }
 
-exports.get = function () {
+exports.get = function() {
     var locales = admin.getLocales();
 
     var adminTools = getAdminTools(locales);
     for (var i = 0; i < adminTools.length; i++) {
         adminTools[i].appId = adminTools[i].key.application;
-        adminTools[i].uri = admin.getToolUrl(adminTools[i].key.application, adminTools[i].key.name);
+        adminTools[i].uri = admin.getToolUrl(
+            adminTools[i].key.application,
+            adminTools[i].key.name
+        );
     }
 
-    var userIconUrl = portal.assetUrl({path: "icons/user.svg"});
+    var userIconUrl = portal.assetUrl({ path: 'icons/user.svg' });
     var logoutUrl = portal.logoutUrl({
-        redirect: admin.getHomeToolUrl({type: 'absolute'})
+        redirect: admin.getHomeToolUrl({ type: 'absolute' })
     });
 
     var user = auth.getUser();
@@ -64,9 +67,12 @@ exports.get = function () {
         user: user,
         logoutUrl: logoutUrl,
         homeUrl: admin.getHomeToolUrl(),
-        installation: admin.getInstallation() || "Tools",
+        installation: admin.getInstallation() || 'Tools',
         homeToolCaption: localise('launcher.tools.home.caption', locales),
-        homeToolDescription: localise('launcher.tools.home.description', locales),
+        homeToolDescription: localise(
+            'launcher.tools.home.description',
+            locales
+        ),
         logOutLink: localise('launcher.link.logout', locales),
         assetsUri: portal.assetUrl({
             path: ''

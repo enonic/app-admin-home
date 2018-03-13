@@ -29,6 +29,7 @@ module.exports = {
         app: false,
         CONFIG: false,
         resolve: false,
-        wemjq: false
+        wemjq: false,
+        wemQ: false
     }
 };
