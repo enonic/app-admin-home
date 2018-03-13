@@ -20,13 +20,15 @@ module.exports = {
         ]
     },
     env: {
+        browser: true,
         node: true
     },
     globals: {
-        Java: false,
+        __: false,
+        api: false,
+        app: false,
+        CONFIG: false,
         resolve: false,
-        log: true,
-        env: true,
-        app: true
+        wemjq: false
     }
 };

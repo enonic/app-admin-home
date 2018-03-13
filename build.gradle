@@ -30,13 +30,37 @@ dependencies {
 
 node {
     download = true
-    version = '8.9.4'
+    version = '8.10.0'
 }
 
-task webpack( type: NodeTask, dependsOn: npmInstall ) {
+task flush( type: Delete, dependsOn: clean ) {
+    description = 'Clean the project from built sources and dependencies'
+    delete '.xp'
+}
+
+task npmInstallForce( type: NpmTask ) {
+    description = 'Update all project node dependencies'
+    args = [ 'install', '--force' ]
+}
+
+if ( hasProperty( 'env' ) )
+{
+    addBuildDependency()
+    applyExcludedTasks()
+}
+
+task lint( type: NpmTask, dependsOn: npmInstall ) {
+    args = [ 'run', 'lint' ]
+    inputs.files fileTree( dir: 'modules', include: '**/src/main/**.*' )
+    outputs.dir file('gradle')
+    outputs.upToDateWhen { false }
+}
+
+task webpack( type: NodeTask, dependsOn: lint ) {
+    environment = [ 'NODE_ENV': nodeEnvironment() ]
     description = 'Build UI resources (ts, css, etc).'
     inputs.dir 'src/main'
-    outputs.dir "${buildDir}/resources/main"
+    outputs.dir "$buildDir/resources/main"
     script = file( './node_modules/webpack/bin/webpack' )
 }
 
@@ -44,5 +68,40 @@ task cleanNode( type: Delete ) {
     delete 'node_modules'
 }
 
-jar.dependsOn += webpack
+jar {
+    exclude 'assets/**/*.ts'
+    exclude 'assets/**/*.less'
+
+    dependsOn += webpack
+}
+
 jar.outputs.dir "${buildDir}/resources/main"
+
+def applyExcludedTasks() {
+    def libAdminUi = gradle.includedBuild( 'lib-admin-ui' )
+    Closure permittedTasks = { it == 'lint' || it == 'test' }
+    def excludedTasks = gradle.startParameter.getExcludedTaskNames().findAll( permittedTasks )
+    libAdminUi.getLoadedSettings().getStartParameter().setExcludedTaskNames( excludedTasks )
+}
+
+def addBuildDependency() {
+    def buildTask = gradle.includedBuild( 'lib-admin-ui' ).task( ':build' )
+
+    build.dependsOn += buildTask
+    clean.dependsOn += gradle.includedBuild( 'lib-admin-ui' ).task( ':clean' )
+    flush.dependsOn += gradle.includedBuild( 'lib-admin-ui' ).task( ':flush' )
+
+    subprojects.each {
+        def webpackTask = tasks.findByPath( ":${it.name}:webpack" )
+        def unpackDevResources = tasks.findByPath( ":${it.name}:unpackDevResources" )
+
+        if ( webpackTask != null ) webpackTask.dependsOn += unpackDevResources
+        unpackDevResources.dependsOn += buildTask
+    }
+}
+
+def nodeEnvironment() {
+    def environments = [ prod : 'production', dev: 'development' ]
+    def nodeEnv = environments[hasProperty( 'env' ) ? env : 'prod']
+    return nodeEnv != null ? nodeEnv : 'production'
+}
