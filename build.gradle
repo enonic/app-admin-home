@@ -3,7 +3,7 @@ plugins {
     id 'maven'
     id 'com.enonic.defaults' version '1.0.3'
     id 'com.enonic.xp.app' version '1.0.17'
-    id 'com.moowork.node' version '1.1.1'
+    id 'com.moowork.node' version '1.2.0'
 }
 
 apply from: "$rootDir/gradle/defaults.gradle"
@@ -65,11 +65,10 @@ task cleanNode( type: Delete ) {
 jar {
     exclude 'assets/**/*.less'
     // exclude js sources
-    def assetsDir = file('build/resources/main')
-    println "$assetsDir/assets/js"
-    fileTree("$assetsDir/assets/js") {
+    def mainDir = file('build/resources/main')
+    fileTree("$mainDir/assets/js") {
         exclude '**/bundle.js'
-    }.each { f -> exclude assetsDir.toURI().relativize( file( f.path ).toURI() ).toString() }
+    }.each { f -> exclude mainDir.toURI().relativize( file( f.path ).toURI() ).toString() }
 
     dependsOn += webpack
 }
