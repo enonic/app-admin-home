@@ -26,7 +26,7 @@ $(function () {
             api.util.CookieHelper.setCookie("enonic_xp_tour", "tour", 365);
             setTimeout(function () {
                 tourDialog.open(true);
-            }, 100);
+            }, 500);
         }
     }
 
