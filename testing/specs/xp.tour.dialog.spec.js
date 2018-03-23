@@ -14,7 +14,7 @@ describe('XP tour dialog specification', function () {
 
     it('WHEN user logged in THEN XP tour dialog should appear', () => {
         return loginPage.doLogin().then(()=> {
-            return xpTourDialog.waitForVisible();
+            return xpTourDialog.waitForDialogPresent();
         }).then((isVisible)=> {
             testUtils.saveScreenshot("xp_tour_dialog_should_be_visible");
             assert.isTrue(isVisible, 'XP tour dialog mast be present');
