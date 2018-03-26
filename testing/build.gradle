@@ -59,10 +59,6 @@ dependencies {
     distro "com.enonic.xp:distro:$xpVersion@zip"
 }
 
-task deleteFolders( type: Delete ) {
-    delete unpackDir, screenshotsDir, reportsDir
-}
-
 task unpackDistro( type: Copy ) {
     from {
         configurations.distro.collect { zipTree( it ) }
@@ -98,12 +94,6 @@ task startServer( dependsOn: [unpackDistro, copyConfig] ) {
         xpServer.start()
     }
     copyConfig.mustRunAfter unpackDistro
-}
-
-task stopServer {
-    doLast {
-        xpServer.stop()
-    }
 }
 
 tasks.withType( Test ) {

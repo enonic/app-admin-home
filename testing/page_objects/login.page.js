@@ -54,6 +54,11 @@ var loginPage = Object.create(page, {
             return this.waitForVisible(this.loginButton, ms);
         }
     },
+    waitForPageLoaded: {
+        value: function (ms) {
+            return this.waitForVisible(this.usernameInput, ms);
+        }
+    },
 
     clickOnLoginButton: {
         value: function () {
