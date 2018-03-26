@@ -35,7 +35,7 @@ var xpTourDialog = Object.create(page, {
             return this.doClick(this.skipTourButton);
         }
     },
-    waitForVisible: {
+    waitForDialogPresent: {
         value: function () {
             return this.waitForVisible(`${xpath.container}`, appConst.TIMEOUT_2).catch(err=> {
                 return false;

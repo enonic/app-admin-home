@@ -1,12 +1,15 @@
-// Variables
-@import "include/variables";
-@import "include/colors";
-@import "include/mixins";
-@import "include/launcher/variables";
+@import "~enonic-admin-artifacts";
+
+@import 'font';
+
+@app-header-height: 44px;
+@panel-outer-width: 320px;
+@panel-inner-width: 280px;
+@panel-indent: 30px;
 
 .body-mask.launcher {
   .reset(true);
-  .opacity(0.5);
+  opacity: 0.5;
 
   background-color: @admin-white;
   display: none;
@@ -18,7 +21,7 @@
   bottom: 0;
 
   &.app-home {
-    .opacity(0);
+    opacity: 0;
   }
 }
 
@@ -49,7 +52,7 @@ body.mobile-statistics-panel {
 
   &.visible {
     right: 0;
-    .box-shadow(-2px 0px 7px 5px rgba(0, 0, 0, 0.3));
+    box-shadow: -2px 0 7px 5px rgba(0, 0, 0, 0.3);
   }
 
   &.visible, &.slideout {
@@ -124,14 +127,20 @@ body.mobile-statistics-panel {
     table-layout: fixed;
 
     .container-title {
-      .container-title-mixin(32px, 0);
+      display: table-cell;
+      position: relative;
+      top: 8px;
+      bottom: 0;
       overflow-y: visible;
       overflow-x: hidden;
+      color: @admin-white;
+      font-family: @admin-font-family;
+      font-size: 32px;
+      font-weight: 100;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       white-space: pre;
       text-overflow: ellipsis;
-      top: 8px;
-      position: relative;
-      display: table-cell;
       vertical-align: bottom;
       &::first-letter {
         text-transform: uppercase;
@@ -145,7 +154,7 @@ body.mobile-statistics-panel {
     box-sizing: border-box;
     width: 100%;
     height: 100%;
-    padding: calc(@app-header-height + 10) 0 @app-header-height 0;
+    padding: (@app-header-height + 10px) 0 @app-header-height 0;
     overflow: hidden;
     background-color: rgba(0, 0, 0, 0.9);
 
@@ -371,4 +380,3 @@ body.mobile-statistics-panel {
     }
   }
 }
-

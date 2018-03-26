@@ -1,10 +1,12 @@
 require('webcomponentsjs/lite');
 
-var launcherUrl = window.CONFIG && window.CONFIG.launcherUrl || null;
+var launcherUrl = (window.CONFIG && window.CONFIG.launcherUrl) || null;
 var autoOpenLauncher = window.CONFIG && window.CONFIG.autoOpenLauncher;
 var appId = window.CONFIG ? window.CONFIG.appId : '';
 
-var launcherPanel, launcherButton, launcherMainContainer;
+var launcherPanel;
+var launcherButton;
+var launcherMainContainer;
 
 function appendLauncherButton() {
     launcherButton = document.createElement('button');
@@ -26,7 +28,9 @@ function appendLauncherButton() {
 }
 
 function getColorClass() {
-    var darkBackground = document.querySelector('.appbar') || document.querySelector('.home-main-container');
+    var darkBackground =
+        document.querySelector('.appbar') ||
+        document.querySelector('.home-main-container');
     return darkBackground ? '' : 'dark';
 }
 
@@ -62,9 +66,14 @@ function onLauncherClick(e) {
     if (!launcherPanel || !launcherMainContainer) {
         return;
     }
-    var isClickOutside = !launcherPanel.contains(e.target) && !launcherButton.contains(e.target);
-    if (isClickOutside && !launcherMainContainer.getAttribute('hidden') && !isModalDialogActiveOnHomePage(e.target) &&
-        !isDashboardIcon(e.target)) {
+    var isClickOutside =
+        !launcherPanel.contains(e.target) && !launcherButton.contains(e.target);
+    if (
+        isClickOutside &&
+        !launcherMainContainer.getAttribute('hidden') &&
+        !isModalDialogActiveOnHomePage(e.target) &&
+        !isDashboardIcon(e.target)
+    ) {
         closeLauncherPanel();
     }
 }
@@ -73,15 +82,18 @@ function isDashboardIcon(element) {
     if (!window.wemjq) {
         return false;
     }
-    return (wemjq(element).closest('.dashboard-item').length > 0);
+    return wemjq(element).closest('.dashboard-item').length > 0;
 }
 
 function isModalDialogActiveOnHomePage(element) {
     if (!window.wemjq) {
         return false;
     }
-    return (window.CONFIG.appId == 'home') &&
-           (document.body.classList.contains('modal-dialog') || (wemjq(element).closest('.xp-admin-common-modal-dialog').length > 0));
+    return (
+        window.CONFIG.appId === 'home' &&
+        (document.body.classList.contains('modal-dialog') ||
+            wemjq(element).closest('.xp-admin-common-modal-dialog').length > 0)
+    );
 }
 
 function loadLauncher(onload) {
@@ -102,9 +114,11 @@ function createLauncherLink(container) {
 
     function onload() {
         launcherButton.hidden = false;
-        launcherMainContainer = link.import.querySelector('.launcher-main-container');
+        launcherMainContainer = link.import.querySelector(
+            '.launcher-main-container'
+        );
         launcherMainContainer.setAttribute('hidden', 'true');
-        if (window.CONFIG.appId == 'home') {
+        if (window.CONFIG.appId === 'home') {
             launcherMainContainer.classList.add('home');
         }
         container.appendChild(launcherMainContainer);
@@ -114,9 +128,14 @@ function createLauncherLink(container) {
             openLauncherPanel();
             launcherButton.focus();
         } else {
-            var appTiles = container.querySelector('.launcher-app-container').querySelectorAll('a');
+            var appTiles = container
+                .querySelector('.launcher-app-container')
+                .querySelectorAll('a');
             for (var i = 0; i < appTiles.length; i++) {
-                appTiles[i].addEventListener('click', closeLauncherPanel.bind(this, true));
+                appTiles[i].addEventListener(
+                    'click',
+                    closeLauncherPanel.bind(this, true)
+                );
             }
         }
         highlightActiveApp();
@@ -132,21 +151,29 @@ function openWindow(windowArr, anchorEl) {
 
     if (windowArr[windowId] && !windowArr[windowId].closed) {
         windowArr[windowId].focus();
-    }
-    else {
+    } else {
+        // eslint-disable-next-line no-param-reassign
         windowArr[windowId] = window.open(anchorEl.href, windowId);
     }
 }
 
 function addLongClickHandler(container) {
     var longpress = false;
-    var startTime, endTime;
+    var startTime;
+    var endTime;
     var toolWindows = [];
 
-    var appTiles = container.querySelector('.launcher-app-container').querySelectorAll('a');
+    var appTiles = container
+        .querySelector('.launcher-app-container')
+        .querySelectorAll('a');
     for (var i = 0; i < appTiles.length; i++) {
-        appTiles[i].addEventListener('click', function (e) {
-            if (window.CONFIG.appId === e.currentTarget.getAttribute('data-id') && window.CONFIG.appId === 'home') {
+        // eslint-disable-next-line no-loop-func
+        appTiles[i].addEventListener('click', function(e) {
+            if (
+                window.CONFIG.appId ===
+                    e.currentTarget.getAttribute('data-id') &&
+                window.CONFIG.appId === 'home'
+            ) {
                 e.preventDefault();
                 return;
             }
@@ -154,18 +181,19 @@ function addLongClickHandler(container) {
             if (longpress) {
                 e.preventDefault();
                 document.location.href = this.href;
-            }
-            else if (navigator.userAgent.search('Chrome') > -1) {
+            } else if (navigator.userAgent.search('Chrome') > -1) {
                 e.preventDefault();
                 openWindow(toolWindows, e.currentTarget);
             }
         });
-        appTiles[i].addEventListener('mousedown', function () {
+        // eslint-disable-next-line no-loop-func
+        appTiles[i].addEventListener('mousedown', function() {
             startTime = new Date().getTime();
         });
-        appTiles[i].addEventListener('mouseup', function () {
+        // eslint-disable-next-line no-loop-func
+        appTiles[i].addEventListener('mouseup', function() {
             endTime = new Date().getTime();
-            longpress = (endTime - startTime >= 500);
+            longpress = endTime - startTime >= 500;
         });
     }
 }
@@ -184,51 +212,60 @@ function closeLauncherPanel(skipTransition) {
     launcherMainContainer.setAttribute('hidden', 'true');
     unlistenToKeyboardEvents();
     launcherPanel.classList.remove('visible');
-    launcherPanel.classList.add((skipTransition === true) ? 'hidden' : 'slideout');
+    launcherPanel.classList.add(
+        skipTransition === true ? 'hidden' : 'slideout'
+    );
     toggleButton();
     unselectCurrentApp();
 }
 
-var closeLauncher = new api.ui.KeyBinding('esc').setGlobal(true).setCallback(function(e , combo) {
-    if (!isPanelExpanded()) {
-        return;
-    }
-    e.preventDefault();
-    e.returnValue = false;
+var closeLauncher = new api.ui.KeyBinding('esc')
+    .setGlobal(true)
+    .setCallback(function(e) {
+        if (!isPanelExpanded()) {
+            return;
+        }
+        e.preventDefault();
+        e.returnValue = false;
 
-    closeLauncherPanel();
-    return false;
-});
-var prevApp = new api.ui.KeyBinding('up').setGlobal(true).setCallback(function(e, combo) {
-    if (!isPanelExpanded()) {
-        return;
-    }
+        closeLauncherPanel();
+    });
+var prevApp = new api.ui.KeyBinding('up')
+    .setGlobal(true)
+    .setCallback(function() {
+        if (!isPanelExpanded()) {
+            return;
+        }
 
-    initKeyboardNavigation();
-    selectPreviousApp();
-});
-var nextApp = new api.ui.KeyBinding('down').setGlobal(true).setCallback(function(e, combo) {
-    if (!isPanelExpanded()) {
-        return;
-    }
-    e.preventDefault();
-    e.returnValue = false;
+        initKeyboardNavigation();
+        selectPreviousApp();
+    });
+var nextApp = new api.ui.KeyBinding('down')
+    .setGlobal(true)
+    .setCallback(function(e) {
+        if (!isPanelExpanded()) {
+            return;
+        }
+        e.preventDefault();
+        e.returnValue = false;
 
-    initKeyboardNavigation();
-    selectNextApp();
-});
-var runApp = new api.ui.KeyBinding('enter').setGlobal(true).setCallback(function(e, combo) {
-    if (!isPanelExpanded()) {
-        return;
-    }
-    e.preventDefault();
-    e.returnValue = false;
+        initKeyboardNavigation();
+        selectNextApp();
+    });
+var runApp = new api.ui.KeyBinding('enter')
+    .setGlobal(true)
+    .setCallback(function(e) {
+        if (!isPanelExpanded()) {
+            return;
+        }
+        e.preventDefault();
+        e.returnValue = false;
 
-    var selectedApp = getSelectedApp();
-    if (selectedApp) {
-        startApp(selectedApp);
-    }
-});
+        var selectedApp = getSelectedApp();
+        if (selectedApp) {
+            startApp(selectedApp);
+        }
+    });
 var launcherBindings = [closeLauncher, prevApp, nextApp, runApp];
 
 function listenToKeyboardEvents() {
@@ -237,10 +274,6 @@ function listenToKeyboardEvents() {
 
 function unlistenToKeyboardEvents() {
     api.ui.KeyBindings.get().unbindKeys(launcherBindings);
-}
-
-function getSelectedApp() {
-    return launcherPanel.querySelector('.app-row.selected');
 }
 
 function unselectCurrentApp() {
@@ -265,7 +298,7 @@ function highlightActiveApp() {
 function addApplicationsListeners() {
     if (!initApplicationsListeners()) {
         var triesLeft = 3;
-        var intervalID = setInterval(function () {
+        var intervalID = setInterval(function() {
             var initialized = initApplicationsListeners();
             if (!initialized && triesLeft > 0) {
                 triesLeft -= 1;
@@ -276,66 +309,74 @@ function addApplicationsListeners() {
     }
 }
 
-var reloadLauncher = api.util.AppHelper.debounce(function () {
-    var link;
+var reloadLauncher = api.util.AppHelper.debounce(
+    function() {
+        var link;
 
-    function onload() {
-        var oldLauncherContent = launcherPanel.querySelector('.scrollable-content');
-        var newLauncherContent = link.import.querySelector('.scrollable-content');
-        var parent = oldLauncherContent.parentNode;
-        parent.replaceChild(newLauncherContent, oldLauncherContent);
-        link.remove();
-        highlightActiveApp();
-    }
+        function onload() {
+            var oldLauncherContent = launcherPanel.querySelector(
+                '.scrollable-content'
+            );
+            var newLauncherContent = link.import.querySelector(
+                '.scrollable-content'
+            );
+            var parent = oldLauncherContent.parentNode;
+            parent.replaceChild(newLauncherContent, oldLauncherContent);
+            link.remove();
+            highlightActiveApp();
+        }
 
-    link = loadLauncher(onload);
+        link = loadLauncher(onload);
 
-    launcherPanel.appendChild(link);
-}, 1000, false);
+        launcherPanel.appendChild(link);
+    },
+    1000,
+    false
+);
 
 function initApplicationsListeners() {
     if (api.application.ApplicationEvent) {
-        api.application.ApplicationEvent.on(function (event) {
-            var statusChanged = api.application.ApplicationEventType.STARTED === event.getEventType() ||
-                                api.application.ApplicationEventType.STOPPED === event.getEventType();
+        api.application.ApplicationEvent.on(function(event) {
+            var statusChanged =
+                api.application.ApplicationEventType.STARTED ===
+                    event.getEventType() ||
+                api.application.ApplicationEventType.STOPPED ===
+                    event.getEventType();
             if (statusChanged) {
                 reloadLauncher();
             }
-
         });
         return true;
     }
     return false;
 }
 
-var launcherMainContainer;
-
 function listenToMouseMove() {
-    window.addEventListener("mousemove", disableKeyboardNavigation, true);
+    window.addEventListener('mousemove', disableKeyboardNavigation, true);
 }
 
 function disableKeyboardNavigation() {
-    getLauncherMainContainer().classList.remove("keyboard-navigation");
+    getLauncherMainContainer().classList.remove('keyboard-navigation');
     unselectCurrentApp();
-    window.removeEventListener("mousemove", disableKeyboardNavigation, true);
+    window.removeEventListener('mousemove', disableKeyboardNavigation, true);
 }
 
 function initKeyboardNavigation() {
     var appContainer = getLauncherMainContainer();
-    if (!appContainer.classList.contains("keyboard-navigation")) {
+    if (!appContainer.classList.contains('keyboard-navigation')) {
         listenToMouseMove();
-        appContainer.classList.add("keyboard-navigation");
+        appContainer.classList.add('keyboard-navigation');
     }
 }
 
 function getSelectedApp() {
-    return getLauncherMainContainer().querySelector('.app-row.selected');
+    return launcherPanel.querySelector('.app-row.selected');
 }
 
 function getSelectedAppIndex() {
     var apps = getLauncherMainContainer().querySelectorAll('.app-row');
     for (var i = 0; i < apps.length; i++) {
-        if (apps[i].classList.contains("selected")) {
+        if (apps[i].classList.contains('selected')) {
             return i;
         }
     }
@@ -347,7 +388,11 @@ function selectNextApp() {
     var selectedIndex = getSelectedAppIndex();
     var apps = getLauncherMainContainer().querySelectorAll('.app-row');
 
-    selectApp((selectedIndex + 1) === apps.length || selectedIndex === -1 ? firstAppIndex : selectedIndex + 1);
+    selectApp(
+        selectedIndex + 1 === apps.length || selectedIndex === -1
+            ? firstAppIndex
+            : selectedIndex + 1
+    );
 }
 
 function selectPreviousApp() {
@@ -355,11 +400,12 @@ function selectPreviousApp() {
     var nextIndex;
     if (selectedIndex === -1) {
         nextIndex = isHomeAppActive() ? 1 : 0;
-    }
-    else if (selectedIndex === 0 || (selectedIndex === 1 && isHomeAppActive())) {
+    } else if (
+        selectedIndex === 0 ||
+        (selectedIndex === 1 && isHomeAppActive())
+    ) {
         nextIndex = document.querySelectorAll('.app-row').length - 1;
-    }
-    else {
+    } else {
         nextIndex = selectedIndex - 1;
     }
 
@@ -368,14 +414,7 @@ function selectPreviousApp() {
 
 function selectApp(index) {
     unselectCurrentApp();
-    getAppByIndex(index).classList.add("selected");
-}
-
-function unselectCurrentApp() {
-    var selectedApp = getSelectedApp();
-    if (selectedApp) {
-        selectedApp.classList.remove("selected");
-    }
+    getAppByIndex(index).classList.add('selected');
 }
 
 function getAppByIndex(index) {
@@ -398,20 +437,21 @@ function startApp(app) {
 
 function getLauncherMainContainer() {
     if (!launcherMainContainer) {
-        launcherMainContainer = document.querySelector('.launcher-main-container');
+        launcherMainContainer = document.querySelector(
+            '.launcher-main-container'
+        );
     }
 
     return launcherMainContainer;
 }
 
 function isHomeAppActive() {
-    return getLauncherMainContainer().classList.contains("home");
+    return getLauncherMainContainer().classList.contains('home');
 }
 
-exports.init = function () {
-
+exports.init = function() {
     if (launcherUrl == null) {
-        throw "CONFIG.launcherUrl is not defined";
+        throw new Error('CONFIG.launcherUrl is not defined');
     }
 
     appendLauncherButton();

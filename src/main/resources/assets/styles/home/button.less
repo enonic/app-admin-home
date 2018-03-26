@@ -44,7 +44,7 @@
 .button(@color: @form-button-font, @bg: @form-button-bg, @hoverColor: @color, @hoverBg: lighten(@bg, 10%), @useFocus: true) {
   .button-background(@bg, @hoverBg);
   .button-foreground(@color, @hoverColor, @admin-button-blue1);
-  .box-sizing(border-box);
+  box-sizing: border-box;
 
   display: inline-block;
   padding: 1px 19px;
@@ -88,7 +88,7 @@
     .button(@admin-button-blue1, transparent, @admin-button-blue2, transparent);
 
     &:focus:not(:disabled) {
-      .box-shadow(none);
+      box-shadow: none;
       border: 1px solid transparent;
     }
   }
@@ -115,7 +115,7 @@
   }
 
   // should go last to override button defaults
-  .box-sizing(content-box); // for firefox to center the icon
+  box-sizing: content-box; // for firefox to center the icon
   padding: 0;
   width: 24px;
   height: 24px;
@@ -130,4 +130,3 @@
   }
 
 }
-
