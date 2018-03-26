@@ -10,6 +10,15 @@ const webDriverHelper = require("./WebDriverHelper");
 
 module.exports = {
 
+    doDeleteCookie: function () {
+        return webDriverHelper.browser.getCookie().then(result=> {
+            console.log(result);
+        }).then(()=> {
+            return webDriverHelper.browser.deleteCookie();
+        }).then(()=> {
+            return console.log('cookie is being deleting...');
+        }).pause(2000);
+    },
     saveScreenshot: function (name) {
         var path = require('path')
         var screenshotsDir = path.join(__dirname, '/../build/screenshots/');
