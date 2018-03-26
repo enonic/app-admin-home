@@ -53,7 +53,7 @@ var xpTourDialog = Object.create(page, {
             return this.doClick(this.nextButton).pause(500);
         }
     },
-    goToFoursStep: {
+    goToFourthStep: {
         value: function () {
             return this.doClick(this.nextButton).pause(200).then(()=> {
                 return this.doClick(this.nextButton);

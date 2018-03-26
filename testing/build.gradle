@@ -110,7 +110,6 @@ task testAdminHomeApp( type: GulpTask, dependsOn: [npmInstall, startServer] ) {
     outputs.files fileTree( dir: '/test-results' )
     args = ['test']
     startServer.mustRunAfter npmInstall
-    finalizedBy stopServer
 }
 
 task testAdminHomeAppLocally( type: GulpTask, dependsOn: [npmInstall] ) {

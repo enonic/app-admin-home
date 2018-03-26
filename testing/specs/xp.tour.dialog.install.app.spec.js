@@ -35,13 +35,13 @@ describe('XP tour dialog - install applications', function () {
         })
     });
 
-    it('GIVEN fours step is opened WHEN `Install Apps` button has been pressed THEN three application should be installed', () => {
+    it('GIVEN Fourth step is opened WHEN `Install Apps` button has been pressed THEN three application should be installed', () => {
         return loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT).then(()=> {
             return loginPage.doLogin();
         }).then(()=> {
             return xpTourDialog.waitForDialogPresent();
         }).then(()=> {
-            return xpTourDialog.goToFoursStep();
+            return xpTourDialog.goToFourthStep();
         }).then(()=> {
             return xpTourDialog.waitForInstallAppsButtonDisplayed();
         }).then(()=> {
