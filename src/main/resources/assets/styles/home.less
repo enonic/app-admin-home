@@ -1,13 +1,11 @@
-// Variables
-@import "include/colors";
-@import "include/mixins";
-@import "include/variables";
-@import "include/home/reset";
-@import "include/home/button";
-@import "include/home/mask";
-@import "include/home/modal-dialog";
-@import "include/home/variables";
-@import "include/home/progress-bar";
+@import "~enonic-admin-artifacts";
+
+@import 'font';
+@import "home/reset";
+@import "home/button";
+@import "home/mask";
+@import "home/modal-dialog";
+@import "home/progress-bar";
 
 .home-main-container {
   .home-main-container-mixin();
@@ -81,7 +79,7 @@
 
   .xp-about-dialog-app-icon {
     float: left;
-    margin: 0 30px 50px 0px;
+    margin: 0 30px 50px 0;
   }
 
   h1 {
@@ -177,7 +175,7 @@
 
     .caption {
       font-size: 16px;
-      padding: 10px 0px 15px 0px;
+      padding: 10px 0 15px 0;
     }
 
     img {
@@ -222,8 +220,8 @@
     .step-3 {
       img {
         margin-right: 10px;
-        box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3),
-        0px 2px 3px 0px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3),
+        0 2px 3px 0 rgba(0, 0, 0, 0.5);
       }
     }
 
@@ -231,14 +229,14 @@
       img {
         float: right;
         margin-left: 10px;
-        box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3),
-        0px 2px 3px 0px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3),
+        0 2px 3px 0 rgba(0, 0, 0, 0.5);
       }
     }
 
     .step-5 {
       .demo-apps {
-        margin: 10px 0px 49px 0px;
+        margin: 10px 0 49px 0;
         display: flex;
         align-items: center;
         justify-content: space-around;
@@ -324,7 +322,7 @@
       button {
         height: 36px;
         text-align: center;
-        margin-left: 0px;
+        margin-left: 0;
 
         span {
           font-weight: bold;

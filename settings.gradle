@@ -1,8 +1,8 @@
-rootProject.name ='app-main'
+rootProject.name = 'app-main'
 
-if (startParameter.getProjectProperties().containsKey('all')) {
-    addBuild('../xp')
-    addBuild('../lib-admin-ui')
+if ( hasProperty( 'env' ) ) {
+    addBuild( '../xp' )
+    addBuild( '../lib-admin-ui' )
 }
 
 def addBuild( name )

@@ -1,14 +1,19 @@
 const ErrorLoggerPlugin = require('error-logger-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
+const path = require('path');
+
+const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
-    context: `${__dirname}/src/main/resources/assets`,
+    context: path.join(__dirname, '/src/main/resources/assets'),
     entry: {
         home: './js/home/main.js',
         launcher: './js/launcher/main.js'
     },
     output: {
-        path: `${__dirname}/build/resources/main/assets/`,
+        path: path.join(__dirname, '/build/resources/main/assets/'),
         filename: './js/[name]/bundle.js'
     },
     module: {
@@ -18,15 +23,11 @@ module.exports = {
                 use: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
                     use: [
-                        { loader: 'css-loader', options: { sourceMap: true, importLoaders: 1 } },
-                        { loader: 'postcss-loader', options: { sourceMap: true, config: { path: 'postcss.config.js' } } },
-                        { loader: 'less-loader', options: { sourceMap: true } }
+                        { loader: 'css-loader', options: { sourceMap: !isProd, importLoaders: 1, url: false } },
+                        { loader: 'postcss-loader', options: { sourceMap: !isProd, config: { path: 'postcss.config.js' } } },
+                        { loader: 'less-loader', options: { sourceMap: !isProd } }
                     ]
                 })
-            },
-            {
-                test: /\.(woff|woff2|eot|ttf|svg)$/,
-                loader: 'file-loader?name=../fonts/[name].[ext]'
             },
             {
                 test: /\.(png|jpg|gif)$/,
@@ -40,7 +41,18 @@ module.exports = {
             filename: './styles/[name].css',
             allChunks: true,
             disable: false
-        })
+        }),
+        ...(isProd ? [
+            new UglifyJsPlugin({
+                cache: true,
+                parallel: true,
+                uglifyOptions: {
+                    mangle: false,
+                    keep_classnames: true,
+                    keep_fnames: true
+                }
+            })
+        ] : [])
     ],
-    devtool: 'source-map'
+    devtool: isProd ? false : 'source-map'
 };
