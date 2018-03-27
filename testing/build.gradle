@@ -59,10 +59,6 @@ dependencies {
     distro "com.enonic.xp:distro:$xpVersion@zip"
 }
 
-task deleteFolders( type: Delete ) {
-    delete unpackDir, screenshotsDir, reportsDir
-}
-
 task unpackDistro( type: Copy ) {
     from {
         configurations.distro.collect { zipTree( it ) }
@@ -100,12 +96,6 @@ task startServer( dependsOn: [unpackDistro, copyConfig] ) {
     copyConfig.mustRunAfter unpackDistro
 }
 
-task stopServer {
-    doLast {
-        xpServer.stop()
-    }
-}
-
 tasks.withType( Test ) {
     jvmArgs '-Xms128m', '-Xmx1024m'
     testLogging {
@@ -120,7 +110,6 @@ task testAdminHomeApp( type: GulpTask, dependsOn: [npmInstall, startServer] ) {
     outputs.files fileTree( dir: '/test-results' )
     args = ['test']
     startServer.mustRunAfter npmInstall
-    finalizedBy stopServer
 }
 
 task testAdminHomeAppLocally( type: GulpTask, dependsOn: [npmInstall] ) {
