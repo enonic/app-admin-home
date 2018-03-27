@@ -331,7 +331,7 @@ function createStep5() {
         '</div>' +
         '    </div>' +
         '    <div class="demo-apps">' +
-       getAppsDiv() +
+        getAppsDiv() +
         '    </div>' +
         '</div>';
 
