@@ -17,6 +17,9 @@ describe('XP tour dialog - install applications', function () {
             return loginPage.doLogin();
         }).then(()=> {
             return xpTourDialog.waitForDialogPresent();
+        }).then(result=> {
+            testUtils.saveScreenshot("xp_tour_dialog_must_be_present2");
+            assert.isTrue(result, 'XP tour dialog must be present!');
         }).then(()=> {
             return xpTourDialog.clickOnNextButton();
         }).then(()=> {
@@ -40,6 +43,9 @@ describe('XP tour dialog - install applications', function () {
             return loginPage.doLogin();
         }).then(()=> {
             return xpTourDialog.waitForDialogPresent();
+        }).then(result=> {
+            testUtils.saveScreenshot("xp_tour_dialog_must_be_present3");
+            assert.isTrue(result, 'XP tour dialog must be present!');
         }).then(()=> {
             return xpTourDialog.goToFourthStep();
         }).then(()=> {

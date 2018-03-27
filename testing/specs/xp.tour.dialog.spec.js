@@ -18,6 +18,9 @@ describe('XP tour dialog specification', function () {
             return loginPage.doLogin();
         }).then(()=> {
             return xpTourDialog.waitForDialogPresent();
+        }).then(result=> {
+            testUtils.saveScreenshot("xp_tour_dialog_must_be_present1");
+            assert.isTrue(result, 'XP tour dialog must be present!');
         }).then(()=> {
             return xpTourDialog.isSkipTourButtonDisplayed();
         }).then(isVisible=> {
