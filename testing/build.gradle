@@ -22,6 +22,9 @@ plugins {
     id 'com.moowork.gulp' version '0.13'
 }
 
+group = 'com.enonic.xp.js_testing'
+version = '1.0'
+
 configurations {
     distro
 }
