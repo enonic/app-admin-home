@@ -312,27 +312,71 @@ function createStep4() {
 }
 
 function createStep5() {
-  /* eslint-disable prettier/prettier */
-  var html = '<div class="xp-tour-step step-4">' +
-             '    <div class="subtitle">' +
-             '        <div class="subtitle-part-1">' + i18n('tour.step4.subtitle1') + '</div>' +
-             '        <div class="subtitle-part-2">' + i18n('tour.step4.subtitle2') + '</div>' +
-             '    </div>' +
-             '    <div class="caption">' + i18n('tour.step4.caption') + '</div>' +
-             '    <img src="' + CONFIG.assetsUri + '/images/studio.svg">' +
-             '    <div class="text">' +
-             '        <div class="paragraph1">' + i18n('tour.step4.paragraph1part1') +
-             ' <a href="/admin/tool/com.enonic.xp.app.contentstudio/main" target="_blank">' +
-             i18n('tour.step4.paragraph1hreftext') + '</a> - ' + i18n('tour.step4.paragraph1part2') + '</div>' +
-             '        <div class="paragraph2">' + i18n('tour.step4.paragraph2part1') +
-             ' <a href="https://market.enonic.com/vendors/enonic/com.enonic.app.ga" target="_blank">' +
-             i18n('tour.step4.paragraph2hreftext') + '</a> ' + i18n('tour.step4.paragraph2part2') + '</div>' +
-             '    </div>' +
-             '</div>';
-  /* eslint-enable prettier/prettier */
+    var html =
+        '<div class="xp-tour-step step-5">' +
+        '    <div class="subtitle">' +
+        '        <div class="subtitle-part-1">' +
+        i18n('tour.step5.subtitle1') +
+        '</div>' +
+        '        <div class="subtitle-part-2">' +
+        i18n('tour.step5.subtitle2') +
+        '</div>' +
+        '    </div>' +
+        '    <div class="caption">' +
+        i18n('tour.step5.caption') +
+        '</div>' +
+        '    <div class="text">' +
+        '        <div class="paragraph1">' +
+        i18n('tour.step5.paragraph1') +
+        '</div>' +
+        '    </div>' +
+        '    <div class="demo-apps">' +
+       getAppsDiv() +
+        '    </div>' +
+        '</div>';
 
     var element = api.dom.Element.fromString(html);
     return element;
+}
+
+function getAppsDiv() {
+    return marketDemoApps.length > 0
+        ? getDemoAppsHtml()
+        : '        <div class="demo-apps-text">' +
+              i18n('tour.apps.notavailable') +
+              '</div>';
+}
+
+function getDemoAppsHtml() {
+    var html = '';
+    marketDemoApps.forEach(function(marketDemoApp) {
+        var status = api.application.MarketAppStatusFormatter.formatStatus(
+            marketDemoApp.getStatus()
+        );
+
+        html +=
+            '<div class="demo-app" id="' +
+            marketDemoApp.getName() +
+            '">' +
+            '    <a href="' +
+            marketDemoApp.getUrl() +
+            '" target="_blank">' +
+            '    <img class="demo-app-icon" src="' +
+            marketDemoApp.getIconUrl() +
+            '">' +
+            '    <div class="demo-app-title">' +
+            marketDemoApp.getDisplayName() +
+            '</div>' +
+            '    </a>' +
+            '    <div class="demo-app-status ' +
+            status.toLowerCase() +
+            '">' +
+            status +
+            '</div>' +
+            '</div>';
+    });
+
+    return html;
 }
 
 function fetchDemoAppsFromMarket() {
