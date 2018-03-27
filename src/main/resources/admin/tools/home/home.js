@@ -56,7 +56,7 @@ exports.get = function() {
         }
     ];
 
-    var tourEnabled = !(app.config.tourDisabled || false);
+    var tourEnabled = !(app.config.tourDisabled === 'true' || false);
     if (tourEnabled) {
         dashboardIcons.splice(0, 0, {
             src: busIconUrl,
