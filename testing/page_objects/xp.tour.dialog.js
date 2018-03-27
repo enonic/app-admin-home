@@ -50,7 +50,10 @@ var xpTourDialog = Object.create(page, {
     },
     clickOnNextButton: {
         value: function () {
-            return this.doClick(this.nextButton).pause(500);
+            return this.doClick(this.nextButton).pause(500).catch(err=> {
+                this.saveScreenshot('err_when_clicking_onnext_button');
+                throw new Error('Error when clicking on next button ' + err);
+            })
         }
     },
     goToFourthStep: {
@@ -74,7 +77,7 @@ var xpTourDialog = Object.create(page, {
     },
     waitForDialogPresent: {
         value: function () {
-            return this.waitForVisible(`${xpath.container}`, appConst.TIMEOUT_2).catch(err=> {
+            return this.waitForVisible(`${xpath.container}`, appConst.TIMEOUT_3).catch(err=> {
                 return false;
             })
         }
