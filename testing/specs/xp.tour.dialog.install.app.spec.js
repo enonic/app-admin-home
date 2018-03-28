@@ -53,13 +53,13 @@ describe('XP tour dialog - install applications', function () {
         }).then(()=> {
             return xpTourDialog.clickOnInstallAppsButton();
         }).then(()=> {
-            return xpTourDialog.waitForApplicationsStatus();
+            return xpTourDialog.waitForApplicationsStatus('ImageXPert');
         }).then((result)=> {
             testUtils.saveScreenshot('xp_tour_apps_installed');
-            assert.isTrue(result.length > 0, 'Status of applications should be `Installed`');
-            assert.isTrue(result[0] == 'Installed', 'Status of applications should be `Installed`');
+            assert.isTrue(result == 'Installed', 'Status of the application should be `Installed`');
         })
     });
+    beforeEach(() => testUtils.doDeleteCookie());
     afterEach(() => testUtils.doDeleteCookie());
     before(()=> {
         return console.log('specification starting: ' + this.title);

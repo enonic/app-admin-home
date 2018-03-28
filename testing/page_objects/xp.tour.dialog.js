@@ -9,7 +9,10 @@ const xpath = {
     nextButton: `//button[contains(@id,'DialogButton')]/span[text()='Next']`,
     previousButton: `//button[contains(@id,'DialogButton')]/span[text()='Previous']`,
     installAppsButton: `//button[contains(@id,'DialogButton')]/span[text()='Install Apps']`,
-    title: `//h2[@class='title']`
+    title: `//h2[@class='title']`,
+    applicationStatusByName: function (name) {
+        return `//div[@class='demo-app' and descendant::div[@class='demo-app-title' and contains(.,'${name}')]]//div[contains(@class,'demo-app-status')]`;
+    },
 };
 var xpTourDialog = Object.create(page, {
 
@@ -104,7 +107,9 @@ var xpTourDialog = Object.create(page, {
     },
     waitForInstallAppsButtonDisplayed: {
         value: function () {
-            return this.waitForVisible(this.installAppsButton, appConst.TIMEOUT_3);
+            return this.waitForVisible(this.installAppsButton, appConst.TIMEOUT_3).catch(err=> {
+                this.saveScreenshot("err_xp_tour_install_button");
+            })
         }
     },
     waitForDialogClosed: {
@@ -118,10 +123,10 @@ var xpTourDialog = Object.create(page, {
         }
     },
     waitForApplicationsStatus: {
-        value: function () {
-            let xpath = `//div[@class='demo-apps']//div[contains(@class,'demo-app-status')]`;
-            return this.waitForVisible(xpath, appConst.INSTALL_APP_TIMEOUT).then(()=> {
-                return this.getText(xpath);
+        value: function (name) {
+            let status = xpath.applicationStatusByName(name);
+            return this.waitForVisible(status, appConst.INSTALL_APP_TIMEOUT).then(()=> {
+                return this.getText(status);
             }).catch(err=> {
                 console.log('Error when getting the statuses: ' + err);
                 this.saveScreenshot('err_wait_install_app');
