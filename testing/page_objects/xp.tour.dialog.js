@@ -80,7 +80,7 @@ var xpTourDialog = Object.create(page, {
     },
     waitForDialogPresent: {
         value: function () {
-            return this.waitForVisible(`${xpath.container}`, appConst.TIMEOUT_3).catch(err=> {
+            return this.waitForVisible(`${xpath.container}`, appConst.TIMEOUT_5).catch(err=> {
                 return false;
             })
         }

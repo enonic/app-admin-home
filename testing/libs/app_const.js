@@ -4,6 +4,7 @@
 module.exports = Object.freeze({
     //waitForTimeout
     TIMEOUT_3: 3000,
+    TIMEOUT_5: 5000,
     TIMEOUT_2: 2000,
     TIMEOUT_1: 1000,
     DELETE_COOKIE_TIMEOUT: 20000,
