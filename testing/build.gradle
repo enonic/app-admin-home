@@ -1,19 +1,5 @@
 import com.enonic.uitest.server.ServerInstance
 
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-            jcenter()
-        }
-    }
-
-    dependencies {
-        classpath 'com.moowork.gradle:gradle-gulp-plugin:0.13'
-        classpath "com.moowork.gradle:gradle-node-plugin:0.13"
-    }
-}
-
 plugins {
     id 'java'
     id 'maven'
@@ -50,6 +36,7 @@ ext {
     configDir = "$xpHome${File.separator}config"
     xpServer = new ServerInstance()
 }
+
 task copyConfig( type: Copy ) {
     println testDataDir
     from testDataDir
@@ -57,6 +44,7 @@ task copyConfig( type: Copy ) {
     include '*.properties'
     into file( configDir )
 }
+
 dependencies {
     compile "com.enonic.xp:core-api:$xpVersion"
     distro "com.enonic.xp:distro:$xpVersion@zip"
@@ -120,6 +108,7 @@ task testAdminHomeAppLocally( type: GulpTask, dependsOn: [npmInstall] ) {
     outputs.files fileTree( dir: '/test-results' )
     args = ['test']
 }
+
 repositories {
     mavenLocal()
     mavenCentral()
