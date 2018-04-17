@@ -15,10 +15,6 @@ configurations {
     distro
 }
 
-apply plugin: 'com.enonic.defaults'
-apply plugin: 'com.moowork.node'
-apply plugin: 'com.moowork.gulp'
-
 enonic {
     publishRepo = 'inhouse'
 }

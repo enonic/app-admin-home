@@ -16,7 +16,7 @@ module.exports = {
         }).then(()=> {
             return webDriverHelper.browser.deleteCookie();
         }).then(()=> {
-            return console.log('cookie is being deleting...');
+            return console.log('cookie is being deleted...');
         }).pause(2000);
     },
     saveScreenshot: function (name) {
