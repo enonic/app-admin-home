@@ -17,7 +17,7 @@ exports.init = function() {
     initDialog();
     initTourSteps();
 
-    checkAdminRights().then(function() {
+    return checkAdminRights().then(function() {
         if (isSystemAdmin) {
             appendInstallAppStep();
         }
@@ -25,9 +25,9 @@ exports.init = function() {
         api.dom.Body.get().appendChild(tourDialog);
         // Hack: Make sure the correct size is set on first-time run.
         api.ui.responsive.ResponsiveManager.fireResizeEvent();
-    });
 
-    return tourDialog;
+        return tourDialog;
+    });
 };
 
 function appendInstallAppStep() {
