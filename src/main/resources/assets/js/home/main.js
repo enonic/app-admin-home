@@ -17,23 +17,23 @@ $(function () {
     var sessionExpiredDetector = require('./sessionExpiredDetector');
     sessionExpiredDetector.startPolling();
 
-    var xptour = require('./xptour');
-    var tourDialog = xptour.init();
-
     if (CONFIG.tourEnabled) {
-        var enonicXPTourCookie = api.util.CookieHelper.getCookie("enonic_xp_tour");
-        if (!enonicXPTourCookie) {
-            api.util.CookieHelper.setCookie("enonic_xp_tour", "tour", 365);
-            setTimeout(function () {
-                tourDialog.open(true);
-            }, 500);
-        }
-    }
 
-    document.querySelector(".xp-tour").addEventListener("click", function () {
-        tourDialog.open();
-        setupBodyClickListeners(tourDialog);
-    });
+        var xptour = require('./xptour');
+        xptour.init().then(function (tourDialog) {
+
+            var enonicXPTourCookie = api.util.CookieHelper.getCookie("enonic_xp_tour");
+            if (!enonicXPTourCookie) {
+                api.util.CookieHelper.setCookie("enonic_xp_tour", "tour", 365);
+                tourDialog.open();
+            }
+
+            document.querySelector(".xp-tour").addEventListener("click", function () {
+                tourDialog.open();
+                setupBodyClickListeners(tourDialog);
+            });
+        });
+    }
 
 });
 
