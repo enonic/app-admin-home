@@ -16,23 +16,24 @@ wemjq(function() {
     sessionExpiredDetector.startPolling();
 
     if (CONFIG.tourEnabled) {
-
         var xptour = require('./xptour');
-        xptour.init().then(function (tourDialog) {
-
-            var enonicXPTourCookie = api.util.CookieHelper.getCookie("enonic_xp_tour");
+        xptour.init().then(function(tourDialog) {
+            var enonicXPTourCookie = api.util.CookieHelper.getCookie(
+                'enonic_xp_tour'
+            );
             if (!enonicXPTourCookie) {
-                api.util.CookieHelper.setCookie("enonic_xp_tour", "tour", 365);
+                api.util.CookieHelper.setCookie('enonic_xp_tour', 'tour', 365);
                 tourDialog.open();
             }
 
-            document.querySelector(".xp-tour").addEventListener("click", function () {
-                tourDialog.open();
-                setupBodyClickListeners(tourDialog);
-            });
+            document
+                .querySelector('.xp-tour')
+                .addEventListener('click', function() {
+                    tourDialog.open();
+                    setupBodyClickListeners(tourDialog);
+                });
         });
     }
-
 });
 
 function setupWebSocketListener() {
