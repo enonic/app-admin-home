@@ -24,12 +24,14 @@ public final class GetAdminToolsScriptBean
         final PrincipalKeys principals = ContextAccessor.current().
             getAuthInfo().
             getPrincipals();
+        final StringTranslator stringTranslator = new StringTranslator( this.localeService );
+
         return adminToolDescriptorService.getAllowedAdminToolDescriptors( principals ).
             stream().
             filter( AdminToolDescriptor::isAppLauncherApplication ).
             map( adminToolDescriptor -> new AdminToolMapper( adminToolDescriptor,
                                                              adminToolDescriptorService.getIconByKey( adminToolDescriptor.getKey() ),
-                                                             new StringTranslator( this.localeService ) ) ).
+                                                             stringTranslator ) ).
             collect( Collectors.toList() );
     }
 
