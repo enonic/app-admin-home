@@ -13,13 +13,16 @@ import com.enonic.xp.web.servlet.ServletRequestHolder;
 
 import static java.util.stream.Collectors.toList;
 
-public final class StringTranslator
+final class StringTranslator
 {
-    private LocaleService localeService;
+    private final LocaleService localeService;
+
+    private final List<Locale> preferredLocales;
 
     public StringTranslator( final LocaleService localeService )
     {
         this.localeService = localeService;
+        this.preferredLocales = getPreferredLocales();
     }
 
     public String localize( final ApplicationKey app, final String key, final String defaultValue )
@@ -36,18 +39,21 @@ public final class StringTranslator
 
     private Locale getLocale( final ApplicationKey app )
     {
+        return localeService.getSupportedLocale( this.preferredLocales, app );
+    }
+
+    private List<Locale> getPreferredLocales()
+    {
         final HttpServletRequest req = ServletRequestHolder.getRequest();
         if ( req == null )
         {
-            return null;
+            return Collections.emptyList();
         }
 
-        final List<Locale> preferredLocales = Collections.list( req.getLocales() ).
+        return Collections.list( req.getLocales() ).
             stream().
             map( this::resolveLanguage ).
             collect( toList() );
-
-        return localeService.getSupportedLocale( preferredLocales, app );
     }
 
     private Locale resolveLanguage( final Locale locale )

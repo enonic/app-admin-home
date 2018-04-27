@@ -3,31 +3,13 @@ var mustache = require('/lib/xp/mustache');
 var portal = require('/lib/xp/portal');
 var i18n = require('/lib/xp/i18n');
 var admin = require('/lib/xp/admin');
-var cacheLib = require('/lib/cache');
-var eventLib = require('/lib/xp/event');
-
-var adminToolsCache = cacheLib.newCache({size: 100});
-
-eventLib.listener({
-    type: 'application',
-    localOnly: false,
-    callback: function (e) {
-        adminToolsCache.clear();
-    }
-});
 
 var adminToolsBean = __.newBean('com.enonic.xp.app.main.GetAdminToolsScriptBean');
 
-function getAdminTools(locales) {
-    var browserLanguagesKey = locales.join(',');
-
-    return adminToolsCache.get(browserLanguagesKey, function () {
-
-        var result = __.toNativeObject(adminToolsBean.execute());
-        return result.sort(function (tool1, tool2) {
-            return (tool1.displayName > tool2.displayName) ? 1 : -1;
-        });
-
+function getAdminTools() {
+    var result = __.toNativeObject(adminToolsBean.execute());
+    return result.sort(function(tool1, tool2) {
+        return (tool1.displayName > tool2.displayName) ? 1 : -1;
     });
 }
 
@@ -42,7 +24,7 @@ function localise(key, locales) {
 exports.get = function () {
     var locales = admin.getLocales();
 
-    var adminTools = getAdminTools(locales);
+    var adminTools = getAdminTools();
     for (var i = 0; i < adminTools.length; i++) {
         adminTools[i].appId = adminTools[i].key.application;
         adminTools[i].uri = admin.getToolUrl(adminTools[i].key.application, adminTools[i].key.name);
