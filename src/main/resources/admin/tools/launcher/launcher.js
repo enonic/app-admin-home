@@ -10,7 +10,7 @@ var adminToolsBean = __.newBean(
 
 function getAdminTools() {
     var result = __.toNativeObject(adminToolsBean.execute());
-    return result.sort(function (tool1, tool2) {
+    return result.sort(function(tool1, tool2) {
         return tool1.displayName > tool2.displayName ? 1 : -1;
     });
 }
