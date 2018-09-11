@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'maven'
-    id 'com.enonic.defaults' version '1.0.3'
+    id 'maven-publish'
+    id 'com.enonic.defaults' version '1.1.0'
     id 'com.enonic.xp.app' version '1.1.0'
     id 'com.moowork.node' version '1.2.0'
 }
@@ -23,7 +23,6 @@ dependencies {
     include "com.enonic.xp:lib-portal:${xpVersion}"
     include "com.enonic.xp:lib-auth:${xpVersion}"
     include "com.enonic.xp:lib-i18n:${xpVersion}"
-    include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
 }
 
 node {
@@ -72,30 +71,6 @@ jar {
 }
 
 jar.outputs.dir "${buildDir}/resources/main"
-
-if ( hasProperty( 'env' ) )
-{
-    addBuildDependency()
-    applyExcludedTasks()
-}
-
-def applyExcludedTasks() {
-    def libAdminUi = gradle.includedBuild( 'lib-admin-ui' )
-    Closure permittedTasks = { it == 'lint' || it == 'test' }
-    def excludedTasks = gradle.startParameter.getExcludedTaskNames().findAll( permittedTasks )
-    libAdminUi.getLoadedSettings().getStartParameter().setExcludedTaskNames( excludedTasks )
-}
-
-def addBuildDependency() {
-    def buildTask = gradle.includedBuild( 'lib-admin-ui' ).task( ':build' )
-    def unpackDevResources = tasks.findByPath( ":unpackDevResources" )
-
-    build.dependsOn += buildTask
-    clean.dependsOn += gradle.includedBuild( 'lib-admin-ui' ).task( ':clean' )
-    flush.dependsOn += gradle.includedBuild( 'lib-admin-ui' ).task( ':flush' )
-    webpack.dependsOn += unpackDevResources
-    unpackDevResources.dependsOn += buildTask
-}
 
 def nodeEnvironment() {
     def environments = [ prod : 'production', dev: 'development' ]
