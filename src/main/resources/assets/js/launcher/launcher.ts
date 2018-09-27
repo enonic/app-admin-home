@@ -1,26 +1,26 @@
 import ApplicationEventType = api.application.ApplicationEventType;
 import 'webcomponentsjs/lite';
 
-var launcherUrl = (CONFIG && CONFIG.launcherUrl) || null;
-var autoOpenLauncher = CONFIG && CONFIG.autoOpenLauncher;
-var appId = CONFIG ? CONFIG.appId : '';
+const launcherUrl = (CONFIG && CONFIG.launcherUrl) || null;
+const autoOpenLauncher = CONFIG && CONFIG.autoOpenLauncher;
+const appId = CONFIG ? CONFIG.appId : '';
 
-var launcherPanel;
-var launcherButton;
-var launcherMainContainer;
+let launcherPanel;
+let launcherButton;
+let launcherMainContainer;
 
 function appendLauncherButton() {
     launcherButton = document.createElement('button');
     launcherButton.setAttribute('class', 'launcher-button ' + getColorClass());
     launcherButton.hidden = true;
 
-    var span = document.createElement('span');
+    const span = document.createElement('span');
     span.setAttribute('class', 'lines');
     launcherButton.appendChild(span);
 
     launcherButton.addEventListener('click', togglePanelState);
 
-    var container = document.querySelector('.appbar') || document.body;
+    const container = document.querySelector('.appbar') || document.body;
     container.appendChild(launcherButton);
 
     setTimeout(() => {
@@ -29,7 +29,7 @@ function appendLauncherButton() {
 }
 
 function getColorClass() {
-    var darkBackground =
+    const darkBackground =
         document.querySelector('.appbar') ||
         document.querySelector('.home-main-container');
     return darkBackground ? '' : 'dark';
@@ -53,7 +53,7 @@ function toggleButton() {
 }
 
 function appendLauncherPanel() {
-    var div = document.createElement('div');
+    const div = document.createElement('div');
     div.setAttribute('class', 'launcher-panel');
     div.classList.add('hidden');
     div.appendChild(createLauncherLink(div));
@@ -67,7 +67,7 @@ function onLauncherClick(e) {
     if (!launcherPanel || !launcherMainContainer) {
         return;
     }
-    var isClickOutside =
+    const isClickOutside =
         !launcherPanel.contains(e.target) && !launcherButton.contains(e.target);
     if (
         isClickOutside &&
@@ -92,8 +92,8 @@ function isModalDialogActiveOnHomePage(element) {
 }
 
 function loadLauncher(onload) {
-    var link = document.createElement('link');
-    var url = launcherUrl + '?t=' + Date.now();
+    const link = document.createElement('link');
+    const url = launcherUrl + '?t=' + Date.now();
 
     link.setAttribute('rel', 'import');
     link.setAttribute('href', url);
@@ -105,7 +105,7 @@ function loadLauncher(onload) {
 }
 
 function createLauncherLink(container) {
-    var link;
+    let link;
 
     function onload() {
         launcherButton.hidden = false;
@@ -123,10 +123,10 @@ function createLauncherLink(container) {
             openLauncherPanel();
             launcherButton.focus();
         } else {
-            var appTiles = container
+            const appTiles = container
                 .querySelector('.launcher-app-container')
                 .querySelectorAll('a');
-            for (var i = 0; i < appTiles.length; i++) {
+            for (let i = 0; i < appTiles.length; i++) {
                 appTiles[i].addEventListener(
                     'click',
                     closeLauncherPanel.bind(this, true)
@@ -142,7 +142,7 @@ function createLauncherLink(container) {
 }
 
 function openWindow(windowArr, anchorEl) {
-    var windowId = anchorEl.getAttribute('data-id');
+    const windowId = anchorEl.getAttribute('data-id');
 
     if (windowArr[windowId] && !windowArr[windowId].closed) {
         windowArr[windowId].focus();
@@ -153,15 +153,15 @@ function openWindow(windowArr, anchorEl) {
 }
 
 function addLongClickHandler(container) {
-    var longpress = false;
-    var startTime;
-    var endTime;
-    var toolWindows = [];
+    let longpress = false;
+    let startTime;
+    let endTime;
+    let toolWindows = [];
 
-    var appTiles = container
+    const appTiles = container
         .querySelector('.launcher-app-container')
         .querySelectorAll('a');
-    for (var i = 0; i < appTiles.length; i++) {
+    for (let i = 0; i < appTiles.length; i++) {
         // eslint-disable-next-line no-loop-func
         appTiles[i].addEventListener('click', e => {
             if (
@@ -214,7 +214,7 @@ function closeLauncherPanel(skipTransition?: boolean) {
     unselectCurrentApp();
 }
 
-var closeLauncher = new api.ui.KeyBinding('esc')
+const closeLauncher = new api.ui.KeyBinding('esc')
     .setGlobal(true)
     .setCallback(e => {
         if (!isPanelExpanded()) {
@@ -227,7 +227,7 @@ var closeLauncher = new api.ui.KeyBinding('esc')
 
         return false;
     });
-var prevApp = new api.ui.KeyBinding('up')
+const prevApp = new api.ui.KeyBinding('up')
     .setGlobal(true)
     .setCallback(() => {
         if (isPanelExpanded()) {
@@ -237,7 +237,7 @@ var prevApp = new api.ui.KeyBinding('up')
         }
         return false;
     });
-var nextApp = new api.ui.KeyBinding('down')
+const nextApp = new api.ui.KeyBinding('down')
     .setGlobal(true)
     .setCallback(e => {
         if (isPanelExpanded()) {
@@ -257,14 +257,14 @@ var runApp = new api.ui.KeyBinding('enter')
             e.preventDefault();
             e.returnValue = false;
 
-            var selectedApp = getSelectedApp();
+            const selectedApp = getSelectedApp();
             if (selectedApp) {
                 startApp(selectedApp);
             }
         }
         return false;
     });
-var launcherBindings = [closeLauncher, prevApp, nextApp, runApp];
+const launcherBindings = [closeLauncher, prevApp, nextApp, runApp];
 
 function listenToKeyboardEvents() {
     api.ui.KeyBindings.get().bindKeys(launcherBindings);
@@ -275,7 +275,7 @@ function unlistenToKeyboardEvents() {
 }
 
 function unselectCurrentApp() {
-    var selectedApp = getSelectedApp();
+    const selectedApp = getSelectedApp();
     if (selectedApp) {
         selectedApp.classList.remove('selected');
     }
@@ -285,8 +285,8 @@ function highlightActiveApp() {
     if (!appId) {
         return;
     }
-    var appRows = launcherPanel.querySelectorAll('.app-row');
-    for (var i = 0; i < appRows.length; i++) {
+    const appRows = launcherPanel.querySelectorAll('.app-row');
+    for (let i = 0; i < appRows.length; i++) {
         if (appRows[i].id === appId) {
             appRows[i].classList.add('active');
         }
@@ -295,9 +295,9 @@ function highlightActiveApp() {
 
 function addApplicationsListeners() {
     if (!initApplicationsListeners()) {
-        var triesLeft = 3;
-        var intervalID = setInterval(() => {
-            var initialized = initApplicationsListeners();
+        let triesLeft = 3;
+        const intervalID = setInterval(() => {
+            const initialized = initApplicationsListeners();
             if (!initialized && triesLeft > 0) {
                 triesLeft -= 1;
             } else {
@@ -307,18 +307,18 @@ function addApplicationsListeners() {
     }
 }
 
-var reloadLauncher = api.util.AppHelper.debounce(
+const reloadLauncher = api.util.AppHelper.debounce(
     () => {
-        var link;
+        let link;
 
         function onload() {
-            var oldLauncherContent = launcherPanel.querySelector(
+            const oldLauncherContent = launcherPanel.querySelector(
                 '.scrollable-content'
             );
-            var newLauncherContent = link.import.querySelector(
+            const newLauncherContent = link.import.querySelector(
                 '.scrollable-content'
             );
-            var parent = oldLauncherContent.parentNode;
+            const parent = oldLauncherContent.parentNode;
             parent.replaceChild(newLauncherContent, oldLauncherContent);
             link.remove();
             highlightActiveApp();
@@ -335,7 +335,7 @@ var reloadLauncher = api.util.AppHelper.debounce(
 function initApplicationsListeners() {
     if (api.application.ApplicationEvent) {
         api.application.ApplicationEvent.on(e => {
-            var statusChanged =
+            const statusChanged =
                 ApplicationEventType.STARTED === e.getEventType() ||
                 ApplicationEventType.STOPPED === e.getEventType();
             if (statusChanged) {
@@ -358,7 +358,7 @@ function disableKeyboardNavigation() {
 }
 
 function initKeyboardNavigation() {
-    var appContainer = getLauncherMainContainer();
+    const appContainer = getLauncherMainContainer();
     if (!appContainer.classList.contains('keyboard-navigation')) {
         listenToMouseMove();
         appContainer.classList.add('keyboard-navigation');
@@ -370,8 +370,8 @@ function getSelectedApp() {
 }
 
 function getSelectedAppIndex() {
-    var apps = getLauncherMainContainer().querySelectorAll('.app-row');
-    for (var i = 0; i < apps.length; i++) {
+    const apps = getLauncherMainContainer().querySelectorAll('.app-row');
+    for (let i = 0; i < apps.length; i++) {
         if (apps[i].classList.contains('selected')) {
             return i;
         }
@@ -380,9 +380,9 @@ function getSelectedAppIndex() {
 }
 
 function selectNextApp() {
-    var firstAppIndex = isHomeAppActive() ? 1 : 0;
-    var selectedIndex = getSelectedAppIndex();
-    var apps = getLauncherMainContainer().querySelectorAll('.app-row');
+    const firstAppIndex = isHomeAppActive() ? 1 : 0;
+    const selectedIndex = getSelectedAppIndex();
+    const apps = getLauncherMainContainer().querySelectorAll('.app-row');
 
     selectApp(
         selectedIndex + 1 === apps.length || selectedIndex === -1
@@ -392,8 +392,8 @@ function selectNextApp() {
 }
 
 function selectPreviousApp() {
-    var selectedIndex = getSelectedAppIndex();
-    var nextIndex;
+    const selectedIndex = getSelectedAppIndex();
+    let nextIndex;
     if (selectedIndex === -1) {
         nextIndex = isHomeAppActive() ? 1 : 0;
     } else if (
@@ -414,8 +414,8 @@ function selectApp(index) {
 }
 
 function getAppByIndex(index) {
-    var apps = getLauncherMainContainer().querySelectorAll('.app-row');
-    for (var i = 0; i < apps.length; i++) {
+    const apps = getLauncherMainContainer().querySelectorAll('.app-row');
+    for (let i = 0; i < apps.length; i++) {
         if (i === index) {
             return apps[i];
         }
@@ -424,7 +424,7 @@ function getAppByIndex(index) {
 }
 
 function startApp(app) {
-    var anchorEl = app.parentElement;
+    const anchorEl = app.parentElement;
     if (anchorEl && anchorEl.tagName === 'A' && anchorEl.click) {
         unselectCurrentApp();
         anchorEl.click();

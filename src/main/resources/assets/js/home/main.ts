@@ -10,7 +10,7 @@ setupAboutDialog();
 startPolling();
 
 if (CONFIG.tourEnabled) {
-    init().then(function (tourDialog) {
+    init().then(function (tourDialog: api.ui.dialog.ModalDialog) {
         const enonicXPTourCookie = api.util.CookieHelper.getCookie(
             'enonic_xp_tour'
         );

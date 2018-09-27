@@ -467,7 +467,7 @@ function loadApp(marketDemoApp) {
     const demoAppContainer = document.getElementById(marketDemoApp.getName());
 
     const progressBar = new api.ui.ProgressBar(0);
-    const progressHandler = function (event) {
+    const progressHandler = function (event: api.application.ApplicationEvent) {
         if (
             event.getApplicationUrl() === url &&
             event.getEventType() ===
