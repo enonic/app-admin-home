@@ -23,7 +23,6 @@ module.exports = {
                 use: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
                     use: [
-                        { loader: 'css-loader', options: { sourceMap: !isProd, importLoaders: 1, url: false } },
                         { loader: 'postcss-loader', options: { sourceMap: !isProd, config: { path: 'postcss.config.js' } } },
                         { loader: 'less-loader', options: { sourceMap: !isProd } }
                     ]
