@@ -1,51 +1,42 @@
-require('../../styles/home.less');
+import {startPolling} from './sessionExpiredDetector';
+import {init} from './xptour';
 
-window.wemjq = require('jquery').noConflict(true);
-window.wemQ = require('q');
-window.Mousetrap = require('mousetrap');
-require('mousetrap/plugins/global-bind/mousetrap-global-bind');
+api.util.i18nInit(CONFIG.messages);
 
-wemjq(function() {
-    api.util.i18nInit(CONFIG.messages);
+setupWebSocketListener();
 
-    setupWebSocketListener();
+setupAboutDialog();
 
-    setupAboutDialog();
+startPolling();
 
-    var sessionExpiredDetector = require('./sessionExpiredDetector');
-    sessionExpiredDetector.startPolling();
+if (CONFIG.tourEnabled) {
+    init().then(function (tourDialog) {
+        const enonicXPTourCookie = api.util.CookieHelper.getCookie(
+            'enonic_xp_tour'
+        );
+        if (!enonicXPTourCookie) {
+            api.util.CookieHelper.setCookie('enonic_xp_tour', 'tour', 365);
+            tourDialog.open();
+        }
 
-    if (CONFIG.tourEnabled) {
-        var xptour = require('./xptour');
-        xptour.init().then(function(tourDialog) {
-            var enonicXPTourCookie = api.util.CookieHelper.getCookie(
-                'enonic_xp_tour'
-            );
-            if (!enonicXPTourCookie) {
-                api.util.CookieHelper.setCookie('enonic_xp_tour', 'tour', 365);
+        document.querySelector('.xp-tour')
+            .addEventListener('click', () => {
                 tourDialog.open();
-            }
-
-            document
-                .querySelector('.xp-tour')
-                .addEventListener('click', function() {
-                    tourDialog.open();
-                    setupBodyClickListeners(tourDialog);
-                });
-        });
-    }
-});
+                setupBodyClickListeners(tourDialog);
+            });
+    });
+}
 
 function setupWebSocketListener() {
-    var dummyApp = new api.app.Application('home', 'home', 'home', '');
+    const dummyApp = new api.app.Application('home', 'home', 'home', '');
     dummyApp.setWindow(window);
 
-    var serverEventsListener = new api.app.ServerEventsListener([dummyApp]);
+    const serverEventsListener = new api.app.ServerEventsListener([dummyApp]);
     serverEventsListener.start();
 }
 
 function setupBodyClickListeners(dialog) {
-    var bodyEl = api.ui.mask.BodyMask.get().getHTMLElement();
+    const bodyEl = api.ui.mask.BodyMask.get().getHTMLElement();
     function listener(e) {
         e.stopPropagation();
         e.preventDefault();
@@ -58,10 +49,10 @@ function setupBodyClickListeners(dialog) {
 }
 
 function setupAboutDialog() {
-    var aboutDialog = new api.ui.dialog.ModalDialog({ skipTabbable: true });
+    const aboutDialog = new api.ui.dialog.ModalDialog({skipTabbable: true});
     aboutDialog.addClass('xp-about-dialog');
     aboutDialog.appendChildToContentPanel(getAboutDialogContent());
-    document.querySelector('.xp-about').addEventListener('click', function() {
+    document.querySelector('.xp-about').addEventListener('click', () => {
         api.dom.Body.get().appendChild(aboutDialog);
         aboutDialog.open();
         setupBodyClickListeners(aboutDialog);
@@ -69,9 +60,9 @@ function setupAboutDialog() {
 }
 
 function getAboutDialogContent() {
-    var i18n = api.util.i18n;
+    const i18n = api.util.i18n;
 
-    var html =
+    const html =
         '<div class="xp-about-dialog-content">' +
         '    <div class="xp-about-dialog-app-icon">' +
         '        <img src="' +
@@ -108,6 +99,6 @@ function getAboutDialogContent() {
         '    </div>' +
         '</div>';
 
-    var element = api.dom.Element.fromString(html);
+    const element = api.dom.Element.fromString(html);
     return element;
 }

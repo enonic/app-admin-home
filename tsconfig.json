@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "sourceMap": true
+  },
+  "files": [
+    "./src/main/resources/assets/js/home/main.ts",
+    "./src/main/resources/assets/js/launcher/main.ts"
+  ],
+  "include": [
+    "src/**/*",
+    "../lib-admin-ui/src/main/resources/assets/admin/common/js/_module.ts"
+  ],
+  "exclude": [
+    "build/**/*",
+    "out/**/*",
+    "node_modules/*"
+  ]
+}

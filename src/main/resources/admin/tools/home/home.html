@@ -32,7 +32,10 @@
     <!-- Styles -->
     <link rel="stylesheet" type="text/css" href="{{assetsUri}}/styles/home.css">
 
-    <script type="text/javascript" src="{{assetsUri}}/js/home/bundle.js"></script>
+    <script type="text/javascript" src="{{assetsUri}}/admin/common/lib/_all.js" defer></script>
+    <script type="text/javascript" src="{{assetsUri}}/admin/common/js/_all.js" defer></script>
+    <script type="text/javascript" src="{{assetsUri}}/js/home/bundle.js" defer></script>
+    <script type="text/javascript" src="{{launcherPath}}" defer></script>
 </head>
 <body style="background-color: #53585F;">
 
@@ -76,15 +79,13 @@
     </div>
 
 </div>
-<script type="text/javascript" src="{{assetsUri}}/admin/common/js/_all.js"></script>
+
+
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("background-image").classList.remove("empty");
     });
 </script>
-
-<!-- Append the launcher -->
-<script type="text/javascript" src="{{launcherPath}}" async></script>
 
 </body>
 </html>

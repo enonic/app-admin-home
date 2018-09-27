@@ -1,5 +1,6 @@
 const ErrorLoggerPlugin = require('error-logger-webpack-plugin');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CircularDependencyPlugin = require('circular-dependency-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const path = require('path');
@@ -9,22 +10,32 @@ const isProd = process.env.NODE_ENV === 'production';
 module.exports = {
     context: path.join(__dirname, '/src/main/resources/assets'),
     entry: {
-        home: './js/home/main.js',
-        launcher: './js/launcher/main.js'
+        'js/home/bundle': './js/home/main.ts',
+        'js/launcher/bundle': './js/launcher/main.ts',
+        'styles/home': './styles/home.less',
+        'styles/launcher': './styles/launcher.less',
     },
     output: {
-        path: path.join(__dirname, '/build/resources/main/assets/'),
-        filename: './js/[name]/bundle.js'
+        path: path.join(__dirname, '/build/resources/main/assets'),
+        filename: './[name].js'
+    },
+    resolve: {
+        extensions: ['.ts', '.js', '.less', '.css']
     },
     module: {
         rules: [
             {
+                test: /\.tsx?$/,
+                use: [{loader: 'ts-loader', options: {configFile: 'tsconfig.build.json'}}]
+            },
+            {
                 test: /\.less$/,
                 use: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
+                    publicPath: '../../',
                     use: [
-                        { loader: 'postcss-loader', options: { sourceMap: !isProd, config: { path: 'postcss.config.js' } } },
-                        { loader: 'less-loader', options: { sourceMap: !isProd } }
+                        {loader: 'postcss-loader', options: {sourceMap: !isProd}},
+                        {loader: 'less-loader', options: {sourceMap: !isProd}}
                     ]
                 })
             },
@@ -37,9 +48,13 @@ module.exports = {
     plugins: [
         new ErrorLoggerPlugin(),
         new ExtractTextPlugin({
-            filename: './styles/[name].css',
+            filename: '[name].css',
             allChunks: true,
             disable: false
+        }),
+        new CircularDependencyPlugin({
+            exclude: /a\.js|node_modules/,
+            failOnError: true
         }),
         ...(isProd ? [
             new UglifyJsPlugin({

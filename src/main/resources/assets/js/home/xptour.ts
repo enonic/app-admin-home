@@ -1,23 +1,25 @@
-var tourDialog;
-var tourSteps = [];
-var demoAppsInstalled = false;
-var demoAppsLoadMask;
-var canInstallDemoApps = false;
-var isInstallingDemoAppsNow = false;
-var demoAppsNames = [
+import i18n = api.util.i18n;
+
+let tourDialog;
+let demoAppsLoadMask;
+let isInstallingDemoAppsNow = false;
+let canInstallDemoApps = false;
+let marketDemoApps = [];
+let tourSteps: api.dom.Element[] = [];
+let demoAppsInstalled = false;
+let isSystemAdmin = false;
+
+const demoAppsNames = [
     'com.enonic.app.corporate.theme',
     'com.enonic.app.wireframe',
     'com.enonic.app.imagexpert'
 ];
-var marketDemoApps = [];
-var isSystemAdmin = false;
-var i18n = api.util.i18n;
 
-exports.init = function() {
+export function init() {
     initDialog();
     initTourSteps();
 
-    return checkAdminRights().then(function() {
+    return checkAdminRights().then(() => {
         if (isSystemAdmin) {
             appendInstallAppStep();
         }
@@ -28,7 +30,7 @@ exports.init = function() {
 
         return tourDialog;
     });
-};
+}
 
 function appendInstallAppStep() {
     tourSteps.push(createStep5());
@@ -58,14 +60,14 @@ function initDialog() {
 }
 
 function initNavigation() {
-    var previousStepAction = new api.ui.Action(i18n('tour.action.skip'));
-    var previousStepActionButton = tourDialog.addAction(previousStepAction);
+    const previousStepAction = new api.ui.Action(i18n('tour.action.skip'));
+    const previousStepActionButton = tourDialog.addAction(previousStepAction);
 
-    var nextStepAction = new api.ui.Action(i18n('action.next'));
-    var nextStepActionButton = tourDialog.addAction(nextStepAction);
+    const nextStepAction = new api.ui.Action(i18n('action.next'));
+    const nextStepActionButton = tourDialog.addAction(nextStepAction);
 
-    var currentStep = 1;
-    previousStepAction.onExecuted(function() {
+    let currentStep = 1;
+    previousStepAction.onExecuted(() => {
         if (currentStep === 1) {
             tourDialog.close();
         } else {
@@ -84,7 +86,7 @@ function initNavigation() {
         }
     });
 
-    nextStepAction.onExecuted(function() {
+    nextStepAction.onExecuted(() => {
         if (currentStep === tourSteps.length) {
             if (canInstallDemoApps) {
                 // if install is hit
@@ -92,7 +94,7 @@ function initNavigation() {
                 nextStepActionButton.setEnabled(false);
                 isInstallingDemoAppsNow = true;
 
-                wemQ.all(loadDemoApps()).spread(function() {
+                wemQ.all(loadDemoApps()).spread(() => {
                     if (currentStep === tourSteps.length) {
                         // if still on install apps page of xp tour
                         nextStepActionButton.setLabel(
@@ -121,7 +123,7 @@ function initNavigation() {
 
             if (currentStep === tourSteps.length) {
                 if (tourSteps.length === 4 && !demoAppsInstalled) {
-                    var demoAppsContainer = api.dom.Element.fromHtmlElement(
+                    let demoAppsContainer = api.dom.Element.fromHtmlElement(
                         document.querySelector('.demo-apps')
                     );
 
@@ -129,7 +131,7 @@ function initNavigation() {
                         demoAppsLoadMask = new api.ui.mask.LoadMask(
                             demoAppsContainer
                         );
-                        tourDialog.onHidden(function() {
+                        tourDialog.onHidden(() => {
                             demoAppsLoadMask.hide();
                         });
                     }
@@ -177,7 +179,7 @@ function initNavigation() {
                             api.DefaultErrorHandler.handle(err);
                             // Set text in demo-apps div that failed loading
                         })
-                        .finally(function() {
+                        .finally(() => {
                             demoAppsContainer.toggleClass(
                                 'failed',
                                 marketDemoApps.length === 0
@@ -205,7 +207,7 @@ function initTourSteps() {
 }
 
 function createStep2() {
-    var html =
+    const html =
         '<div class="xp-tour-step step-2">' +
         '    <div class="subtitle">' +
         '        <div class="subtitle-part-1">' +
@@ -230,12 +232,12 @@ function createStep2() {
         '</div>' +
         '    </div>' +
         '</div>';
-    var element = api.dom.Element.fromString(html);
+    const element = api.dom.Element.fromString(html);
     return element;
 }
 
 function createStep3() {
-    var html =
+    const html =
         '<div class="xp-tour-step step-3">' +
         '    <div class="subtitle">' +
         '        <div class="subtitle-part-1">' +
@@ -269,12 +271,12 @@ function createStep3() {
         '</a>.</div>' +
         '    </div>' +
         '</div>';
-    var element = api.dom.Element.fromString(html);
+    const element = api.dom.Element.fromString(html);
     return element;
 }
 
 function createStep4() {
-    var html =
+    const html =
         '<div class="xp-tour-step step-4">' +
         '    <div class="subtitle">' +
         '        <div class="subtitle-part-1">' +
@@ -307,12 +309,12 @@ function createStep4() {
         '</div>' +
         '    </div>' +
         '</div>';
-    var element = api.dom.Element.fromString(html);
+    const element = api.dom.Element.fromString(html);
     return element;
 }
 
 function createStep5() {
-    var html =
+    const html =
         '<div class="xp-tour-step step-5">' +
         '    <div class="subtitle">' +
         '        <div class="subtitle-part-1">' +
@@ -335,7 +337,7 @@ function createStep5() {
         '    </div>' +
         '</div>';
 
-    var element = api.dom.Element.fromString(html);
+    const element = api.dom.Element.fromString(html);
     return element;
 }
 
@@ -348,9 +350,9 @@ function getAppsDiv() {
 }
 
 function getDemoAppsHtml() {
-    var html = '';
+    let html = '';
     marketDemoApps.forEach(function(marketDemoApp) {
-        var status = api.application.MarketAppStatusFormatter.formatStatus(
+        const status = api.application.MarketAppStatusFormatter.formatStatus(
             marketDemoApp.getStatus()
         );
 
@@ -380,24 +382,22 @@ function getDemoAppsHtml() {
 }
 
 function fetchDemoAppsFromMarket() {
-    var appPromises = [];
-
-    appPromises.push(
+    const appPromises = [
         new api.application.ListApplicationsRequest().sendAndParse(),
         new api.application.ListMarketApplicationsRequest()
             .setStart(0)
-            .setCount(40)
+            .setCount(demoAppsNames.length)
             .setVersion(CONFIG.xpVersion.replace('-SNAPSHOT', ''))
             .setIds(demoAppsNames)
             .sendAndParse()
-    );
+    ];
 
     return wemQ
         .all(appPromises)
         .spread(function(installedApplications, marketApplications) {
-            var apps = marketApplications.getApplications();
+            const apps = marketApplications.getApplications();
             apps.forEach(function(marketDemoApp) {
-                for (var i = 0; i < installedApplications.length; i++) {
+                for (let i = 0; i < installedApplications.length; i++) {
                     if (
                         marketDemoApp
                             .getAppKey()
@@ -406,7 +406,7 @@ function fetchDemoAppsFromMarket() {
                             )
                     ) {
                         if (
-                            api.application.MarketApplicationsFetcher.installedAppCanBeUpdated(
+                            api.application.MarketHelper.installedAppCanBeUpdated(
                                 marketDemoApp,
                                 installedApplications[i]
                             )
@@ -434,7 +434,7 @@ function fetchDemoAppsFromMarket() {
 function loadDemoApps() {
     enableApplicationServerEventsListener();
 
-    var loadingAppsPromises = [];
+    const loadingAppsPromises = [];
 
     marketDemoApps.forEach(function(marketDemoApp) {
         if (
@@ -450,7 +450,7 @@ function loadDemoApps() {
 
 // Required to update progress bar
 function enableApplicationServerEventsListener() {
-    var application = new api.app.Application(
+    const application = new api.app.Application(
         'applications',
         'Applications',
         'AM',
@@ -458,16 +458,16 @@ function enableApplicationServerEventsListener() {
     );
     application.setPath(api.rest.Path.fromString('/'));
     application.setWindow(window);
-    var serverEventsListener = new api.app.ServerEventsListener([application]);
+    const serverEventsListener = new api.app.ServerEventsListener([application]);
     serverEventsListener.start();
 }
 
 function loadApp(marketDemoApp) {
-    var url = marketDemoApp.getLatestVersionDownloadUrl();
-    var demoAppContainer = document.getElementById(marketDemoApp.getName());
+    const url = marketDemoApp.getLatestVersionDownloadUrl();
+    const demoAppContainer = document.getElementById(marketDemoApp.getName());
 
-    var progressBar = new api.ui.ProgressBar(0);
-    var progressHandler = function(event) {
+    const progressBar = new api.ui.ProgressBar(0);
+    const progressHandler = function (event) {
         if (
             event.getApplicationUrl() === url &&
             event.getEventType() ===
@@ -486,7 +486,7 @@ function loadApp(marketDemoApp) {
             api.application.ApplicationEvent.un(progressHandler);
             progressBar.remove();
 
-            var statusContainer = tourSteps[tourSteps.length - 1]
+            const statusContainer = tourSteps[tourSteps.length - 1]
                 .findChildById(marketDemoApp.getName(), true)
                 .getHTMLElement()
                 .querySelector('.demo-app-status');
@@ -506,7 +506,7 @@ function loadApp(marketDemoApp) {
 }
 
 function updateHeaderStep(step) {
-    var totalSteps = isSystemAdmin ? '4' : '3';
+    const totalSteps = isSystemAdmin ? '4' : '3';
     tourDialog.setTitle(i18n('tour.title.stepXofY', step, totalSteps));
 }
 

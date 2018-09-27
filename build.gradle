@@ -61,12 +61,23 @@ task cleanNode( type: Delete ) {
 }
 
 jar {
-    exclude 'assets/**/*.less'
-    // exclude js sources
-    def mainDir = file('build/resources/main')
-    fileTree("$mainDir/assets/js") {
-        exclude '**/bundle.js'
-    }.each { f -> exclude mainDir.toURI().relativize( file( f.path ).toURI() ).toString() }
+    exclude 'assets/styles/**/*.less'
+    exclude 'assets/styles/**/*.js'
+    exclude '**/*.d.ts'
+
+    def whitelist = [
+        /.*bundle\.js$/,
+    ] as List
+
+    if (isProd()) {
+        exclude '**/*.map'
+    } else {
+        whitelist.add( /.*\.map$/ )
+    }
+
+    exclude {
+        FileTreeElement el -> !el.directory && el.relativePath.contains('assets/js') && (!whitelist.any { re -> el.relativePath.toString().matches( re ) })
+    }
 
     dependsOn += webpack
 }
@@ -101,4 +112,8 @@ def nodeEnvironment() {
     def environments = [ prod : 'production', dev: 'development' ]
     def nodeEnv = environments[hasProperty( 'env' ) ? env : 'prod']
     return nodeEnv != null ? nodeEnv : 'production'
+}
+
+def isProd() {
+    return hasProperty( 'env' ) ? (env == 'prod') : true
 }

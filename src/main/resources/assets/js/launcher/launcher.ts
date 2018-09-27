@@ -1,8 +1,9 @@
-require('webcomponentsjs/lite');
+import ApplicationEventType = api.application.ApplicationEventType;
+import 'webcomponentsjs/lite';
 
-var launcherUrl = (window.CONFIG && window.CONFIG.launcherUrl) || null;
-var autoOpenLauncher = window.CONFIG && window.CONFIG.autoOpenLauncher;
-var appId = window.CONFIG ? window.CONFIG.appId : '';
+var launcherUrl = (CONFIG && CONFIG.launcherUrl) || null;
+var autoOpenLauncher = CONFIG && CONFIG.autoOpenLauncher;
+var appId = CONFIG ? CONFIG.appId : '';
 
 var launcherPanel;
 var launcherButton;
@@ -22,7 +23,7 @@ function appendLauncherButton() {
     var container = document.querySelector('.appbar') || document.body;
     container.appendChild(launcherButton);
 
-    setTimeout(function() {
+    setTimeout(() => {
         launcherButton.focus();
     }, 1200);
 }
@@ -79,18 +80,12 @@ function onLauncherClick(e) {
 }
 
 function isDashboardIcon(element) {
-    if (!window.wemjq) {
-        return false;
-    }
     return wemjq(element).closest('.dashboard-item').length > 0;
 }
 
 function isModalDialogActiveOnHomePage(element) {
-    if (!window.wemjq) {
-        return false;
-    }
     return (
-        window.CONFIG.appId === 'home' &&
+        CONFIG.appId === 'home' &&
         (document.body.classList.contains('modal-dialog') ||
             wemjq(element).closest('.xp-admin-common-modal-dialog').length > 0)
     );
@@ -118,7 +113,7 @@ function createLauncherLink(container) {
             '.launcher-main-container'
         );
         launcherMainContainer.setAttribute('hidden', 'true');
-        if (window.CONFIG.appId === 'home') {
+        if (CONFIG.appId === 'home') {
             launcherMainContainer.classList.add('home');
         }
         container.appendChild(launcherMainContainer);
@@ -168,11 +163,11 @@ function addLongClickHandler(container) {
         .querySelectorAll('a');
     for (var i = 0; i < appTiles.length; i++) {
         // eslint-disable-next-line no-loop-func
-        appTiles[i].addEventListener('click', function(e) {
+        appTiles[i].addEventListener('click', e => {
             if (
-                window.CONFIG.appId ===
-                    e.currentTarget.getAttribute('data-id') &&
-                window.CONFIG.appId === 'home'
+                CONFIG.appId ===
+                e.currentTarget.getAttribute('data-id') &&
+                CONFIG.appId === 'home'
             ) {
                 e.preventDefault();
                 return;
@@ -187,11 +182,11 @@ function addLongClickHandler(container) {
             }
         });
         // eslint-disable-next-line no-loop-func
-        appTiles[i].addEventListener('mousedown', function() {
+        appTiles[i].addEventListener('mousedown', () => {
             startTime = new Date().getTime();
         });
         // eslint-disable-next-line no-loop-func
-        appTiles[i].addEventListener('mouseup', function() {
+        appTiles[i].addEventListener('mouseup', () => {
             endTime = new Date().getTime();
             longpress = endTime - startTime >= 500;
         });
@@ -207,7 +202,7 @@ function openLauncherPanel() {
     document.addEventListener('click', onLauncherClick);
 }
 
-function closeLauncherPanel(skipTransition) {
+function closeLauncherPanel(skipTransition?: boolean) {
     document.removeEventListener('click', onLauncherClick);
     launcherMainContainer.setAttribute('hidden', 'true');
     unlistenToKeyboardEvents();
@@ -221,7 +216,7 @@ function closeLauncherPanel(skipTransition) {
 
 var closeLauncher = new api.ui.KeyBinding('esc')
     .setGlobal(true)
-    .setCallback(function(e) {
+    .setCallback(e => {
         if (!isPanelExpanded()) {
             return;
         }
@@ -229,42 +224,45 @@ var closeLauncher = new api.ui.KeyBinding('esc')
         e.returnValue = false;
 
         closeLauncherPanel();
+
+        return false;
     });
 var prevApp = new api.ui.KeyBinding('up')
     .setGlobal(true)
-    .setCallback(function() {
-        if (!isPanelExpanded()) {
-            return;
-        }
+    .setCallback(() => {
+        if (isPanelExpanded()) {
 
-        initKeyboardNavigation();
-        selectPreviousApp();
+            initKeyboardNavigation();
+            selectPreviousApp();
+        }
+        return false;
     });
 var nextApp = new api.ui.KeyBinding('down')
     .setGlobal(true)
-    .setCallback(function(e) {
-        if (!isPanelExpanded()) {
-            return;
-        }
-        e.preventDefault();
-        e.returnValue = false;
+    .setCallback(e => {
+        if (isPanelExpanded()) {
+            e.preventDefault();
+            e.returnValue = false;
 
-        initKeyboardNavigation();
-        selectNextApp();
+            initKeyboardNavigation();
+            selectNextApp();
+        }
+
+        return false;
     });
 var runApp = new api.ui.KeyBinding('enter')
     .setGlobal(true)
-    .setCallback(function(e) {
-        if (!isPanelExpanded()) {
-            return;
-        }
-        e.preventDefault();
-        e.returnValue = false;
+    .setCallback(e => {
+        if (isPanelExpanded()) {
+            e.preventDefault();
+            e.returnValue = false;
 
-        var selectedApp = getSelectedApp();
-        if (selectedApp) {
-            startApp(selectedApp);
+            var selectedApp = getSelectedApp();
+            if (selectedApp) {
+                startApp(selectedApp);
+            }
         }
+        return false;
     });
 var launcherBindings = [closeLauncher, prevApp, nextApp, runApp];
 
@@ -298,7 +296,7 @@ function highlightActiveApp() {
 function addApplicationsListeners() {
     if (!initApplicationsListeners()) {
         var triesLeft = 3;
-        var intervalID = setInterval(function() {
+        var intervalID = setInterval(() => {
             var initialized = initApplicationsListeners();
             if (!initialized && triesLeft > 0) {
                 triesLeft -= 1;
@@ -310,7 +308,7 @@ function addApplicationsListeners() {
 }
 
 var reloadLauncher = api.util.AppHelper.debounce(
-    function() {
+    () => {
         var link;
 
         function onload() {
@@ -336,12 +334,10 @@ var reloadLauncher = api.util.AppHelper.debounce(
 
 function initApplicationsListeners() {
     if (api.application.ApplicationEvent) {
-        api.application.ApplicationEvent.on(function(event) {
+        api.application.ApplicationEvent.on(e => {
             var statusChanged =
-                api.application.ApplicationEventType.STARTED ===
-                    event.getEventType() ||
-                api.application.ApplicationEventType.STOPPED ===
-                    event.getEventType();
+                ApplicationEventType.STARTED === e.getEventType() ||
+                ApplicationEventType.STOPPED === e.getEventType();
             if (statusChanged) {
                 reloadLauncher();
             }
@@ -449,7 +445,7 @@ function isHomeAppActive() {
     return getLauncherMainContainer().classList.contains('home');
 }
 
-exports.init = function() {
+export function init() {
     if (launcherUrl == null) {
         throw new Error('CONFIG.launcherUrl is not defined');
     }
@@ -457,4 +453,4 @@ exports.init = function() {
     appendLauncherButton();
     appendLauncherPanel();
     addApplicationsListeners();
-};
+}
