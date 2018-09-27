@@ -3,10 +3,6 @@
     "module": "commonjs",
     "sourceMap": true
   },
-  "include": [
-    "src/main/resources/assets/js/types.d.ts",
-    ".xp/dev/d.ts/admin.d.ts"
-  ],
   "exclude": [
     "build/**/*",
     "out/**/*",
