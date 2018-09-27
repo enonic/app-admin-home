@@ -1,5 +1,6 @@
 import {startPolling} from './sessionExpiredDetector';
 import {init} from './xptour';
+import ModalDialog = api.ui.dialog.ModalDialog;
 
 api.util.i18nInit(CONFIG.messages);
 
@@ -10,7 +11,7 @@ setupAboutDialog();
 startPolling();
 
 if (CONFIG.tourEnabled) {
-    init().then(function (tourDialog: api.ui.dialog.ModalDialog) {
+    init().then(function (tourDialog: ModalDialog) {
         const enonicXPTourCookie = api.util.CookieHelper.getCookie(
             'enonic_xp_tour'
         );
@@ -35,9 +36,10 @@ function setupWebSocketListener() {
     serverEventsListener.start();
 }
 
-function setupBodyClickListeners(dialog) {
+function setupBodyClickListeners(dialog: ModalDialog) {
     const bodyEl = api.ui.mask.BodyMask.get().getHTMLElement();
-    function listener(e) {
+
+    function listener(e: MouseEvent) {
         e.stopPropagation();
         e.preventDefault();
         if (dialog.isVisible()) {
@@ -49,7 +51,7 @@ function setupBodyClickListeners(dialog) {
 }
 
 function setupAboutDialog() {
-    const aboutDialog = new api.ui.dialog.ModalDialog({skipTabbable: true});
+    const aboutDialog = new ModalDialog({skipTabbable: true});
     aboutDialog.addClass('xp-about-dialog');
     aboutDialog.appendChildToContentPanel(getAboutDialogContent());
     document.querySelector('.xp-about').addEventListener('click', () => {

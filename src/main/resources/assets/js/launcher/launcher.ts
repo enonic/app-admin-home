@@ -63,7 +63,7 @@ function appendLauncherPanel() {
     launcherPanel = div;
 }
 
-function onLauncherClick(e) {
+function onLauncherClick(e: MouseEvent) {
     if (!launcherPanel || !launcherMainContainer) {
         return;
     }
@@ -79,11 +79,11 @@ function onLauncherClick(e) {
     }
 }
 
-function isDashboardIcon(element) {
+function isDashboardIcon(element: EventTarget) {
     return wemjq(element).closest('.dashboard-item').length > 0;
 }
 
-function isModalDialogActiveOnHomePage(element) {
+function isModalDialogActiveOnHomePage(element: EventTarget) {
     return (
         CONFIG.appId === 'home' &&
         (document.body.classList.contains('modal-dialog') ||
@@ -91,7 +91,7 @@ function isModalDialogActiveOnHomePage(element) {
     );
 }
 
-function loadLauncher(onload) {
+function loadLauncher(onload: () => void) {
     const link = document.createElement('link');
     const url = launcherUrl + '?t=' + Date.now();
 
@@ -104,7 +104,7 @@ function loadLauncher(onload) {
     return link;
 }
 
-function createLauncherLink(container) {
+function createLauncherLink(container: HTMLElement) {
     let link;
 
     function onload() {
@@ -127,10 +127,7 @@ function createLauncherLink(container) {
                 .querySelector('.launcher-app-container')
                 .querySelectorAll('a');
             for (let i = 0; i < appTiles.length; i++) {
-                appTiles[i].addEventListener(
-                    'click',
-                    closeLauncherPanel.bind(this, true)
-                );
+                appTiles[i].addEventListener('click', () => closeLauncherPanel(true));
             }
         }
         highlightActiveApp();
@@ -141,7 +138,7 @@ function createLauncherLink(container) {
     return link;
 }
 
-function openWindow(windowArr, anchorEl) {
+function openWindow(windowArr: Window[], anchorEl: HTMLAnchorElement) {
     const windowId = anchorEl.getAttribute('data-id');
 
     if (windowArr[windowId] && !windowArr[windowId].closed) {
@@ -152,11 +149,11 @@ function openWindow(windowArr, anchorEl) {
     }
 }
 
-function addLongClickHandler(container) {
+function addLongClickHandler(container: HTMLElement) {
     let longpress = false;
     let startTime;
     let endTime;
-    let toolWindows = [];
+    let toolWindows: Window[] = [];
 
     const appTiles = container
         .querySelector('.launcher-app-container')
@@ -166,7 +163,7 @@ function addLongClickHandler(container) {
         appTiles[i].addEventListener('click', e => {
             if (
                 CONFIG.appId ===
-                e.currentTarget.getAttribute('data-id') &&
+                (<Element>e.currentTarget).getAttribute('data-id') &&
                 CONFIG.appId === 'home'
             ) {
                 e.preventDefault();
@@ -175,10 +172,11 @@ function addLongClickHandler(container) {
 
             if (longpress) {
                 e.preventDefault();
+                // tslint:disable-next-line:no-invalid-this
                 document.location.href = this.href;
             } else if (navigator.userAgent.search('Chrome') > -1) {
                 e.preventDefault();
-                openWindow(toolWindows, e.currentTarget);
+                openWindow(toolWindows, <HTMLAnchorElement>e.currentTarget);
             }
         });
         // eslint-disable-next-line no-loop-func
@@ -250,7 +248,7 @@ const nextApp = new api.ui.KeyBinding('down')
 
         return false;
     });
-var runApp = new api.ui.KeyBinding('enter')
+const runApp = new api.ui.KeyBinding('enter')
     .setGlobal(true)
     .setCallback(e => {
         if (isPanelExpanded()) {
@@ -365,7 +363,7 @@ function initKeyboardNavigation() {
     }
 }
 
-function getSelectedApp() {
+function getSelectedApp(): HTMLElement {
     return launcherPanel.querySelector('.app-row.selected');
 }
 
@@ -408,12 +406,12 @@ function selectPreviousApp() {
     selectApp(nextIndex);
 }
 
-function selectApp(index) {
+function selectApp(index: number) {
     unselectCurrentApp();
     getAppByIndex(index).classList.add('selected');
 }
 
-function getAppByIndex(index) {
+function getAppByIndex(index: number) {
     const apps = getLauncherMainContainer().querySelectorAll('.app-row');
     for (let i = 0; i < apps.length; i++) {
         if (i === index) {
@@ -423,7 +421,7 @@ function getAppByIndex(index) {
     return null;
 }
 
-function startApp(app) {
+function startApp(app: HTMLElement) {
     const anchorEl = app.parentElement;
     if (anchorEl && anchorEl.tagName === 'A' && anchorEl.click) {
         unselectCurrentApp();

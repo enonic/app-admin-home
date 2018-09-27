@@ -1,10 +1,17 @@
 import i18n = api.util.i18n;
+import Application = api.application.Application;
+import MarketApplicationResponse = api.application.MarketApplicationResponse;
+import PrincipalKey = api.security.PrincipalKey;
+import LoginResult = api.security.auth.LoginResult;
+import MarketApplication = api.application.MarketApplication;
+import ApplicationInstallResult = api.application.ApplicationInstallResult;
+import MarketAppStatusFormatter = api.application.MarketAppStatusFormatter;
 
 let tourDialog;
 let demoAppsLoadMask;
 let isInstallingDemoAppsNow = false;
 let canInstallDemoApps = false;
-let marketDemoApps = [];
+let marketDemoApps: MarketApplication[] = [];
 let tourSteps: api.dom.Element[] = [];
 let demoAppsInstalled = false;
 let isSystemAdmin = false;
@@ -40,12 +47,10 @@ function appendInstallAppStep() {
 function checkAdminRights() {
     return new api.security.auth.IsAuthenticatedRequest()
         .sendAndParse()
-        .then(function(loginResult) {
+        .then((loginResult: LoginResult) => {
             isSystemAdmin = loginResult
                 .getPrincipals()
-                .some(function(principal) {
-                    return principal.equals(api.security.RoleKeys.ADMIN);
-                });
+                .some((key: PrincipalKey) => key.equals(api.security.RoleKeys.ADMIN));
         });
 }
 
@@ -144,16 +149,12 @@ function initNavigation() {
                     nextStepActionButton.addClass('last-step');
 
                     fetchDemoAppsFromMarket()
-                        .then(function(apps) {
+                        .then(function (apps: MarketApplication[]) {
                             marketDemoApps = apps || [];
-                            canInstallDemoApps = marketDemoApps.some(function(
-                                marketDemoApp
-                            ) {
-                                return (
-                                    marketDemoApp.getStatus() !==
-                                    api.application.MarketAppStatus.INSTALLED
+                            canInstallDemoApps = marketDemoApps
+                                .some((marketDemoApp: MarketApplication) =>
+                                    marketDemoApp.getStatus() !== api.application.MarketAppStatus.INSTALLED
                                 );
-                            });
 
                             demoAppsInstalled = !!apps && !canInstallDemoApps;
 
@@ -175,10 +176,7 @@ function initNavigation() {
                                 }
                             }
                         })
-                        .catch(function(err) {
-                            api.DefaultErrorHandler.handle(err);
-                            // Set text in demo-apps div that failed loading
-                        })
+                        .catch(api.DefaultErrorHandler.handle)
                         .finally(() => {
                             demoAppsContainer.toggleClass(
                                 'failed',
@@ -351,10 +349,8 @@ function getAppsDiv() {
 
 function getDemoAppsHtml() {
     let html = '';
-    marketDemoApps.forEach(function(marketDemoApp) {
-        const status = api.application.MarketAppStatusFormatter.formatStatus(
-            marketDemoApp.getStatus()
-        );
+    marketDemoApps.forEach((marketDemoApp: MarketApplication) => {
+        const status = MarketAppStatusFormatter.formatStatus(marketDemoApp.getStatus());
 
         html +=
             '<div class="demo-app" id="' +
@@ -381,7 +377,7 @@ function getDemoAppsHtml() {
     return html;
 }
 
-function fetchDemoAppsFromMarket() {
+function fetchDemoAppsFromMarket(): wemQ.Promise<MarketApplication[]> {
     const appPromises = [
         new api.application.ListApplicationsRequest().sendAndParse(),
         new api.application.ListMarketApplicationsRequest()
@@ -394,9 +390,9 @@ function fetchDemoAppsFromMarket() {
 
     return wemQ
         .all(appPromises)
-        .spread(function(installedApplications, marketApplications) {
+        .spread(function (installedApplications: Application[], marketApplications: MarketApplicationResponse) {
             const apps = marketApplications.getApplications();
-            apps.forEach(function(marketDemoApp) {
+            apps.forEach((marketDemoApp: MarketApplication) => {
                 for (let i = 0; i < installedApplications.length; i++) {
                     if (
                         marketDemoApp
@@ -425,9 +421,6 @@ function fetchDemoAppsFromMarket() {
                 }
             });
             return apps;
-        })
-        .catch(function(err) {
-            api.DefaultErrorHandler.handle(err);
         });
 }
 
@@ -436,11 +429,8 @@ function loadDemoApps() {
 
     const loadingAppsPromises = [];
 
-    marketDemoApps.forEach(function(marketDemoApp) {
-        if (
-            marketDemoApp.getStatus() !==
-            api.application.MarketAppStatus.INSTALLED
-        ) {
+    marketDemoApps.forEach((marketDemoApp: MarketApplication) => {
+        if (marketDemoApp.getStatus() !== api.application.MarketAppStatus.INSTALLED) {
             loadingAppsPromises.push(loadApp(marketDemoApp));
         }
     });
@@ -462,17 +452,13 @@ function enableApplicationServerEventsListener() {
     serverEventsListener.start();
 }
 
-function loadApp(marketDemoApp) {
+function loadApp(marketDemoApp: MarketApplication) {
     const url = marketDemoApp.getLatestVersionDownloadUrl();
     const demoAppContainer = document.getElementById(marketDemoApp.getName());
 
     const progressBar = new api.ui.ProgressBar(0);
     const progressHandler = function (event: api.application.ApplicationEvent) {
-        if (
-            event.getApplicationUrl() === url &&
-            event.getEventType() ===
-                api.application.ApplicationEventType.PROGRESS
-        ) {
+        if (event.getApplicationUrl() === url && event.getEventType() === api.application.ApplicationEventType.PROGRESS) {
             progressBar.setValue(event.getProgress());
         }
     };
@@ -482,7 +468,7 @@ function loadApp(marketDemoApp) {
 
     return new api.application.InstallUrlApplicationRequest(url)
         .sendAndParse()
-        .then(function(result) {
+        .then((result: ApplicationInstallResult) => {
             api.application.ApplicationEvent.un(progressHandler);
             progressBar.remove();
 
@@ -499,18 +485,15 @@ function loadApp(marketDemoApp) {
                 statusContainer.className = 'demo-app-status failure';
                 statusContainer.textContent = i18n('tour.apps.status.failed');
             }
-        })
-        .catch(function(err) {
-            api.DefaultErrorHandler.handle(err);
-        });
+        }).catch(api.DefaultErrorHandler.handle);
 }
 
-function updateHeaderStep(step) {
+function updateHeaderStep(step: number) {
     const totalSteps = isSystemAdmin ? '4' : '3';
     tourDialog.setTitle(i18n('tour.title.stepXofY', step, totalSteps));
 }
 
-function setTourStep(step) {
+function setTourStep(step: number) {
     updateHeaderStep(step);
     tourDialog.getContentPanel().removeChildren();
     tourDialog.appendChildToContentPanel(tourSteps[step - 1]);

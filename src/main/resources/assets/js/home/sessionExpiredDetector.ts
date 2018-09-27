@@ -26,7 +26,7 @@ function createGetStatusRequest() {
     return xhr;
 }
 
-function checkAuthenticated(response) {
+function checkAuthenticated(response: any) {
     const json = JSON.parse(response);
     const authenticated = json && json.context && json.context.authenticated;
 
