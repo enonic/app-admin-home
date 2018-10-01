@@ -83,6 +83,7 @@ jar {
 }
 
 jar.outputs.dir "${buildDir}/resources/main"
+processResources.dependsOn += unpackDevResources
 
 if ( hasProperty( 'env' ) )
 {
