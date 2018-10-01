@@ -1,11 +1,11 @@
-var statusUrl = CONFIG.adminUrl + '/rest/status';
-var adminToolUrl = CONFIG.adminUrl + '/tool';
-var connectionLostMessageId;
+const statusUrl = CONFIG.adminUrl + '/rest/status';
+const adminToolUrl = CONFIG.adminUrl + '/tool';
+let connectionLostMessageId;
 
 function doPoll() {
-    var request = createGetStatusRequest();
+    const request = createGetStatusRequest();
 
-    request.onreadystatechange = function() {
+    request.onreadystatechange = () => {
         if (request.readyState === 4) {
             if (request.status >= 200 && request.status < 300) {
                 checkAuthenticated(request.response);
@@ -19,16 +19,16 @@ function doPoll() {
 }
 
 function createGetStatusRequest() {
-    var xhr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
     xhr.open('GET', statusUrl, true);
     xhr.timeout = 10000;
 
     return xhr;
 }
 
-function checkAuthenticated(response) {
-    var json = JSON.parse(response);
-    var authenticated = json && json.context && json.context.authenticated;
+function checkAuthenticated(response: any) {
+    const json = JSON.parse(response);
+    const authenticated = json && json.context && json.context.authenticated;
 
     if (!authenticated) {
         logout();
@@ -47,6 +47,6 @@ function alertConnectionLost() {
     }
 }
 
-exports.startPolling = function() {
+export function startPolling() {
     setInterval(doPoll, 15000);
-};
+}
