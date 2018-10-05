@@ -173,7 +173,7 @@ function addLongClickHandler(container: HTMLElement) {
             if (longpress) {
                 e.preventDefault();
                 // tslint:disable-next-line:no-invalid-this
-                document.location.href = this.href;
+                document.location.href = (<Element>e.currentTarget).getAttribute('href');
             } else if (navigator.userAgent.search('Chrome') > -1) {
                 e.preventDefault();
                 openWindow(toolWindows, <HTMLAnchorElement>e.currentTarget);
