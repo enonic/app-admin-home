@@ -448,7 +448,7 @@ function enableApplicationServerEventsListener() {
     );
     application.setPath(api.rest.Path.fromString('/'));
     application.setWindow(window);
-    const serverEventsListener = new api.app.ServerEventsListener([application]);
+    const serverEventsListener = new api.event.ServerEventsListener([application]);
     serverEventsListener.start();
 }
 
