@@ -32,7 +32,7 @@ function setupWebSocketListener() {
     const dummyApp = new api.app.Application('home', 'home', 'home', '');
     dummyApp.setWindow(window);
 
-    const serverEventsListener = new api.app.ServerEventsListener([dummyApp]);
+    const serverEventsListener = new api.event.ServerEventsListener([dummyApp]);
     serverEventsListener.start();
 }
 
