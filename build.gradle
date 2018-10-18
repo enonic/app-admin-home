@@ -19,11 +19,11 @@ app {
 dependencies {
     compile "com.enonic.xp:admin-api:${xpVersion}"
     include "com.enonic.xp:lib-admin:${xpVersion}"
-    include "com.enonic.xp:lib-mustache:${xpVersion}"
     include "com.enonic.xp:lib-portal:${xpVersion}"
     include "com.enonic.xp:lib-auth:${xpVersion}"
     include "com.enonic.xp:lib-i18n:${xpVersion}"
     include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
+    include "com.enonic.lib:lib-mustache:2.0.0-A1"
 }
 
 node {
