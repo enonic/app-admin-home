@@ -1,5 +1,5 @@
 var auth = require('/lib/xp/auth');
-var mustache = require('/lib/xp/mustache');
+var mustache = require('/lib/mustache');
 var portal = require('/lib/xp/portal');
 var i18n = require('/lib/xp/i18n');
 var admin = require('/lib/xp/admin');

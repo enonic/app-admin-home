@@ -1,7 +1,7 @@
 var i18n = require('/lib/xp/i18n');
 var admin = require('/lib/xp/admin');
 var portal = require('/lib/xp/portal');
-var mustache = require('/lib/xp/mustache');
+var mustache = require('/lib/mustache');
 
 exports.get = function() {
     var busIconUrl = portal.assetUrl({ path: 'icons/bus.svg' });
