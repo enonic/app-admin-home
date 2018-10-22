@@ -33,7 +33,11 @@ ext {
     seleniumDir = "$projectDir${File.separator}test-data${File.separator}selenium"
     xpServer = new ServerInstance()
 }
-
+task ensureScreenshotsDirectory {
+    doLast {
+        mkdir screenshotsDir
+    }
+}
 task copyConfig( type: Copy ) {
     println testDataDir
     from testDataDir
@@ -97,11 +101,12 @@ task startSeleniumDaemon( type: com.github.psxpaul.task.ExecFork ) {
     standardOutput = "${buildDir}${File.separator}selenium-daemon.log"
     errorOutput = "${buildDir}${File.separator}selenium-daemon-error.log"
 }
-task testAdminHomeApp( type: GulpTask, dependsOn: [npmInstall, startSeleniumDaemon, startServer ] ) {
+task testAdminHomeApp( type: GulpTask, dependsOn: [npmInstall, startSeleniumDaemon, startServer, ensureScreenshotsDirectory] ) {
     inputs.files fileTree( dir: '.' )
     outputs.files fileTree( dir: '/test-results' )
     args = ['test']
     startServer.mustRunAfter npmInstall
+    ensureScreenshotsDirectory.mustRunAfter startServer
 }
 
 task testAdminHomeAppLocally( type: GulpTask, dependsOn: [npmInstall] ) {
