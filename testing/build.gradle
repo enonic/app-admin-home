@@ -30,6 +30,7 @@ ext {
     testDataDir = "$projectDir${File.separator}test-data${File.separator}common-config"
     xpHome = "$distroDir${File.separator}home"
     configDir = "$xpHome${File.separator}config"
+    seleniumDir = "$projectDir${File.separator}test-data${File.separator}selenium"
     xpServer = new ServerInstance()
 }
 
@@ -91,8 +92,12 @@ tasks.withType( Test ) {
         displayGranularity = 0
     }
 }
-
-task testAdminHomeApp( type: GulpTask, dependsOn: [npmInstall, startServer] ) {
+task startSeleniumDaemon( type: com.github.psxpaul.task.ExecFork ) {
+    commandLine = "${seleniumDir}${File.separator}selenium-server.sh"
+    standardOutput = "${buildDir}${File.separator}selenium-daemon.log"
+    errorOutput = "${buildDir}${File.separator}selenium-daemon-error.log"
+}
+task testAdminHomeApp( type: GulpTask, dependsOn: [npmInstall, startSeleniumDaemon, startServer ] ) {
     inputs.files fileTree( dir: '.' )
     outputs.files fileTree( dir: '/test-results' )
     args = ['test']
