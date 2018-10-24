@@ -11,8 +11,10 @@ import java.util.List;
 public final class ServerInstance
 {
     private final static String LAUNCHER_CLASS = "com.enonic.xp.launcher.impl.LauncherImpl";
+    private final static String DEFAULT_JAVA_OPTS =
+        "-XX:+CMSParallelRemarkEnabled -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=60 -XX:+ScavengeBeforeFullGC -XX:+CMSScavengeBeforeRemark";
 
-    private final static String[] LAUNCHER_ARGS = {"clean", "-Dmapper.allow_dots_in_name=true"};
+    private final static String[] LAUNCHER_ARGS = {"clean", "-Dmapper.allow_dots_in_name=true",DEFAULT_JAVA_OPTS};
 
     private File installDir;
 
