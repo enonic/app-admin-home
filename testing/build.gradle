@@ -6,6 +6,7 @@ plugins {
     id 'com.enonic.defaults' version '1.0.3'
     id 'com.moowork.node' version '0.13'
     id 'com.moowork.gulp' version '0.13'
+    id 'com.github.psxpaul.execfork' version '0.1.8'
 }
 
 group = 'com.enonic.xp.js_testing'
