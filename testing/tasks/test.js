@@ -34,15 +34,18 @@ const mocha = new Mocha({
     }
 });
 
-fs.readdirSync(testDir).filter(file=>{
+fs.readdirSync(testDir).filter(file => {
     // Only keep the .js files
     return file.substr(-3) === '.js';
 
-}).forEach(function(file){
+}).forEach(function (file) {
     mocha.addFile(
         path.join(testDir, file)
     );
 });
-mocha.run(result => {
+mocha.run(exitCode => {
     // stopSelenuim();
+    if (exitCode !== 0) {
+        process.exit(exitCode);
+    }
 });

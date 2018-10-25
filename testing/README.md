@@ -13,8 +13,9 @@ Before trying to run tests, you need to verify that the following software are i
 
 Run tests for app-admin-home.
 go to '/testing' folder and run:
-  1. `gradle testAdminHomeApp'
-  2. `gradle testAdminHomeAppLocally'
+  1. gradle testAdminHomeApp'
+  2. gradle testAdminHomeAppLocally --project-cache-dir d:/cache
+
 
 ### Reporting
 
