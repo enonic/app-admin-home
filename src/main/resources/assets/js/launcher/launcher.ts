@@ -1,5 +1,5 @@
 import ApplicationEventType = api.application.ApplicationEventType;
-import 'webcomponentsjs/lite';
+import '@webcomponents/html-imports';
 
 const launcherUrl = (CONFIG && CONFIG.launcherUrl) || null;
 const autoOpenLauncher = CONFIG && CONFIG.autoOpenLauncher;
@@ -56,8 +56,8 @@ function appendLauncherPanel() {
     const div = document.createElement('div');
     div.setAttribute('class', 'launcher-panel');
     div.classList.add('hidden');
-    div.appendChild(createLauncherLink(div));
 
+    document.head.appendChild(createLauncherLink(div));
     document.body.appendChild(div);
 
     launcherPanel = div;
