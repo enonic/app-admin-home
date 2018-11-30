@@ -42,7 +42,7 @@
     "webpack": "^3.11.0"
   },
   "dependencies": {
-    "webcomponentsjs": "^1.0.2"
+    "@webcomponents/html-imports": "^1.2.0"
   },
   "browserslist": [
     "extends browserslist-config-enonic"
