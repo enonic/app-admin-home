@@ -49,7 +49,7 @@ task copyConfig( type: Copy ) {
 
 dependencies {
     compile "com.enonic.xp:core-api:$xpVersion"
-    distro "com.enonic.xp:distro:$xpVersion@zip"
+    distro "com.enonic.xp:enonic-xp-generic:$xpVersion@zip"
 }
 
 task unpackDistro( type: Copy ) {
