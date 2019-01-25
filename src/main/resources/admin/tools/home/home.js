@@ -83,8 +83,8 @@ exports.get = function() {
         xpVersion: xpVersion,
         docLinkPrefix: docLinkPrefix,
         tourEnabled: tourEnabled,
-        messages: admin.getPhrases(),
-        dashboardIcons: dashboardIcons
+        dashboardIcons: dashboardIcons,
+        i18nUrl: portal.serviceUrl({service: 'i18n'})
     };
 
     return {

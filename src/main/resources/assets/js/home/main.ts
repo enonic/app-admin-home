@@ -2,31 +2,32 @@ import {startPolling} from './sessionExpiredDetector';
 import {init} from './xptour';
 import ModalDialog = api.ui.dialog.ModalDialog;
 
-api.util.i18nInit(CONFIG.messages);
+api.util.i18nInit(CONFIG.i18nUrl).then(() => {
 
-setupWebSocketListener();
+    setupWebSocketListener();
 
-setupAboutDialog();
+    setupAboutDialog();
 
-startPolling();
+    startPolling();
 
-if (CONFIG.tourEnabled) {
-    init().then(function (tourDialog: ModalDialog) {
-        const enonicXPTourCookie = api.util.CookieHelper.getCookie(
-            'enonic_xp_tour'
-        );
-        if (!enonicXPTourCookie) {
-            api.util.CookieHelper.setCookie('enonic_xp_tour', 'tour', 365);
-            tourDialog.open();
-        }
-
-        document.querySelector('.xp-tour')
-            .addEventListener('click', () => {
+    if (CONFIG.tourEnabled) {
+        init().then(function (tourDialog: ModalDialog) {
+            const enonicXPTourCookie = api.util.CookieHelper.getCookie(
+                'enonic_xp_tour'
+            );
+            if (!enonicXPTourCookie) {
+                api.util.CookieHelper.setCookie('enonic_xp_tour', 'tour', 365);
                 tourDialog.open();
-                setupBodyClickListeners(tourDialog);
-            });
-    });
-}
+            }
+
+            document.querySelector('.xp-tour')
+                .addEventListener('click', () => {
+                    tourDialog.open();
+                    setupBodyClickListeners(tourDialog);
+                });
+        });
+    }
+});
 
 function setupWebSocketListener() {
     const dummyApp = new api.app.Application('home', 'home', 'home', '');

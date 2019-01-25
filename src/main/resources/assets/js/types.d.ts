@@ -9,5 +9,6 @@ declare const CONFIG: {
     docLinkPrefix: string,
     autoOpenLauncher: boolean,
     tourEnabled: boolean,
-    messages: Array<any>
+    launcherButtonCls: string,
+    i18nUrl: string
 };
