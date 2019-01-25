@@ -29,10 +29,7 @@ function appendLauncherButton() {
 }
 
 function getColorClass() {
-    const darkBackground =
-        document.querySelector('.appbar') ||
-        document.querySelector('.home-main-container');
-    return darkBackground ? '' : 'dark';
+    return CONFIG.launcherButtonCls || '';
 }
 
 function isPanelExpanded() {
