@@ -321,7 +321,7 @@ const reloadLauncher = api.util.AppHelper.debounce(
 
         link = loadLauncher(onload);
 
-        launcherPanel.appendChild(link);
+        document.head.appendChild(link);
     },
     1000,
     false
