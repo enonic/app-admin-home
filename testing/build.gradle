@@ -27,7 +27,7 @@ ext {
     reportsDir = "$buildDir${File.separator}reports"
     distroDir = "$unpackDir${File.separator}enonic-xp-generic-$xpVersion"
     deployDir = "$distroDir${File.separator}home${File.separator}deploy"
-    allureResultsDir = "allure-results"
+    mochaResultsDir = "mochawesome-report"
     testDataDir = "$projectDir${File.separator}test-data${File.separator}common-config"
     xpHome = "$distroDir${File.separator}home"
     configDir = "$xpHome${File.separator}config"
@@ -66,16 +66,16 @@ task zipScreenshots( type: Zip ) {
     classifier 'screenshots'
 }
 
-task zipAllure( type: Zip ) {
-    from allureResultsDir
+task zipReport( type: Zip ) {
+    from mochaResultsDir
     include '*'
     include '*/*'
-    classifier 'allureResults'
+    classifier 'mochaReport'
 }
 
 artifacts {
     archives zipScreenshots
-    archives zipAllure
+    archives zipReport
 }
 
 jar.enabled = true
