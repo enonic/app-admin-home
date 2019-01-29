@@ -18,8 +18,5 @@ go to '/testing' folder and run:
 
 
 ### Reporting
-
-```
-allure generate allure-results --clean -o allure-report && allure open allure-report
-```
+mochawesome generates report automatically
 
