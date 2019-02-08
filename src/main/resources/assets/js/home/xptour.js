@@ -387,7 +387,7 @@ function fetchDemoAppsFromMarket() {
         new api.application.ListMarketApplicationsRequest()
             .setStart(0)
             .setCount(40)
-            .setVersion(CONFIG.xpVersion.replace('-SNAPSHOT', ''))
+            .setVersion(CONFIG.xpVersion)
             .setIds(demoAppsNames)
             .sendAndParse()
     );
