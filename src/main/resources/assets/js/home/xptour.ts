@@ -383,7 +383,7 @@ function fetchDemoAppsFromMarket(): wemQ.Promise<MarketApplication[]> {
         new api.application.ListMarketApplicationsRequest()
             .setStart(0)
             .setCount(demoAppsNames.length)
-            .setVersion(CONFIG.xpVersion.replace('-SNAPSHOT', ''))
+            .setVersion(CONFIG.xpVersion)
             .setIds(demoAppsNames)
             .sendAndParse()
     ];
