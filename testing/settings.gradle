@@ -1,1 +1,3 @@
 rootProject.name = 'app-admin-home'
+
+enableFeaturePreview('STABLE_PUBLISHING')
