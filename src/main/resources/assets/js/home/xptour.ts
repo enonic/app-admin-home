@@ -17,9 +17,9 @@ let demoAppsInstalled = false;
 let isSystemAdmin = false;
 
 const demoAppsNames = [
-    'com.enonic.app.corporate.theme',
-    'com.enonic.app.wireframe',
-    'com.enonic.app.imagexpert'
+    'com.enonic.app.contentstudio',
+    'systems.rcd.enonic.datatoolbox',
+    'com.enonic.app.livetrace'
 ];
 
 export function init() {
