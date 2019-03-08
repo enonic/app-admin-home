@@ -6,6 +6,7 @@ import LoginResult = api.security.auth.LoginResult;
 import MarketApplication = api.application.MarketApplication;
 import ApplicationInstallResult = api.application.ApplicationInstallResult;
 import MarketAppStatusFormatter = api.application.MarketAppStatusFormatter;
+import MarketAppStatus = api.application.MarketAppStatus;
 
 let tourDialog;
 let demoAppsLoadMask;
@@ -40,7 +41,7 @@ export function init() {
 }
 
 function appendInstallAppStep() {
-    tourSteps.push(createStep5());
+    tourSteps.push(createStep3());
     tourDialog.setTitle(i18n('tour.title.stepXofY', 1, 4));
 }
 
@@ -51,6 +52,7 @@ function checkAdminRights() {
             isSystemAdmin = loginResult
                 .getPrincipals()
                 .some((key: PrincipalKey) => key.equals(api.security.RoleKeys.ADMIN));
+
         });
 }
 
@@ -68,7 +70,7 @@ function initNavigation() {
     const previousStepAction = new api.ui.Action(i18n('tour.action.skip'));
     const previousStepActionButton = tourDialog.addAction(previousStepAction);
 
-    const nextStepAction = new api.ui.Action(i18n('action.next'));
+    const nextStepAction = new api.ui.Action(i18n('tour.action.next'));
     const nextStepActionButton = tourDialog.addAction(nextStepAction);
 
     let currentStep = 1;
@@ -114,7 +116,7 @@ function initNavigation() {
             } else {
                 // Finish button was hit
                 tourDialog.close();
-                nextStepActionButton.setLabel(i18n('action.next'));
+                nextStepActionButton.setLabel(i18n('tour.action.next'));
                 nextStepActionButton.removeClass('last-step');
                 previousStepActionButton.setLabel(i18n('tour.action.skip'));
                 currentStep = 1;
@@ -127,7 +129,7 @@ function initNavigation() {
             setTourStep(currentStep);
 
             if (currentStep === tourSteps.length) {
-                if (tourSteps.length === 4 && !demoAppsInstalled) {
+                if (tourSteps.length === 3 && !demoAppsInstalled) {
                     let demoAppsContainer = api.dom.Element.fromHtmlElement(
                         document.querySelector('.demo-apps')
                     );
@@ -158,7 +160,7 @@ function initNavigation() {
 
                             demoAppsInstalled = !!apps && !canInstallDemoApps;
 
-                            tourSteps[tourSteps.length - 1] = createStep5();
+                            tourSteps[tourSteps.length - 1] = createStep3();
 
                             if (currentStep === tourSteps.length) {
                                 // if still on install apps page of xp tour
@@ -201,12 +203,12 @@ function initNavigation() {
 }
 
 function initTourSteps() {
-    tourSteps = [createStep2(), createStep3(), createStep4()];
+    tourSteps = [createStep1(), createStep2()];
 }
 
-function createStep2() {
+function createStep1() {
     const html =
-        '<div class="xp-tour-step step-2">' +
+        '<div class="xp-tour-step step-1">' +
         '    <div class="subtitle">' +
         '        <div class="subtitle-part-1">' +
         i18n('tour.step1.subtitle1') +
@@ -216,18 +218,57 @@ function createStep2() {
         '</div>' +
         '    </div>' +
         '    <div class="caption">' +
-        i18n('tour.step2.caption') +
+        i18n('tour.step1.caption') +
         '</div>' +
         '    <img src="' +
         CONFIG.assetsUri +
         '/images/launcher.svg">' +
         '    <div class="text">' +
         '        <div class="paragraph1">' +
-        i18n('tour.step2.paragraph1') +
+        i18n('tour.step1.paragraph1') +
         '</div>' +
         '        <div class="paragraph2">' +
+        i18n('tour.step1.paragraph2') +
+        '</div>' +
+        '    </div>' +
+        '</div>';
+    const element = api.dom.Element.fromString(html);
+    return element;
+}
+
+function createStep2() {
+    const html =
+        '<div class="xp-tour-step step-2">' +
+        '    <div class="subtitle">' +
+        '        <div class="subtitle-part-1">' +
+        i18n('tour.step2.subtitle1') +
+        '</div>' +
+        '        <div class="subtitle-part-2">' +
+        i18n('tour.step2.subtitle2') +
+        '</div>' +
+        '    </div>' +
+        '    <div class="caption">' +
+        i18n('tour.step2.caption') +
+        '</div>' +
+        '    <img src="' +
+        CONFIG.assetsUri +
+        '/images/market.svg">' +
+        '    <div class="text">' +
+        '        <div class="paragraph1">' +
+        i18n('tour.step2.paragraph1') +
+        ' <a href="/admin/tool/com.enonic.xp.app.applications/main" target="_blank">' +
+        i18n('tour.step2.paragraph1hreftext') +
+        '</a>.</div>' +
+        '        <div class="paragraph2"><a href="https://market.enonic.com/" target="_blank">' +
+        i18n('tour.step2.paragraph2hreftext') +
+        '</a> ' +
         i18n('tour.step2.paragraph2') +
         '</div>' +
+        '        <div class="paragraph3">' +
+        i18n('tour.step2.paragraph3') +
+        ' <a href="http://docs.enonic.com/en/latest/" target="_blank">' +
+        i18n('tour.step2.paragraph3hreftext') +
+        '</a>.</div>' +
         '    </div>' +
         '</div>';
     const element = api.dom.Element.fromString(html);
@@ -248,86 +289,9 @@ function createStep3() {
         '    <div class="caption">' +
         i18n('tour.step3.caption') +
         '</div>' +
-        '    <img src="' +
-        CONFIG.assetsUri +
-        '/images/market.svg">' +
         '    <div class="text">' +
         '        <div class="paragraph1">' +
         i18n('tour.step3.paragraph1') +
-        ' <a href="/admin/tool/com.enonic.xp.app.applications/main" target="_blank">' +
-        i18n('tour.step3.paragraph1hreftext') +
-        '</a>.</div>' +
-        '        <div class="paragraph2"><a href="https://market.enonic.com/" target="_blank">' +
-        i18n('tour.step3.paragraph2hreftext') +
-        '</a> ' +
-        i18n('tour.step3.paragraph2') +
-        '</div>' +
-        '        <div class="paragraph3">' +
-        i18n('tour.step3.paragraph3') +
-        ' <a href="http://docs.enonic.com/en/latest/" target="_blank">' +
-        i18n('tour.step3.paragraph3hreftext') +
-        '</a>.</div>' +
-        '    </div>' +
-        '</div>';
-    const element = api.dom.Element.fromString(html);
-    return element;
-}
-
-function createStep4() {
-    const html =
-        '<div class="xp-tour-step step-4">' +
-        '    <div class="subtitle">' +
-        '        <div class="subtitle-part-1">' +
-        i18n('tour.step4.subtitle1') +
-        '</div>' +
-        '        <div class="subtitle-part-2">' +
-        i18n('tour.step4.subtitle2') +
-        '</div>' +
-        '    </div>' +
-        '    <div class="caption">' +
-        i18n('tour.step4.caption') +
-        '</div>' +
-        '    <img src="' +
-        CONFIG.assetsUri +
-        '/images/studio.svg">' +
-        '    <div class="text">' +
-        '        <div class="paragraph1">' +
-        i18n('tour.step4.paragraph1part1') +
-        ' <a href="/admin/tool/com.enonic.xp.app.contentstudio/main" target="_blank">' +
-        i18n('tour.step4.paragraph1hreftext') +
-        '</a> - ' +
-        i18n('tour.step4.paragraph1part2') +
-        '</div>' +
-        '        <div class="paragraph2">' +
-        i18n('tour.step4.paragraph2part1') +
-        ' <a href="https://market.enonic.com/vendors/enonic/com.enonic.app.ga" target="_blank">' +
-        i18n('tour.step4.paragraph2hreftext') +
-        '</a> ' +
-        i18n('tour.step4.paragraph2part2') +
-        '</div>' +
-        '    </div>' +
-        '</div>';
-    const element = api.dom.Element.fromString(html);
-    return element;
-}
-
-function createStep5() {
-    const html =
-        '<div class="xp-tour-step step-5">' +
-        '    <div class="subtitle">' +
-        '        <div class="subtitle-part-1">' +
-        i18n('tour.step5.subtitle1') +
-        '</div>' +
-        '        <div class="subtitle-part-2">' +
-        i18n('tour.step5.subtitle2') +
-        '</div>' +
-        '    </div>' +
-        '    <div class="caption">' +
-        i18n('tour.step5.caption') +
-        '</div>' +
-        '    <div class="text">' +
-        '        <div class="paragraph1">' +
-        i18n('tour.step5.paragraph1') +
         '</div>' +
         '    </div>' +
         '    <div class="demo-apps">' +
@@ -367,7 +331,7 @@ function getDemoAppsHtml() {
             '</div>' +
             '    </a>' +
             '    <div class="demo-app-status ' +
-            status.toLowerCase() +
+            MarketAppStatusFormatter.getStatusCssClass(marketDemoApp.getStatus()) +
             '">' +
             status +
             '</div>' +
@@ -489,7 +453,7 @@ function loadApp(marketDemoApp: MarketApplication) {
 }
 
 function updateHeaderStep(step: number) {
-    const totalSteps = isSystemAdmin ? '4' : '3';
+    const totalSteps = isSystemAdmin ? '3' : '2';
     tourDialog.setTitle(i18n('tour.title.stepXofY', step, totalSteps));
 }
 

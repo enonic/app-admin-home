@@ -18,7 +18,7 @@ function getAdminTools() {
 function localise(key, locales) {
     return i18n.localize({
         key: key,
-        bundles: ['i18n/common'],
+        bundles: ['i18n/phrases'],
         locale: locales
     });
 }

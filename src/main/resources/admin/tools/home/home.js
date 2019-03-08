@@ -28,7 +28,7 @@ exports.get = function() {
             cls: 'xp-about',
             caption: i18n.localize({
                 key: 'home.dashboard.about',
-                bundles: ['i18n/common'],
+                bundles: ['i18n/phrases'],
                 locale: locales
             })
         },
@@ -49,7 +49,7 @@ exports.get = function() {
             cls: '',
             caption: i18n.localize({
                 key: 'home.dashboard.market',
-                bundles: ['i18n/common'],
+                bundles: ['i18n/phrases'],
                 locale: locales
             }),
             link: 'https://market.enonic.com/'
@@ -63,7 +63,7 @@ exports.get = function() {
             cls: 'xp-tour',
             caption: i18n.localize({
                 key: 'home.dashboard.tour',
-                bundles: ['i18n/common'],
+                bundles: ['i18n/phrases'],
                 locale: locales
             })
         });
