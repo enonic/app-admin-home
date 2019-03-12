@@ -10,9 +10,10 @@ const xpath = {
     previousButton: `//button[contains(@id,'DialogButton')]/span[text()='Previous']`,
     installAppsButton: `//button[contains(@id,'DialogButton')]/span[text()='Install Apps']`,
     title: `//h2[@class='title']`,
-    applicationStatusByName: function (name) {
-        return `//div[@class='demo-app' and descendant::div[@class='demo-app-title' and contains(.,'${name}')]]//div[contains(@class,'demo-app-status')]`;
-    },
+    applicationStatusByName: name =>
+        `//div[@class='demo-app' and descendant::div[@class='demo-app-title' and contains(.,'${name}')]]//div[contains(@class,'demo-app-status')]`,
+    applicationInLauncherPanel: name =>
+        `//div[@class='launcher-app-container' and descendant::p[@class='app-name' and contains(.,'${name}')]]`,
 };
 var xpTourDialog = Object.create(page, {
 
@@ -53,19 +54,20 @@ var xpTourDialog = Object.create(page, {
     },
     clickOnNextButton: {
         value: function () {
-            return this.doClick(this.nextButton).pause(500).catch(err=> {
+            return this.waitForVisible(this.nextButton, appConst.TIMEOUT_2).then(() => {
+                return this.doClick(this.nextButton);
+            }).catch(err => {
                 this.saveScreenshot('err_when_clicking_onnext_button');
                 throw new Error('Error when clicking on next button ' + err);
-            })
+            }).pause(500);
         }
     },
-    goToFourthStep: {
+    //navigates to the last step (Install apps)
+    goToInstallStep: {
         value: function () {
-            return this.doClick(this.nextButton).pause(200).then(()=> {
-                return this.doClick(this.nextButton);
-            }).pause(200).then(()=> {
-                return this.doClick(this.nextButton);
-            });
+            return this.clickOnNextButton().then(() => {
+                return this.clickOnNextButton();
+            }).pause(200);
         }
     },
     clickOnPreviousButton: {
@@ -80,7 +82,7 @@ var xpTourDialog = Object.create(page, {
     },
     waitForDialogPresent: {
         value: function () {
-            return this.waitForVisible(`${xpath.container}`, appConst.TIMEOUT_5).catch(err=> {
+            return this.waitForVisible(`${xpath.container}`, appConst.TIMEOUT_5).catch(err => {
                 return false;
             })
         }
@@ -107,8 +109,9 @@ var xpTourDialog = Object.create(page, {
     },
     waitForInstallAppsButtonDisplayed: {
         value: function () {
-            return this.waitForVisible(this.installAppsButton, appConst.TIMEOUT_3).catch(err=> {
+            return this.waitForVisible(this.installAppsButton, appConst.TIMEOUT_3).catch(err => {
                 this.saveScreenshot("err_xp_tour_install_button");
+                throw new Error("Install Apps button is not visible in " + appConst.TIMEOUT_3)
             })
         }
     },
@@ -125,12 +128,20 @@ var xpTourDialog = Object.create(page, {
     waitForApplicationsStatus: {
         value: function (name) {
             let status = xpath.applicationStatusByName(name);
-            return this.waitForVisible(status, appConst.INSTALL_APP_TIMEOUT).then(()=> {
+            return this.waitForVisible(status, appConst.INSTALL_APP_TIMEOUT).then(() => {
                 return this.getText(status);
-            }).catch(err=> {
-                console.log('Error when getting the statuses: ' + err);
-                this.saveScreenshot('err_wait_install_app');
-                return null;
+            }).catch(err => {
+                this.saveScreenshot('err_wait_app_status');
+                throw new Error("XP Tour dialog - error when getting app status: " + err);
+            });
+        }
+    },
+    waitForAppPresentInLauncherPanel: {
+        value: function (name) {
+            let selector = xpath.applicationInLauncherPanel(name);
+            return this.waitForVisible(selector, appConst.TIMEOUT_2).catch(err => {
+                this.saveScreenshot('err_app_launcher_panel');
+                throw new Error("Application is not present in Launcher Panel: " + err);
             });
         }
     },
