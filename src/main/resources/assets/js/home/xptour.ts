@@ -443,7 +443,7 @@ function loadApp(marketDemoApp: MarketApplication) {
             if (!result.getFailure()) {
                 statusContainer.className = 'demo-app-status installed';
                 statusContainer.textContent = i18n(
-                    'tour.apps.status.installed'
+                    'status.installed'
                 );
             } else {
                 statusContainer.className = 'demo-app-status failure';
