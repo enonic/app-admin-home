@@ -42,7 +42,7 @@ describe('XP tour dialog - install applications and check their statuses', funct
         })
     });
 
-    it('GIVEN Fourth step is opened WHEN `Install Apps` button has been pressed THEN three application should be installed', () => {
+    it('GIVEN Last step is opened WHEN `Install Apps` button has been pressed THEN three application should be installed', () => {
         return loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT).then(() => {
             return loginPage.doLogin();
         }).then(() => {
