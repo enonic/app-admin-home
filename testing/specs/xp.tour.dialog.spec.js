@@ -26,7 +26,7 @@ describe('XP tour dialog specification', function () {
             assert.isTrue(isVisible, '`Skip tour` button should be present');
         }).then(() => {
             return xpTourDialog.isCancelButtonTopDisplayed();
-        }).then((isVisible) => {
+        }).then(isVisible => {
             assert.isTrue(isVisible, 'Cancel button should be present');
         }).then(() => {
             return xpTourDialog.isNextButtonDisplayed();
@@ -35,7 +35,7 @@ describe('XP tour dialog specification', function () {
         }).then(() => {
             return xpTourDialog.getTitle();
         }).then(title => {
-            assert.isTrue(title == 'Welcome Tour - Step 1 of 4', 'correct Dialog-title should be displayed');
+            assert.isTrue(title == 'Welcome Tour - Step 1 of 3', 'correct Dialog-title should be displayed');
         })
     });
 
@@ -46,6 +46,7 @@ describe('XP tour dialog specification', function () {
         }).then(() => {
             return xpTourDialog.waitForDialogPresent();
         }).then(() => {
+            //`Skip Tour` button has been pressed
             return xpTourDialog.clickOnSkipTourButton();
         }).then(() => {
             return xpTourDialog.waitForDialogClosed();
@@ -85,7 +86,7 @@ describe('XP tour dialog specification', function () {
         }).then(() => {
             return xpTourDialog.getTitle();
         }).then(title => {
-            assert.isTrue(title == 'Welcome Tour - Step 2 of 4', 'Dialog-title should be updated');
+            assert.isTrue(title == 'Welcome Tour - Step 2 of 3', 'Dialog-title should be updated after clicking on Next button');
         })
     });
 
