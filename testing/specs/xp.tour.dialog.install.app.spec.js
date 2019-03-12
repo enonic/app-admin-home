@@ -84,6 +84,7 @@ describe('XP tour dialog - install applications and check their statuses', funct
                 // Go to the last step
                 return xpTourDialog.clickOnNextButton();
             }).then(() => {
+                testUtils.saveScreenshot('xp_tour_issue_56');
                 return expect(xpTourDialog.waitForApplicationsStatus('Content Studio')).to.eventually.equal('Installed');
             }).then(() => {
                 //should be present in Launcher Panel
