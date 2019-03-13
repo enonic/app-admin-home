@@ -34,9 +34,9 @@ describe('XP tour dialog - install applications and check their statuses', funct
             testUtils.saveScreenshot('xp_tour_last_step');
             return xpTourDialog.getNamesOfAvailableApplications();
         }).then(result => {
-            assert.isTrue(result[0] === 'LIVE TRACE', 'Live trace app should be available');
-            assert.isTrue(result[1] === 'CONTENT STUDIO', 'Content Studio app should be available');
-            assert.isTrue(result[2] === 'DATA TOOLBOX', 'Data Toolbox app should be available');
+            assert.isTrue(result.includes('LIVE TRACE'), 'Live trace app should be available');
+            assert.isTrue(result.includes('CONTENT STUDIO'), 'Content Studio app should be available');
+            assert.isTrue(result.includes('DATA TOOLBOX'), 'Data Toolbox app should be available');
 
             assert.isTrue(result.length == 3, 'Three applications should be available for installing');
         })
