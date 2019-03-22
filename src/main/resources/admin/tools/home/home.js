@@ -6,20 +6,9 @@ var mustache = require('/lib/mustache');
 exports.get = function() {
     var busIconUrl = portal.assetUrl({ path: 'icons/bus.svg' });
     var infoIconUrl = portal.assetUrl({ path: 'icons/info-with-circle.svg' });
-    var docsIconUrl = portal.assetUrl({ path: 'icons/docs.svg' });
+    var devIconUrl = portal.assetUrl({ path: 'icons/developer.svg' });
     var forumIconUrl = portal.assetUrl({ path: 'icons/discuss.svg' });
     var marketIconUrl = portal.assetUrl({ path: 'icons/market.svg' });
-
-    var docLinkPrefix = 'http://docs.enonic.com/en/';
-    var xpVersion = admin.getVersion();
-    var isLatestSnapshot = xpVersion.endsWith('.0.SNAPSHOT');
-
-    if (isLatestSnapshot) {
-        docLinkPrefix += 'latest';
-    } else {
-        var versionParts = xpVersion.split('.');
-        docLinkPrefix += versionParts[0] + '.' + versionParts[1];
-    }
 
     var locales = admin.getLocales();
     var dashboardIcons = [
@@ -33,10 +22,10 @@ exports.get = function() {
             })
         },
         {
-            src: docsIconUrl,
+            src: devIconUrl,
             cls: '',
-            caption: 'Docs',
-            link: docLinkPrefix + '/'
+            caption: 'Developer',
+            link: 'https://developer.enonic.com/'
         },
         {
             src: forumIconUrl,
@@ -80,8 +69,7 @@ exports.get = function() {
         }),
         launcherUrl: admin.getLauncherUrl(),
         launcherPath: admin.getLauncherPath(),
-        xpVersion: xpVersion,
-        docLinkPrefix: docLinkPrefix,
+        xpVersion: admin.getVersion(),
         tourEnabled: tourEnabled,
         dashboardIcons: dashboardIcons,
         i18nUrl: portal.serviceUrl({service: 'i18n'})

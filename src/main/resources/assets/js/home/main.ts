@@ -77,9 +77,7 @@ function getAboutDialogContent() {
         '        <span class="xp-about-dialog-version">' +
         CONFIG.xpVersion +
         '</span>&nbsp;&nbsp;' +
-        '        <a href="' +
-        CONFIG.docLinkPrefix +
-        '/appendix/release-notes/" target="_blank">' +
+        '        <a href="https://developer.enonic.com/docs/xp7/master" target="_blank">' +
         i18n('home.dashboard.about.dialog.whatsnew') +
         '</a>' +
         '    </div>' +
