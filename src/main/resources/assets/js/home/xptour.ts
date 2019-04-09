@@ -266,7 +266,7 @@ function createStep2() {
         '</div>' +
         '        <div class="paragraph3">' +
         i18n('tour.step2.paragraph3') +
-        ' <a href="http://docs.enonic.com/en/latest/" target="_blank">' +
+        ' <a href="https://developer.enonic.com/docs/xp/" target="_blank">' +
         i18n('tour.step2.paragraph3hreftext') +
         '</a>.</div>' +
         '    </div>' +
