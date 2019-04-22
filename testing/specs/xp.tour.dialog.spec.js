@@ -2,10 +2,10 @@ const chai = require('chai');
 const expect = chai.expect;
 const assert = chai.assert;
 const webDriverHelper = require('../libs/WebDriverHelper');
-const loginPage = require('../page_objects/login.page');
+const LoginPage = require('../page_objects/login.page');
 const appConst = require('../libs/app_const');
 const testUtils = require('../libs/test.utils');
-const xpTourDialog = require('../page_objects/xp.tour.dialog');
+const XpTourDialog = require('../page_objects/xp.tour.dialog');
 
 describe('XP tour dialog specification', function () {
 
@@ -13,10 +13,12 @@ describe('XP tour dialog specification', function () {
     var client = webDriverHelper.setupBrowser();
 
     it('WHEN user is logged in THEN XP tour dialog should appear', () => {
+        const loginPage = new LoginPage();
+        const xpTourDialog = new XpTourDialog();
         return loginPage.waitForPageLoaded(appConst.TIMEOUT_2).then(() => {
             return loginPage.doLogin();
         }).then(() => {
-            return xpTourDialog.waitForDialogPresent();
+            return xpTourDialog.waitForDialogLoaded();
         }).then(result => {
             testUtils.saveScreenshot("xp_tour_dialog_must_be_present1");
             assert.isTrue(result, 'XP tour dialog must be present!');
@@ -40,11 +42,12 @@ describe('XP tour dialog specification', function () {
     });
 
     it('GIVEN XP tour dialog is opened WHEN `Skip Tour` button has been pressed THEN dialog should be closed', () => {
-
+        const loginPage = new LoginPage();
+        const xpTourDialog = new XpTourDialog();
         return loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT).then(() => {
             return loginPage.doLogin();
         }).then(() => {
-            return xpTourDialog.waitForDialogPresent();
+            return xpTourDialog.waitForDialogLoaded();
         }).then(() => {
             //`Skip Tour` button has been pressed
             return xpTourDialog.clickOnSkipTourButton();
@@ -57,10 +60,12 @@ describe('XP tour dialog specification', function () {
     });
 
     it('GIVEN XP tour dialog is opened WHEN `Cancel-top-button` has been pressed THEN dialog should be closed', () => {
+        const loginPage = new LoginPage();
+        const xpTourDialog = new XpTourDialog();
         return loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT).then(() => {
             return loginPage.doLogin();
         }).then(() => {
-            return xpTourDialog.waitForDialogPresent();
+            return xpTourDialog.waitForDialogLoaded();
         }).then(() => {
             return xpTourDialog.clickOnCancelButtonTop();
         }).then(() => {
@@ -72,10 +77,12 @@ describe('XP tour dialog specification', function () {
     });
 
     it('GIVEN XP tour dialog is opened WHEN Next-button has been pressed THEN Previous button should appear', () => {
+        const loginPage = new LoginPage();
+        const xpTourDialog = new XpTourDialog();
         return loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT).then(() => {
             return loginPage.doLogin();
         }).then(() => {
-            return xpTourDialog.waitForDialogPresent();
+            return xpTourDialog.waitForDialogLoaded();
         }).then(() => {
             return xpTourDialog.clickOnNextButton();
         }).then(() => {

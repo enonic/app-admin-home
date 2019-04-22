@@ -1,85 +1,55 @@
-var page = require('./page')
+const Page = require('./Page');
 
-var loginPage = Object.create(page, {
-    /**
-     * define elements
-     */
-    usernameInput: {
-        get: function () {
-            return `input[id^='username-input']`
-        }
-    },
-    passwordInput: {
-        get: function () {
-            return `input[id^='password-input']`
-        }
-    },
-    loginButton: {
-        get: function () {
-            return `button[id^='login-button']`
-        }
-    },
+class LoginPage extends Page {
 
-    typeUserName: {
-        value: function (userName) {
-            return this.typeTextInInput(this.usernameInput, userName);
-        }
-    },
-    typePassword: {
-        value: function (password) {
-            return this.typeTextInInput(this.passwordInput, password);
-        }
-    },
+    get usernameInput() {
+        return `input[id^='username-input']`
+    }
 
-    isLoginButtonVisible: {
-        value: function () {
-            this.isVisible(this.loginButton);
-        }
-    },
+    get passwordInput() {
+        return `input[id^='password-input']`
+    }
 
-    isUserNameInputVisible: {
-        value: function (ms) {
-            return this.waitForExist(this.usernameInput, ms);
-        }
-    },
+    get loginButton() {
+        return `button[id^='login-button']`
+    }
 
-    isPasswordInputVisible: {
-        value: function (ms) {
-            return this.waitForExist(this.passwordInput, ms);
-        }
-    },
+    async typeUserName(userName) {
+        let usernameInput = await this.findElement(this.usernameInput);
+        return await usernameInput.addValue(userName);
+    }
 
-    waitForLoginButtonVisible: {
-        value: function (ms) {
-            return this.waitForVisible(this.loginButton, ms);
-        }
-    },
-    waitForPageLoaded: {
-        value: function (ms) {
-            return this.waitForVisible(this.usernameInput, ms);
-        }
-    },
+    async clickOnLoginButton() {
+        return this.clickOnElement(this.loginButton);
+    }
 
-    clickOnLoginButton: {
-        value: function () {
-            return this.doClick(this.loginButton);
-        }
-    },
+    async typePassword() {
+        let passwordInput = await this.findElement(this.passwordInput);
+        await passwordInput.waitForDisplayed(1000);
+        await passwordInput.addValue("password");
+    }
 
-    doLogin: {
-        value: function (userName, password) {
-            let name = userName ? userName : 'su';
-            return this.typeTextInInput(this.usernameInput, name)
-                .then(() => {
-                    let pass = password ? password : 'password';
-                    return this.typeTextInInput(loginPage.passwordInput, pass);
-                })
-                .then(() => this.waitForLoginButtonVisible(1000))
-                .then(() => this.doClick(loginPage.loginButton));
-        }
-    },
-});
-module.exports = loginPage;
+    waitForPageLoaded(ms) {
+        return this.browser.$(`//input[contains(@id,'username-input')]`).then(element => {
+            return element.waitForDisplayed(ms);
+        });
+    }
+
+    getTitle() {
+        return this.browser.getTitle();
+    }
+
+    async doLogin() {
+        let usernameInput = await this.findElement(this.usernameInput);
+        let passwordInput = await this.findElement(this.passwordInput);
+        await usernameInput.waitForDisplayed(1000);
+        await usernameInput.addValue("su");
+        await passwordInput.addValue("password");
+        await this.pause(300);
+        return await this.clickOnLoginButton();
+    }
+};
+module.exports = LoginPage;
 
 
 
