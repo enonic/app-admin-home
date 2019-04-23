@@ -1,4 +1,4 @@
-const Page = require('./Page');
+const Page = require('./page');
 const appConst = require('../libs/app_const');
 
 const xpath = {
