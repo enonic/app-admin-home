@@ -3,10 +3,10 @@ chai.use(require('chai-as-promised'));
 const expect = chai.expect;
 const assert = chai.assert;
 const webDriverHelper = require('../libs/WebDriverHelper');
-const loginPage = require('../page_objects/login.page');
+const LoginPage = require('../page_objects/login.page');
 const appConst = require('../libs/app_const');
 const testUtils = require('../libs/test.utils');
-const xpTourDialog = require('../page_objects/xp.tour.dialog');
+const XpTourDialog = require('../page_objects/xp.tour.dialog');
 
 describe('XP tour dialog - install applications and check their statuses', function () {
 
@@ -14,11 +14,13 @@ describe('XP tour dialog - install applications and check their statuses', funct
     webDriverHelper.setupBrowser();
 
     it('GIVEN XP tour dialog is opened WHEN Next-button has been pressed 2 times THEN Install button should appear', () => {
+        const loginPage = new LoginPage();
+        const xpTourDialog = new XpTourDialog();
         return loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT).then(() => {
             return loginPage.doLogin();
         }).then(() => {
             // XP Tour modal dialog should be loaded automatically
-            return xpTourDialog.waitForDialogPresent();
+            return xpTourDialog.waitForDialogLoaded();
         }).then(result => {
             testUtils.saveScreenshot("xp_tour_dialog_must_be_present2");
             assert.isTrue(result, 'XP tour dialog must be present!');
@@ -43,10 +45,12 @@ describe('XP tour dialog - install applications and check their statuses', funct
     });
 
     it('GIVEN Last step is opened WHEN `Install Apps` button has been pressed THEN three application should be installed', () => {
+        const loginPage = new LoginPage();
+        const xpTourDialog = new XpTourDialog();
         return loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT).then(() => {
             return loginPage.doLogin();
         }).then(() => {
-            return xpTourDialog.waitForDialogPresent();
+            return xpTourDialog.waitForDialogLoaded();
         }).then(result => {
             testUtils.saveScreenshot("xp_tour_dialog_must_be_present3");
             assert.isTrue(result, 'XP tour dialog must be present!');
@@ -72,11 +76,13 @@ describe('XP tour dialog - install applications and check their statuses', funct
     //Welcome Tour dialog - unknown status of applications on the last step
     it('GIVEN XP tour dialog is opened WHEN last step has been opened THEN expected status of apps should be displayed AND applications should be present in Launcher Panel',
         () => {
+            const loginPage = new LoginPage();
+            const xpTourDialog = new XpTourDialog();
             return loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT).then(() => {
                 return loginPage.doLogin();
             }).then(() => {
                 // XP Tour modal dialog should be loaded automatically
-                return xpTourDialog.waitForDialogPresent();
+                return xpTourDialog.waitForDialogLoaded();
             }).then(() => {
                 //Go to the step 2
                 return xpTourDialog.clickOnNextButton();
