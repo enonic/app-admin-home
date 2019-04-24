@@ -37,7 +37,7 @@ describe('XP tour dialog specification', function () {
         }).then(() => {
             return xpTourDialog.getTitle();
         }).then(title => {
-            assert.isTrue(title == 'Welcome Tour - Step 1 of 3', 'correct Dialog-title should be displayed');
+            assert.equal(title,'Welcome Tour - Step 1 of 3', 'correct Dialog-title should be displayed');
         })
     });
 

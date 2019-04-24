@@ -39,7 +39,7 @@ describe('XP tour dialog - install applications and check their statuses', funct
             assert.isTrue(result.includes('LIVE TRACE'), 'Live trace app should be available');
             assert.isTrue(result.includes('CONTENT STUDIO'), 'Content Studio app should be available');
             assert.isTrue(result.includes('DATA TOOLBOX'), 'Data Toolbox app should be available');
-            assert.equals(result.length, 3, 'Three applications should be available for installing');
+            assert.equal(result.length, 3, 'Three applications should be available for installing');
         })
     });
 
