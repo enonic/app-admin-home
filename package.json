@@ -41,9 +41,6 @@
     "uglifyjs-webpack-plugin": "^1.2.2",
     "webpack": "^3.11.0"
   },
-  "dependencies": {
-    "@webcomponents/html-imports": "^1.2.0"
-  },
   "browserslist": [
     "extends browserslist-config-enonic"
   ],
