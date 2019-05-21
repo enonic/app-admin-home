@@ -40,6 +40,11 @@ ext {
     seleniumDir = "$projectDir${File.separator}test-data${File.separator}selenium"
     xpServer = new ServerInstance()
 }
+
+app {
+    systemVersion = extProgram['xpVersion']
+}
+
 task ensureScreenshotsDirectory {
     doLast {
         mkdir screenshotsDir
