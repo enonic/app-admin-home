@@ -4,7 +4,6 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.0.1'
-    id 'com.enonic.xp.app' version '2.0.0'
     id 'com.moowork.node' version '0.13'
     id 'com.moowork.gulp' version '0.13'
     id 'com.github.psxpaul.execfork' version '0.1.8'
@@ -39,10 +38,6 @@ ext {
     configDir = "$xpHome${File.separator}config"
     seleniumDir = "$projectDir${File.separator}test-data${File.separator}selenium"
     xpServer = new ServerInstance()
-}
-
-app {
-    systemVersion = extProgram['xpVersion']
 }
 
 task ensureScreenshotsDirectory {
@@ -133,9 +128,8 @@ task testAdminHomeAppLocally( type: NpmTask, dependsOn: [npmInstall, ensureScree
 
 repositories {
     mavenLocal()
-    jcenter()
-    xp.enonicRepo()
+    mavenCentral()
     maven {
-        url 'https://plugins.gradle.org/m2/'
+        url 'https://repo.enonic.com/public'
     }
 }
