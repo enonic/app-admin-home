@@ -128,8 +128,15 @@ task testAdminHomeAppLocally( type: NpmTask, dependsOn: [npmInstall, ensureScree
 
 repositories {
     mavenLocal()
-    mavenCentral()
+    jcenter {
+        content {
+            excludeGroupByRegex "com\\.enonic.*"
+        }
+    }
     maven {
         url 'https://repo.enonic.com/public'
+        content {
+            includeGroup "com.enonic"
+        }
     }
 }
