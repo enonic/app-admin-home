@@ -129,7 +129,7 @@ task testAdminHomeAppLocally( type: NpmTask, dependsOn: [npmInstall, ensureScree
 repositories {
     mavenLocal()
     maven {
-        url 'https://repo.enonic.com/public' {
+        url "https://repo.enonic.com/public" {
             includeGroup "com.enonic"
         }
     }
