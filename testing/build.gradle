@@ -130,9 +130,6 @@ repositories {
     mavenLocal()
     maven {
         url "https://repo.enonic.com/public"
-        content {
-            includeGroup "com.enonic"
-        }
     }
     jcenter ()
 }
