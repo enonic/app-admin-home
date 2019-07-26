@@ -74,7 +74,7 @@ class XpTourDialog extends Page {
     async waitForInstallAppsButtonDisplayed() {
         try {
             let installButton = await this.findElement(this.installAppsButton);
-            return await installButton.waitForDisplayed(appConst.TIMEOUT_3);
+            return await installButton.waitForDisplayed(appConst.TIMEOUT_5);
         } catch (err) {
             this.saveScreenshot("err_xp_tour_install_button");
             throw new Error("Install Apps button is not visible in " + appConst.TIMEOUT_3 + " " + err)

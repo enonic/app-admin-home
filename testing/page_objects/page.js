@@ -1,4 +1,5 @@
 const webDriverHelper = require('../libs/WebDriverHelper');
+const path = require('path');
 
 class Page {
     constructor() {
@@ -51,7 +52,6 @@ class Page {
         let element = await this.findElement(selector);
         return element.waitForDisplayed(ms);
     }
-
 }
 
 module.exports = Page;
