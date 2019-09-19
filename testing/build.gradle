@@ -20,8 +20,13 @@ enonic {
     publishRepo = 'inhouse'
 }
 
+ext.extProgram = new Properties()
+extProgram.load( new FileInputStream( "../gradle.properties" ) )
+extProgram['xpVersion']
+
 ext {
-    xpVersion = '7.0.0-SNAPSHOT'
+    xpVersion = extProgram['xpVersion']
+    appVersion = extProgram['version']
     unpackDir = "$buildDir${File.separator}install"
     screenshotsDir = "$buildDir${File.separator}screenshots"
     reportsDir = "$buildDir${File.separator}reports"
@@ -34,6 +39,7 @@ ext {
     seleniumDir = "$projectDir${File.separator}test-data${File.separator}selenium"
     xpServer = new ServerInstance()
 }
+
 task ensureScreenshotsDirectory {
     doLast {
         mkdir screenshotsDir
@@ -122,8 +128,8 @@ task testAdminHomeAppLocally( type: NpmTask, dependsOn: [npmInstall, ensureScree
 
 repositories {
     mavenLocal()
-    mavenCentral()
     maven {
-        url 'https://repo.enonic.com/public'
+        url "https://repo.enonic.com/public"
     }
+    jcenter ()
 }

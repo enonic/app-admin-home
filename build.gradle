@@ -23,7 +23,7 @@ dependencies {
     include "com.enonic.xp:lib-auth:${xpVersion}"
     include "com.enonic.xp:lib-i18n:${xpVersion}"
     include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
-    include "com.enonic.lib:lib-mustache:2.0.0-SNAPSHOT"
+    include "com.enonic.lib:lib-mustache:2.0.0"
 }
 
 node {
