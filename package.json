@@ -43,9 +43,6 @@
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.2"
   },
-  "dependencies": {
-    "@webcomponents/html-imports": "^1.2.1"
-  },
   "browserslist": [
     "extends browserslist-config-enonic"
   ],

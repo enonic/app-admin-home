@@ -1,5 +1,4 @@
 import ApplicationEventType = api.application.ApplicationEventType;
-import '@webcomponents/html-imports';
 
 const launcherUrl = (CONFIG && CONFIG.launcherUrl) || null;
 const autoOpenLauncher = CONFIG && CONFIG.autoOpenLauncher;
@@ -9,7 +8,7 @@ let launcherPanel;
 let launcherButton;
 let launcherMainContainer;
 
-function appendLauncherButton() {
+const appendLauncherButton = () => {
     launcherButton = document.createElement('button');
     launcherButton.setAttribute('class', 'launcher-button ' + getColorClass());
     launcherButton.hidden = true;
@@ -26,41 +25,69 @@ function appendLauncherButton() {
     setTimeout(() => {
         launcherButton.focus();
     }, 1200);
-}
+};
 
-function getColorClass() {
-    return CONFIG.launcherButtonCls || '';
-}
+const getColorClass = () => CONFIG.launcherButtonCls || '';
 
-function isPanelExpanded() {
-    return launcherPanel.classList.contains('visible');
-}
+const isPanelExpanded = () => launcherPanel.classList.contains('visible');
 
-function togglePanelState() {
-    if (isPanelExpanded()) {
-        closeLauncherPanel();
-    } else {
-        openLauncherPanel();
-    }
-}
+const togglePanelState = () => isPanelExpanded() ? closeLauncherPanel() : openLauncherPanel();
 
-function toggleButton() {
+const toggleButton = () => {
     launcherButton.classList.toggle('toggled');
     launcherButton.focus();
-}
+};
 
-function appendLauncherPanel() {
-    const div = document.createElement('div');
-    div.setAttribute('class', 'launcher-panel');
-    div.classList.add('hidden');
+const launcherButtonHasFocus = () => document.activeElement === launcherButton;
 
-    document.head.appendChild(createLauncherLink(div));
-    document.body.appendChild(div);
+const fetchLauncherContents = () =>
+    fetch(launcherUrl)
+        .then(response => response.text())
+        .then((html: string) => {
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            return div.firstChild;
+        })
+        .catch(err => {
+            throw new Error('Failed to fetch page: ' + err);
+        });
 
-    launcherPanel = div;
-}
 
-function onLauncherClick(e: MouseEvent) {
+const appendLauncherPanel = () => {
+    const container = document.createElement('div');
+    container.setAttribute('class', 'launcher-panel');
+    container.classList.add('hidden');
+
+    fetchLauncherContents()
+        .then((launcherEl: HTMLElement) => {
+            container.appendChild(launcherEl);
+            launcherMainContainer = container.firstChild;
+            launcherButton.hidden = false;
+            launcherMainContainer.setAttribute('hidden', 'true');
+            if (CONFIG.appId === 'home') {
+                launcherMainContainer.classList.add('home');
+            }
+            document.body.appendChild(container);
+            addLongClickHandler(container);
+
+            if (autoOpenLauncher) {
+                openLauncherPanel();
+                launcherButton.focus();
+            } else {
+                const appTiles = container
+                    .querySelector('.launcher-app-container')
+                    .querySelectorAll('a');
+                for (let i = 0; i < appTiles.length; i++) {
+                    appTiles[i].addEventListener('click', () => closeLauncherPanel(true));
+                }
+            }
+            highlightActiveApp();
+        });
+
+    launcherPanel = container;
+};
+
+const onLauncherClick = (e: MouseEvent) => {
     if (!launcherPanel || !launcherMainContainer) {
         return;
     }
@@ -74,68 +101,18 @@ function onLauncherClick(e: MouseEvent) {
     ) {
         closeLauncherPanel();
     }
-}
+};
 
-function isDashboardIcon(element: EventTarget) {
-    return wemjq(element).closest('.dashboard-item').length > 0;
-}
+const isDashboardIcon = (element: EventTarget) => wemjq(element).closest('.dashboard-item').length > 0;
 
-function isModalDialogActiveOnHomePage(element: EventTarget) {
-    return (
+const isModalDialogActiveOnHomePage = (element: EventTarget) =>
+    (
         CONFIG.appId === 'home' &&
         (document.body.classList.contains('modal-dialog') ||
             wemjq(element).closest('.xp-admin-common-modal-dialog').length > 0)
     );
-}
 
-function loadLauncher(onload: () => void) {
-    const link = document.createElement('link');
-    const url = launcherUrl + '?t=' + Date.now();
-
-    link.setAttribute('rel', 'import');
-    link.setAttribute('href', url);
-    link.setAttribute('async', '');
-
-    link.onload = onload;
-
-    return link;
-}
-
-function createLauncherLink(container: HTMLElement) {
-    let link;
-
-    function onload() {
-        launcherButton.hidden = false;
-        launcherMainContainer = link.import.querySelector(
-            '.launcher-main-container'
-        );
-        launcherMainContainer.setAttribute('hidden', 'true');
-        if (CONFIG.appId === 'home') {
-            launcherMainContainer.classList.add('home');
-        }
-        container.appendChild(launcherMainContainer);
-        addLongClickHandler(container);
-
-        if (autoOpenLauncher) {
-            openLauncherPanel();
-            launcherButton.focus();
-        } else {
-            const appTiles = container
-                .querySelector('.launcher-app-container')
-                .querySelectorAll('a');
-            for (let i = 0; i < appTiles.length; i++) {
-                appTiles[i].addEventListener('click', () => closeLauncherPanel(true));
-            }
-        }
-        highlightActiveApp();
-    }
-
-    link = loadLauncher(onload);
-
-    return link;
-}
-
-function openWindow(windowArr: Window[], anchorEl: HTMLAnchorElement) {
+const openWindow = (windowArr: Window[], anchorEl: HTMLAnchorElement) => {
     const windowId = anchorEl.getAttribute('data-id');
 
     if (windowArr[windowId] && !windowArr[windowId].closed) {
@@ -144,9 +121,9 @@ function openWindow(windowArr: Window[], anchorEl: HTMLAnchorElement) {
         // eslint-disable-next-line no-param-reassign
         windowArr[windowId] = window.open(anchorEl.href, windowId);
     }
-}
+};
 
-function addLongClickHandler(container: HTMLElement) {
+const addLongClickHandler = (container: HTMLElement) => {
     let longpress = false;
     let startTime;
     let endTime;
@@ -186,18 +163,18 @@ function addLongClickHandler(container: HTMLElement) {
             longpress = endTime - startTime >= 500;
         });
     }
-}
+};
 
-function openLauncherPanel() {
+const openLauncherPanel = () => {
     launcherMainContainer.removeAttribute('hidden');
     listenToKeyboardEvents();
     toggleButton();
     launcherPanel.classList.remove('hidden', 'slideout');
     launcherPanel.classList.add('visible');
     document.addEventListener('click', onLauncherClick);
-}
+};
 
-function closeLauncherPanel(skipTransition?: boolean) {
+const closeLauncherPanel = (skipTransition?: boolean) => {
     document.removeEventListener('click', onLauncherClick);
     launcherMainContainer.setAttribute('hidden', 'true');
     unlistenToKeyboardEvents();
@@ -207,7 +184,7 @@ function closeLauncherPanel(skipTransition?: boolean) {
     );
     toggleButton();
     unselectCurrentApp();
-}
+};
 
 const closeLauncher = new api.ui.KeyBinding('esc')
     .setGlobal(true)
@@ -222,6 +199,7 @@ const closeLauncher = new api.ui.KeyBinding('esc')
 
         return false;
     });
+
 const prevApp = new api.ui.KeyBinding('up')
     .setGlobal(true)
     .setCallback(() => {
@@ -232,6 +210,7 @@ const prevApp = new api.ui.KeyBinding('up')
         }
         return false;
     });
+
 const nextApp = new api.ui.KeyBinding('down')
     .setGlobal(true)
     .setCallback(e => {
@@ -245,6 +224,7 @@ const nextApp = new api.ui.KeyBinding('down')
 
         return false;
     });
+
 const runApp = new api.ui.KeyBinding('enter')
     .setGlobal(true)
     .setCallback(e => {
@@ -255,28 +235,27 @@ const runApp = new api.ui.KeyBinding('enter')
             const selectedApp = getSelectedApp();
             if (selectedApp) {
                 startApp(selectedApp);
+            } else if (launcherButtonHasFocus()) {
+              closeLauncherPanel();
             }
         }
         return false;
     });
+
 const launcherBindings = [closeLauncher, prevApp, nextApp, runApp];
 
-function listenToKeyboardEvents() {
-    api.ui.KeyBindings.get().bindKeys(launcherBindings);
-}
+const listenToKeyboardEvents = () => api.ui.KeyBindings.get().bindKeys(launcherBindings);
 
-function unlistenToKeyboardEvents() {
-    api.ui.KeyBindings.get().unbindKeys(launcherBindings);
-}
+const unlistenToKeyboardEvents = () => api.ui.KeyBindings.get().unbindKeys(launcherBindings);
 
-function unselectCurrentApp() {
+const unselectCurrentApp = () => {
     const selectedApp = getSelectedApp();
     if (selectedApp) {
         selectedApp.classList.remove('selected');
     }
-}
+};
 
-function highlightActiveApp() {
+const highlightActiveApp = () => {
     if (!appId) {
         return;
     }
@@ -286,9 +265,9 @@ function highlightActiveApp() {
             appRows[i].classList.add('active');
         }
     }
-}
+};
 
-function addApplicationsListeners() {
+const addApplicationsListeners = () => {
     if (!initApplicationsListeners()) {
         let triesLeft = 3;
         const intervalID = setInterval(() => {
@@ -300,34 +279,29 @@ function addApplicationsListeners() {
             }
         }, 3000);
     }
-}
+};
 
 const reloadLauncher = api.util.AppHelper.debounce(
-    () => {
-        let link;
+    () =>
+        fetchLauncherContents()
+            .then((launcherEl: HTMLElement) => {
+                const oldLauncherContent = launcherPanel.querySelector(
+                    '.scrollable-content'
+                );
 
-        function onload() {
-            const oldLauncherContent = launcherPanel.querySelector(
-                '.scrollable-content'
-            );
-            const newLauncherContent = link.import.querySelector(
-                '.scrollable-content'
-            );
-            const parent = oldLauncherContent.parentNode;
-            parent.replaceChild(newLauncherContent, oldLauncherContent);
-            link.remove();
-            highlightActiveApp();
-        }
-
-        link = loadLauncher(onload);
-
-        document.head.appendChild(link);
-    },
+                const newLauncherContent = launcherEl.querySelector(
+                    '.scrollable-content'
+                );
+                const parent = oldLauncherContent.parentNode;
+                parent.replaceChild(newLauncherContent, oldLauncherContent);
+                highlightActiveApp();
+            })
+    ,
     1000,
     false
 );
 
-function initApplicationsListeners() {
+const initApplicationsListeners = () => {
     if (api.application.ApplicationEvent) {
         api.application.ApplicationEvent.on(e => {
             const statusChanged =
@@ -340,31 +314,29 @@ function initApplicationsListeners() {
         return true;
     }
     return false;
-}
+};
 
-function listenToMouseMove() {
+const listenToMouseMove = () => {
     window.addEventListener('mousemove', disableKeyboardNavigation, true);
-}
+};
 
-function disableKeyboardNavigation() {
+const disableKeyboardNavigation = () => {
     getLauncherMainContainer().classList.remove('keyboard-navigation');
     unselectCurrentApp();
     window.removeEventListener('mousemove', disableKeyboardNavigation, true);
-}
+};
 
-function initKeyboardNavigation() {
+const initKeyboardNavigation = () => {
     const appContainer = getLauncherMainContainer();
     if (!appContainer.classList.contains('keyboard-navigation')) {
         listenToMouseMove();
         appContainer.classList.add('keyboard-navigation');
     }
-}
+};
 
-function getSelectedApp(): HTMLElement {
-    return launcherPanel.querySelector('.app-row.selected');
-}
+const getSelectedApp = (): HTMLElement => launcherPanel.querySelector('.app-row.selected');
 
-function getSelectedAppIndex() {
+const getSelectedAppIndex = () => {
     const apps = getLauncherMainContainer().querySelectorAll('.app-row');
     for (let i = 0; i < apps.length; i++) {
         if (apps[i].classList.contains('selected')) {
@@ -372,9 +344,9 @@ function getSelectedAppIndex() {
         }
     }
     return -1;
-}
+};
 
-function selectNextApp() {
+const selectNextApp = () => {
     const firstAppIndex = isHomeAppActive() ? 1 : 0;
     const selectedIndex = getSelectedAppIndex();
     const apps = getLauncherMainContainer().querySelectorAll('.app-row');
@@ -384,9 +356,9 @@ function selectNextApp() {
             ? firstAppIndex
             : selectedIndex + 1
     );
-}
+};
 
-function selectPreviousApp() {
+const selectPreviousApp = () => {
     const selectedIndex = getSelectedAppIndex();
     let nextIndex;
     if (selectedIndex === -1) {
@@ -401,14 +373,14 @@ function selectPreviousApp() {
     }
 
     selectApp(nextIndex);
-}
+};
 
-function selectApp(index: number) {
+const selectApp = (index: number) => {
     unselectCurrentApp();
     getAppByIndex(index).classList.add('selected');
-}
+};
 
-function getAppByIndex(index: number) {
+const getAppByIndex = (index: number) => {
     const apps = getLauncherMainContainer().querySelectorAll('.app-row');
     for (let i = 0; i < apps.length; i++) {
         if (i === index) {
@@ -416,31 +388,21 @@ function getAppByIndex(index: number) {
         }
     }
     return null;
-}
+};
 
-function startApp(app: HTMLElement) {
+const startApp = (app: HTMLElement) => {
     const anchorEl = app.parentElement;
     if (anchorEl && anchorEl.tagName === 'A' && anchorEl.click) {
         unselectCurrentApp();
         anchorEl.click();
     }
-}
+};
 
-function getLauncherMainContainer() {
-    if (!launcherMainContainer) {
-        launcherMainContainer = document.querySelector(
-            '.launcher-main-container'
-        );
-    }
+const getLauncherMainContainer = () => launcherMainContainer || document.querySelector('.launcher-main-container');
 
-    return launcherMainContainer;
-}
+const isHomeAppActive = () => getLauncherMainContainer().classList.contains('home');
 
-function isHomeAppActive() {
-    return getLauncherMainContainer().classList.contains('home');
-}
-
-export function init() {
+export const init = () => {
     if (launcherUrl == null) {
         throw new Error('CONFIG.launcherUrl is not defined');
     }
@@ -448,4 +410,4 @@ export function init() {
     appendLauncherButton();
     appendLauncherPanel();
     addApplicationsListeners();
-}
+};
