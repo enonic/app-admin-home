@@ -1,3 +1,6 @@
+import {i18n} from 'lib-admin-ui/util/Messages';
+import {showError} from 'lib-admin-ui/notify/MessageBus';
+
 const statusUrl = CONFIG.adminUrl + '/rest/status';
 const adminToolUrl = CONFIG.adminUrl + '/tool';
 let connectionLostMessageId;
@@ -41,8 +44,8 @@ function logout() {
 
 function alertConnectionLost() {
     if (!connectionLostMessageId) {
-        connectionLostMessageId = api.notify.showError(
-            api.util.i18n('notify.connection.loss')
+        connectionLostMessageId = showError(
+            i18n('notify.connection.loss')
         );
     }
 }

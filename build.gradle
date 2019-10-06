@@ -22,7 +22,7 @@ dependencies {
     include "com.enonic.xp:lib-portal:${xpVersion}"
     include "com.enonic.xp:lib-auth:${xpVersion}"
     include "com.enonic.xp:lib-i18n:${xpVersion}"
-    include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
+    compile "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
     include "com.enonic.lib:lib-mustache:2.0.0"
 }
 
@@ -93,8 +93,7 @@ if ( hasProperty( 'env' ) )
 
 def applyExcludedTasks() {
     def libAdminUi = gradle.includedBuild( 'lib-admin-ui' )
-    Closure permittedTasks = { it == 'lint' || it == 'test' }
-    def excludedTasks = gradle.startParameter.getExcludedTaskNames().findAll( permittedTasks )
+    def excludedTasks = gradle.startParameter.getExcludedTaskNames().findAll( { it == 'lint' || it == 'test' } )
     libAdminUi.getLoadedSettings().getStartParameter().setExcludedTaskNames( excludedTasks )
 }
 

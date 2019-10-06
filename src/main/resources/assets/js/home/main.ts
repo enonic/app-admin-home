@@ -1,8 +1,16 @@
 import {startPolling} from './sessionExpiredDetector';
 import {init} from './xptour';
-import ModalDialog = api.ui.dialog.ModalDialog;
+import {i18nInit} from 'lib-admin-ui/util/MessagesInitializer';
+import {ModalDialogWithConfirmation} from 'lib-admin-ui/ui/dialog/ModalDialogWithConfirmation';
+import {CookieHelper} from 'lib-admin-ui/util/CookieHelper';
+import {Application} from 'lib-admin-ui/app/Application';
+import {ServerEventsListener} from 'lib-admin-ui/event/ServerEventsListener';
+import {BodyMask} from 'lib-admin-ui/ui/mask/BodyMask';
+import {Element} from 'lib-admin-ui/dom/Element';
+import {i18n} from 'lib-admin-ui/util/Messages';
+import {Body} from 'lib-admin-ui/dom/Body';
 
-api.util.i18nInit(CONFIG.i18nUrl).then(() => {
+i18nInit(CONFIG.i18nUrl).then(() => {
 
     setupWebSocketListener();
 
@@ -11,12 +19,12 @@ api.util.i18nInit(CONFIG.i18nUrl).then(() => {
     startPolling();
 
     if (CONFIG.tourEnabled) {
-        init().then(function (tourDialog: ModalDialog) {
-            const enonicXPTourCookie = api.util.CookieHelper.getCookie(
+        init().then(function (tourDialog: ModalDialogWithConfirmation) {
+            const enonicXPTourCookie = CookieHelper.getCookie(
                 'enonic_xp_tour'
             );
             if (!enonicXPTourCookie) {
-                api.util.CookieHelper.setCookie('enonic_xp_tour', 'tour', 365);
+                CookieHelper.setCookie('enonic_xp_tour', 'tour', 365);
                 tourDialog.open();
             }
 
@@ -30,15 +38,15 @@ api.util.i18nInit(CONFIG.i18nUrl).then(() => {
 });
 
 function setupWebSocketListener() {
-    const dummyApp = new api.app.Application('home', 'home', 'home', '');
+    const dummyApp = new Application('home', 'home', 'home', '');
     dummyApp.setWindow(window);
 
-    const serverEventsListener = new api.event.ServerEventsListener([dummyApp]);
+    const serverEventsListener = new ServerEventsListener([dummyApp]);
     serverEventsListener.start();
 }
 
-function setupBodyClickListeners(dialog: ModalDialog) {
-    const bodyEl = api.ui.mask.BodyMask.get().getHTMLElement();
+function setupBodyClickListeners(dialog: ModalDialogWithConfirmation) {
+    const bodyEl = BodyMask.get().getHTMLElement();
 
     function listener(e: MouseEvent) {
         e.stopPropagation();
@@ -52,19 +60,17 @@ function setupBodyClickListeners(dialog: ModalDialog) {
 }
 
 function setupAboutDialog() {
-    const aboutDialog = new ModalDialog({skipTabbable: true});
+    const aboutDialog = new ModalDialogWithConfirmation({skipTabbable: true, confirmation: {yesCallback: null}});
     aboutDialog.addClass('xp-about-dialog');
     aboutDialog.appendChildToContentPanel(getAboutDialogContent());
     document.querySelector('.xp-about').addEventListener('click', () => {
-        api.dom.Body.get().appendChild(aboutDialog);
+        Body.get().appendChild(aboutDialog);
         aboutDialog.open();
         setupBodyClickListeners(aboutDialog);
     });
 }
 
 function getAboutDialogContent() {
-    const i18n = api.util.i18n;
-
     const html =
         '<div class="xp-about-dialog-content">' +
         '    <div class="xp-about-dialog-app-icon">' +
@@ -100,6 +106,6 @@ function getAboutDialogContent() {
         '    </div>' +
         '</div>';
 
-    const element = api.dom.Element.fromString(html);
+    const element = Element.fromString(html);
     return element;
 }

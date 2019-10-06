@@ -12,7 +12,14 @@
     "fix:ts": "tslint -p tsconfig.build.json -c tslint.json --fix",
     "fix:js": "eslint . --fix"
   },
+  "dependencies": {
+    "jquery": "^3.4.1",
+    "lib-admin-ui": "file:./.xp/dev/lib-admin-ui",
+    "q": "^1.5.1"
+  },
   "devDependencies": {
+    "@types/jquery": "^3.3.31",
+    "@types/q": "^1.5.2",
     "autoprefixer": "^8.1.0",
     "browserslist": "^3.1.2",
     "browserslist-config-enonic": "^1.0.3",

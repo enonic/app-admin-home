@@ -1,4 +1,8 @@
-import ApplicationEventType = api.application.ApplicationEventType;
+import * as $ from 'jquery';
+import {KeyBinding} from 'lib-admin-ui/ui/KeyBinding';
+import {KeyBindings} from 'lib-admin-ui/ui/KeyBindings';
+import {AppHelper} from 'lib-admin-ui/util/AppHelper';
+import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/ApplicationEvent';
 
 const launcherUrl = (CONFIG && CONFIG.launcherUrl) || null;
 const autoOpenLauncher = CONFIG && CONFIG.autoOpenLauncher;
@@ -103,13 +107,13 @@ const onLauncherClick = (e: MouseEvent) => {
     }
 };
 
-const isDashboardIcon = (element: EventTarget) => wemjq(element).closest('.dashboard-item').length > 0;
+const isDashboardIcon = (element: EventTarget) => $(element).closest('.dashboard-item').length > 0;
 
 const isModalDialogActiveOnHomePage = (element: EventTarget) =>
     (
         CONFIG.appId === 'home' &&
         (document.body.classList.contains('modal-dialog') ||
-            wemjq(element).closest('.xp-admin-common-modal-dialog').length > 0)
+            $(element).closest('.xp-admin-common-modal-dialog').length > 0)
     );
 
 const openWindow = (windowArr: Window[], anchorEl: HTMLAnchorElement) => {
@@ -186,7 +190,7 @@ const closeLauncherPanel = (skipTransition?: boolean) => {
     unselectCurrentApp();
 };
 
-const closeLauncher = new api.ui.KeyBinding('esc')
+const closeLauncher = new KeyBinding('esc')
     .setGlobal(true)
     .setCallback(e => {
         if (!isPanelExpanded()) {
@@ -200,7 +204,7 @@ const closeLauncher = new api.ui.KeyBinding('esc')
         return false;
     });
 
-const prevApp = new api.ui.KeyBinding('up')
+const prevApp = new KeyBinding('up')
     .setGlobal(true)
     .setCallback(() => {
         if (isPanelExpanded()) {
@@ -211,7 +215,7 @@ const prevApp = new api.ui.KeyBinding('up')
         return false;
     });
 
-const nextApp = new api.ui.KeyBinding('down')
+const nextApp = new KeyBinding('down')
     .setGlobal(true)
     .setCallback(e => {
         if (isPanelExpanded()) {
@@ -225,7 +229,7 @@ const nextApp = new api.ui.KeyBinding('down')
         return false;
     });
 
-const runApp = new api.ui.KeyBinding('enter')
+const runApp = new KeyBinding('enter')
     .setGlobal(true)
     .setCallback(e => {
         if (isPanelExpanded()) {
@@ -244,9 +248,9 @@ const runApp = new api.ui.KeyBinding('enter')
 
 const launcherBindings = [closeLauncher, prevApp, nextApp, runApp];
 
-const listenToKeyboardEvents = () => api.ui.KeyBindings.get().bindKeys(launcherBindings);
+const listenToKeyboardEvents = () => KeyBindings.get().bindKeys(launcherBindings);
 
-const unlistenToKeyboardEvents = () => api.ui.KeyBindings.get().unbindKeys(launcherBindings);
+const unlistenToKeyboardEvents = () => KeyBindings.get().unbindKeys(launcherBindings);
 
 const unselectCurrentApp = () => {
     const selectedApp = getSelectedApp();
@@ -281,7 +285,7 @@ const addApplicationsListeners = () => {
     }
 };
 
-const reloadLauncher = api.util.AppHelper.debounce(
+const reloadLauncher = AppHelper.debounce(
     () =>
         fetchLauncherContents()
             .then((launcherEl: HTMLElement) => {
@@ -302,8 +306,8 @@ const reloadLauncher = api.util.AppHelper.debounce(
 );
 
 const initApplicationsListeners = () => {
-    if (api.application.ApplicationEvent) {
-        api.application.ApplicationEvent.on(e => {
+    if (ApplicationEvent) {
+        ApplicationEvent.on(e => {
             const statusChanged =
                 ApplicationEventType.STARTED === e.getEventType() ||
                 ApplicationEventType.STOPPED === e.getEventType();
