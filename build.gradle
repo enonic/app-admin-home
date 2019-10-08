@@ -51,6 +51,7 @@ task lint( type: NpmTask, dependsOn: npmInstall ) {
 task webpack( type: NodeTask, dependsOn: lint ) {
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     description = 'Build UI resources (js, css, etc).'
+    inputs.dir '.xp/dev'
     inputs.dir 'src/main'
     outputs.dir "$buildDir/resources/main"
     script = file( './node_modules/webpack/bin/webpack' )
