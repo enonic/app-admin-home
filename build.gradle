@@ -48,12 +48,12 @@ task lint( type: NpmTask, dependsOn: npmInstall ) {
     outputs.upToDateWhen { false }
 }
 
-task webpack( type: NodeTask, dependsOn: lint ) {
+task webpack( type: NodeTask, dependsOn: [npmInstall, lint] ) {
     environment = [ 'NODE_ENV': nodeEnvironment() ]
-    description = 'Build UI resources (js, css, etc).'
+    description = 'Build UI resources (ts, css, etc).'
     inputs.dir '.xp/dev'
     inputs.dir 'src/main'
-    outputs.dir "$buildDir/resources/main"
+    outputs.dir "${buildDir}/resources/main"
     script = file( './node_modules/webpack/bin/webpack' )
 }
 
