@@ -53,14 +53,7 @@
   max-width: 496px;
   background-color: rgba(0, 0, 0, 0.8);
   padding: 0 !important;
-
-  .modal-dialog-header {
-    padding: 0;
-  }
-
-  .modal-dialog-content-wrapper {
-    margin-bottom: -4em;
-  }
+  border: none;
 
   .cancel-button-top {
     background-color: rgba(0, 0, 0, 0) !important;
@@ -72,85 +65,101 @@
     }
   }
 
-  .xp-about-dialog-content {
-    color: #bfbfbf;
+  .modal-dialog-header {
+    padding: 0;
   }
 
   .modal-dialog-body {
     padding: 30px;
     padding-bottom: 20px;
-  }
 
-  .xp-about-dialog-app-icon {
-    float: left;
-    margin: 0 30px 50px 0;
-  }
+    .xp-about-dialog-content {
+      color: #bfbfbf;
 
-  h1 {
-    margin: 0 0 12px 0;
-  }
+      h1 {
+        margin: 0 0 12px 0;
+      }
 
-  .xp-about-dialog-version-block {
-    font-size: 14px;
-    margin-bottom: 15px;
-    a {
-      color: #70879e;
+      .xp-about-dialog-app-icon {
+        float: left;
+        margin: 0 30px 50px 0;
+      }
+
+      .xp-about-dialog-version-block {
+        font-size: 14px;
+        margin-bottom: 15px;
+        a {
+          color: #70879e;
+        }
+
+        .xp-about-dialog-version {
+          font-weight: bold;
+        }
+      }
+
+      .xp-about-dialog-text {
+        font-size: 13px;
+        font-weight: 700;
+        text-align: justify;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .xp-about-dialog-license {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: calc(100% - 40px);
+        left: 0;
+        min-height: 40px;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.3);
+
+        a {
+          flex: 33%;
+          margin-top: 10px;
+          text-align: center;
+          color: @admin-white;
+          text-decoration: none;
+          font-weight: 500;
+          font-size: 13px;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-outline: none;
+          -moz-outline: none;
+          -ms-outline: none;
+          -o-outline: none;
+          outline: none;
+        }
+
+        .xp-license-info-container {
+          padding: 10px;
+          background-color: #545251;
+          display: none;
+
+          .xp-license-info-header {
+            text-align: center;
+            font-size: 14px;
+            padding: 10px 0;
+          }
+        }
+
+        &.expanded {
+          .xp-license-info-container {
+
+            display: block;
+
+          }
+        }
+
+      }
+
     }
-
-    .xp-about-dialog-version {
-      font-weight: bold;
-    }
-  }
-
-  .xp-about-dialog-text {
-    font-size: 13px;
-    font-weight: 700;
-    text-align: justify;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  .xp-about-dialog-button-close {
-    background-color: #DB4437;
-  }
-
-  .dialog-buttons {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
   }
 
   .modal-dialog-footer {
     display: none;
   }
-
-  .xp-about-dialog-footer {
-    display: flex;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 40px;
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.3);
-
-    a {
-      flex: 33%;
-      margin-top: 10px;
-      text-align: center;
-      color: @admin-white;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 13px;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      -webkit-outline: none;
-      -moz-outline: none;
-      -ms-outline: none;
-      -o-outline: none;
-      outline: none;
-    }
-  }
-
 }
 
 .xp-tour-dialog {
