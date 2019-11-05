@@ -3,7 +3,8 @@ import DivEl = api.dom.DivEl;
 import ModalDialog = api.ui.dialog.ModalDialog;
 import i18n = api.util.i18n;
 
-const licenseUrl: string = 'https://raw.githubusercontent.com/enonic/xp/master/NOTICE.txt';
+const noticeUrl: string = 'https://raw.githubusercontent.com/enonic/xp/master/NOTICE.txt';
+const licenseUrl: string = 'https://raw.githubusercontent.com/enonic/xp/master/LICENSE.txt';
 
 export const create = (): ModalDialog => {
     const aboutDialog = new ModalDialog({skipTabbable: true});
@@ -20,30 +21,39 @@ export const create = (): ModalDialog => {
 
 
 const fetchLicenses = (): Promise<string> => {
-    return fetch(licenseUrl)
+    return fetch(noticeUrl)
         .then(response => response.text())
         .catch(() => {
-            return 'Failed to fetch license info';
+            return i18n('home.dashboard.about.dialog.license.error');
         });
 };
 
 
 const createLicenseInfoContainer = () => {
-    const outerContainer = Element.fromHtmlElement(document.querySelector('.xp-about-dialog-license'));
+    const outerContainer = Element.fromHtmlElement(document.querySelector('.xp-about-dialog-license'), true);
+
+    if (outerContainer.getChildren().length) {
+        return;
+    }
+
     const button = new api.ui.button.Button(i18n('home.dashboard.about.dialog.licensing'));
+    const linkEl = new api.dom.AEl();
+    linkEl.setUrl(licenseUrl);
+    linkEl.getEl().setText(i18n('home.dashboard.about.dialog.license.name'));
+    linkEl.getEl().setAttribute('target', '_blank');
 
     const licenseInfoHeader = new DivEl('xp-license-info-header');
-    licenseInfoHeader.setHtml(i18n('home.dashboard.about.dialog.licensing.title'));
+    licenseInfoHeader.setHtml(i18n('home.dashboard.about.dialog.license.title'));
+    licenseInfoHeader.appendChild(linkEl);
 
     const licenseInfoContainer = new DivEl('xp-license-info-body');
-    //licenseInfoBody.setHtml('Fetched license info here...');
 
-    button.onClicked((e: MouseEvent) => toggleLicenseInfo(e, outerContainer, licenseInfoContainer));
+    button.onClicked(() => toggleLicenseInfo(outerContainer, licenseInfoContainer));
 
     outerContainer.appendChildren(button, licenseInfoHeader, licenseInfoContainer);
 };
 
-const toggleLicenseInfo = (e: MouseEvent, outerContainer: Element, licenseInfoContainer: DivEl) => {
+const toggleLicenseInfo = (outerContainer: Element, licenseInfoContainer: DivEl) => {
     if (!licenseInfoContainer.getHtml()) {
 
         fetchLicenses().then((licenseText: string) => {

@@ -73,13 +73,17 @@
     padding: 30px;
     padding-bottom: 0;
     overflow: visible;
-    max-height: 70vh;
+    max-height: 90vh;
 
     .xp-about-dialog-content {
       color: #bfbfbf;
 
       h1 {
         margin: 0 0 12px 0;
+      }
+
+      a {
+        color: #70879e;
       }
 
       .xp-about-dialog-app-icon {
@@ -90,9 +94,6 @@
       .xp-about-dialog-version-block {
         font-size: 14px;
         margin-bottom: 15px;
-        a {
-          color: #70879e;
-        }
 
         .xp-about-dialog-version {
           font-weight: bold;
@@ -153,13 +154,42 @@
           text-align: center;
           font-size: 14px;
           padding-bottom: 10px;
+
+          a {
+            margin-left: 5px;
+          }
         }
 
         .xp-license-info-body {
-          white-space: pre;
+          white-space: pre-wrap;
           padding: 0 20px;
-          max-height: 200px;
+          max-height: 60vh;
           overflow-y: auto;
+
+          @media screen and (max-height: 768px) {
+            max-height: 40vh;
+          }
+
+          scrollbar-color: #454448 #545251;
+
+          &::-webkit-scrollbar-track
+          {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            background-color: #545251;
+          }
+
+          &::-webkit-scrollbar
+          {
+            background-color: #545251;
+          }
+
+          &::-webkit-scrollbar-thumb
+          {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+            background-color: #454448;
+          }
         }
 
         &.expanded {
