@@ -1,15 +1,15 @@
 import {Element} from 'lib-admin-ui/dom/Element';
+import {ModalDialogWithConfirmation} from 'lib-admin-ui/ui/dialog/ModalDialogWithConfirmation';
 import {DivEl} from 'lib-admin-ui/dom/DivEl';
 import {AEl} from 'lib-admin-ui/dom/AEl';
 import {Button} from 'lib-admin-ui/ui/button/Button';
-import {ModalDialog} from 'lib-admin-ui/ui/dialog/ModalDialog';
 import {i18n} from 'lib-admin-ui/util/Messages';
 
 const noticeUrl: string = 'https://raw.githubusercontent.com/enonic/xp/master/NOTICE.txt';
 const licenseUrl: string = 'https://raw.githubusercontent.com/enonic/xp/master/LICENSE.txt';
 
-export const create = (): ModalDialog => {
-    const aboutDialog = new ModalDialog({skipTabbable: true});
+export const create = (): ModalDialogWithConfirmation => {
+    const aboutDialog = new ModalDialogWithConfirmation({skipTabbable: true});
     const aboutDialogContent = getAboutDialogContent();
     aboutDialog.addClass('xp-about-dialog');
     aboutDialogContent.onAdded(() => {

@@ -6,8 +6,6 @@ import {CookieHelper} from 'lib-admin-ui/util/CookieHelper';
 import {Application} from 'lib-admin-ui/app/Application';
 import {ServerEventsListener} from 'lib-admin-ui/event/ServerEventsListener';
 import {BodyMask} from 'lib-admin-ui/ui/mask/BodyMask';
-import {Element} from 'lib-admin-ui/dom/Element';
-import {i18n} from 'lib-admin-ui/util/Messages';
 import {Body} from 'lib-admin-ui/dom/Body';
 import {create as createAboutDialog} from './AboutDialog';
 
