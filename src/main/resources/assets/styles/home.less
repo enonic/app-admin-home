@@ -53,14 +53,7 @@
   max-width: 496px;
   background-color: rgba(0, 0, 0, 0.8);
   padding: 0 !important;
-
-  .modal-dialog-header {
-    padding: 0;
-  }
-
-  .modal-dialog-content-wrapper {
-    margin-bottom: -4em;
-  }
+  border: none;
 
   .cancel-button-top {
     background-color: rgba(0, 0, 0, 0) !important;
@@ -72,85 +65,155 @@
     }
   }
 
-  .xp-about-dialog-content {
-    color: #bfbfbf;
+  .modal-dialog-header {
+    padding: 0;
   }
 
   .modal-dialog-body {
     padding: 30px;
-    padding-bottom: 20px;
-  }
+    padding-bottom: 0;
+    overflow: visible;
+    max-height: 90vh;
 
-  .xp-about-dialog-app-icon {
-    float: left;
-    margin: 0 30px 50px 0;
-  }
+    .xp-about-dialog-content {
+      color: #bfbfbf;
 
-  h1 {
-    margin: 0 0 12px 0;
-  }
+      h1 {
+        margin: 0 0 12px 0;
+      }
 
-  .xp-about-dialog-version-block {
-    font-size: 14px;
-    margin-bottom: 15px;
-    a {
-      color: #70879e;
+      a {
+        color: #70879e;
+      }
+
+      .xp-about-dialog-app-icon {
+        float: left;
+        margin: 0 30px 35px 0;
+      }
+
+      .xp-about-dialog-version-block {
+        font-size: 14px;
+        margin-bottom: 15px;
+
+        .xp-about-dialog-version {
+          font-weight: bold;
+        }
+      }
+
+      .xp-about-dialog-text {
+        font-size: 13px;
+        font-weight: 700;
+        text-align: justify;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .xp-about-dialog-license {
+        display: flex;
+        flex-direction: column;
+        min-height: 40px;
+        margin-left: -30px;
+        width: calc(100% + 60px);
+        background-color: #545251;
+        box-sizing: border-box;
+
+        button {
+          background-color: #545251;
+          height: 40px;
+          margin: 0 auto;
+          position: relative;
+
+          &:hover {
+            opacity: 0.8;
+          }
+
+          &:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: 0%;
+            width: 0;
+            height: 0;
+            margin: -3px 0 0 -7px;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 9px solid white;
+            -webkit-transition: 0.2s;
+            transition: 0.2s;
+            -webkit-transition-timing-function: cubic-bezier(0, 0.4, 1, 0.6);
+            transition-timing-function: cubic-bezier(0, 0.4, 1, 0.6);
+          }
+        }
+
+        .xp-license-info-header,
+        .xp-license-info-body {
+          display: none;
+        }
+
+        .xp-license-info-header {
+          text-align: center;
+          font-size: 14px;
+          padding-bottom: 10px;
+
+          a {
+            margin-left: 5px;
+          }
+        }
+
+        .xp-license-info-body {
+          white-space: pre-wrap;
+          padding: 0 20px;
+          max-height: 60vh;
+          overflow-y: auto;
+
+          @media screen and (max-height: 768px) {
+            max-height: 40vh;
+          }
+
+          scrollbar-color: #454448 #545251;
+
+          &::-webkit-scrollbar-track
+          {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            background-color: #545251;
+          }
+
+          &::-webkit-scrollbar
+          {
+            background-color: #545251;
+          }
+
+          &::-webkit-scrollbar-thumb
+          {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+            background-color: #454448;
+          }
+        }
+
+        &.expanded {
+
+          padding-bottom: 20px;
+
+          .xp-license-info-header,
+          .xp-license-info-body {
+            display: block;
+          }
+
+          button:after {
+            transform: rotateX(180deg);
+          }
+        }
+
+      }
+
     }
-
-    .xp-about-dialog-version {
-      font-weight: bold;
-    }
-  }
-
-  .xp-about-dialog-text {
-    font-size: 13px;
-    font-weight: 700;
-    text-align: justify;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  .xp-about-dialog-button-close {
-    background-color: #DB4437;
-  }
-
-  .dialog-buttons {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
   }
 
   .modal-dialog-footer {
     display: none;
   }
-
-  .xp-about-dialog-footer {
-    display: flex;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 40px;
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.3);
-
-    a {
-      flex: 33%;
-      margin-top: 10px;
-      text-align: center;
-      color: @admin-white;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 13px;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      -webkit-outline: none;
-      -moz-outline: none;
-      -ms-outline: none;
-      -o-outline: none;
-      outline: none;
-    }
-  }
-
 }
 
 .xp-tour-dialog {
