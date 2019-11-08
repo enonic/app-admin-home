@@ -60,7 +60,7 @@ function setupBodyClickListeners(dialog: ModalDialogWithConfirmation) {
 }
 
 function setupAboutDialog() {
-    const aboutDialog = new ModalDialogWithConfirmation({skipTabbable: true, confirmation: {yesCallback: null}});
+    const aboutDialog = new ModalDialogWithConfirmation({skipTabbable: true});
     aboutDialog.addClass('xp-about-dialog');
     aboutDialog.appendChildToContentPanel(getAboutDialogContent());
     document.querySelector('.xp-about').addEventListener('click', () => {
