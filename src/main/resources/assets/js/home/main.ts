@@ -1,6 +1,3 @@
-import {startPolling} from './sessionExpiredDetector';
-import {init} from './xptour';
-import {i18nInit} from 'lib-admin-ui/util/MessagesInitializer';
 import {ModalDialogWithConfirmation} from 'lib-admin-ui/ui/dialog/ModalDialogWithConfirmation';
 import {CookieHelper} from 'lib-admin-ui/util/CookieHelper';
 import {Application} from 'lib-admin-ui/app/Application';
@@ -8,17 +5,29 @@ import {ServerEventsListener} from 'lib-admin-ui/event/ServerEventsListener';
 import {BodyMask} from 'lib-admin-ui/ui/mask/BodyMask';
 import {Body} from 'lib-admin-ui/dom/Body';
 import {create as createAboutDialog} from './AboutDialog';
+import {i18nInit} from 'lib-admin-ui/util/MessagesInitializer';
+import {showError} from 'lib-admin-ui/notify/MessageBus';
+import {init} from './xptour';
+import {startPolling} from './sessionExpiredDetector';
+import {validateConfig} from '../validator';
 
-i18nInit(CONFIG.i18nUrl).then(() => {
+const config = Object.freeze(Object.assign({}, CONFIG));
 
+Promise.resolve(true).then(() => {
+    const {valid, errors} = validateConfig(config);
+    if (!valid) {
+        throw new Error(errors.join('\n'));
+    }
+    return config;
+}).then(() => i18nInit(config.i18nUrl)).then(() => {
     setupWebSocketListener();
 
     setupAboutDialog();
 
-    startPolling();
+    startPolling(config);
 
-    if (CONFIG.tourEnabled) {
-        init().then(function (tourDialog: ModalDialogWithConfirmation) {
+    if (config.tourEnabled) {
+        init(config).then(function (tourDialog: ModalDialogWithConfirmation) {
             const enonicXPTourCookie = CookieHelper.getCookie(
                 'enonic_xp_tour'
             );
@@ -34,6 +43,8 @@ i18nInit(CONFIG.i18nUrl).then(() => {
                 });
         });
     }
+}).catch((error: Error) => {
+    showError(error.message);
 });
 
 function setupWebSocketListener() {
@@ -59,7 +70,7 @@ function setupBodyClickListeners(dialog: ModalDialogWithConfirmation) {
 }
 
 function setupAboutDialog() {
-    const aboutDialog = createAboutDialog();
+    const aboutDialog = createAboutDialog(config);
 
     document.querySelector('.xp-about').addEventListener('click', () => {
         Body.get().appendChild(aboutDialog);

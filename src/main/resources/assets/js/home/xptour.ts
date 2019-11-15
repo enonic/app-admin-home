@@ -25,8 +25,8 @@ import {ProgressBar} from 'lib-admin-ui/ui/ProgressBar';
 import {InstallUrlApplicationRequest} from 'lib-admin-ui/application/InstallUrlApplicationRequest';
 import {ApplicationInstallResult} from 'lib-admin-ui/application/ApplicationInstallResult';
 
-let tourDialog;
-let demoAppsLoadMask;
+let tourDialog: ModalDialogWithConfirmation;
+let demoAppsLoadMask: LoadMask;
 let isInstallingDemoAppsNow = false;
 let canInstallDemoApps = false;
 let marketDemoApps: MarketApplication[] = [];
@@ -40,9 +40,9 @@ const demoAppsNames = [
     'com.enonic.app.livetrace'
 ];
 
-export function init() {
-    initDialog();
-    initTourSteps();
+export function init(config: GlobalConfig) {
+    initDialog(config);
+    initTourSteps(config);
 
     return checkAdminRights().then(() => {
         if (isSystemAdmin) {
@@ -73,18 +73,17 @@ function checkAdminRights() {
         });
 }
 
-function initDialog() {
+function initDialog(config: GlobalConfig) {
     tourDialog = new ModalDialogWithConfirmation({
         title: i18n('tour.title.stepXofY', 1, 3),
-        skipTabbable: true,
-        confirmation: {yesCallback: null}
+        skipTabbable: true
     });
     tourDialog.addClass('xp-tour-dialog');
 
-    initNavigation();
+    initNavigation(config);
 }
 
-function initNavigation() {
+function initNavigation(config: GlobalConfig) {
     const previousStepAction = new Action(i18n('tour.action.skip'));
     const previousStepActionButton = tourDialog.addAction(previousStepAction);
 
@@ -153,9 +152,7 @@ function initNavigation() {
                     );
 
                     if (!demoAppsLoadMask) {
-                        demoAppsLoadMask = new LoadMask(
-                            demoAppsContainer
-                        );
+                        demoAppsLoadMask = new LoadMask(demoAppsContainer);
                         tourDialog.onHidden(() => {
                             demoAppsLoadMask.hide();
                         });
@@ -168,7 +165,7 @@ function initNavigation() {
                     nextStepActionButton.setLabel(i18n('tour.action.finish'));
                     nextStepActionButton.addClass('last-step');
 
-                    fetchDemoAppsFromMarket()
+                    fetchDemoAppsFromMarket(config)
                         .then(function (apps: MarketApplication[]) {
                             marketDemoApps = apps || [];
                             canInstallDemoApps = marketDemoApps
@@ -220,152 +217,104 @@ function initNavigation() {
     });
 }
 
-function initTourSteps() {
-    tourSteps = [createStep1(), createStep2()];
+function initTourSteps(config: GlobalConfig) {
+    tourSteps = [createStep1(config), createStep2(config)];
 }
 
-function createStep1() {
-    const html =
-        '<div class="xp-tour-step step-1">' +
-        '    <div class="subtitle">' +
-        '        <div class="subtitle-part-1">' +
-        i18n('tour.step1.subtitle1') +
-        '</div>' +
-        '        <div class="subtitle-part-2">' +
-        i18n('tour.step1.subtitle2') +
-        '</div>' +
-        '    </div>' +
-        '    <div class="caption">' +
-        i18n('tour.step1.caption') +
-        '</div>' +
-        '    <img src="' +
-        CONFIG.assetsUri +
-        '/images/launcher.svg">' +
-        '    <div class="text">' +
-        '        <div class="paragraph1">' +
-        i18n('tour.step1.paragraph1') +
-        '</div>' +
-        '        <div class="paragraph2">' +
-        i18n('tour.step1.paragraph2') +
-        '</div>' +
-        '    </div>' +
-        '</div>';
-    const element = Element.fromString(html);
-    return element;
+function createStep1(config: GlobalConfig) {
+    const html = `
+        <div class="xp-tour-step step-1">
+            <div class="subtitle">
+                <div class="subtitle-part-1">${i18n('tour.step1.subtitle1')}</div>
+                <div class="subtitle-part-2">${i18n('tour.step1.subtitle2')}</div>
+            </div>
+            <div class="caption">${i18n('tour.step1.caption')}</div>
+            <img src="${config.assetsUri}/images/launcher.svg">
+            <div class="text">
+                <div class="paragraph1">${i18n('tour.step1.paragraph1')}</div>
+                <div class="paragraph2">${i18n('tour.step1.paragraph2')}</div>
+            </div>
+        </div>`;
+
+    return Element.fromString(html);
 }
 
-function createStep2() {
-    const html =
-        '<div class="xp-tour-step step-2">' +
-        '    <div class="subtitle">' +
-        '        <div class="subtitle-part-1">' +
-        i18n('tour.step2.subtitle1') +
-        '</div>' +
-        '        <div class="subtitle-part-2">' +
-        i18n('tour.step2.subtitle2') +
-        '</div>' +
-        '    </div>' +
-        '    <div class="caption">' +
-        i18n('tour.step2.caption') +
-        '</div>' +
-        '    <img src="' +
-        CONFIG.assetsUri +
-        '/images/market.svg">' +
-        '    <div class="text">' +
-        '        <div class="paragraph1">' +
-        i18n('tour.step2.paragraph1') +
-        ' <a href="/admin/tool/com.enonic.xp.app.applications/main" target="_blank">' +
-        i18n('tour.step2.paragraph1hreftext') +
-        '</a>.</div>' +
-        '        <div class="paragraph2"><a href="https://market.enonic.com/" target="_blank">' +
-        i18n('tour.step2.paragraph2hreftext') +
-        '</a> ' +
-        i18n('tour.step2.paragraph2') +
-        '</div>' +
-        '        <div class="paragraph3">' +
-        i18n('tour.step2.paragraph3') +
-        ' <a href="https://developer.enonic.com/docs/xp/" target="_blank">' +
-        i18n('tour.step2.paragraph3hreftext') +
-        '</a>.</div>' +
-        '    </div>' +
-        '</div>';
-    const element = Element.fromString(html);
-    return element;
+function createStep2(config: GlobalConfig) {
+    const html = `
+    <div class="xp-tour-step step-2">
+        <div class="subtitle">
+            <div class="subtitle-part-1">${i18n('tour.step2.subtitle1')}</div>
+            <div class="subtitle-part-2">${i18n('tour.step2.subtitle2')}</div>
+        </div>
+        <div class="caption">${i18n('tour.step2.caption')}</div>
+        <img src="${config.assetsUri}/images/market.svg">
+        <div class="text">
+            <div class="paragraph1">
+                ${i18n('tour.step2.paragraph1')}
+                <a href="/admin/tool/com.enonic.xp.app.applications/main" target="_blank">${i18n('tour.step2.paragraph1hreftext')}</a>.
+            </div>
+            <div class="paragraph2">
+                <a href="https://market.enonic.com/" target="_blank">${i18n('tour.step2.paragraph2hreftext')}</a>
+                ${i18n('tour.step2.paragraph2')}
+            </div>
+            <div class="paragraph3">
+                ${i18n('tour.step2.paragraph3')}
+                <a href="https://developer.enonic.com/docs/xp/" target="_blank">${i18n('tour.step2.paragraph3hreftext')}</a>.
+            </div>
+        </div>
+    </div>`;
+
+    return Element.fromString(html);
 }
 
 function createStep3() {
-    const html =
-        '<div class="xp-tour-step step-3">' +
-        '    <div class="subtitle">' +
-        '        <div class="subtitle-part-1">' +
-        i18n('tour.step3.subtitle1') +
-        '</div>' +
-        '        <div class="subtitle-part-2">' +
-        i18n('tour.step3.subtitle2') +
-        '</div>' +
-        '    </div>' +
-        '    <div class="caption">' +
-        i18n('tour.step3.caption') +
-        '</div>' +
-        '    <div class="text">' +
-        '        <div class="paragraph1">' +
-        i18n('tour.step3.paragraph1') +
-        '</div>' +
-        '    </div>' +
-        '    <div class="demo-apps">' +
-        getAppsDiv() +
-        '    </div>' +
-        '</div>';
+    const html = `
+        <div class="xp-tour-step step-3">
+            <div class="subtitle">
+                <div class="subtitle-part-1">${i18n('tour.step3.subtitle1')}</div>
+                <div class="subtitle-part-2">${i18n('tour.step3.subtitle2')}</div>
+            </div>
+            <div class="caption">${i18n('tour.step3.caption')}</div>
+            <div class="text">
+                <div class="paragraph1">${i18n('tour.step3.paragraph1')}</div>
+            </div>
+            <div class="demo-apps">${getAppsDiv()}</div>
+        </div>`;
 
-    const element = Element.fromString(html);
-    return element;
+    return Element.fromString(html);
 }
 
 function getAppsDiv() {
     return marketDemoApps.length > 0
-        ? getDemoAppsHtml()
-        : '        <div class="demo-apps-text">' +
-              i18n('tour.apps.notavailable') +
-              '</div>';
+           ? getDemoAppsHtml()
+           : `<div class="demo-apps-text">${i18n('tour.apps.notavailable')}</div>`;
 }
 
 function getDemoAppsHtml() {
     let html = '';
     marketDemoApps.forEach((marketDemoApp: MarketApplication) => {
         const status = MarketAppStatusFormatter.formatStatus(marketDemoApp.getStatus());
-
-        html +=
-            '<div class="demo-app" id="' +
-            marketDemoApp.getName() +
-            '">' +
-            '    <a href="' +
-            marketDemoApp.getUrl() +
-            '" target="_blank">' +
-            '    <img class="demo-app-icon" src="' +
-            marketDemoApp.getIconUrl() +
-            '">' +
-            '    <div class="demo-app-title">' +
-            marketDemoApp.getDisplayName() +
-            '</div>' +
-            '    </a>' +
-            '    <div class="demo-app-status ' +
-            MarketAppStatusFormatter.getStatusCssClass(marketDemoApp.getStatus()) +
-            '">' +
-            status +
-            '</div>' +
-            '</div>';
+        const appStatus = MarketAppStatusFormatter.getStatusCssClass(marketDemoApp.getStatus());
+        html += `
+            <div class="demo-app" id="${marketDemoApp.getName()}">
+                <a href="${marketDemoApp.getUrl()}" target="_blank">
+                    <img class="demo-app-icon" src="${marketDemoApp.getIconUrl()}">
+                    <div class="demo-app-title">${marketDemoApp.getDisplayName()}</div>
+                </a>
+                <div class="demo-app-status ${appStatus}">${status}</div>
+            </div>`;
     });
 
     return html;
 }
 
-function fetchDemoAppsFromMarket(): Q.Promise<MarketApplication[]> {
+function fetchDemoAppsFromMarket(config: GlobalConfig): Q.Promise<MarketApplication[]> {
     const appPromises: Q.Promise<any>[] = [
         new ListApplicationsRequest().sendAndParse(),
         new ListMarketApplicationsRequest()
             .setStart(0)
             .setCount(demoAppsNames.length)
-            .setVersion(CONFIG.xpVersion)
+            .setVersion(config.xpVersion)
             .setIds(demoAppsNames)
             .sendAndParse()
     ];

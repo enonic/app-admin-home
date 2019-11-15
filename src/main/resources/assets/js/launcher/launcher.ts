@@ -3,14 +3,13 @@ import {KeyBinding} from 'lib-admin-ui/ui/KeyBinding';
 import {KeyBindings} from 'lib-admin-ui/ui/KeyBindings';
 import {AppHelper} from 'lib-admin-ui/util/AppHelper';
 import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/ApplicationEvent';
+import {validateConfig} from '../validator';
 
-const launcherUrl = (CONFIG && CONFIG.launcherUrl) || null;
-const autoOpenLauncher = CONFIG && CONFIG.autoOpenLauncher;
-const appId = CONFIG ? CONFIG.appId : '';
+const config = Object.freeze(Object.assign({}, CONFIG));
 
-let launcherPanel;
-let launcherButton;
-let launcherMainContainer;
+let launcherPanel: HTMLElement;
+let launcherButton: HTMLElement;
+let launcherMainContainer: HTMLElement;
 
 const appendLauncherButton = () => {
     launcherButton = document.createElement('button');
@@ -31,7 +30,7 @@ const appendLauncherButton = () => {
     }, 1200);
 };
 
-const getColorClass = () => CONFIG.launcherButtonCls || '';
+const getColorClass = () => config.launcherButtonCls || '';
 
 const isPanelExpanded = () => launcherPanel.classList.contains('visible');
 
@@ -45,7 +44,7 @@ const toggleButton = () => {
 const launcherButtonHasFocus = () => document.activeElement === launcherButton;
 
 const fetchLauncherContents = () =>
-    fetch(launcherUrl)
+    fetch(config.launcherUrl)
         .then(response => response.text())
         .then((html: string) => {
             const div = document.createElement('div');
@@ -65,16 +64,16 @@ const appendLauncherPanel = () => {
     fetchLauncherContents()
         .then((launcherEl: HTMLElement) => {
             container.appendChild(launcherEl);
-            launcherMainContainer = container.firstChild;
+            launcherMainContainer = <HTMLElement>container.firstChild;
             launcherButton.hidden = false;
             launcherMainContainer.setAttribute('hidden', 'true');
-            if (CONFIG.appId === 'home') {
+            if (config.appId === 'home') {
                 launcherMainContainer.classList.add('home');
             }
             document.body.appendChild(container);
             addLongClickHandler(container);
 
-            if (autoOpenLauncher) {
+            if (config.autoOpenLauncher) {
                 openLauncherPanel();
                 launcherButton.focus();
             } else {
@@ -96,7 +95,7 @@ const onLauncherClick = (e: MouseEvent) => {
         return;
     }
     const isClickOutside =
-        !launcherPanel.contains(e.target) && !launcherButton.contains(e.target);
+        !launcherPanel.contains(<Node>e.target) && !launcherButton.contains(<Node>e.target);
     if (
         isClickOutside &&
         !launcherMainContainer.getAttribute('hidden') &&
@@ -111,7 +110,7 @@ const isDashboardIcon = (element: EventTarget) => $(element).closest('.dashboard
 
 const isModalDialogActiveOnHomePage = (element: EventTarget) =>
     (
-        CONFIG.appId === 'home' &&
+        config.appId === 'home' &&
         (document.body.classList.contains('modal-dialog') ||
             $(element).closest('.xp-admin-common-modal-dialog').length > 0)
     );
@@ -140,9 +139,9 @@ const addLongClickHandler = (container: HTMLElement) => {
         // eslint-disable-next-line no-loop-func
         appTiles[i].addEventListener('click', e => {
             if (
-                CONFIG.appId ===
+                config.appId ===
                 (<Element>e.currentTarget).getAttribute('data-id') &&
-                CONFIG.appId === 'home'
+                config.appId === 'home'
             ) {
                 e.preventDefault();
                 return;
@@ -260,12 +259,12 @@ const unselectCurrentApp = () => {
 };
 
 const highlightActiveApp = () => {
-    if (!appId) {
+    if (!config.appId) {
         return;
     }
     const appRows = launcherPanel.querySelectorAll('.app-row');
     for (let i = 0; i < appRows.length; i++) {
-        if (appRows[i].id === appId) {
+        if (appRows[i].id === config.appId) {
             appRows[i].classList.add('active');
         }
     }
@@ -407,8 +406,12 @@ const getLauncherMainContainer = () => launcherMainContainer || document.querySe
 const isHomeAppActive = () => getLauncherMainContainer().classList.contains('home');
 
 export const init = () => {
-    if (launcherUrl == null) {
-        throw new Error('CONFIG.launcherUrl is not defined');
+    const {valid, errors} = validateConfig(config);
+    if (!valid) {
+        throw new Error(errors.join('\n'));
+    }
+    if (config.launcherUrl == null) {
+        throw new Error('Launcher URL is not defined.');
     }
 
     appendLauncherButton();
