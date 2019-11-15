@@ -112,7 +112,7 @@ task startSeleniumDaemon( type: com.github.psxpaul.task.ExecFork ) {
     standardOutput = "${buildDir}${File.separator}selenium-daemon.log"
     errorOutput = "${buildDir}${File.separator}selenium-daemon-error.log"
 }
-task testAdminHomeApp( type: NpmTask, dependsOn: [npmInstall, startSeleniumDaemon, startServer, ensureScreenshotsDirectory] ) {
+task testAdminHomeApp( type: NpmTask, dependsOn: [npmInstall, startServer, ensureScreenshotsDirectory] ) {
     inputs.files fileTree( dir: '.' )
     outputs.files fileTree( dir: '/test-results' )
     args = ['test']
