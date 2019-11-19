@@ -293,7 +293,7 @@ function getAppsDiv() {
 function getDemoAppsHtml() {
     let html = '';
     marketDemoApps.forEach((marketDemoApp: MarketApplication) => {
-        const status = MarketAppStatusFormatter.formatStatus(marketDemoApp.getStatus());
+        const status = MarketAppStatusFormatter.createStatusElement(marketDemoApp.getStatus()).toString();
         const appStatus = MarketAppStatusFormatter.getStatusCssClass(marketDemoApp.getStatus());
         html += `
             <div class="demo-app" id="${marketDemoApp.getName()}">
