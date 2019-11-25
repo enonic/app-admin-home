@@ -8,30 +8,27 @@ import {i18n} from 'lib-admin-ui/util/Messages';
 const noticeUrl: string = 'https://raw.githubusercontent.com/enonic/xp/master/NOTICE.txt';
 const licenseUrl: string = 'https://raw.githubusercontent.com/enonic/xp/master/LICENSE.txt';
 
-export const create = (): ModalDialogWithConfirmation => {
+export function create(config: GlobalConfig): ModalDialogWithConfirmation {
     const aboutDialog = new ModalDialogWithConfirmation({skipTabbable: true});
-    const aboutDialogContent = getAboutDialogContent();
+    const aboutDialogContent = getAboutDialogContent(config);
     aboutDialog.addClass('xp-about-dialog');
-    aboutDialogContent.onAdded(() => {
-        createLicenseInfoContainer();
-    });
+    aboutDialogContent.onAdded(createLicenseInfoContainer);
 
     aboutDialog.appendChildToContentPanel(aboutDialogContent);
 
     return aboutDialog;
-};
+}
 
-
-const fetchLicenses = (): Promise<string> => {
+function fetchLicenses(): Promise<string> {
     return fetch(noticeUrl)
         .then(response => response.text())
         .catch(() => {
             return i18n('home.dashboard.about.dialog.license.error');
         });
-};
+}
 
 
-const createLicenseInfoContainer = () => {
+function createLicenseInfoContainer() {
     const outerContainer = Element.fromHtmlElement(document.querySelector('.xp-about-dialog-license'), true);
 
     if (outerContainer.getChildren().length) {
@@ -53,9 +50,9 @@ const createLicenseInfoContainer = () => {
     button.onClicked(() => toggleLicenseInfo(outerContainer, licenseInfoContainer));
 
     outerContainer.appendChildren(button, licenseInfoHeader, licenseInfoContainer);
-};
+}
 
-const toggleLicenseInfo = (outerContainer: Element, licenseInfoContainer: DivEl) => {
+function toggleLicenseInfo(outerContainer: Element, licenseInfoContainer: DivEl): void {
     if (!licenseInfoContainer.getHtml()) {
 
         fetchLicenses().then((licenseText: string) => {
@@ -68,17 +65,17 @@ const toggleLicenseInfo = (outerContainer: Element, licenseInfoContainer: DivEl)
     }
 
     outerContainer.toggleClass('expanded');
-};
+}
 
-const getAboutDialogContent = () => {
+function getAboutDialogContent(config: GlobalConfig) {
     const html = `
         <div class="xp-about-dialog-content">
             <div class="xp-about-dialog-app-icon">
-                <img src="${CONFIG.assetsUri}/icons/app-icon.svg">
+                <img src="${config.assetsUri}/icons/app-icon.svg">
             </div>
             <h1>Enonic XP</h1>
             <div class="xp-about-dialog-version-block">
-                <span class="xp-about-dialog-version">${CONFIG.xpVersion}</span>&nbsp;&nbsp;
+                <span class="xp-about-dialog-version">${config.xpVersion}</span>&nbsp;&nbsp;
                 <a href="https://developer.enonic.com/docs/xp/" target="_blank">
                     ${i18n('home.dashboard.about.dialog.whatsnew')}
                 </a>
@@ -92,6 +89,5 @@ const getAboutDialogContent = () => {
             <div class="xp-about-dialog-license"></div>
         </div>`;
 
-    const element = Element.fromString(html);
-    return element;
-};
+    return Element.fromString(html);
+}
