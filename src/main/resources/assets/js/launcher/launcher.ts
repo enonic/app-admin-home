@@ -1,5 +1,9 @@
-import ApplicationEventType = api.application.ApplicationEventType;
+// Polyfills added for compatibility with IE11
+import 'promise-polyfill/src/polyfill';
+import 'whatwg-fetch';
+// End of Polyfills
 
+import ApplicationEventType = api.application.ApplicationEventType;
 const launcherUrl = (CONFIG && CONFIG.launcherUrl) || null;
 const autoOpenLauncher = CONFIG && CONFIG.autoOpenLauncher;
 const appId = CONFIG ? CONFIG.appId : '';
