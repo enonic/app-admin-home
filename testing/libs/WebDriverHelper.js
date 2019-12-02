@@ -1,6 +1,4 @@
 /**
- * Created on 10.09.2017.
- * Code migration to WebdriverIO on 22.04.2019.
  * Helper class that encapsulates webdriverio
  * and sets up mocha hooks for easier test writing.
  */
@@ -12,12 +10,12 @@ WebDriverHelper.prototype.getBrowser = function () {
     return this.browser;
 };
 
-const makeChromeOptions = headless => ({
+const makeChromeOptions = (headless, width) => ({
     "args": [
         ...(headless ? ["--headless", "--disable-gpu", "--no-sandbox"] : []),
         "--lang=en",
         '--disable-extensions',
-        'window-size=1920,1100'
+        `window-size=${width},1100`
     ]
 });
 
@@ -36,20 +34,20 @@ WebDriverHelper.prototype.setupBrowser = function setupBrowser() {
         let browser_name = properties.get('browser.name');
         let platform_name = properties.get('platform');
         let baseUrl = properties.get('base.url');
-        let chromeBinPath = properties.get('chrome.bin.path');
         let isHeadless = properties.get('is.headless');
+        let width = properties.get('browser.width');
         console.log('is Headless ##################### ' + isHeadless);
         console.log('browser name ##################### ' + browser_name);
+        console.log('browser width ##################### ' + width);
         let options = {
+            logLevel: "error",
             capabilities: {
                 browserName: browser_name,
-                platform: platform_name,
-                binary: chromeBinPath,
-                chromeOptions: makeChromeOptions(isHeadless)
+                platformName:platform_name,
+                'goog:chromeOptions': makeChromeOptions(isHeadless, width)
             }
         };
-        _this.browser = await webdriverio.remote(options)
-
+        _this.browser = await webdriverio.remote(options);
         await _this.browser.url(baseUrl);
         console.log('webdriverio #####################  ' + 'is  initialized!');
         return _this.browser;
@@ -60,8 +58,6 @@ WebDriverHelper.prototype.setupBrowser = function setupBrowser() {
     afterEach(function () {
         let state = this.currentTest.state ? this.currentTest.state.toString().toUpperCase() : 'FAILED';
         return console.log('Test:', this.currentTest.title, ' is  ' + state);
-
     });
 };
-
 module.exports = new WebDriverHelper();

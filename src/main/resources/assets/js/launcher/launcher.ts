@@ -1,4 +1,8 @@
 import * as $ from 'jquery';
+// Polyfills added for compatibility with IE11
+import 'promise-polyfill/src/polyfill';
+import 'whatwg-fetch';
+// End of Polyfills
 import {KeyBinding} from 'lib-admin-ui/ui/KeyBinding';
 import {KeyBindings} from 'lib-admin-ui/ui/KeyBindings';
 import {AppHelper} from 'lib-admin-ui/util/AppHelper';
