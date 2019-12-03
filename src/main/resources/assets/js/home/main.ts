@@ -6,9 +6,10 @@ import {BodyMask} from 'lib-admin-ui/ui/mask/BodyMask';
 import {Body} from 'lib-admin-ui/dom/Body';
 import {create as createAboutDialog} from './AboutDialog';
 import {i18nInit} from 'lib-admin-ui/util/MessagesInitializer';
+import {i18n} from 'lib-admin-ui/util/Messages';
 import {showError} from 'lib-admin-ui/notify/MessageBus';
+import {ConnectionDetector} from 'lib-admin-ui/system/ConnectionDetector';
 import {init} from './xptour';
-import {startPolling} from './sessionExpiredDetector';
 import {validateConfig} from '../validator';
 
 const config = Object.freeze(Object.assign({}, CONFIG));
@@ -20,11 +21,10 @@ Promise.resolve(true).then(() => {
     }
     return config;
 }).then(() => i18nInit(config.i18nUrl)).then(() => {
+
+    startLostConnectionDetector();
     setupWebSocketListener();
-
     setupAboutDialog();
-
-    startPolling(config);
 
     if (config.tourEnabled) {
         init(config).then(function (tourDialog: ModalDialogWithConfirmation) {
@@ -77,4 +77,12 @@ function setupAboutDialog() {
         aboutDialog.open();
         setupBodyClickListeners(aboutDialog);
     });
+}
+
+function startLostConnectionDetector() {
+    ConnectionDetector.get()
+        .setAuthenticated(true)
+        .setSessionExpireRedirectUrl(config.adminUrl + '/tool')
+        .setNotificationMessage(i18n('notify.connection.loss'))
+        .startPolling(true);
 }
