@@ -1,15 +1,14 @@
-import {startPolling} from './sessionExpiredDetector';
 import {init} from './xptour';
 import {create as createAboutDialog} from './AboutDialog';
 import ModalDialog = api.ui.dialog.ModalDialog;
+import ConnectionDetector = api.system.ConnectionDetector;
+import i18n = api.util.i18n;
 
 api.util.i18nInit(CONFIG.i18nUrl).then(() => {
 
+    startLostConnectionDetector();
     setupWebSocketListener();
-
     setupAboutDialog();
-
-    startPolling();
 
     if (CONFIG.tourEnabled) {
         init().then(function (tourDialog: ModalDialog) {
@@ -60,4 +59,12 @@ function setupAboutDialog() {
         aboutDialog.open();
         setupBodyClickListeners(aboutDialog);
     });
+}
+
+function startLostConnectionDetector() {
+    ConnectionDetector.get()
+        .setAuthenticated(true)
+        .setSessionExpireRedirectUrl(CONFIG.adminUrl + '/tool')
+        .setNotificationMessage(i18n('notify.connection.loss'))
+        .startPolling(true);
 }
