@@ -11,13 +11,19 @@
 .home-main-container {
   .home-main-container-mixin();
 
+  .lazy-image {
+    position: absolute;
+    background-position: left;
+  }
+
   background-color: @admin-dark-gray;
 
   .home-main-dashboard {
-    position: absolute;
-    top: 30px;
-    left: 30px;
+    position: relative;
     color: @admin-white;
+    padding: 50px;
+    display: flex;
+    flex-wrap: wrap;
 
     a {
       color: #fff;
@@ -26,7 +32,7 @@
 
     .dashboard-item {
       text-align: center;
-      display: inline-block;
+      width: 70px;
       margin: 15px;
       cursor: pointer;
       font-family: "Open Sans", sans-serif;
@@ -37,10 +43,6 @@
       img {
         width: 32px;
         height: 32px; // For IE
-      }
-
-      div {
-        color: #454548;
       }
 
       &:hover {
@@ -425,11 +427,24 @@
 
 body {
   &._0-240, &._240-360, &._360-540, &._540-720 {
+
+    .home-main-dashboard {
+      justify-content: space-between;
+    }
+
     .xp-about-dialog {
+
       .modal-dialog-body {
         padding-bottom: 40px;
         padding-top: 0;
+
+        .xp-about-dialog-content .xp-about-dialog-license {
+          margin-left: -10px;
+          margin-bottom: -40px;
+          width: calc(100% + 30px);
+        }
       }
+
       .cancel-button-top {
 
         background-color: rgba(0, 0, 0, 0.8);
