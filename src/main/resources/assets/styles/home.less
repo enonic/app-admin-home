@@ -130,14 +130,14 @@
             opacity: 0.8;
           }
 
-          &:after {
+          &::after {
             content: "";
             position: absolute;
             top: 50%;
-            right: 0%;
+            right: 19px;
             width: 0;
             height: 0;
-            margin: -3px 0 0 -7px;
+            margin: -3px 0 0 0;
             border-left: 5px solid transparent;
             border-right: 5px solid transparent;
             border-top: 9px solid white;
@@ -145,6 +145,10 @@
             transition: 0.2s;
             -webkit-transition-timing-function: cubic-bezier(0, 0.4, 1, 0.6);
             transition-timing-function: cubic-bezier(0, 0.4, 1, 0.6);
+          }
+
+          span {
+            padding-right: 17px;
           }
         }
 
