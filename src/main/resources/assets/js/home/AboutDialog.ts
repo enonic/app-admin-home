@@ -76,7 +76,7 @@ function getAboutDialogContent(config: GlobalConfig) {
             <h1>Enonic XP</h1>
             <div class="xp-about-dialog-version-block">
                 <span class="xp-about-dialog-version">${config.xpVersion}</span>&nbsp;&nbsp;
-                <a href="https://developer.enonic.com/docs/xp/" target="_blank">
+                <a href="https://developer.enonic.com/docs/xp/stable/release" target="_blank">
                     ${i18n('home.dashboard.about.dialog.whatsnew')}
                 </a>
             </div>
