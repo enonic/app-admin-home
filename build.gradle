@@ -28,7 +28,7 @@ dependencies {
 
 node {
     download = true
-    version = '10.16.3'
+    version = '12.13.1'
 }
 
 task flush( type: Delete, dependsOn: clean ) {
