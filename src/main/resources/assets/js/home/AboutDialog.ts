@@ -39,7 +39,7 @@ const createLicenseInfoContainer = () => {
     const button = new api.ui.button.Button(i18n('home.dashboard.about.dialog.licensing'));
     const linkEl = new api.dom.AEl();
     linkEl.setUrl(licenseUrl);
-    linkEl.getEl().setText(i18n('home.dashboard.about.dialog.license.name'));
+    linkEl.getEl().setText('Gnu Public License v3 (GPL3)');
     linkEl.getEl().setAttribute('target', '_blank');
 
     const licenseInfoHeader = new DivEl('xp-license-info-header');
