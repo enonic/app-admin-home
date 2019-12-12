@@ -20,9 +20,14 @@ const appendLauncherButton = () => {
     launcherButton.setAttribute('class', 'launcher-button ' + getColorClass());
     launcherButton.hidden = true;
 
-    const span = document.createElement('span');
-    span.setAttribute('class', 'lines');
-    launcherButton.appendChild(span);
+    const spanX = document.createElement('span');
+    spanX.setAttribute('class', 'span-x');
+    spanX.innerHTML = 'X';
+    const spanP = document.createElement('span');
+    spanP.setAttribute('class', 'span-p');
+    spanP.innerHTML = 'P';
+    launcherButton.appendChild(spanX);
+    launcherButton.appendChild(spanP);
 
     launcherButton.addEventListener('click', togglePanelState);
 
