@@ -1,5 +1,5 @@
 @import "~enonic-admin-artifacts";
-
+@import "../icons/icons";
 @import 'font';
 
 @launcher-button-color: #454548;
@@ -67,7 +67,7 @@ body.mobile-statistics-panel {
     > div {
       width: @panel-outer-width;
     }
-    .launcher-title  {
+    .launcher-title {
       width: calc(@panel-outer-width - 30px);
     }
   }
@@ -186,8 +186,7 @@ body.mobile-statistics-panel {
 
       &.active {
         background-color: @admin-red;
-        padding-left: 26px;
-        padding-right: 20px;
+        width: 100%;
       }
 
       .app-info {
@@ -218,6 +217,13 @@ body.mobile-statistics-panel {
         svg {
           width: inherit !important;
           height: inherit !important;
+        }
+
+        &.icon-home {
+          font-size: 36px;
+          color: white;
+          padding: 0px 2px;
+          box-sizing: border-box;
         }
       }
     }
@@ -272,7 +278,6 @@ body.mobile-statistics-panel {
   }
 }
 
-
 .launcher-button {
   color: @admin-white;
   font-family: @admin-font-family;
@@ -299,8 +304,6 @@ body.mobile-statistics-panel {
   }
 
   &.toggled {
-    .span-p {
-      visibility: hidden;
-    }
+    color: @admin-red;
   }
 }
