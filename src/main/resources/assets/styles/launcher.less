@@ -80,6 +80,8 @@ body.mobile-statistics-panel {
   .app-row-selected {
     width: 100%;
     background-color: rgba(255, 255, 255, 0.3);
+    //pointer-events: none;
+
     .app-info .app-description {
       color: @admin-white;
     }
@@ -94,16 +96,6 @@ body.mobile-statistics-panel {
   &:not(.keyboard-navigation) {
     .launcher-app-container .app-row:hover {
       .app-row-selected;
-    }
-  }
-
-  &.home {
-    .launcher-app-container .app-row#home.active:hover {
-      background-color: @admin-black;
-      cursor: default;
-      .app-info .app-description {
-        color: darkgray;
-      }
     }
   }
 
@@ -170,10 +162,28 @@ body.mobile-statistics-panel {
     a {
       color: @admin-white;
       text-decoration: none;
+
+      .app-row#home.active {
+        cursor: default;
+      }
+
       &:focus {
         outline: none;
       }
+
+      &:not(:hover) .app-row.active:not(.selected) {
+        background-color: hsla(0,0%,100%,.1);
+      }
+
+      &:hover {
+        .app-row.active {
+          .app-row-selected;
+        }
+      }
+
     }
+
+
 
     .app-row {
 
@@ -185,13 +195,15 @@ body.mobile-statistics-panel {
       }
 
       &.active {
-        background-color: @admin-red;
+        border-left: 5px solid @admin-red;
         width: 100%;
+        padding-left: 26px;
       }
 
       .app-info {
         padding-left: 15px;
         vertical-align: middle;
+
         .app-name {
           width: 220px;
           font-size: 18px;
@@ -200,6 +212,7 @@ body.mobile-statistics-panel {
           text-overflow: ellipsis;
           margin: 0;
         }
+
         .app-description {
           width: 220px;
           font-size: 14px;
@@ -212,7 +225,6 @@ body.mobile-statistics-panel {
         vertical-align: middle;
         width: 40px;
         height: 40px;
-        pointer-events: none;
 
         svg {
           width: inherit !important;
@@ -284,8 +296,8 @@ body.mobile-statistics-panel {
   font-size: 20px;
   position: fixed;
   border: none;
-  right: 6px;
-  top: 7px;
+  right: 3px;
+  top: 8px;
   background-color: transparent;
   cursor: pointer;
   z-index: @z-index-launcher-button;
