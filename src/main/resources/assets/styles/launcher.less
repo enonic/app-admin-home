@@ -1,5 +1,5 @@
 @import "~enonic-admin-artifacts";
-
+@import "../icons/icons";
 @import 'font';
 
 @launcher-button-color: #454548;
@@ -67,7 +67,7 @@ body.mobile-statistics-panel {
     > div {
       width: @panel-outer-width;
     }
-    .launcher-title  {
+    .launcher-title {
       width: calc(@panel-outer-width - 30px);
     }
   }
@@ -80,6 +80,8 @@ body.mobile-statistics-panel {
   .app-row-selected {
     width: 100%;
     background-color: rgba(255, 255, 255, 0.3);
+    //pointer-events: none;
+
     .app-info .app-description {
       color: @admin-white;
     }
@@ -94,16 +96,6 @@ body.mobile-statistics-panel {
   &:not(.keyboard-navigation) {
     .launcher-app-container .app-row:hover {
       .app-row-selected;
-    }
-  }
-
-  &.home {
-    .launcher-app-container .app-row#home.active:hover {
-      background-color: @admin-black;
-      cursor: default;
-      .app-info .app-description {
-        color: darkgray;
-      }
     }
   }
 
@@ -170,10 +162,28 @@ body.mobile-statistics-panel {
     a {
       color: @admin-white;
       text-decoration: none;
+
+      .app-row#home.active {
+        cursor: default;
+      }
+
       &:focus {
         outline: none;
       }
+
+      &:not(:hover) .app-row.active:not(.selected) {
+        background-color: hsla(0,0%,100%,.1);
+      }
+
+      &:hover {
+        .app-row.active {
+          .app-row-selected;
+        }
+      }
+
     }
+
+
 
     .app-row {
 
@@ -185,13 +195,15 @@ body.mobile-statistics-panel {
       }
 
       &.active {
-        border-left: 4px solid @admin-red;
+        border-left: 5px solid @admin-red;
+        width: 100%;
         padding-left: 26px;
       }
 
       .app-info {
         padding-left: 15px;
         vertical-align: middle;
+
         .app-name {
           width: 220px;
           font-size: 18px;
@@ -200,6 +212,7 @@ body.mobile-statistics-panel {
           text-overflow: ellipsis;
           margin: 0;
         }
+
         .app-description {
           width: 220px;
           font-size: 14px;
@@ -212,11 +225,17 @@ body.mobile-statistics-panel {
         vertical-align: middle;
         width: 40px;
         height: 40px;
-        pointer-events: none;
 
         svg {
           width: inherit !important;
           height: inherit !important;
+        }
+
+        &.icon-home {
+          font-size: 36px;
+          color: white;
+          padding: 0px 2px;
+          box-sizing: border-box;
         }
       }
     }
@@ -271,19 +290,19 @@ body.mobile-statistics-panel {
   }
 }
 
-
 .launcher-button {
+  color: @admin-white;
   font-family: @admin-font-family;
-  font-size: @admin-font-size;
+  font-size: 20px;
   position: fixed;
   border: none;
-  right: 6px;
-  top: 9px;
+  right: 3px;
+  top: 8px;
   background-color: transparent;
   cursor: pointer;
   z-index: @z-index-launcher-button;
   line-height: 17px;
-  padding: 6px 5px 3px;
+  padding: 6px 5px 5px;
   outline-width: 2px;
   outline-offset: -2px;
   -moz-outline-radius: 3px;
@@ -292,91 +311,11 @@ body.mobile-statistics-panel {
     border: 0;
   }
 
-  .line {
-    display: inline-block;
-    width: 20px;
-    height: 3px;
-    background: @admin-white;
-    cursor: pointer;
-  }
-
-  .lines {
-    .line;
-    position: relative;
-    top: -4px;
-
-    &:before, &:after {
-      .line;
-      transition: top 0.3s;
-      position: absolute;
-      left: 0;
-      content: '';
-      -webkit-transform-origin: 2rem/14 center;
-      transform-origin: 2rem/14 center;
-    }
-    &:before {
-      top: 6px;
-    }
-    &:after {
-      top: -6px;
-    }
-  }
-
-  &.dark {
-    .lines, .lines:before, .lines:after {
-      background: @launcher-button-color;
-    }
-  }
-
   &:hover {
-    background: none;
-    .lines {
-      &:before {
-        top: 8px;
-      }
-      &:after {
-        top: -8px;
-      }
-    }
+
   }
 
   &.toggled {
-    -webkit-transform: scale3d(.8, .8, .8);
-    transform: scale3d(.8, .8, .8);
-    padding: 8px 7px 8px 14px;
-    top: 5px;
-    right: 2px;
-
-    &:hover {
-      .lines {
-        &:before {
-          top: 0;
-        }
-        &:after {
-          top: 0;
-        }
-      }
-    }
-
-    .lines {
-      background: transparent !important;
-      &:before, &:after {
-        -webkit-transform-origin: 50% 50%;
-        transform-origin: 50% 50%;
-        top: 0;
-        width: 1.6rem;
-        left: -7px;
-      }
-      &:before {
-        background-color: #fff;
-        -webkit-transform: rotate3d(0, 0, 1, 45deg);
-        transform: rotate3d(0, 0, 1, 45deg);
-      }
-      &:after {
-        background-color: #fff;
-        -webkit-transform: rotate3d(0, 0, 1, -45deg);
-        transform: rotate3d(0, 0, 1, -45deg);
-      }
-    }
+    color: @admin-red;
   }
 }
