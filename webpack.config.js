@@ -1,8 +1,7 @@
-const ErrorLoggerPlugin = require('error-logger-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-
+const ErrorLoggerPlugin = require('error-logger-webpack-plugin');
 const path = require('path');
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -50,7 +49,7 @@ module.exports = {
     optimization: {
         minimizer: [
             new TerserPlugin({
-                sourceMap: !isProd,
+                sourceMap: true,
                 terserOptions: {
                     compress: {
                         drop_console: false
@@ -62,7 +61,6 @@ module.exports = {
         ]
     },
     plugins: [
-        new ErrorLoggerPlugin(),
         new MiniCssExtractPlugin({
             filename: '[name].css',
             chunkFilename: './styles/[id].css'
@@ -70,7 +68,8 @@ module.exports = {
         new CircularDependencyPlugin({
             exclude: /a\.js|node_modules/,
             failOnError: true
-        })
+        }),
+        new ErrorLoggerPlugin({showColumn: false})
     ],
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : 'source-map'

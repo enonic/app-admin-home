@@ -1,22 +1,37 @@
-import {init} from './xptour';
+import {ModalDialogWithConfirmation} from 'lib-admin-ui/ui/dialog/ModalDialogWithConfirmation';
+import {CookieHelper} from 'lib-admin-ui/util/CookieHelper';
+import {Application} from 'lib-admin-ui/app/Application';
+import {ServerEventsListener} from 'lib-admin-ui/event/ServerEventsListener';
+import {BodyMask} from 'lib-admin-ui/ui/mask/BodyMask';
+import {Body} from 'lib-admin-ui/dom/Body';
+import {ConnectionDetector} from 'lib-admin-ui/system/ConnectionDetector';
+import {i18nInit} from 'lib-admin-ui/util/MessagesInitializer';
+import {showError} from 'lib-admin-ui/notify/MessageBus';
+import {i18n} from 'lib-admin-ui/util/Messages';
 import {create as createAboutDialog} from './AboutDialog';
-import ModalDialog = api.ui.dialog.ModalDialog;
-import ConnectionDetector = api.system.ConnectionDetector;
-import i18n = api.util.i18n;
+import {validateConfig} from '../validator';
+import {init} from './xptour';
 
-api.util.i18nInit(CONFIG.i18nUrl).then(() => {
+const config = Object.freeze(Object.assign({}, CONFIG));
 
+Promise.resolve(true).then(() => {
+    const {valid, errors} = validateConfig(config);
+    if (!valid) {
+        throw new Error(errors.join('\n'));
+    }
+    return config;
+}).then(() => i18nInit(config.i18nUrl)).then(() => {
     startLostConnectionDetector();
     setupWebSocketListener();
     setupAboutDialog();
 
-    if (CONFIG.tourEnabled) {
-        init().then(function (tourDialog: ModalDialog) {
-            const enonicXPTourCookie = api.util.CookieHelper.getCookie(
+    if (config.tourEnabled) {
+        init(config).then(function (tourDialog: ModalDialogWithConfirmation) {
+            const enonicXPTourCookie = CookieHelper.getCookie(
                 'enonic_xp_tour'
             );
             if (!enonicXPTourCookie) {
-                api.util.CookieHelper.setCookie('enonic_xp_tour', 'tour', 365);
+                CookieHelper.setCookie('enonic_xp_tour', 'tour', 365);
                 tourDialog.open();
             }
 
@@ -27,18 +42,20 @@ api.util.i18nInit(CONFIG.i18nUrl).then(() => {
                 });
         });
     }
+}).catch((error: Error) => {
+    showError(error.message);
 });
 
 function setupWebSocketListener() {
-    const dummyApp = new api.app.Application('home', 'home', 'home', '');
+    const dummyApp = new Application('home', 'home', 'home', '');
     dummyApp.setWindow(window);
 
-    const serverEventsListener = new api.event.ServerEventsListener([dummyApp]);
+    const serverEventsListener = new ServerEventsListener([dummyApp]);
     serverEventsListener.start();
 }
 
-function setupBodyClickListeners(dialog: ModalDialog) {
-    const bodyEl = api.ui.mask.BodyMask.get().getHTMLElement();
+function setupBodyClickListeners(dialog: ModalDialogWithConfirmation) {
+    const bodyEl = BodyMask.get().getHTMLElement();
 
     function listener(e: MouseEvent) {
         e.stopPropagation();
@@ -52,10 +69,10 @@ function setupBodyClickListeners(dialog: ModalDialog) {
 }
 
 function setupAboutDialog() {
-    const aboutDialog = createAboutDialog();
+    const aboutDialog = createAboutDialog(config);
 
     document.querySelector('.xp-about').addEventListener('click', () => {
-        api.dom.Body.get().appendChild(aboutDialog);
+        Body.get().appendChild(aboutDialog);
         aboutDialog.open();
         setupBodyClickListeners(aboutDialog);
     });
