@@ -291,18 +291,19 @@ body.mobile-statistics-panel {
 }
 
 .launcher-button {
+  height: @app-header-height;
+  width: calc(@app-header-height - ~'4px');
   color: @admin-white;
   font-family: @admin-font-family;
   font-size: 20px;
-  position: fixed;
+  position: absolute;
   border: none;
-  right: 3px;
-  top: 8px;
+  right: 0;
+  top: 0;
+  padding: 0;
   background-color: transparent;
   cursor: pointer;
   z-index: @z-index-launcher-button;
-  line-height: 17px;
-  padding: 6px 5px 5px;
   outline-width: 2px;
   outline-offset: -2px;
   -moz-outline-radius: 3px;
