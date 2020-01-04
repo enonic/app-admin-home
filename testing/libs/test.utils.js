@@ -3,9 +3,24 @@
  */
 const appConst = require("./app_const");
 const webDriverHelper = require("./WebDriverHelper");
+const LoginPage = require('../page_objects/login.page');
+const XpTourDialog = require('../page_objects/xp.tour.dialog');
 
 module.exports = {
 
+    async doLogin() {
+        let loginPage = new LoginPage();
+        let xpTourDialog = new XpTourDialog();
+        await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);
+        await loginPage.doLogin();
+        await loginPage.pause(1000);
+        let result = await xpTourDialog.isDisplayed();
+        if(result){
+            await xpTourDialog.clickOnCancelButtonTop();
+        }
+
+        return await loginPage.pause(700);
+    },
     doDeleteCookie: function () {
         return webDriverHelper.browser.getCookies().then(result => {
             console.log(result);

@@ -61,10 +61,17 @@ class XpTourDialog extends Page {
         return this.clickOnElement(this.cancelButtonTop);
     }
 
-    waitForDialogLoaded() {
-        return this.browser.$(xpath.container).then(element => {
-            return element.waitForDisplayed(3000);
-        });
+    async waitForDialogLoaded() {
+        try {
+            return await this.waitForElementDisplayed(xpath.container, appConst.TIMEOUT_5);
+        } catch (err) {
+            this.saveScreenshot("err_xp_tour_dialog_load");
+            throw new Error("XP tour dialog is not loaded in 5 seconds!")
+        }
+    }
+
+    isDisplayed() {
+        return this.isElementDisplayed(xpath.container);
     }
 
     clickOnInstallAppsButton() {
@@ -74,10 +81,11 @@ class XpTourDialog extends Page {
     async waitForInstallAppsButtonDisplayed() {
         try {
             let installButton = await this.findElement(this.installAppsButton);
-            return await installButton.waitForDisplayed(appConst.TIMEOUT_5);
+             await installButton.waitForDisplayed(appConst.TIMEOUT_7);
+             return await this.pause(1000);
         } catch (err) {
             this.saveScreenshot("err_xp_tour_install_button");
-            throw new Error("Install Apps button is not visible in " + appConst.TIMEOUT_3 + " " + err)
+            throw new Error("Install Apps button is not visible in " + appConst.TIMEOUT_7 + " " + err)
         }
     }
 
@@ -91,19 +99,17 @@ class XpTourDialog extends Page {
     }
 
     //navigates to the last step (Install apps)
-    goToInstallStep() {
-        return this.clickOnNextButton().then(() => {
-            return this.clickOnNextButton();
-        }).then(() => {
-            return this.pause(400);
-        });
+    async goToInstallStep() {
+        await this.clickOnNextButton();
+        await this.pause(200);
+        await this.clickOnNextButton();
+        return await this.pause(400);
     }
 
     async waitForAppPresentInLauncherPanel(name) {
         try {
             let selector = xpath.applicationInLauncherPanel(name);
-            let element = await this.findElement(selector);
-            return await element.waitForDisplayed(appConst.TIMEOUT_2);
+            return await this.waitForElementDisplayed(selector, appConst.TIMEOUT_2);
         } catch (err) {
             this.saveScreenshot('err_app_launcher_panel');
             throw new Error("Application is not present in Launcher Panel: " + err);
@@ -123,7 +129,7 @@ class XpTourDialog extends Page {
     }
 
     waitForDialogClosed() {
-        return this.waitForElementNotDisplayed(`${xpath.container}`, appConst.TIMEOUT_1);
+        return this.waitForElementNotDisplayed(xpath.container, appConst.TIMEOUT_2);
     }
 
     getTitle() {
@@ -135,6 +141,5 @@ class XpTourDialog extends Page {
     }
 };
 module.exports = XpTourDialog;
-
 
 
