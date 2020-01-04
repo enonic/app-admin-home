@@ -9,6 +9,7 @@ const XpTourDialog = require('../page_objects/xp.tour.dialog');
 describe('XP tour dialog specification', function () {
 
     this.timeout(appConst.TIMEOUT_SUITE);
+    webDriverHelper.setupBrowser();
 
     it('WHEN user is logged in THEN XP tour dialog should appear', async () => {
         const loginPage = new LoginPage();
@@ -20,7 +21,7 @@ describe('XP tour dialog specification', function () {
         let result = await xpTourDialog.isSkipTourButtonDisplayed();
         assert.isTrue(result, "Skip tour' button should be present");
 
-        result = xpTourDialog.isCancelButtonTopDisplayed();
+        result = await xpTourDialog.isCancelButtonTopDisplayed();
         assert.isTrue(result, 'Cancel button should be present');
 
         result = await xpTourDialog.isNextButtonDisplayed();
