@@ -6,6 +6,7 @@ const xpath = {
     skipTourButton: `//button[contains(@id,'DialogButton')]//span[contains(.,'Skip Tour')]`,
     nextButton: `//button[contains(@id,'DialogButton')]/span[text()='Next']`,
     previousButton: `//button[contains(@id,'DialogButton')]/span[text()='Previous']`,
+    finishButton: "//button[contains(@id,'DialogButton')]/span[text()='Finish']",
     installAppsButton: `//button[contains(@id,'DialogButton')]/span[text()='Install Apps']`,
     title: `//h2[@class='title']`,
     applicationStatusByName: name =>
@@ -22,6 +23,9 @@ class XpTourDialog extends Page {
 
     get installAppsButton() {
         return xpath.container + xpath.installAppsButton;
+    }
+    get finishButton() {
+        return xpath.container + xpath.finishButton;
     }
 
     get previousButton() {
@@ -113,6 +117,15 @@ class XpTourDialog extends Page {
         } catch (err) {
             this.saveScreenshot('err_app_launcher_panel');
             throw new Error("Application is not present in Launcher Panel: " + err);
+        }
+    }
+
+    async waitForAppFinishButtonVisible() {
+        try {
+            return await this.waitForElementDisplayed(this.finishButton, appConst.TIMEOUT_2);
+        } catch (err) {
+            this.saveScreenshot('err_finish_button_launcher_panel');
+            throw new Error("Finish button is not visible in the dialog: " + err);
         }
     }
 

@@ -8,7 +8,7 @@ const XpTourDialog = require('../page_objects/xp.tour.dialog');
 
 module.exports = {
 
-    async doLogin() {
+    async doLoginAndCloseXpTourDialog() {
         let loginPage = new LoginPage();
         let xpTourDialog = new XpTourDialog();
         await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);
