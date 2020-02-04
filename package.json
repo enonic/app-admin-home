@@ -8,7 +8,7 @@
     "url": "https://github.com/enonic/app-admin-home"
   },
   "scripts": {
-    "build": "webpack --hide-modules",
+    "build": "webpack --hide-modules --colors",
     "lint": "tslint -p tsconfig.build.json -c tslint.json",
     "fix": "tslint -p tsconfig.build.json -c tslint.json --fix"
   },
