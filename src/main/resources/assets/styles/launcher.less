@@ -187,7 +187,7 @@ body.mobile-statistics-panel {
 
     .app-row {
 
-      padding: 10px 0 10px 30px;
+      padding: 10px 0 10px 22px;
       display: table;
 
       & > * {
@@ -197,7 +197,7 @@ body.mobile-statistics-panel {
       &.active {
         border-left: 5px solid @admin-red;
         width: 100%;
-        padding-left: 26px;
+        padding-left: 18px;
       }
 
       .app-info {
@@ -207,17 +207,19 @@ body.mobile-statistics-panel {
         .app-name {
           width: 220px;
           font-size: 18px;
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          margin: 0;
         }
 
         .app-description {
           width: 220px;
           font-size: 14px;
           color: darkgray;
+        }
+
+        .app-name, .app-description {
           margin: 0;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
       }
 
@@ -296,6 +298,7 @@ body.mobile-statistics-panel {
   color: @admin-white;
   font-family: @admin-font-family;
   font-size: 20px;
+  font-weight: bold;
   position: absolute;
   border: none;
   right: 0;

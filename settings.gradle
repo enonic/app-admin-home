@@ -1,7 +1,6 @@
 rootProject.name = 'app-main'
 
 if ( hasProperty( 'env' ) ) {
-    addBuild( '../xp' )
     addBuild( '../lib-admin-ui' )
 }
 
