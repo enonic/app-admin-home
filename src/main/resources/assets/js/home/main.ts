@@ -11,6 +11,8 @@ import {i18n} from 'lib-admin-ui/util/Messages';
 import {create as createAboutDialog} from './AboutDialog';
 import {validateConfig} from '../validator';
 import {init} from './xptour';
+import 'core-js/features/promise';
+import 'core-js/features/object';
 
 const config = Object.freeze(Object.assign({}, CONFIG));
 

@@ -1,11 +1,13 @@
 import * as $ from 'jquery';
 // Polyfills added for compatibility with IE11
-import 'promise-polyfill/src/polyfill';
 import 'whatwg-fetch';
+import 'core-js/features/object';
+import 'core-js/features/promise';
 // End of Polyfills
 import {KeyBinding} from 'lib-admin-ui/ui/KeyBinding';
 import {KeyBindings} from 'lib-admin-ui/ui/KeyBindings';
 import {AppHelper} from 'lib-admin-ui/util/AppHelper';
+import {BrowserHelper} from 'lib-admin-ui/BrowserHelper';
 import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/ApplicationEvent';
 import {validateConfig} from '../validator';
 
@@ -95,12 +97,13 @@ class Launcher {
             throw new Error(errors.join('\n'));
         }
 
-        this.appendLauncherButton();
-        this.appendLauncherPanel();
-        this.addApplicationsListeners();
-        if (params) {
-            console.log(params.getTheme());
-        }
+        const delay = BrowserHelper.isIE() ? 500 : 0;
+
+        setTimeout(() => {
+            this.appendLauncherButton();
+            this.appendLauncherPanel();
+            this.addApplicationsListeners();
+        }, delay);
     }
 
     public appendLauncherButton = (): void => {
