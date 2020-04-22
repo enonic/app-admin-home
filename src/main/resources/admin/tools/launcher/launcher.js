@@ -50,13 +50,15 @@ exports.get = function() {
         userIconUrl: userIconUrl,
         user: user,
         logoutUrl: logoutUrl,
-        homeUrl: admin.getHomeToolUrl(),
+        homeTool: {
+            url: admin.getHomeToolUrl(),
+            caption: localise('launcher.tools.home.caption', locales),
+            description: localise(
+                'launcher.tools.home.description',
+                locales
+            )
+        },
         installation: admin.getInstallation() || 'Tools',
-        homeToolCaption: localise('launcher.tools.home.caption', locales),
-        homeToolDescription: localise(
-            'launcher.tools.home.description',
-            locales
-        ),
         logOutLink: localise('launcher.link.logout', locales),
         assetsUri: portal.assetUrl({
             path: ''

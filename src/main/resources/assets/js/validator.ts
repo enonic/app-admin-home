@@ -20,28 +20,29 @@ export function validateConfig(config: GlobalConfig): ValidationResult {
 function validateUrls(config: GlobalConfig): ValidationResult {
     const {adminUrl, assetsUri, i18nUrl, launcherUrl} = config;
 
-    let valid = true;
     const errors = [];
 
     if (adminUrl && !Validator.validUrl(adminUrl)) {
-        valid = false;
         errors.push(`Admin URL (${adminUrl}) is invalid.`);
     }
 
     if (assetsUri && !Validator.validUrl(assetsUri)) {
-        valid = false;
         errors.push(`Assets URI (${assetsUri}) is invalid.`);
     }
 
     if (i18nUrl && !Validator.validUrl(i18nUrl)) {
-        valid = false;
         errors.push(`i18n URL (${i18nUrl}) is invalid.`);
     }
 
+    if (!launcherUrl) {
+        errors.push(`Launcher URL is not defined.`);
+    }
+
     if (launcherUrl && !Validator.validUrl(launcherUrl)) {
-        valid = false;
         errors.push(`Launcher URL (${launcherUrl}) is invalid.`);
     }
+
+    const valid = errors.length === 0;
 
     return {valid, errors};
 }
@@ -65,18 +66,17 @@ function validateVersions(config: GlobalConfig): ValidationResult {
 function validateText(config: GlobalConfig): ValidationResult {
     const {appId, launcherButtonCls} = config;
 
-    let valid = true;
     const errors = [];
 
     if (appId && !Validator.safeText(appId)) {
-        valid = false;
         errors.push(`appId (${appId}) is invalid.`);
     }
 
     if (launcherButtonCls && !Validator.safeText(launcherButtonCls)) {
-        valid = false;
         errors.push(`Launcher button class (${launcherButtonCls}) is invalid.`);
     }
+
+    const valid = errors.length === 0;
 
     return {valid, errors};
 }
