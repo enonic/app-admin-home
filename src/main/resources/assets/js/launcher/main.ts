@@ -10,6 +10,7 @@ import {AppHelper} from 'lib-admin-ui/util/AppHelper';
 import {BrowserHelper} from 'lib-admin-ui/BrowserHelper';
 import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/ApplicationEvent';
 import {validateConfig} from '../validator';
+import {ThemeManager} from './ThemeManager';
 
 const config = Object.freeze(Object.assign({}, CONFIG));
 
@@ -17,9 +18,7 @@ class LauncherParams {
     readonly theme: string;
 
     constructor(params: any) {
-        if (params.theme) {
-            this.theme = params.theme;
-        }
+        this.theme = ThemeManager.getTheme(params ? params.theme : null);
     }
 
     getTheme(): string {
@@ -90,8 +89,10 @@ class Launcher {
 
     private launcherBindings: KeyBinding[] = [this.closeLauncher, this.prevApp, this.nextApp, this.runApp];
 
-    constructor(params?: LauncherParams) {
+    readonly theme: string;
 
+    constructor(params?: LauncherParams) {
+        this.theme = params ? params.getTheme() : '';
         const {valid, errors} = validateConfig(config);
         if (!valid) {
             throw new Error(errors.join('\n'));
@@ -108,7 +109,7 @@ class Launcher {
 
     public appendLauncherButton = (): void => {
         const button = document.createElement('button');
-        button.setAttribute('class', 'launcher-button ' + this.getColorClass());
+        button.setAttribute('class', `launcher-button ${this.getThemeClass()}`);
         button.hidden = true;
 
         const spanX = document.createElement('span');
@@ -128,7 +129,13 @@ class Launcher {
         this.launcherButton = button;
     }
 
-    private getColorClass = (): string => config.launcherButtonCls || '';
+    private getThemeClass = (): string => {
+        if (config.launcherCls) {
+            return `theme-custom ${config.launcherCls}`;
+        }
+
+        return `theme-${ThemeManager.getTheme(this.theme)}`;
+    }
 
     private isPanelExpanded = (): boolean => this.launcherPanel.classList.contains('visible');
 

@@ -7,7 +7,7 @@ type GlobalConfig = {
     docLinkPrefix: string,
     autoOpenLauncher: boolean,
     tourEnabled: boolean,
-    launcherButtonCls: string,
+    launcherCls: string,
     i18nUrl: string
 };
 

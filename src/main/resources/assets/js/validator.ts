@@ -64,7 +64,7 @@ function validateVersions(config: GlobalConfig): ValidationResult {
 }
 
 function validateText(config: GlobalConfig): ValidationResult {
-    const {appId, launcherButtonCls} = config;
+    const {appId, launcherCls} = config;
 
     const errors = [];
 
@@ -72,8 +72,8 @@ function validateText(config: GlobalConfig): ValidationResult {
         errors.push(`appId (${appId}) is invalid.`);
     }
 
-    if (launcherButtonCls && !Validator.safeText(launcherButtonCls)) {
-        errors.push(`Launcher button class (${launcherButtonCls}) is invalid.`);
+    if (launcherCls && !Validator.safeText(launcherCls)) {
+        errors.push(`Launcher button class (${launcherCls}) is invalid.`);
     }
 
     const valid = errors.length === 0;
