@@ -163,7 +163,7 @@ class Launcher {
 
     private appendLauncherPanel = (): void => {
         const container = document.createElement('div');
-        container.setAttribute('class', 'launcher-panel');
+        container.setAttribute('class', `launcher-panel ${this.getThemeClass()}`);
         container.classList.add('hidden');
 
         this.fetchLauncherContents()

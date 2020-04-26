@@ -2,11 +2,41 @@
 @import "../icons/icons";
 @import 'font';
 
-@launcher-button-color: #454548;
 @app-header-height: 44px;
 @panel-outer-width: 320px;
 @panel-inner-width: 280px;
 @panel-indent: 30px;
+
+/* THEME-DEPENDENT STYLES */
+
+.launcher-button {
+
+  &.theme-dark {
+    color: @admin-white;
+
+    &:hover {
+      color: @admin-bg-light-gray;
+    }
+  }
+
+  &.theme-light {
+    color: @admin-font-gray2;
+
+    &:hover {
+      color: @admin-bg-dark-gray;
+    }
+  }
+
+  &.toggled {
+    color: lighten(@admin-red, 10%);
+
+    &:hover {
+      color: @admin-red;
+    }
+  }
+}
+
+/* END THEME-DEPENDENT STYLES */
 
 .body-mask.launcher {
   .reset(true);
@@ -295,7 +325,6 @@ body.mobile-statistics-panel {
 .launcher-button {
   height: @app-header-height;
   width: calc(@app-header-height - ~'4px');
-  color: @admin-white;
   font-family: @admin-font-family;
   font-size: 20px;
   font-weight: bold;
@@ -315,11 +344,4 @@ body.mobile-statistics-panel {
     border: 0;
   }
 
-  &:hover {
-
-  }
-
-  &.toggled {
-    color: lighten(@admin-red, 10%);
-  }
 }
