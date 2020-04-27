@@ -16,13 +16,21 @@ const config = Object.freeze(Object.assign({}, CONFIG));
 
 class LauncherParams {
     readonly theme: string;
+    readonly customCls: string;
 
-    constructor(params: any) {
-        this.theme = ThemeManager.getTheme(params ? params.theme : null);
+    constructor(params: LauncherConfig) {
+        if (params) {
+            this.theme = ThemeManager.getTheme(params.theme);
+            this.customCls = params.cls;
+        }
     }
 
     getTheme(): string {
         return this.theme;
+    }
+
+    getCustomCls(): string {
+        return this.customCls;
     }
 }
 
@@ -89,10 +97,10 @@ class Launcher {
 
     private launcherBindings: KeyBinding[] = [this.closeLauncher, this.prevApp, this.nextApp, this.runApp];
 
-    readonly theme: string;
+    readonly params: LauncherParams;
 
     constructor(params?: LauncherParams) {
-        this.theme = params ? params.getTheme() : '';
+        this.params = params;
         const {valid, errors} = validateConfig(config);
         if (!valid) {
             throw new Error(errors.join('\n'));
@@ -130,11 +138,11 @@ class Launcher {
     }
 
     private getThemeClass = (): string => {
-        if (config.launcherCls) {
-            return `theme-custom ${config.launcherCls}`;
+        if (this.params.getCustomCls()) {
+            return `theme-custom ${this.params.getCustomCls()}`;
         }
 
-        return `theme-${ThemeManager.getTheme(this.theme)}`;
+        return `theme-${ThemeManager.getTheme(this.params.getTheme())}`;
     }
 
     private isPanelExpanded = (): boolean => this.launcherPanel.classList.contains('visible');
@@ -453,29 +461,9 @@ class Launcher {
 
     private isHomeAppActive = () => this.getLauncherMainContainer().classList.contains('home');
 }
-let initialised: boolean = false;
 
-const initWithoutParams = (): Launcher => {
-    if (initialised) {
-        return;
-    }
-
-    return new Launcher();
+const init = (): Launcher => {
+    return new Launcher(new LauncherParams(config.launcher));
 };
 
-const initWithParams = (args: any): Launcher => {
-
-    if (!args || Object.keys(args).length === 0) {
-        initWithoutParams();
-
-        return;
-    }
-
-    initialised = true;
-
-    return new Launcher(new LauncherParams(args));
-};
-
-window.addEventListener('load', initWithoutParams);
-
-export {initWithParams as init};
+window.addEventListener('load', init);

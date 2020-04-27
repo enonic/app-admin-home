@@ -1,3 +1,7 @@
+type LauncherConfig = {
+    cls: string,
+    theme: string
+}
 type GlobalConfig = {
     appId: string,
     xpVersion: string,
@@ -7,8 +11,8 @@ type GlobalConfig = {
     docLinkPrefix: string,
     autoOpenLauncher: boolean,
     tourEnabled: boolean,
-    launcherCls: string,
-    i18nUrl: string
+    i18nUrl: string,
+    launcher: LauncherConfig
 };
 
 declare const CONFIG: GlobalConfig;
