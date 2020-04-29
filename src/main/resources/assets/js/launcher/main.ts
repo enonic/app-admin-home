@@ -10,20 +10,27 @@ import {AppHelper} from 'lib-admin-ui/util/AppHelper';
 import {BrowserHelper} from 'lib-admin-ui/BrowserHelper';
 import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/ApplicationEvent';
 import {validateConfig} from '../validator';
+import {ThemeManager} from './ThemeManager';
 
 const config = Object.freeze(Object.assign({}, CONFIG));
 
 class LauncherParams {
     readonly theme: string;
+    readonly customCls: string;
 
-    constructor(params: any) {
-        if (params.theme) {
-            this.theme = params.theme;
+    constructor(params: LauncherConfig) {
+        if (params) {
+            this.theme = ThemeManager.getTheme(params.theme);
+            this.customCls = params.cls;
         }
     }
 
     getTheme(): string {
         return this.theme;
+    }
+
+    getCustomCls(): string {
+        return this.customCls;
     }
 }
 
@@ -90,8 +97,10 @@ class Launcher {
 
     private launcherBindings: KeyBinding[] = [this.closeLauncher, this.prevApp, this.nextApp, this.runApp];
 
-    constructor(params?: LauncherParams) {
+    readonly params: LauncherParams;
 
+    constructor(params?: LauncherParams) {
+        this.params = params;
         const {valid, errors} = validateConfig(config);
         if (!valid) {
             throw new Error(errors.join('\n'));
@@ -108,7 +117,7 @@ class Launcher {
 
     public appendLauncherButton = (): void => {
         const button = document.createElement('button');
-        button.setAttribute('class', 'launcher-button ' + this.getColorClass());
+        button.setAttribute('class', `launcher-button ${this.getThemeClass()}`);
         button.hidden = true;
 
         const spanX = document.createElement('span');
@@ -128,7 +137,13 @@ class Launcher {
         this.launcherButton = button;
     }
 
-    private getColorClass = (): string => config.launcherButtonCls || '';
+    private getThemeClass = (): string => {
+        if (this.params.getCustomCls()) {
+            return `theme-custom ${this.params.getCustomCls()}`;
+        }
+
+        return `theme-${ThemeManager.getTheme(this.params.getTheme())}`;
+    }
 
     private isPanelExpanded = (): boolean => this.launcherPanel.classList.contains('visible');
 
@@ -156,7 +171,7 @@ class Launcher {
 
     private appendLauncherPanel = (): void => {
         const container = document.createElement('div');
-        container.setAttribute('class', 'launcher-panel');
+        container.setAttribute('class', `launcher-panel ${this.getThemeClass()}`);
         container.classList.add('hidden');
 
         this.fetchLauncherContents()
@@ -446,29 +461,9 @@ class Launcher {
 
     private isHomeAppActive = () => this.getLauncherMainContainer().classList.contains('home');
 }
-let initialised: boolean = false;
 
-const initWithoutParams = (): Launcher => {
-    if (initialised) {
-        return;
-    }
-
-    return new Launcher();
+const init = (): Launcher => {
+    return new Launcher(new LauncherParams(config.launcher));
 };
 
-const initWithParams = (args: any): Launcher => {
-
-    if (!args || Object.keys(args).length === 0) {
-        initWithoutParams();
-
-        return;
-    }
-
-    initialised = true;
-
-    return new Launcher(new LauncherParams(args));
-};
-
-window.addEventListener('load', initWithoutParams);
-
-export {initWithParams as init};
+window.addEventListener('load', init);

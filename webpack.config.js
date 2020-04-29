@@ -6,8 +6,18 @@ const path = require('path');
 
 const isProd = process.env.NODE_ENV === 'production';
 
-const commonConfig = {
+module.exports = {
     context: path.join(__dirname, '/src/main/resources/assets'),
+    entry: {
+        'js/home/bundle': './js/home/main.ts',
+        'js/launcher/bundle': './js/launcher/main.ts',
+        'styles/home': './styles/home.less',
+        'styles/launcher': './styles/launcher.less',
+    },
+    output: {
+        path: path.join(__dirname, '/build/resources/main/assets'),
+        filename: './[name].js'
+    },
     resolve: {
         extensions: ['.ts', '.js', '.less', '.css']
     },
@@ -64,29 +74,3 @@ const commonConfig = {
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : 'source-map'
 };
-
-const homeConfig = Object.assign({}, commonConfig, {
-    entry: {
-        'js/home/bundle': './js/home/main.ts',
-        'styles/home': './styles/home.less'
-    },
-    output: {
-        path: path.join(__dirname, '/build/resources/main/assets'),
-        filename: './[name].js'
-    }
-});
-
-const launcherConfig = Object.assign({}, commonConfig, {
-    entry: {
-        'js/launcher/bundle': './js/launcher/main.ts',
-        'styles/launcher': './styles/launcher.less'
-    },
-    output: {
-        path: path.join(__dirname, '/build/resources/main/assets'),
-        filename: './[name].js',
-        library: 'XP_Launcher'
-    }
-});
-
-module.exports = [homeConfig, launcherConfig];
-
