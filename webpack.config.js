@@ -72,5 +72,6 @@ module.exports = {
         new ErrorLoggerPlugin({showColumn: false})
     ],
     mode: isProd ? 'production' : 'development',
-    devtool: isProd ? false : 'source-map'
+    devtool: isProd ? false : 'source-map',
+    performance: { hints: false }
 };
