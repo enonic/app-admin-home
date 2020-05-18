@@ -15,13 +15,15 @@ import {ThemeManager} from './ThemeManager';
 const config = Object.freeze(Object.assign({}, CONFIG));
 
 class LauncherParams {
-    readonly theme: string;
-    readonly customCls: string;
+    private readonly theme: string;
+    private readonly customCls: string;
+    private readonly container: string;
 
     constructor(params: LauncherConfig) {
         if (params) {
             this.theme = ThemeManager.getTheme(params.theme);
             this.customCls = params.cls;
+            this.container = params.container;
         }
     }
 
@@ -31,6 +33,10 @@ class LauncherParams {
 
     getCustomCls(): string {
         return this.customCls;
+    }
+
+    getContainerSelector(): string {
+        return this.container;
     }
 }
 
@@ -131,8 +137,10 @@ class Launcher {
 
         button.addEventListener('click', this.togglePanelState);
 
-        const container = document.querySelector('.appbar') || document.body;
+        const containerSelector = this.params.getContainerSelector();
+        const container = containerSelector ? document.querySelector(containerSelector) : document.body ;
         container.appendChild(button);
+        button.classList.add('visible');
 
         this.launcherButton = button;
     }

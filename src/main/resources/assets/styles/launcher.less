@@ -323,6 +323,7 @@ body.mobile-statistics-panel {
 }
 
 .launcher-button {
+  display: none;
   height: @app-header-height;
   width: @app-header-height;
   font-family: @admin-font-family;
@@ -339,6 +340,10 @@ body.mobile-statistics-panel {
   outline-width: 2px;
   outline-offset: -2px;
   -moz-outline-radius: 3px;
+
+  &.visible {
+    display: block;
+  }
 
   span {
     line-height: @app-header-height;

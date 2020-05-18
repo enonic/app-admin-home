@@ -1,6 +1,7 @@
 type LauncherConfig = {
     cls: string,
-    theme: string
+    theme: string,
+    container: string
 }
 type GlobalConfig = {
     appId: string,
