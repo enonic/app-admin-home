@@ -11,6 +11,7 @@ import {BrowserHelper} from 'lib-admin-ui/BrowserHelper';
 import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/ApplicationEvent';
 import {validateConfig} from '../validator';
 import {ThemeManager} from './ThemeManager';
+import {i18n} from 'lib-admin-ui/util/Messages';
 
 const config = Object.freeze(Object.assign({}, CONFIG));
 
@@ -112,7 +113,7 @@ class Launcher {
             throw new Error(errors.join('\n'));
         }
 
-        const delay = BrowserHelper.isIE() ? 500 : 0;
+        const delay = BrowserHelper.isIE() ? 500 : 200;
 
         setTimeout(() => {
             this.appendLauncherButton();
@@ -123,6 +124,7 @@ class Launcher {
 
     public appendLauncherButton = (): void => {
         const button = document.createElement('button');
+        button.setAttribute('title', i18n('tooltip.launcher.openMenu'));
         button.setAttribute('class', `launcher-button ${this.getThemeClass()}`);
         button.hidden = true;
 
@@ -296,6 +298,8 @@ class Launcher {
         this.toggleButton();
         this.launcherPanel.classList.remove('hidden', 'slideout');
         this.launcherPanel.classList.add('visible');
+        this.launcherButton.setAttribute('title', i18n('tooltip.launcher.closeMenu'));
+
         document.addEventListener('click', this.onLauncherClick);
     }
 
@@ -308,6 +312,7 @@ class Launcher {
             skipTransition === true ? 'hidden' : 'slideout'
         );
         this.toggleButton();
+        this.launcherButton.setAttribute('title', i18n('tooltip.launcher.openMenu'));
         this.unselectCurrentApp();
     }
 

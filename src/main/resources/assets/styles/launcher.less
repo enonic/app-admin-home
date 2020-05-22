@@ -323,7 +323,9 @@ body.mobile-statistics-panel {
 }
 
 .launcher-button {
-  display: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s, visibility 0.3s;
   height: @app-header-height;
   width: @app-header-height;
   font-family: @admin-font-family;
@@ -342,7 +344,9 @@ body.mobile-statistics-panel {
   -moz-outline-radius: 3px;
 
   &.visible {
-    display: block;
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s, visibility 0.3s;
   }
 
   span {
