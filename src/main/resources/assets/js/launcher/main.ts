@@ -12,6 +12,7 @@ import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/A
 import {validateConfig} from '../validator';
 import {ThemeManager} from './ThemeManager';
 import {i18n} from 'lib-admin-ui/util/Messages';
+import {i18nInit} from 'lib-admin-ui/util/MessagesInitializer';
 
 const config = Object.freeze(Object.assign({}, CONFIG));
 
@@ -475,7 +476,11 @@ class Launcher {
     private isHomeAppActive = () => this.getLauncherMainContainer().classList.contains('home');
 }
 
-const init = (): Launcher => {
+const init = async () => {
+    const i18nUrl = config.i18nUrl || config.services.i18nUrl;
+    if (i18nUrl) {
+        await i18nInit(i18nUrl);
+    }
     return new Launcher(new LauncherParams(config.launcher));
 };
 

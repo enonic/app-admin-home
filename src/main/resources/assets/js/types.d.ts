@@ -13,7 +13,8 @@ type GlobalConfig = {
     autoOpenLauncher: boolean,
     tourEnabled: boolean,
     i18nUrl: string,
-    launcher: LauncherConfig
+    launcher: LauncherConfig,
+    services: any
 };
 
 declare const CONFIG: GlobalConfig;
