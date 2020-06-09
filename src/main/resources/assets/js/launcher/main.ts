@@ -11,17 +11,21 @@ import {BrowserHelper} from 'lib-admin-ui/BrowserHelper';
 import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/ApplicationEvent';
 import {validateConfig} from '../validator';
 import {ThemeManager} from './ThemeManager';
+import {i18n} from 'lib-admin-ui/util/Messages';
+import {i18nInit} from 'lib-admin-ui/util/MessagesInitializer';
 
 const config = Object.freeze(Object.assign({}, CONFIG));
 
 class LauncherParams {
-    readonly theme: string;
-    readonly customCls: string;
+    private readonly theme: string;
+    private readonly customCls: string;
+    private readonly container: string;
 
     constructor(params: LauncherConfig) {
         if (params) {
             this.theme = ThemeManager.getTheme(params.theme);
             this.customCls = params.cls;
+            this.container = params.container;
         }
     }
 
@@ -31,6 +35,10 @@ class LauncherParams {
 
     getCustomCls(): string {
         return this.customCls;
+    }
+
+    getContainerSelector(): string {
+        return this.container;
     }
 }
 
@@ -106,7 +114,7 @@ class Launcher {
             throw new Error(errors.join('\n'));
         }
 
-        const delay = BrowserHelper.isIE() ? 500 : 0;
+        const delay = BrowserHelper.isIE() ? 500 : 200;
 
         setTimeout(() => {
             this.appendLauncherButton();
@@ -117,6 +125,7 @@ class Launcher {
 
     public appendLauncherButton = (): void => {
         const button = document.createElement('button');
+        button.setAttribute('title', i18n('tooltip.launcher.openMenu'));
         button.setAttribute('class', `launcher-button ${this.getThemeClass()}`);
         button.hidden = true;
 
@@ -131,8 +140,10 @@ class Launcher {
 
         button.addEventListener('click', this.togglePanelState);
 
-        const container = document.querySelector('.appbar') || document.body;
+        const containerSelector = this.params.getContainerSelector();
+        const container = containerSelector ? document.querySelector(containerSelector) : document.body ;
         container.appendChild(button);
+        button.classList.add('visible');
 
         this.launcherButton = button;
     }
@@ -288,6 +299,8 @@ class Launcher {
         this.toggleButton();
         this.launcherPanel.classList.remove('hidden', 'slideout');
         this.launcherPanel.classList.add('visible');
+        this.launcherButton.setAttribute('title', i18n('tooltip.launcher.closeMenu'));
+
         document.addEventListener('click', this.onLauncherClick);
     }
 
@@ -300,6 +313,7 @@ class Launcher {
             skipTransition === true ? 'hidden' : 'slideout'
         );
         this.toggleButton();
+        this.launcherButton.setAttribute('title', i18n('tooltip.launcher.openMenu'));
         this.unselectCurrentApp();
     }
 
@@ -462,7 +476,11 @@ class Launcher {
     private isHomeAppActive = () => this.getLauncherMainContainer().classList.contains('home');
 }
 
-const init = (): Launcher => {
+const init = async () => {
+    const i18nUrl = config.i18nUrl || config.services.i18nUrl;
+    if (i18nUrl) {
+        await i18nInit(i18nUrl);
+    }
     return new Launcher(new LauncherParams(config.launcher));
 };
 

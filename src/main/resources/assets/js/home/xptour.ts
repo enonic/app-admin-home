@@ -59,7 +59,7 @@ export function init(config: GlobalConfig) {
 
 function appendInstallAppStep() {
     tourSteps.push(createStep3());
-    tourDialog.setTitle(i18n('tour.title.stepXofY', 1, 4));
+    tourDialog.setHeading(i18n('tour.title.stepXofY', 1, 4));
 }
 
 function checkAdminRights() {
@@ -421,7 +421,7 @@ function loadApp(marketDemoApp: MarketApplication) {
 
 function updateHeaderStep(step: number) {
     const totalSteps = isSystemAdmin ? '3' : '2';
-    tourDialog.setTitle(i18n('tour.title.stepXofY', step, totalSteps));
+    tourDialog.setHeading(i18n('tour.title.stepXofY', step, totalSteps));
 }
 
 function setTourStep(step: number) {

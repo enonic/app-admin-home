@@ -323,9 +323,11 @@ body.mobile-statistics-panel {
 }
 
 .launcher-button {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s, visibility 0.3s;
   height: @app-header-height;
-  width: calc(@app-header-height - ~'4px');
-  font-family: @admin-font-family;
+  width: @app-header-height;
   font-size: 20px;
   font-weight: bold;
   position: absolute;
@@ -339,6 +341,16 @@ body.mobile-statistics-panel {
   outline-width: 2px;
   outline-offset: -2px;
   -moz-outline-radius: 3px;
+
+  &:focus {
+    outline-style: solid;
+  }
+
+  &.visible {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
 
   span {
     line-height: @app-header-height;
