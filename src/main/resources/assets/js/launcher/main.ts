@@ -142,7 +142,9 @@ class Launcher {
 
         const containerSelector = this.params.getContainerSelector();
         const container = containerSelector ? document.querySelector(containerSelector) : document.body ;
-        container.appendChild(button);
+        if (container) {
+            container.appendChild(button);
+        }
         button.classList.add('visible');
 
         this.launcherButton = button;
@@ -477,7 +479,12 @@ class Launcher {
 }
 
 const init = async () => {
-    const i18nUrl = config.i18nUrl || config.services.i18nUrl;
+    let i18nUrl = config.i18nUrl;
+
+    if (!i18nUrl && config.services) {
+        i18nUrl = config.services.i18nUrl;
+    }
+
     if (i18nUrl) {
         await i18nInit(i18nUrl);
     }
