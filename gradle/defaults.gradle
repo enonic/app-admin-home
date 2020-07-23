@@ -5,7 +5,7 @@ app {
 repositories {
     mavenLocal()
     jcenter()
-    xp.enonicRepo()
+    xp.enonicRepo('dev')
 }
 
 configurations.all {
