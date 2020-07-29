@@ -3,12 +3,22 @@ var admin = require('/lib/xp/admin');
 var portal = require('/lib/xp/portal');
 var mustache = require('/lib/mustache');
 
+function getMarketUrl() {
+    var marketConfigBean = __.newBean('com.enonic.xp.app.main.GetMarketConfigBean');
+    return __.toNativeObject(marketConfigBean.getMarketUrl());
+}
+
 exports.get = function() {
+
     var busIconUrl = portal.assetUrl({ path: 'icons/bus.svg' });
     var infoIconUrl = portal.assetUrl({ path: 'icons/info-with-circle.svg' });
     var devIconUrl = portal.assetUrl({ path: 'icons/developer.svg' });
     var forumIconUrl = portal.assetUrl({ path: 'icons/discuss.svg' });
     var marketIconUrl = portal.assetUrl({ path: 'icons/market.svg' });
+
+    var marketUrl = getMarketUrl();
+
+    log.info('Market URL: ' + marketUrl);
 
     var locales = admin.getLocales();
     var dashboardIcons = [
