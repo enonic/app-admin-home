@@ -12,7 +12,7 @@ public class MarketConfigService
     @Activate
     public MarketConfigService( final MarketConfig marketConfig )
     {
-        this.marketUrl = marketConfig.getMarketUrl();
+        this.marketUrl = marketConfig.marketUrl();
     }
 
     public String getMarketUrl()

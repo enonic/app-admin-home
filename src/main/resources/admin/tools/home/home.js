@@ -18,8 +18,6 @@ exports.get = function() {
 
     var marketUrl = getMarketUrl();
 
-    log.info('Market URL: ' + marketUrl);
-
     var locales = admin.getLocales();
     var dashboardIcons = [
         {
@@ -82,7 +80,8 @@ exports.get = function() {
         xpVersion: admin.getVersion(),
         tourEnabled: tourEnabled,
         dashboardIcons: dashboardIcons,
-        i18nUrl: portal.serviceUrl({service: 'i18n'})
+        i18nUrl: portal.serviceUrl({service: 'i18n'}),
+        marketUrl: marketUrl
     };
 
     return {
