@@ -20,7 +20,7 @@
     "whatwg-fetch": "^3.2.0"
   },
   "devDependencies": {
-    "@types/jquery": "^3.5.0",
+    "@types/jquery": "^3.5.1",
     "@types/q": "^1.5.4",
     "autoprefixer": "^9.8.5",
     "browserslist": "^4.13.0",
