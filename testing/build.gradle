@@ -127,8 +127,6 @@ task testAdminHomeAppLocally( type: NpmTask, dependsOn: [npmInstall, ensureScree
 
 repositories {
     mavenLocal()
-    maven {
-        url "https://repo.enonic.com/public"
-    }
     jcenter ()
+    xp.enonicRepo('dev')
 }
