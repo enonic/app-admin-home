@@ -10,8 +10,11 @@ plugins {
     id 'com.github.psxpaul.execfork' version '0.1.8'
 }
 
-group = 'com.enonic.xp.js_testing'
-version = '1.0'
+app {
+    group = 'com.enonic.xp.js_testing'
+    version = '1.0'
+    systemVersion = "${xpVersion}"
+}
 
 configurations {
     distro
