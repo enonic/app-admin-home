@@ -60,6 +60,49 @@
     font-size: 26px;
   }
 
+  .dialog-buttons {
+    .button-container {
+      width: 100%;
+
+      button {
+        height: 36px;
+        text-align: center;
+        margin-left: 0;
+
+        span {
+          font-weight: bold;
+          white-space: nowrap;
+        }
+
+        &:first-child {
+          float: left;
+          background-color: @form-button-bg;
+
+          &:hover {
+            background-color: #b3b3b3;
+          }
+        }
+
+        &:last-child {
+          float: right;
+          background-color: @admin-green;
+
+          &:hover {
+            background-color: #79c82d;
+          }
+
+          &.last-step {
+            background-color: @form-button-bg;
+
+            &:hover {
+              background-color: #b3b3b3;
+            }
+          }
+        }
+      }
+    }
+  }
+
   .dialog-content {
     overflow: auto;
 
@@ -195,51 +238,6 @@
           }
         }
       }
-
-    }
-  }
-
-  .dialog-buttons {
-    .button-container {
-      width: 100%;
-
-      button {
-        height: 36px;
-        text-align: center;
-        margin-left: 0;
-
-        span {
-          font-weight: bold;
-          white-space: nowrap;
-        }
-
-        &:first-child {
-          float: left;
-          background-color: @form-button-bg;
-
-          &:hover {
-            background-color: #b3b3b3;
-          }
-        }
-
-        &:last-child {
-          float: right;
-          background-color: @admin-green;
-
-          &:hover {
-            background-color: #79c82d;
-          }
-
-          &.last-step {
-            background-color: @form-button-bg;
-
-            &:hover {
-              background-color: #b3b3b3;
-            }
-          }
-        }
-      }
-
     }
   }
 }
