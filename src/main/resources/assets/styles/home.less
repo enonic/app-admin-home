@@ -10,18 +10,9 @@
 .home-main-container {
   .home-main-container-mixin();
 
-  .lazy-image {
-    position: absolute;
-    background-position: left;
-  }
-
-  background-color: @admin-dark-gray;
-
-  .home-main-dashboard {
-    position: relative;
+  .center-panel {
     color: @admin-white;
     padding: 50px;
-    display: flex;
     flex-wrap: wrap;
 
     a {
@@ -433,7 +424,7 @@ body {
   &._240-360,
   &._360-540,
   &._540-720 {
-    .home-main-dashboard {
+    .center-panel {
       justify-content: space-between;
     }
 
