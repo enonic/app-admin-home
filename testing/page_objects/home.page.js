@@ -6,10 +6,10 @@ const lib = require('../libs/elements');
 const appConst = require('../libs/app_const');
 
 const XPATH = {
-    container: `//div[contains(@class,'home-main-container')]`,
-    dashboard: `//div[contains(@class,'home-main-dashboard')]`,
-    dashBoardItem: `//div[contains(@class,' dashboard-item')]`,
-    xpTourDialog: `//div[contains(@id,'ModalDialog') and descendant::h2[contains(.,'Welcome Tour')]]`
+    container: "//div[contains(@class,'home-main-container')]",
+    dashboard: "//div[contains(@class,'center-panel')]",
+    dashBoardItem: "//div[contains(@class,' dashboard-item')]",
+    xpTourDialog: "//div[contains(@id,'ModalDialog') and descendant::h2[contains(.,'Welcome Tour')]]"
 };
 
 class HomePage extends Page {
@@ -25,6 +25,7 @@ class HomePage extends Page {
     get discussButton() {
         return XPATH.container + XPATH.dashboard + XPATH.dashBoardItem + "//div[text()='Discuss']"
     }
+
     get developerButton() {
         return XPATH.container + XPATH.dashboard + XPATH.dashBoardItem + "//div[text()='Developer']";
     }
@@ -38,18 +39,21 @@ class HomePage extends Page {
     }
 
     async clickOnAboutButton() {
-        await this.waitForElementDisplayed(this.aboutButton,appConst.TIMEOUT_2);
+        await this.waitForElementDisplayed(this.aboutButton, appConst.TIMEOUT_2);
         await this.clickOnElement(this.aboutButton);
         return await this.pause(200);
     }
-    isDiscussButtonDisplayed(){
-        return this.isElementDisplayed(this.discussButton);
+
+    isDiscussButtonDisplayed() {
+        return this.waitForElementDisplayed(this.discussButton, appConst.TIMEOUT_3);
     }
-    isDeveloperButtonDisplayed(){
-        return this.isElementDisplayed(this.developerButton);
+
+    isDeveloperButtonDisplayed() {
+        return this.waitForElementDisplayed(this.developerButton, appConst.TIMEOUT_3);
     }
-    isMarketButtonDisplayed(){
-        return this.isElementDisplayed(this.marketButton);
+
+    isMarketButtonDisplayed() {
+        return this.waitForElementDisplayed(this.marketButton, appConst.TIMEOUT_3);
     }
 };
 module.exports = HomePage;
