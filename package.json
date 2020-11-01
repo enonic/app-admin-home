@@ -31,7 +31,7 @@
     "cssnano": "^4.1.10",
     "enonic-admin-artifacts": "^1.7.8",
     "error-logger-webpack-plugin": "^1.1.0",
-    "file-loader": "^6.1.0",
+    "file-loader": "^6.2.0",
     "less": "^3.12.2",
     "less-loader": "^7.0.1",
     "mini-css-extract-plugin": "^0.11.2",
