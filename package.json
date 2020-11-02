@@ -37,7 +37,7 @@
     "mini-css-extract-plugin": "^1.2.1",
     "postcss-loader": "^4.0.4",
     "postcss-normalize": "^9.0.0",
-    "style-loader": "^1.2.1",
+    "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^4.2.3",
     "ts-loader": "^8.0.7",
     "tslint": "^6.1.3",
