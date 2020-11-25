@@ -74,7 +74,8 @@ describe('Home Page specification - check buttons and open About dialog(licensin
     beforeEach(async () => {
         await testUtils.doDeleteCookie();
         return await testUtils.doLoginAndCloseXpTourDialog();
-    })
+    });
+
     afterEach(() => testUtils.doDeleteCookie());
     before(() => {
         return console.log('specification starting: ' + this.title);

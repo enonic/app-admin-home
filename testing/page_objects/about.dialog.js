@@ -29,7 +29,7 @@ class AboutDialog extends Page {
 
     async waitForDialogLoaded() {
         try {
-            return await this.waitForElementDisplayed(XPATH.container, appConst.TIMEOUT_3);
+            return await this.waitForElementDisplayed(XPATH.container, appConst.mediumTimeout);
         } catch (err) {
             this.saveScreenshot("err_about_dialog_not_loaded");
             throw new Error("About dialog is not loaded in 3 seconds!")
@@ -49,11 +49,12 @@ class AboutDialog extends Page {
     }
 
     waitForDialogClosed() {
-        return this.waitForElementNotDisplayed(XPATH.container, appConst.TIMEOUT_2);
+        return this.waitForElementNotDisplayed(XPATH.container, appConst.shortTimeout);
     }
 
     getTitle() {
         return this.getText(XPATH.container + "//h1");
     }
-};
+}
+
 module.exports = AboutDialog;

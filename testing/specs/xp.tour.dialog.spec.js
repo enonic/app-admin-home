@@ -14,7 +14,7 @@ describe('XP tour dialog specification', function () {
     it('WHEN user is logged in THEN XP tour dialog should appear', async () => {
         const loginPage = new LoginPage();
         const xpTourDialog = new XpTourDialog();
-        await loginPage.waitForPageLoaded(appConst.TIMEOUT_2);
+        await loginPage.waitForPageLoaded(appConst.mediumTimeout);
         await loginPage.doLogin();
         //'XP tour' dialog must be loaded:
         await xpTourDialog.waitForDialogLoaded();
@@ -42,7 +42,7 @@ describe('XP tour dialog specification', function () {
         await xpTourDialog.clickOnSkipTourButton();
         testUtils.saveScreenshot('xp_tour_skipped');
         //3. 'XP tour dialog must be closed'
-        await xpTourDialog.waitForDialogClosed();
+        await xpTourDialog.waitForDialogClosed();FFO
     });
 
     it('GIVEN XP tour dialog is opened WHEN `Cancel-top-button` has been pressed THEN dialog should be closed', async () => {

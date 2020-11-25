@@ -8,7 +8,7 @@ const xpath = {
     previousButton: `//button[contains(@id,'DialogButton')]/span[text()='Previous']`,
     finishButton: "//button[contains(@id,'DialogButton')]/span[text()='Finish']",
     installAppsButton: `//button[contains(@id,'DialogButton')]/span[text()='Install Apps']`,
-    title: `//h2[@class='title']`,
+    title: "//h2[@class='title']",
     applicationStatusByName: name =>
         `//div[@class='demo-app' and descendant::div[@class='demo-app-title' and contains(.,'${name}')]]//div[contains(@class,'demo-app-status')]`,
     applicationInLauncherPanel: name =>
@@ -24,6 +24,7 @@ class XpTourDialog extends Page {
     get installAppsButton() {
         return xpath.container + xpath.installAppsButton;
     }
+
     get finishButton() {
         return xpath.container + xpath.finishButton;
     }
@@ -67,7 +68,7 @@ class XpTourDialog extends Page {
 
     async waitForDialogLoaded() {
         try {
-            return await this.waitForElementDisplayed(xpath.container, appConst.TIMEOUT_5);
+            return await this.waitForElementDisplayed(xpath.container, appConst.mediumTimeout);
         } catch (err) {
             this.saveScreenshot("err_xp_tour_dialog_load");
             throw new Error("XP tour dialog is not loaded in 5 seconds!")
@@ -85,11 +86,11 @@ class XpTourDialog extends Page {
     async waitForInstallAppsButtonDisplayed() {
         try {
             let installButton = await this.findElement(this.installAppsButton);
-             await installButton.waitForDisplayed(appConst.TIMEOUT_7);
-             return await this.pause(1000);
+            await installButton.waitForDisplayed({timeout: appConst.longTimeout});
+            return await this.pause(1000);
         } catch (err) {
             this.saveScreenshot("err_xp_tour_install_button");
-            throw new Error("Install Apps button is not visible in " + appConst.TIMEOUT_7 + " " + err)
+            throw new Error("Install Apps button is not visible in " + appConst.longTimeout + " " + err)
         }
     }
 
@@ -113,7 +114,7 @@ class XpTourDialog extends Page {
     async waitForAppPresentInLauncherPanel(name) {
         try {
             let selector = xpath.applicationInLauncherPanel(name);
-            return await this.waitForElementDisplayed(selector, appConst.TIMEOUT_2);
+            return await this.waitForElementDisplayed(selector, appConst.shortTimeout);
         } catch (err) {
             this.saveScreenshot('err_app_launcher_panel');
             throw new Error("Application is not present in Launcher Panel: " + err);
@@ -122,7 +123,7 @@ class XpTourDialog extends Page {
 
     async waitForAppFinishButtonVisible() {
         try {
-            return await this.waitForElementDisplayed(this.finishButton, appConst.TIMEOUT_2);
+            return await this.waitForElementDisplayed(this.finishButton, appConst.mediumTimeout);
         } catch (err) {
             this.saveScreenshot('err_finish_button_launcher_panel');
             throw new Error("Finish button is not visible in the dialog: " + err);
@@ -133,7 +134,7 @@ class XpTourDialog extends Page {
         try {
             let statusSelector = xpath.applicationStatusByName(appName);
             let element = await this.findElement(statusSelector);
-            await element.waitForDisplayed(appConst.INSTALL_APP_TIMEOUT);
+            await element.waitForDisplayed({timeout: appConst.INSTALL_APP_TIMEOUT});
             return await element.getText();
         } catch (err) {
             this.saveScreenshot('err_wait_app_status');
@@ -142,7 +143,7 @@ class XpTourDialog extends Page {
     }
 
     waitForDialogClosed() {
-        return this.waitForElementNotDisplayed(xpath.container, appConst.TIMEOUT_2);
+        return this.waitForElementNotDisplayed(xpath.container, appConst.shortTimeout);
     }
 
     getTitle() {
@@ -150,9 +151,10 @@ class XpTourDialog extends Page {
     }
 
     waitFoPreviousButtonDisplayed() {
-        return this.waitForElementDisplayed(this.previousButton, appConst.TIMEOUT_3);
+        return this.waitForElementDisplayed(this.previousButton, appConst.mediumTimeout);
     }
-};
+}
+
 module.exports = XpTourDialog;
 
 
