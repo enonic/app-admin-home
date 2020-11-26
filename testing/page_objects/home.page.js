@@ -35,25 +35,26 @@ class HomePage extends Page {
     }
 
     waitForLoaded() {
-        return this.waitForElementDisplayed(XPATH.container, appConst.TIMEOUT_3);
+        return this.waitForElementDisplayed(XPATH.container, appConst.mediumTimeout);
     }
 
     async clickOnAboutButton() {
-        await this.waitForElementDisplayed(this.aboutButton, appConst.TIMEOUT_2);
+        await this.waitForElementDisplayed(this.aboutButton, appConst.shortTimeout);
         await this.clickOnElement(this.aboutButton);
         return await this.pause(200);
     }
 
     isDiscussButtonDisplayed() {
-        return this.waitForElementDisplayed(this.discussButton, appConst.TIMEOUT_3);
+        return this.waitForElementDisplayed(this.discussButton, appConst.mediumTimeout);
     }
 
     isDeveloperButtonDisplayed() {
-        return this.waitForElementDisplayed(this.developerButton, appConst.TIMEOUT_3);
+        return this.waitForElementDisplayed(this.developerButton, appConst.mediumTimeout);
     }
 
     isMarketButtonDisplayed() {
-        return this.waitForElementDisplayed(this.marketButton, appConst.TIMEOUT_3);
+        return this.waitForElementDisplayed(this.marketButton, appConst.mediumTimeout);
     }
-};
+}
+
 module.exports = HomePage;

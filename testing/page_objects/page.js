@@ -20,7 +20,7 @@ class Page {
 
     async clickOnElement(selector) {
         let element = await this.findElement(selector);
-        await element.waitForDisplayed(1000);
+        await element.waitForDisplayed({timeout: 1000});
         return await element.click();
     }
 
@@ -45,12 +45,12 @@ class Page {
 
     async waitForElementNotDisplayed(selector, ms) {
         let element = await this.findElement(selector);
-        return element.waitForDisplayed(ms, true);
+        return element.waitForDisplayed({timeout: ms, reverse: true});
     }
 
     async waitForElementDisplayed(selector, ms) {
         let element = await this.findElement(selector);
-        return element.waitForDisplayed(ms);
+        return element.waitForDisplayed({timeout: ms});
     }
 }
 

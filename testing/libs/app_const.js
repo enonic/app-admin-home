@@ -3,10 +3,9 @@
  */
 module.exports = Object.freeze({
     //waitForTimeout
-    TIMEOUT_3: 3000,
-    TIMEOUT_5: 5000,
-    TIMEOUT_7: 7000,
-    TIMEOUT_2: 2000,
+    mediumTimeout: 3000,
+    longTimeout: 7000,
+    shortTimeout: 2000,
     TIMEOUT_1: 1000,
     DELETE_COOKIE_TIMEOUT: 20000,
     INSTALL_APP_TIMEOUT: 30000,
