@@ -42,7 +42,7 @@ describe('XP tour dialog specification', function () {
         await xpTourDialog.clickOnSkipTourButton();
         testUtils.saveScreenshot('xp_tour_skipped');
         //3. 'XP tour dialog must be closed'
-        await xpTourDialog.waitForDialogClosed();FFO
+        await xpTourDialog.waitForDialogClosed();
     });
 
     it('GIVEN XP tour dialog is opened WHEN `Cancel-top-button` has been pressed THEN dialog should be closed', async () => {
