@@ -42,7 +42,7 @@ module.exports = {
             },
             {
                 test: /\.(png|jpg|gif)$/,
-                loader: 'file-loader?name=./icons/favicons/[name].[ext]'
+                use: 'file-loader?name=./icons/favicons/[name].[ext]'
             }
         ]
     },
