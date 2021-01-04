@@ -30,7 +30,7 @@ module.exports = {
             {
                 test: /\.less$/,
                 use: [
-                    {loader: MiniCssExtractPlugin.loader, options: {publicPath: '../', hmr: !isProd}},
+                    {loader: MiniCssExtractPlugin.loader, options: {publicPath: '../'}},
                     {loader: 'css-loader', options: {sourceMap: !isProd, importLoaders: 1}},
                     {loader: 'postcss-loader', options: {sourceMap: !isProd}},
                     {loader: 'less-loader', options: {sourceMap: !isProd}},
@@ -49,7 +49,6 @@ module.exports = {
     optimization: {
         minimizer: [
             new TerserPlugin({
-                sourceMap: true,
                 terserOptions: {
                     compress: {
                         drop_console: false
