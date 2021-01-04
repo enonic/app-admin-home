@@ -103,29 +103,29 @@ body.mobile-statistics-panel {
   }
 }
 
+
+.app-row-selected() {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.3);
+
+  .app-info .app-description {
+    color: @admin-white;
+  }
+}
+
 .launcher-main-container {
   height: 100%;
   font-family: @admin-font-family;
 
-  .app-row-selected {
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.3);
-    //pointer-events: none;
-
-    .app-info .app-description {
-      color: @admin-white;
-    }
-  }
-
   &.keyboard-navigation {
     .launcher-app-container .app-row.selected {
-      .app-row-selected;
+      .app-row-selected();
     }
   }
 
   &:not(.keyboard-navigation) {
     .launcher-app-container .app-row:hover {
-      .app-row-selected;
+      .app-row-selected();
     }
   }
 
@@ -207,7 +207,7 @@ body.mobile-statistics-panel {
 
       &:hover {
         .app-row.active {
-          .app-row-selected;
+          .app-row-selected();
         }
       }
 
