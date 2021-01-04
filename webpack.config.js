@@ -49,7 +49,6 @@ module.exports = {
     optimization: {
         minimizer: [
             new TerserPlugin({
-                sourceMap: true,
                 terserOptions: {
                     compress: {
                         drop_console: false
