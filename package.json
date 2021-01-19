@@ -35,7 +35,7 @@
     "enonic-admin-artifacts": "^1.8.0",
     "error-logger-webpack-plugin": "^1.1.0",
     "file-loader": "^6.2.0",
-    "less": "^4.0.0",
+    "less": "^4.1.0",
     "less-loader": "^7.2.1",
     "mini-css-extract-plugin": "^1.3.4",
     "postcss-loader": "^4.1.0",
