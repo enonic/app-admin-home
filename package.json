@@ -27,7 +27,7 @@
     "@types/q": "^1.5.4",
     "autoprefixer": "^10.2.4",
     "browserslist": "^4.16.3",
-    "browserslist-config-enonic": "^1.0.5",
+    "browserslist-config-enonic": "^1.0.6",
     "circular-dependency-plugin": "^5.2.2",
     "css-loader": "^5.0.1",
     "css-mqpacker": "^7.0.0",
