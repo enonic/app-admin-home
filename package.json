@@ -17,7 +17,7 @@
     "jquery": "^3.5.1",
     "lib-admin-ui": "file:./.xp/dev/lib-admin-ui",
     "q": "^1.5.1",
-    "whatwg-fetch": "^3.5.0"
+    "whatwg-fetch": "^3.6.2"
   },
   "peerDependencies": {
     "postcss": "^8.1.0"
