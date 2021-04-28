@@ -31,7 +31,7 @@
     "circular-dependency-plugin": "^5.2.2",
     "css-loader": "^5.2.0",
     "css-mqpacker": "^7.0.0",
-    "cssnano": "^5.0.0-rc.2",
+    "cssnano": "^5.0.1",
     "enonic-admin-artifacts": "^1.8.1",
     "error-logger-webpack-plugin": "^1.1.0",
     "file-loader": "^6.2.0",
