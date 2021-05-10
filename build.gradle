@@ -40,7 +40,7 @@ dependencies {
 
 node {
     download = true
-    version = '14.15.0'
+    version = '15.8.0'
 }
 
 task copyDevResources {
