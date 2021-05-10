@@ -86,8 +86,6 @@ task cleanNode( type: Delete ) {
     delete 'node_modules'
 }
 
-npmInstall.mustRunAfter unpackDevResources
-
 jar {
     exclude 'assets/styles/**/*.less'
     exclude 'assets/styles/**/*.js'
