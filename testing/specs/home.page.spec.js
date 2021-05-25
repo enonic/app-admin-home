@@ -27,7 +27,7 @@ describe('Home Page specification - check buttons and open About dialog(licensin
             let homePage = new HomePage();
             let aboutDialog = new AboutDialog();
             await homePage.waitForLoaded();
-            //1. Click on About button:
+            //1. Click on 'About' button:
             await homePage.clickOnAboutButton();
             await aboutDialog.waitForDialogLoaded();
             testUtils.saveScreenshot("about_dialog_opened");
@@ -35,6 +35,20 @@ describe('Home Page specification - check buttons and open About dialog(licensin
             await aboutDialog.clickOnCancelTopButton();
             await aboutDialog.waitForDialogClosed();
             testUtils.saveScreenshot("about_dialog_closed");
+        });
+
+    it("GIVEN 'About' dialog is opened WHEN 'Esc' button has been pressed THEN the modal dialog closes",
+        async () => {
+            let homePage = new HomePage();
+            let aboutDialog = new AboutDialog();
+            await homePage.waitForLoaded();
+            //1. Click on 'About' button:
+            await homePage.clickOnAboutButton();
+            await aboutDialog.waitForDialogLoaded();
+            //2. Click on 'Esc' key
+            await aboutDialog.pressEscKey();
+            testUtils.saveScreenshot("license_info_expanded");
+            await aboutDialog.waitForDialogClosed();
         });
 
     it("GIVEN 'About' dialog is loaded WHEN Licensing button has been clicked THEN license-info should appear",
@@ -50,7 +64,7 @@ describe('Home Page specification - check buttons and open About dialog(licensin
             testUtils.saveScreenshot("license_info_expanded");
             await aboutDialog.waitForLicenseBodyDisplayed();
             let text = await aboutDialog.getLicenseText();
-            assert.isTrue(text.includes("Licenses used by Enonic XP (full license texts"))
+            assert.isTrue(text.includes("Licenses used by Enonic XP (full license texts"));
         });
 
     it("GIVEN 'About' dialog is loaded AND Licensing button has been clicked WHEN click on Licensing button in the second time THEN license-info gets not visible",

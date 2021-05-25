@@ -29,13 +29,14 @@ class Page {
         return await element.getText();
     }
 
-    saveScreenshot(name) {
-        let screenshotsDir = path.join(__dirname, '/../build/screenshots/');
-        return this.browser.saveScreenshot(screenshotsDir + name + '.png').then(() => {
+    async saveScreenshot(name) {
+        try {
+            let screenshotsDir = path.join(__dirname, '/../build/screenshots/');
+            await this.browser.saveScreenshot(screenshotsDir + name + '.png');
             console.log('screenshot is saved ' + name);
-        }).catch(err => {
-            console.log('screenshot was not saved ' + screenshotsDir + ' ' + err);
-        })
+        } catch (err) {
+            console.log('screenshot was not saved ' + err);
+        }
     }
 
     async isElementDisplayed(selector) {
@@ -51,6 +52,10 @@ class Page {
     async waitForElementDisplayed(selector, ms) {
         let element = await this.findElement(selector);
         return element.waitForDisplayed({timeout: ms});
+    }
+
+    async pressEscKey() {
+        await this.browser.keys('Escape');
     }
 }
 
