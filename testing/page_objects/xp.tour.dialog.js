@@ -68,7 +68,8 @@ class XpTourDialog extends Page {
 
     async waitForDialogLoaded() {
         try {
-            return await this.waitForElementDisplayed(xpath.container, appConst.mediumTimeout);
+             await this.waitForElementDisplayed(xpath.container, appConst.mediumTimeout);
+             return await this.pause(700);
         } catch (err) {
             this.saveScreenshot("err_xp_tour_dialog_load");
             throw new Error("XP tour dialog is not loaded in 5 seconds!")
