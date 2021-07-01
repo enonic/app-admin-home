@@ -96,6 +96,12 @@ task startServer( dependsOn: [unpackDistro, copyConfig] ) {
     copyConfig.mustRunAfter unpackDistro
 }
 
+task stopServer {
+    doLast {
+        xpServer.stop()
+    }
+}
+
 tasks.withType( Test ) {
     jvmArgs '-Xms128m', '-Xmx1024m'
     testLogging {
@@ -118,6 +124,8 @@ task testAdminHomeAppLocally( type: NpmTask, dependsOn: [npmInstall, ensureScree
     outputs.files fileTree( dir: '/test-results' )
     args = ['test']
 }
+
+testAdminHomeApp.finalizedBy = ['stopServer']
 
 repositories {
     mavenLocal()
