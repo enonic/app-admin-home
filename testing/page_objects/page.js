@@ -14,6 +14,9 @@ class Page {
         return this.browser.$$(selector);
     }
 
+    keys(value) {
+        return this.browser.keys(value);
+    }
     pause(ms) {
         return this.browser.pause(ms);
     }
@@ -55,7 +58,8 @@ class Page {
     }
 
     async pressEscKey() {
-        await this.browser.keys('Escape');
+        await this.keys('Escape');
+        return await this.pause(500);
     }
 }
 
