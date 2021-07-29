@@ -37,7 +37,7 @@ let isSystemAdmin = false;
 const demoAppsNames = [
     'com.enonic.app.contentstudio',
     'systems.rcd.enonic.datatoolbox',
-    'com.enonic.app.livetrace'
+    'com.enonic.app.livetrace',
 ];
 
 export function init(config: GlobalConfig) {
@@ -76,7 +76,7 @@ function checkAdminRights() {
 function initDialog(config: GlobalConfig) {
     tourDialog = new ModalDialogWithConfirmation({
         title: i18n('tour.title.stepXofY', 1, 3),
-        skipTabbable: true
+        skipTabbable: true,
     });
     tourDialog.addClass('xp-tour-dialog');
 
@@ -122,7 +122,7 @@ function initNavigation(config: GlobalConfig) {
                     if (currentStep === tourSteps.length) {
                         // if still on install apps page of xp tour
                         nextStepActionButton.setLabel(
-                            i18n('tour.action.finish')
+                            i18n('tour.action.finish'),
                         );
                         nextStepActionButton.addClass('last-step');
                         nextStepActionButton.setEnabled(true);
@@ -148,7 +148,7 @@ function initNavigation(config: GlobalConfig) {
             if (currentStep === tourSteps.length) {
                 if (tourSteps.length === 3 && !demoAppsInstalled) {
                     let demoAppsContainer = Element.fromHtmlElement(
-                        document.querySelector('.demo-apps')
+                        document.querySelector('.demo-apps'),
                     );
 
                     if (!demoAppsLoadMask) {
@@ -170,7 +170,7 @@ function initNavigation(config: GlobalConfig) {
                             marketDemoApps = apps || [];
                             canInstallDemoApps = marketDemoApps
                                 .some((marketDemoApp: MarketApplication) =>
-                                    marketDemoApp.getStatus() !== MarketAppStatus.INSTALLED
+                                    marketDemoApp.getStatus() !== MarketAppStatus.INSTALLED,
                                 );
 
                             demoAppsInstalled = !!apps && !canInstallDemoApps;
@@ -181,14 +181,14 @@ function initNavigation(config: GlobalConfig) {
                                 // if still on install apps page of xp tour
                                 setTourStep(currentStep);
                                 demoAppsContainer = Element.fromHtmlElement(
-                                    document.querySelector('.demo-apps')
+                                    document.querySelector('.demo-apps'),
                                 );
                                 if (canInstallDemoApps) {
                                     nextStepActionButton.setLabel(
-                                        i18n('tour.action.install')
+                                        i18n('tour.action.install'),
                                     );
                                     nextStepActionButton.removeClass(
-                                        'last-step'
+                                        'last-step',
                                     );
                                 }
                             }
@@ -197,13 +197,13 @@ function initNavigation(config: GlobalConfig) {
                         .finally(() => {
                             demoAppsContainer.toggleClass(
                                 'failed',
-                                marketDemoApps.length === 0
+                                marketDemoApps.length === 0,
                             );
                             demoAppsLoadMask.hide();
                         });
                 } else if (isInstallingDemoAppsNow) {
                     nextStepActionButton.setLabel(
-                        i18n('tour.action.installing')
+                        i18n('tour.action.installing'),
                     );
                     nextStepActionButton.setEnabled(false);
                 } else if (canInstallDemoApps) {
@@ -316,7 +316,7 @@ function fetchDemoAppsFromMarket(config: GlobalConfig): Q.Promise<MarketApplicat
             .setCount(demoAppsNames.length)
             .setVersion(config.xpVersion)
             .setIds(demoAppsNames)
-            .sendAndParse()
+            .sendAndParse(),
     ];
 
     return Q
@@ -329,22 +329,22 @@ function fetchDemoAppsFromMarket(config: GlobalConfig): Q.Promise<MarketApplicat
                         marketDemoApp
                             .getAppKey()
                             .equals(
-                                installedApplications[i].getApplicationKey()
+                                installedApplications[i].getApplicationKey(),
                             )
                     ) {
                         if (
                             MarketHelper.installedAppCanBeUpdated(
                                 marketDemoApp,
-                                installedApplications[i]
+                                installedApplications[i],
                             )
                         ) {
                             marketDemoApp.setStatus(
                                 MarketAppStatus
-                                    .OLDER_VERSION_INSTALLED
+                                    .OLDER_VERSION_INSTALLED,
                             );
                         } else {
                             marketDemoApp.setStatus(
-                                MarketAppStatus.INSTALLED
+                                MarketAppStatus.INSTALLED,
                             );
                         }
                         break;
@@ -375,7 +375,7 @@ function enableApplicationServerEventsListener() {
         'applications',
         'Applications',
         'AM',
-        'applications'
+        'applications',
     );
     application.setPath(Path.fromString('/'));
     application.setWindow(window);
@@ -410,7 +410,7 @@ function loadApp(marketDemoApp: MarketApplication) {
             if (!result.getFailure()) {
                 statusContainer.className = 'demo-app-status installed';
                 statusContainer.textContent = i18n(
-                    'status.installed'
+                    'status.installed',
                 );
             } else {
                 statusContainer.className = 'demo-app-status failure';
