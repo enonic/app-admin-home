@@ -12,6 +12,6 @@ export class ThemeManager {
     }
 
     public static getTheme(name: string): string {
-        return (name ? ThemeName[name.toUpperCase()] : ThemeManager.getDefaultTheme()).toLowerCase();
+        return (name ? ThemeName[name.toUpperCase()] as string : ThemeManager.getDefaultTheme()).toLowerCase();
     }
 }

@@ -14,7 +14,7 @@ import {ThemeManager} from './ThemeManager';
 import {i18n} from 'lib-admin-ui/util/Messages';
 import {i18nInit} from 'lib-admin-ui/util/MessagesInitializer';
 
-const config = Object.freeze(Object.assign({}, CONFIG));
+const config: GlobalConfig = Object.freeze(Object.assign({}, CONFIG));
 
 class LauncherParams {
     private readonly theme: string;
@@ -141,14 +141,14 @@ class Launcher {
         button.addEventListener('click', this.togglePanelState);
 
         const containerSelector = this.params.getContainerSelector();
-        const container = containerSelector ? document.querySelector(containerSelector) : document.body ;
+        const container = containerSelector ? document.querySelector(containerSelector) : document.body;
         if (container) {
             container.appendChild(button);
         }
         button.classList.add('visible');
 
         this.launcherButton = button;
-    }
+    };
 
     private getThemeClass = (): string => {
         if (this.params.getCustomCls()) {
@@ -156,7 +156,7 @@ class Launcher {
         }
 
         return `theme-${ThemeManager.getTheme(this.params.getTheme())}`;
-    }
+    };
 
     private isPanelExpanded = (): boolean => this.launcherPanel.classList.contains('visible');
 
@@ -165,7 +165,7 @@ class Launcher {
     private toggleButton = () => {
         this.launcherButton.classList.toggle('toggled');
         this.launcherButton.focus();
-    }
+    };
 
     private launcherButtonHasFocus = (): boolean => document.activeElement === this.launcherButton;
 
@@ -177,17 +177,17 @@ class Launcher {
                 div.innerHTML = html;
                 return div.firstChild;
             })
-            .catch(err => {
-                throw new Error('Failed to fetch page: ' + err);
+            .catch((e: Error) => {
+                throw new Error(`Failed to fetch page: ${e.toString()}`);
             });
-    }
+    };
 
     private appendLauncherPanel = (): void => {
         const container = document.createElement('div');
         container.setAttribute('class', `launcher-panel ${this.getThemeClass()}`);
         container.classList.add('hidden');
 
-        this.fetchLauncherContents()
+        void this.fetchLauncherContents()
             .then((launcherEl: HTMLElement) => {
                 container.appendChild(launcherEl);
                 this.launcherMainContainer = <HTMLElement>container.firstChild;
@@ -214,7 +214,7 @@ class Launcher {
             });
 
         this.launcherPanel = container;
-    }
+    };
 
     private onLauncherClick = (e: MouseEvent): void => {
         if (!this.launcherPanel || !this.launcherMainContainer) {
@@ -230,7 +230,7 @@ class Launcher {
         ) {
             this.closeLauncherPanel();
         }
-    }
+    };
 
     private static isDashboardIcon = (element: EventTarget) => $(element).closest('.dashboard-item').length > 0;
 
@@ -240,24 +240,24 @@ class Launcher {
             (document.body.classList.contains('modal-dialog') ||
              $(element).closest('.xp-admin-common-modal-dialog').length > 0)
         );
-    }
+    };
 
     private static openWindow = (windowArr: Window[], anchorEl: HTMLAnchorElement) => {
         const windowId = anchorEl.getAttribute('data-id');
 
-        if (windowArr[windowId] && !windowArr[windowId].closed) {
-            windowArr[windowId].focus();
+        if (windowArr[windowId] && !(windowArr[windowId] as Window).closed) {
+            (windowArr[windowId] as Window).focus();
         } else {
             // eslint-disable-next-line no-param-reassign
             windowArr[windowId] = window.open(anchorEl.href, windowId);
         }
-    }
+    };
 
     private static addLongClickHandler = (container: HTMLElement): void => {
         let longpress = false;
         let startTime;
         let endTime;
-        let toolWindows: Window[] = [];
+        const toolWindows: Window[] = [];
 
         const appTiles = container
             .querySelector('.launcher-app-container')
@@ -293,7 +293,7 @@ class Launcher {
                 longpress = endTime - startTime >= 500;
             });
         }
-    }
+    };
 
     private openLauncherPanel = (): void => {
         this.launcherMainContainer.removeAttribute('hidden');
@@ -304,7 +304,7 @@ class Launcher {
         this.launcherButton.setAttribute('title', i18n('tooltip.launcher.closeMenu'));
 
         document.addEventListener('click', this.onLauncherClick);
-    }
+    };
 
     private closeLauncherPanel = (skipTransition?: boolean): void => {
         document.removeEventListener('click', this.onLauncherClick);
@@ -317,7 +317,7 @@ class Launcher {
         this.toggleButton();
         this.launcherButton.setAttribute('title', i18n('tooltip.launcher.openMenu'));
         this.unselectCurrentApp();
-    }
+    };
 
     private listenToKeyboardEvents = (): void => KeyBindings.get().bindKeys(this.launcherBindings);
 
@@ -328,7 +328,7 @@ class Launcher {
         if (selectedApp) {
             selectedApp.classList.remove('selected');
         }
-    }
+    };
 
     private highlightActiveApp = (): void => {
         if (!config.appId) {
@@ -340,7 +340,7 @@ class Launcher {
                 appRows[i].classList.add('active');
             }
         }
-    }
+    };
 
     private addApplicationsListeners = (): void => {
         if (!this.initApplicationsListeners()) {
@@ -354,7 +354,7 @@ class Launcher {
                 }
             }, 3000);
         }
-    }
+    };
 
     private reloadLauncher = (): void => {
         return AppHelper.debounce(
@@ -376,7 +376,7 @@ class Launcher {
             1000,
             false
         )();
-    }
+    };
 
     private initApplicationsListeners = (): boolean => {
         if (ApplicationEvent) {
@@ -391,7 +391,7 @@ class Launcher {
             return true;
         }
         return false;
-    }
+    };
 
     private listenToMouseMove = (): void => window.addEventListener('mousemove', this.disableKeyboardNavigation, true);
 
@@ -399,7 +399,7 @@ class Launcher {
         this.getLauncherMainContainer().classList.remove('keyboard-navigation');
         this.unselectCurrentApp();
         window.removeEventListener('mousemove', this.disableKeyboardNavigation, true);
-    }
+    };
 
     private initKeyboardNavigation = (): void => {
         const appContainer = this.getLauncherMainContainer();
@@ -407,7 +407,7 @@ class Launcher {
             this.listenToMouseMove();
             appContainer.classList.add('keyboard-navigation');
         }
-    }
+    };
 
     private getSelectedApp = (): HTMLElement => this.launcherPanel.querySelector('.app-row.selected');
 
@@ -419,7 +419,7 @@ class Launcher {
             }
         }
         return -1;
-    }
+    };
 
     private selectNextApp = (): void => {
         const firstAppIndex = this.isHomeAppActive() ? 1 : 0;
@@ -431,7 +431,7 @@ class Launcher {
             ? firstAppIndex
             : selectedIndex + 1
         );
-    }
+    };
 
     private selectPreviousApp = (): void => {
         const selectedIndex = this.getSelectedAppIndex();
@@ -448,12 +448,12 @@ class Launcher {
         }
 
         this.selectApp(nextIndex);
-    }
+    };
 
     private selectApp = (index: number): void => {
         this.unselectCurrentApp();
         this.getAppByIndex(index).classList.add('selected');
-    }
+    };
 
     private getAppByIndex = (index: number): Element => {
         const apps = this.getLauncherMainContainer().querySelectorAll('.app-row');
@@ -463,7 +463,7 @@ class Launcher {
             }
         }
         return null;
-    }
+    };
 
     private startApp = (app: HTMLElement): void => {
         const anchorEl = app.parentElement;
@@ -471,14 +471,14 @@ class Launcher {
             this.unselectCurrentApp();
             anchorEl.click();
         }
-    }
+    };
 
     private getLauncherMainContainer = (): HTMLElement => this.launcherMainContainer || document.querySelector('.launcher-main-container');
 
     private isHomeAppActive = () => this.getLauncherMainContainer().classList.contains('home');
 }
 
-const init = async () => {
+const init = async (): Promise<void> => {
     let i18nUrl = config.i18nUrl;
 
     if (!i18nUrl && config.services) {
@@ -488,7 +488,8 @@ const init = async () => {
     if (i18nUrl) {
         await i18nInit(i18nUrl);
     }
-    return new Launcher(new LauncherParams(config.launcher));
+
+    new Launcher(new LauncherParams(config.launcher));
 };
 
-window.addEventListener('load', init);
+window.addEventListener('load', () => void init());

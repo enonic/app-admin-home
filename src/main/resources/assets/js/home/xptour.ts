@@ -118,7 +118,7 @@ function initNavigation(config: GlobalConfig) {
                 nextStepActionButton.setEnabled(false);
                 isInstallingDemoAppsNow = true;
 
-                Q.all(loadDemoApps()).spread(() => {
+                void Q.all(loadDemoApps()).spread(() => {
                     if (currentStep === tourSteps.length) {
                         // if still on install apps page of xp tour
                         nextStepActionButton.setLabel(
@@ -193,7 +193,7 @@ function initNavigation(config: GlobalConfig) {
                                 }
                             }
                         })
-                        .catch(DefaultErrorHandler.handle)
+                        .catch(e => DefaultErrorHandler.handle(e))
                         .finally(() => {
                             demoAppsContainer.toggleClass(
                                 'failed',
@@ -355,10 +355,10 @@ function fetchDemoAppsFromMarket(config: GlobalConfig): Q.Promise<MarketApplicat
         });
 }
 
-function loadDemoApps() {
+function loadDemoApps(): Q.Promise<void>[] {
     enableApplicationServerEventsListener();
 
-    const loadingAppsPromises = [];
+    const loadingAppsPromises: Q.Promise<void>[] = [];
 
     marketDemoApps.forEach((marketDemoApp: MarketApplication) => {
         if (marketDemoApp.getStatus() !== MarketAppStatus.INSTALLED) {
@@ -416,7 +416,7 @@ function loadApp(marketDemoApp: MarketApplication) {
                 statusContainer.className = 'demo-app-status failure';
                 statusContainer.textContent = i18n('tour.apps.status.failed');
             }
-        }).catch(DefaultErrorHandler.handle);
+        }).catch(e => DefaultErrorHandler.handle(e));
 }
 
 function updateHeaderStep(step: number) {

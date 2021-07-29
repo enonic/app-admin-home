@@ -35,7 +35,7 @@ function validateUrls(config: GlobalConfig): ValidationResult {
     }
 
     if (!launcherUrl) {
-        errors.push(`Launcher URL is not defined.`);
+        errors.push('Launcher URL is not defined.');
     }
 
     if (launcherUrl && !Validator.validUrl(launcherUrl)) {

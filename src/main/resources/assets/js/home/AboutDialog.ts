@@ -5,8 +5,8 @@ import {AEl} from 'lib-admin-ui/dom/AEl';
 import {Button} from 'lib-admin-ui/ui/button/Button';
 import {i18n} from 'lib-admin-ui/util/Messages';
 
-const noticeUrl: string = 'https://raw.githubusercontent.com/enonic/xp/master/NOTICE.txt';
-const licenseUrl: string = 'https://raw.githubusercontent.com/enonic/xp/master/LICENSE.txt';
+const noticeUrl = 'https://raw.githubusercontent.com/enonic/xp/master/NOTICE.txt';
+const licenseUrl = 'https://raw.githubusercontent.com/enonic/xp/master/LICENSE.txt';
 
 export function create(config: GlobalConfig): ModalDialogWithConfirmation {
     const aboutDialog = new ModalDialogWithConfirmation({skipTabbable: true});
@@ -53,18 +53,15 @@ function createLicenseInfoContainer() {
 }
 
 function toggleLicenseInfo(outerContainer: Element, licenseInfoContainer: DivEl): void {
-    if (!licenseInfoContainer.getHtml()) {
-
-        fetchLicenses().then((licenseText: string) => {
-            licenseInfoContainer.setHtml(licenseText);
-
-            outerContainer.toggleClass('expanded');
-        });
-
-        return;
+    if (licenseInfoContainer.getHtml() != null) {
+        outerContainer.toggleClass('expanded');
     }
 
-    outerContainer.toggleClass('expanded');
+    void fetchLicenses().then((licenseText: string) => {
+        licenseInfoContainer.setHtml(licenseText);
+
+        outerContainer.toggleClass('expanded');
+    });
 }
 
 function getAboutDialogContent(config: GlobalConfig) {
