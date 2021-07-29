@@ -23,6 +23,11 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.js$/,
+                enforce: 'pre',
+                use: ['source-map-loader'],
+            },
+            {
                 test: /\.tsx?$/,
                 use: [{loader: 'ts-loader', options: {configFile: 'tsconfig.build.json'}}]
             },
@@ -69,6 +74,6 @@ module.exports = {
         }),
     ],
     mode: isProd ? 'production' : 'development',
-    devtool: isProd ? false : 'source-map',
-    performance: { hints: false }
+    devtool: isProd ? false : 'eval-source-map',
+    performance: {hints: false}
 };
