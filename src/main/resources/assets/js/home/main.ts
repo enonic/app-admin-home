@@ -28,7 +28,7 @@ Promise.resolve(true).then(() => {
     setupAboutDialog();
 
     if (config.tourEnabled) {
-        init(config).then(function (tourDialog: ModalDialogWithConfirmation) {
+        void init(config).then(function (tourDialog: ModalDialogWithConfirmation) {
             const enonicXPTourCookie = CookieHelper.getCookie(
                 'enonic_xp_tour'
             );

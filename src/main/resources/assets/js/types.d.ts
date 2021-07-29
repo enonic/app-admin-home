@@ -1,20 +1,25 @@
 type LauncherConfig = {
     cls: string,
     theme: string,
-    container: string
+    container: string,
 }
+
+type GlobalServices = {
+    i18nUrl: string,
+}
+
 type GlobalConfig = {
+    adminUrl: string,
+    assetsUri: string,
+    launcherUrl: string,
+    autoOpenLauncher: boolean,
     appId: string,
     xpVersion: string,
-    adminUrl: string,
-    launcherUrl: string,
-    assetsUri: string,
-    docLinkPrefix: string,
-    autoOpenLauncher: boolean,
-    tourEnabled: boolean,
     i18nUrl: string,
-    launcher: LauncherConfig,
-    services: any
+    tourEnabled: boolean,
+    marketUrl: string,
+    launcher?: LauncherConfig;
+    services?: GlobalServices;
 };
 
 declare const CONFIG: GlobalConfig;
