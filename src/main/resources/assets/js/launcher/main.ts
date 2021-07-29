@@ -312,7 +312,7 @@ class Launcher {
         this.unlistenToKeyboardEvents();
         this.launcherPanel.classList.remove('visible');
         this.launcherPanel.classList.add(
-            skipTransition === true ? 'hidden' : 'slideout'
+            skipTransition === true ? 'hidden' : 'slideout',
         );
         this.toggleButton();
         this.launcherButton.setAttribute('title', i18n('tooltip.launcher.openMenu'));
@@ -362,11 +362,11 @@ class Launcher {
                 this.fetchLauncherContents()
                     .then((launcherEl: HTMLElement) => {
                         const oldLauncherContent = this.launcherPanel.querySelector(
-                            '.scrollable-content'
+                            '.scrollable-content',
                         );
 
                         const newLauncherContent = launcherEl.querySelector(
-                            '.scrollable-content'
+                            '.scrollable-content',
                         );
                         const parent = oldLauncherContent.parentNode;
                         parent.replaceChild(newLauncherContent, oldLauncherContent);
@@ -374,7 +374,7 @@ class Launcher {
                     })
             ,
             1000,
-            false
+            false,
         )();
     };
 
@@ -429,7 +429,7 @@ class Launcher {
         this.selectApp(
             selectedIndex + 1 === apps.length || selectedIndex === -1
             ? firstAppIndex
-            : selectedIndex + 1
+            : selectedIndex + 1,
         );
     };
 

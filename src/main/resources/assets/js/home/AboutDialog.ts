@@ -79,9 +79,9 @@ function getAboutDialogContent(config: GlobalConfig) {
             </div>
             <div class="xp-about-dialog-text">
                 ${i18n(
-                    'home.dashboard.about.dialog.text',
-                    '<span style="color: red;">♥</span>'
-                )}
+        'home.dashboard.about.dialog.text',
+        '<span style="color: red;">♥</span>',
+    )}
             </div>
             <div class="xp-about-dialog-license"></div>
         </div>`;

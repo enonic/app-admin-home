@@ -30,7 +30,7 @@ Promise.resolve(true).then(() => {
     if (config.tourEnabled) {
         void init(config).then(function (tourDialog: ModalDialogWithConfirmation) {
             const enonicXPTourCookie = CookieHelper.getCookie(
-                'enonic_xp_tour'
+                'enonic_xp_tour',
             );
             if (!enonicXPTourCookie) {
                 CookieHelper.setCookie('enonic_xp_tour', 'tour', 365);
