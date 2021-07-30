@@ -10,12 +10,12 @@
       "dom"
     ],
     "sourceMap": true,
-        "types": [
-            "jquery",
-            "q",
-            "validator"
-        ]
-    },
+    "types": [
+      "jquery",
+      "q",
+      "validator"
+    ]
+  },
   "files": [
     "./src/main/resources/assets/js/home/main.ts",
     "./src/main/resources/assets/js/launcher/main.ts"
