@@ -5,7 +5,7 @@ on:
   repository_dispatch:
     types: [ lib-admin-ui, xp ]
 
-concurrency: ${{ github.ref }}
+concurrency: ${{ format(github.event.client_payload.ref) != '' && github.event.client_payload.ref || github.ref }}
 
 jobs:
   publish_vars:
@@ -80,4 +80,4 @@ jobs:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           repository: ${{ matrix.repo }}
           event-type: app-main
-          client-payload: '{"ref": "${{ github.ref }}"}'
+          client-payload: '{"ref": "${{ format(github.event.client_payload.ref) != '' && github.event.client_payload.ref || github.ref }}"}'
