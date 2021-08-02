@@ -80,4 +80,5 @@ jobs:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           repository: ${{ matrix.repo }}
           event-type: app-main
-          client-payload: '{"ref": "${{ format(github.event.client_payload.ref) != '' && github.event.client_payload.ref || github.ref }}"}'
+          client-payload: >
+            ${{ format('{{"ref" : "{0}" }}', format(github.event.client_payload.ref) != '' && github.event.client_payload.ref || github.ref) }}
