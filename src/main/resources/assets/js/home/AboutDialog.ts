@@ -53,8 +53,9 @@ function createLicenseInfoContainer() {
 }
 
 function toggleLicenseInfo(outerContainer: Element, licenseInfoContainer: DivEl): void {
-    if (licenseInfoContainer.getHtml() != null) {
+    if (licenseInfoContainer.getHtml() !== '') {
         outerContainer.toggleClass('expanded');
+        return;
     }
 
     void fetchLicenses().then((licenseText: string) => {
