@@ -15,7 +15,8 @@ module.exports = {
     },
     output: {
         path: path.join(__dirname, '/build/resources/main/assets'),
-        filename: './[name].js'
+        filename: './[name].js',
+        assetModuleFilename: './[file]'
     },
     resolve: {
         extensions: ['.ts', '.js', '.less', '.css']
@@ -39,14 +40,6 @@ module.exports = {
                     {loader: 'postcss-loader', options: {sourceMap: !isProd}},
                     {loader: 'less-loader', options: {sourceMap: !isProd}},
                 ]
-            },
-            {
-                test: /\.(eot|woff|svg|ttf)$/,
-                use: 'file-loader?name=fonts/[name].[ext]'
-            },
-            {
-                test: /\.(png|jpg|gif)$/,
-                use: 'file-loader?name=./icons/favicons/[name].[ext]'
             }
         ]
     },
