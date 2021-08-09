@@ -11,12 +11,12 @@ describe('XP tour dialog - install applications and check their statuses', funct
     this.timeout(appConst.TIMEOUT_SUITE);
     webDriverHelper.setupBrowser();
 
-    it('GIVEN XP tour dialog is opened WHEN Next-button has been pressed 2 times THEN Install button should appear', async () => {
+    it('GIVEN XP tour dialog is opened WHEN Next-button has been pressed 2 times THEN Install button should appear', async function() {
         const loginPage = new LoginPage();
         const xpTourDialog = new XpTourDialog();
         await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);
         await loginPage.doLogin();
-        testUtils.saveScreenshot("xp_tour_dialog_must_be_present2");
+        testUtils.saveScreenshot("xp_tour_dialog_must_be_present2", this);
         //1. XP Tour modal dialog should be loaded automatically:
         await xpTourDialog.waitForDialogLoaded();
         //2. Go to the step 2:
@@ -24,7 +24,7 @@ describe('XP tour dialog - install applications and check their statuses', funct
         //3.  Go to the last step:
         await xpTourDialog.clickOnNextButton();
         await xpTourDialog.waitForInstallAppsButtonDisplayed();
-        testUtils.saveScreenshot('xp_tour_last_step');
+        testUtils.saveScreenshot('xp_tour_last_step', this);
         let result = await xpTourDialog.getNamesOfAvailableApplications();
         assert.isTrue(result.includes('LIVE TRACE'), 'Live trace app should be available');
         assert.isTrue(result.includes('CONTENT STUDIO'), 'Content Studio app should be available');
@@ -32,21 +32,21 @@ describe('XP tour dialog - install applications and check their statuses', funct
         assert.equal(result.length, 3, 'Three applications should be available for installing');
     });
 
-    it('GIVEN Last step is opened WHEN `Install Apps` button has been pressed THEN three application should be installed', async () => {
+    it('GIVEN Last step is opened WHEN `Install Apps` button has been pressed THEN three application should be installed', async function() {
         const loginPage = new LoginPage();
         const xpTourDialog = new XpTourDialog();
         await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);
         await loginPage.doLogin();
         //1. 'XP tour dialog must be present!'
         await xpTourDialog.waitForDialogLoaded();
-        testUtils.saveScreenshot("xp_tour_dialog_must_be_present3");
+        testUtils.saveScreenshot("xp_tour_dialog_must_be_present3", this);
         //2. Go to the last step:
         await xpTourDialog.goToInstallStep();
         await xpTourDialog.waitForInstallAppsButtonDisplayed();
         //3. Click on Install Apps button:
         await xpTourDialog.clickOnInstallAppsButton();
         let result = await xpTourDialog.waitForApplicationsStatus('Content Studio');
-        testUtils.saveScreenshot('xp_tour_apps_installed');
+        testUtils.saveScreenshot('xp_tour_apps_installed', this);
         assert.equal(result, "Installed", "Installed status should appear(Content Studio)");
         //'Live Trace' should be Installed
         result = await xpTourDialog.waitForApplicationsStatus('Live Trace');
@@ -61,7 +61,7 @@ describe('XP tour dialog - install applications and check their statuses', funct
     //verifies https://github.com/enonic/app-admin-home/issues/56
     //Welcome Tour dialog - unknown status of applications in the last step
     it('GIVEN XP tour dialog is opened WHEN last step has been opened THEN expected status of apps should be displayed AND applications should be present in Launcher Panel',
-        async () => {
+        async function() {
             const loginPage = new LoginPage();
             const xpTourDialog = new XpTourDialog();
             await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);
@@ -72,7 +72,7 @@ describe('XP tour dialog - install applications and check their statuses', funct
             await xpTourDialog.clickOnNextButton();
             // Go to the last step
             await xpTourDialog.clickOnNextButton();
-            testUtils.saveScreenshot('xp_tour_issue_56');
+            testUtils.saveScreenshot('xp_tour_issue_56', this);
             let status = await xpTourDialog.waitForApplicationsStatus('Content Studio');
             assert.equal(status, "Installed", "Installed status should appear(Content Studio)");
             //'Content Studio' gets visible in Launcher Panel:
