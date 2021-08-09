@@ -24,15 +24,16 @@ enonic {
 
 ext {
     unpackDir = "$buildDir/install"
-    screenshotsDir = "$buildDir/screenshots"
     distroDir = "$unpackDir/enonic-xp-generic-$version"
     deployDir = "$distroDir/home/deploy"
     seleniumDir = "$projectDir/test-data/selenium"
-    mochaResultsDir = "$projectDir/mochawesome-report"
+    mochaResultsDir = "$buildDir/mochawesome-report"
     testDataDir = "$projectDir/test-data/common-config"
     xpHome = "$distroDir/home"
     configDir = "$xpHome/config"
     xpServer = new ServerInstance()
+    appFile = "$distroDir/system/40/app-main-${version}.jar"
+    appUrl = project.hasProperty('appUrl') ? appUrl : "file:///$projectDir/../build/libs/app-main.jar"
 }
 
 dependencies {
@@ -46,12 +47,6 @@ task unpackDistro( type: Copy ) {
     into file( unpackDir )
 }
 
-task ensureScreenshotsDirectory {
-    doLast {
-        mkdir screenshotsDir
-    }
-}
-
 task copyConfig( type: Copy ) {
     println testDataDir
     from testDataDir
@@ -61,11 +56,14 @@ task copyConfig( type: Copy ) {
     mustRunAfter unpackDistro
 }
 
-task zipScreenshots( type: Zip ) {
-    from screenshotsDir
-    include '*'
-    include '*/*'
-    classifier 'screenshots'
+task deployApp( type: DefaultTask ) {
+    outputs.files( appFile )
+    doLast {
+        def f = new File( appFile )
+        f.delete(  )
+        new URL( appUrl ).withInputStream { i -> f.withOutputStream { it << i } }
+    }
+    mustRunAfter unpackDistro
 }
 
 task zipReport( type: Zip ) {
@@ -78,13 +76,12 @@ task zipReport( type: Zip ) {
 publishing {
     publications {
         mavenJava( MavenPublication ) {
-            artifact zipScreenshots
             artifact zipReport
         }
     }
 }
 
-task startServer( dependsOn: [unpackDistro, copyConfig] ) {
+task startServer( dependsOn: [unpackDistro, copyConfig, deployApp ] ) {
     doLast {
         xpServer.installDir = file( distroDir )
         xpServer.start()
@@ -98,11 +95,12 @@ task stopServer {
     }
 }
 
-task testAdminHomeApp( type: NpmTask, dependsOn: [npmInstall, startServer, ensureScreenshotsDirectory] ) {
+task testAdminHomeApp( type: NpmTask, dependsOn: [npmInstall, startServer] ) {
     args = ['test']
+    finalizedBy stopServer
 }
 
-task testAdminHomeAppLocally( type: NpmTask, dependsOn: [npmInstall, ensureScreenshotsDirectory] ) {
+task testAdminHomeAppLocally( type: NpmTask, dependsOn: [npmInstall] ) {
     args = ['test']
 }
 
