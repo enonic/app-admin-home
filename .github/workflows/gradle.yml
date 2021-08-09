@@ -66,12 +66,9 @@ jobs:
         if: always()
         with:
           name: mochawesome-report
-          path: testing/mochawesome-report/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: screenshots
-          path: testing/build/screenshots/
+          path: |
+            testing/mochawesome-report/
+            testing/build/screenshots/**
 
       - uses: codecov/codecov-action@v2.0.2
 
