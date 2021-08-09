@@ -5,7 +5,9 @@ const appConst = require("./app_const");
 const webDriverHelper = require("./WebDriverHelper");
 const LoginPage = require('../page_objects/login.page');
 const XpTourDialog = require('../page_objects/xp.tour.dialog');
-
+const addContext = require('mochawesome/addContext');
+const fs = require('fs');
+const path = require('path');
 module.exports = {
 
     async doLoginAndCloseXpTourDialog() {
@@ -30,10 +32,17 @@ module.exports = {
             return console.log('cookie is being deleted...');
         });
     },
-    saveScreenshot: function (name) {
-        let path = require('path');
-        let screenshotsDir = path.join(__dirname, '/../build/screenshots/');
+    saveScreenshot: function (name, that) {
+
+        let screenshotsDir = path.join(__dirname, '/../build/mochawesome-report/');
+        if (!fs.existsSync(screenshotsDir)) {
+            fs.mkdirSync(screenshotsDir);
+        }
         return webDriverHelper.browser.saveScreenshot(screenshotsDir + name + '.png').then(() => {
+            if (that) {
+                addContext(that, name + '.png');
+            }
+
             return console.log('screenshot saved ' + name);
         }).catch(err => {
             return console.log('screenshot was not saved ' + screenshotsDir + 'utils  ' + err);

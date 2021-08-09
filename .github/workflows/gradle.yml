@@ -65,10 +65,9 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: mochawesome-report
+          name: ui-test-report
           path: |
-            testing/mochawesome-report/
-            testing/build/screenshots/**
+            testing/build/mochawesome-report
 
       - uses: codecov/codecov-action@v2.0.2
 

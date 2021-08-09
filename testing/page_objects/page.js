@@ -1,4 +1,5 @@
 const webDriverHelper = require('../libs/WebDriverHelper');
+const fs = require('fs');
 const path = require('path');
 
 class Page {
@@ -34,7 +35,10 @@ class Page {
 
     async saveScreenshot(name) {
         try {
-            let screenshotsDir = path.join(__dirname, '/../build/screenshots/');
+            let screenshotsDir = path.join(__dirname, '/../build/mochawesome-report/');
+            if (!fs.existsSync(screenshotsDir)) {
+                fs.mkdirSync(screenshotsDir);
+            }
             await this.browser.saveScreenshot(screenshotsDir + name + '.png');
             console.log('screenshot is saved ' + name);
         } catch (err) {

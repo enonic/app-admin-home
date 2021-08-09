@@ -11,7 +11,7 @@ describe('Home Page specification - check buttons and open About dialog(licensin
     webDriverHelper.setupBrowser();
 
     it('WHEN Home Page is loaded THEN expected buttons should be present in toolbar',
-        async () => {
+        async function() {
             let homePage = new HomePage();
             await homePage.waitForLoaded();
             let discuss = await homePage.isDiscussButtonDisplayed();
@@ -23,22 +23,22 @@ describe('Home Page specification - check buttons and open About dialog(licensin
         });
 
     it("GIVEN Home Page is loaded WHEN 'About' button has been clicked THEN About-dialog should appear AND 'Cancel-top' button closes the dialog",
-        async () => {
+        async function() {
             let homePage = new HomePage();
             let aboutDialog = new AboutDialog();
             await homePage.waitForLoaded();
             //1. Click on 'About' button:
             await homePage.clickOnAboutButton();
             await aboutDialog.waitForDialogLoaded();
-            testUtils.saveScreenshot("about_dialog_opened");
+            testUtils.saveScreenshot("about_dialog_opened", this);
             //2. Click on 'Cancel top' button
             await aboutDialog.clickOnCancelTopButton();
             await aboutDialog.waitForDialogClosed();
-            testUtils.saveScreenshot("about_dialog_closed");
+            testUtils.saveScreenshot("about_dialog_closed", this);
         });
 
     it("GIVEN 'About' dialog is opened WHEN 'Esc' button has been pressed THEN the modal dialog closes",
-        async () => {
+        async function() {
             let homePage = new HomePage();
             let aboutDialog = new AboutDialog();
             await homePage.waitForLoaded();
@@ -47,12 +47,12 @@ describe('Home Page specification - check buttons and open About dialog(licensin
             await aboutDialog.waitForDialogLoaded();
             //2. Click on 'Esc' key
             await aboutDialog.pressEscKey();
-            testUtils.saveScreenshot("license_info_expanded");
+            testUtils.saveScreenshot("license_info_expanded", this);
             await aboutDialog.waitForDialogClosed();
         });
 
     it("GIVEN 'About' dialog is loaded WHEN Licensing button has been clicked THEN license-info should appear",
-        async () => {
+        async function() {
             let homePage = new HomePage();
             let aboutDialog = new AboutDialog();
             await homePage.waitForLoaded();
@@ -61,14 +61,14 @@ describe('Home Page specification - check buttons and open About dialog(licensin
             await aboutDialog.waitForDialogLoaded();
             //2. Click on 'Licensing' button
             await aboutDialog.clickOnLicensingButton();
-            testUtils.saveScreenshot("license_info_expanded");
+            testUtils.saveScreenshot("license_info_expanded", this);
             await aboutDialog.waitForLicenseBodyDisplayed();
             let text = await aboutDialog.getLicenseText();
             assert.isTrue(text.includes("Licenses used by Enonic XP (full license texts"));
         });
 
     it("GIVEN 'About' dialog is loaded AND Licensing button has been clicked WHEN click on Licensing button in the second time THEN license-info gets not visible",
-        async () => {
+        async function() {
             let homePage = new HomePage();
             let aboutDialog = new AboutDialog();
             await homePage.waitForLoaded();
@@ -77,11 +77,11 @@ describe('Home Page specification - check buttons and open About dialog(licensin
             await aboutDialog.waitForDialogLoaded();
             //2. Click on 'Licensing' button and expand the info:
             await aboutDialog.clickOnLicensingButton();
-            testUtils.saveScreenshot("license_info_expanded");
+            testUtils.saveScreenshot("license_info_expanded", this);
             await aboutDialog.waitForLicenseBodyDisplayed();
             //3. Click on 'Licensing' button and collapse the info:
             await aboutDialog.clickOnLicensingButton();
-            testUtils.saveScreenshot("license_info_hidden");
+            testUtils.saveScreenshot("license_info_hidden", this);
             await aboutDialog.waitForLicenseBodyNotDisplayed();
         });
 
