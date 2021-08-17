@@ -62,6 +62,18 @@ jobs:
       - name: Run Base Selenium Tests
         run: ./gradlew :testing:testAdminHomeApp
 
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        if: failure()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: notif-build-tests
+          SLACK_USERNAME: GitHub Actions
+          SLACK_TITLE: GitHub Action Failure in Admin Home app
+          SLACK_MESSAGE: ${{job.container.id}}
+          SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+          SLACK_COLOR: ${{ job.status }}
+
       - uses: actions/upload-artifact@v2
         if: always()
         with:
