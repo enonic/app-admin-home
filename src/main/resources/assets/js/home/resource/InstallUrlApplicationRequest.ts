@@ -1,6 +1,6 @@
 import {CmsApplicationResourceRequest} from './CmsApplicationResourceRequest';
-import {ApplicationInstallResult} from 'lib-admin-ui/application/ApplicationInstallResult';
-import {ApplicationInstallResultJson} from 'lib-admin-ui/application/json/ApplicationInstallResultJson';
+import {ApplicationInstallResult} from './ApplicationInstallResult';
+import {ApplicationInstallResultJson} from './json/ApplicationInstallResultJson';
 import {HttpMethod} from 'lib-admin-ui/rest/HttpMethod';
 import {JsonResponse} from 'lib-admin-ui/rest/JsonResponse';
 

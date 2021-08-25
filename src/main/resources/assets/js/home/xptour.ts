@@ -23,7 +23,7 @@ import {ServerEventsListener} from 'lib-admin-ui/event/ServerEventsListener';
 import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/ApplicationEvent';
 import {ProgressBar} from 'lib-admin-ui/ui/ProgressBar';
 import {InstallUrlApplicationRequest} from './resource/InstallUrlApplicationRequest';
-import {ApplicationInstallResult} from 'lib-admin-ui/application/ApplicationInstallResult';
+import {ApplicationInstallResult} from './resource/ApplicationInstallResult';
 
 let tourDialog: ModalDialogWithConfirmation;
 let demoAppsLoadMask: LoadMask;
