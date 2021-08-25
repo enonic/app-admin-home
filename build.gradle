@@ -36,6 +36,12 @@ dependencies {
     include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
     devResources "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
     include "com.enonic.lib:lib-mustache:2.0.0"
+
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
+    testImplementation( testFixtures( "com.enonic.xp:jaxrs-impl:${xpVersion}" ) )
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
 }
 
 node {
@@ -84,6 +90,12 @@ task webpack( type: NpmTask, dependsOn: [npmInstall, lint] ) {
 
 task cleanNode( type: Delete ) {
     delete 'node_modules'
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'java.awt.headless', 'true'
+    jvmArgs '-noverify', '-XX:TieredStopAtLevel=1'
 }
 
 jar {

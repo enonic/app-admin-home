@@ -12,7 +12,7 @@ import {ModalDialogWithConfirmation} from 'lib-admin-ui/ui/dialog/ModalDialogWit
 import {Action} from 'lib-admin-ui/ui/Action';
 import {LoadMask} from 'lib-admin-ui/ui/mask/LoadMask';
 import {DefaultErrorHandler} from 'lib-admin-ui/DefaultErrorHandler';
-import {ListApplicationsRequest} from 'lib-admin-ui/application/ListApplicationsRequest';
+import {ListApplicationsRequest} from './resource/ListApplicationsRequest';
 import {ListMarketApplicationsRequest} from 'lib-admin-ui/application/ListMarketApplicationsRequest';
 import {MarketApplicationResponse} from 'lib-admin-ui/application/MarketApplicationResponse';
 import {Application} from 'lib-admin-ui/application/Application';
@@ -22,7 +22,7 @@ import {Path} from 'lib-admin-ui/rest/Path';
 import {ServerEventsListener} from 'lib-admin-ui/event/ServerEventsListener';
 import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/ApplicationEvent';
 import {ProgressBar} from 'lib-admin-ui/ui/ProgressBar';
-import {InstallUrlApplicationRequest} from 'lib-admin-ui/application/InstallUrlApplicationRequest';
+import {InstallUrlApplicationRequest} from './resource/InstallUrlApplicationRequest';
 import {ApplicationInstallResult} from 'lib-admin-ui/application/ApplicationInstallResult';
 
 let tourDialog: ModalDialogWithConfirmation;
