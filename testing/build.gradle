@@ -18,22 +18,17 @@ configurations {
     distro
 }
 
-enonic {
-    publishRepo = 'inhouse'
-}
-
 ext {
     unpackDir = "$buildDir/install"
     distroDir = "$unpackDir/enonic-xp-generic-$version"
     deployDir = "$distroDir/home/deploy"
-    seleniumDir = "$projectDir/test-data/selenium"
-    mochaResultsDir = "$buildDir/mochawesome-report"
     testDataDir = "$projectDir/test-data/common-config"
     xpHome = "$distroDir/home"
     configDir = "$xpHome/config"
     xpServer = new ServerInstance()
-    appFile = "$distroDir/system/40/app-main-${version}.jar"
-    appUrl = project.hasProperty('appUrl') ? appUrl : "file:///$projectDir/../build/libs/app-main.jar"
+    appName = "app-main"
+    appFile = "$distroDir/system/40/${appName}-${version}.jar"
+    appUrl = project.hasProperty('appUrl') ? appUrl : "file:///$projectDir/../build/libs/${appName}.jar"
 }
 
 dependencies {
@@ -58,35 +53,24 @@ task copyConfig( type: Copy ) {
 
 task deployApp( type: DefaultTask ) {
     outputs.files( appFile )
+    outputs.upToDateWhen { false }
     doLast {
         def f = new File( appFile )
-        f.delete(  )
+        println "Deleting  ${appFile}. Exists ${f.exists()}"
+
+        f.delete()
+
+        println "Copying from ${appUrl} to ${appFile}"
         new URL( appUrl ).withInputStream { i -> f.withOutputStream { it << i } }
     }
     mustRunAfter unpackDistro
 }
 
-task zipReport( type: Zip ) {
-    from mochaResultsDir
-    include '*'
-    include '*/*'
-    classifier 'mochaReport'
-}
-
-publishing {
-    publications {
-        mavenJava( MavenPublication ) {
-            artifact zipReport
-        }
-    }
-}
-
-task startServer( dependsOn: [unpackDistro, copyConfig, deployApp ] ) {
+task startServer( dependsOn: unpackDistro ) {
     doLast {
         xpServer.installDir = file( distroDir )
         xpServer.start()
     }
-    mustRunAfter npmInstall
 }
 
 task stopServer {
@@ -95,7 +79,7 @@ task stopServer {
     }
 }
 
-task testAdminHomeApp( type: NpmTask, dependsOn: [npmInstall, startServer] ) {
+task testAdminHomeApp( type: NpmTask, dependsOn: [npmInstall, unpackDistro, copyConfig, deployApp, startServer] ) {
     args = ['test']
     finalizedBy stopServer
 }
