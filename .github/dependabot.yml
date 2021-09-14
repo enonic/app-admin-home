@@ -1,3 +1,4 @@
+
 version: 2
 updates:
   - package-ecosystem: "gradle"
@@ -11,6 +12,15 @@ updates:
       - "rymsha"
   - package-ecosystem: "npm"
     directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    assignees:
+      - "alansemenov"
+    reviewers:
+      - "alansemenov"
+  - package-ecosystem: "npm"
+    directory: "/testing"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
