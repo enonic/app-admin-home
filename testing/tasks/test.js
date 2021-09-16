@@ -1,5 +1,4 @@
 const path = require('path');
-const fs = require('fs');
 const Mocha = require('mocha');
 const glob = require('glob');
 const selenium = require('selenium-standalone');
@@ -25,7 +24,7 @@ function execute() {
             if (failures === 0) {
                 return resolve();
             }
-            process.on('exit', () => process.exit(failures));
+            process.exit(failures);
         });
     });
 }

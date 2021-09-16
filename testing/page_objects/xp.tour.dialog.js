@@ -68,7 +68,7 @@ class XpTourDialog extends Page {
 
     async waitForDialogLoaded() {
         try {
-             await this.waitForElementDisplayed(xpath.container, appConst.mediumTimeout);
+             await this.waitForElementDisplayed(xpath.container, appConst.longTimeout);
              return await this.pause(700);
         } catch (err) {
             this.saveScreenshot("err_xp_tour_dialog_load");
