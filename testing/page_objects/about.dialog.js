@@ -31,7 +31,7 @@ class AboutDialog extends Page {
         try {
             return await this.waitForElementDisplayed(XPATH.container, appConst.mediumTimeout);
         } catch (err) {
-            this.saveScreenshot("err_about_dialog_not_loaded");
+            await this.saveScreenshot("err_about_dialog_not_loaded");
             throw new Error("About dialog is not loaded in 3 seconds!")
         }
     }
