@@ -14,6 +14,6 @@
     "glob": "^7.2.0",
     "chai": "^4.3.4",
     "properties-reader": "^2.2.0",
-    "mochawesome": "^6.2.2"
+    "mochawesome": "^6.3.0"
   }
 }
