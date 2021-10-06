@@ -1,5 +1,6 @@
 .dialog-button(@color: @form-button-font, @bg: @admin-button-blue2, @hoverColor: @color, @hoverBg: lighten(@bg, 10%), @useFocus: true) {
   .button(@color, @bg, @hoverColor, @hoverBg, @useFocus);
+
   padding: 4px 19px 4px 19px;
   margin-left: 11px;
 }
@@ -26,6 +27,11 @@
   border: 1px solid @admin-dialog-border;
   box-sizing: border-box;
 
+  > .panel,
+  > .appbar {
+    filter: blur(2px);
+  }
+
   &.uneven-height {
     border-bottom: 2px solid transparent;
   }
@@ -39,6 +45,7 @@
 
   .modal-dialog-header {
     .clearfix();
+
     padding: 30px 20px 10px 30px;
     box-sizing: border-box;
 
@@ -52,7 +59,7 @@
       font-size: 16px;
       margin-top: 5px;
 
-      &:before {
+      &::before {
         margin-right: 5px;
         content: attr(data-desc);
         color: @admin-font-gray1;
@@ -82,6 +89,7 @@
 
   .dialog-buttons {
     .clearfix();
+
     position: relative;
 
     @media screen and (max-height: 360px) {
@@ -101,6 +109,7 @@
     from {
       transform: rotate(0deg);
     }
+
     to {
       transform: rotate(-45deg);
     }
@@ -110,6 +119,7 @@
     from {
       transform: rotate(0deg);
     }
+
     to {
       transform: rotate(-135deg);
     }
@@ -128,9 +138,11 @@
     box-sizing: border-box;
     display: inline-block;
 
-    &:before, &:after {
+    &::before,
+    &::after {
       @width: 20px;
       @height: 3px;
+
       transform: rotate(0deg);
       content: '';
       position: absolute;
@@ -144,23 +156,25 @@
       transition: all 0.25s ease-out;
     }
 
-    &:before {
+    &::before {
       animation: close-icon-animation-before 500ms forwards;
     }
 
-    &:after {
+    &::after {
       animation: close-icon-animation-after 500ms forwards;
     }
 
     &:hover {
-      &:before, &:after {
+      &::before,
+      &::after {
         background-color: @admin-medium-gray-border;
       }
     }
   }
 
   .@{_COMMON_PREFIX}button.cancel-button-bottom {
-      .button-background();
+    .button-background();
+
     margin-left: 11px;
   }
 }
@@ -183,7 +197,6 @@
 
 .cancel-button-inline() {
   .cancel-button-top {
-
     position: fixed;
     top: 0;
     right: 0;
@@ -193,7 +206,8 @@
     background-color: @admin-white;
     z-index: 1;
 
-    &:before, &:after {
+    &::before,
+    &::after {
       background-color: @admin-font-gray2;
       margin: 0;
       top: 16px;
@@ -204,20 +218,28 @@
 
     &:hover {
       background-color: @admin-white;
-      &:before, &:after {
+
+      &::before,
+      &::after {
         background-color: @admin-black;
       }
     }
   }
 }
 
+// Why is body defined in modal-dialog? Is it an iframe?
 body {
-  &._0-240, &._240-360, &._360-540, &._540-720 {
+  &._0-240,
+  &._240-360,
+  &._360-540,
+  &._540-720 {
     .@{_COMMON_PREFIX}modal-dialog {
 
       .cancel-button-inline();
 
-      .modal-dialog-header, .modal-dialog-body, .modal-dialog-footer {
+      .modal-dialog-header,
+      .modal-dialog-body,
+      .modal-dialog-footer {
         padding-left: 10px;
         padding-right: 20px;
       }
@@ -226,13 +248,18 @@ body {
         padding-top: 15px;
         padding-bottom: 10px;
 
-        .back-button:before {
+        .back-button::before {
           left: 0;
         }
       }
+
       .modal-dialog-footer {
         padding-bottom: 15px;
       }
+    }
+
+    .center-panel {
+      justify-content: space-between;
     }
   }
 
@@ -261,5 +288,4 @@ body {
       max-height: 480px;
     }
   }
-
 }
