@@ -7,28 +7,28 @@
 }
 
 .button-foreground(@color: @form-button-font, @hoverColor: darken(@color, 10%), @activeColor: @color) {
-
-  &:before, span {
+  &::before,
+  span {
     color: @color;
   }
 
   &:hover:not(:disabled) {
-
-    &:before, span {
+    &::before,
+    span {
       color: @hoverColor;
     }
   }
 
   &.active {
-
     &:hover:not(:disabled) {
-
-      &:before, span {
+      &::before,
+      span {
         color: darken(@activeColor, 10%);
       }
     }
 
-    &:before, span {
+    &::before,
+    span {
       color: @activeColor;
     }
   }
@@ -44,8 +44,8 @@
 .button(@color: @form-button-font, @bg: @form-button-bg, @hoverColor: @color, @hoverBg: lighten(@bg, 10%), @useFocus: true) {
   .button-background(@bg, @hoverBg);
   .button-foreground(@color, @hoverColor, @admin-button-blue1);
-  box-sizing: border-box;
 
+  box-sizing: border-box;
   display: inline-block;
   padding: 1px 19px;
   margin: 0;
@@ -104,7 +104,6 @@
   &.blue {
     .button-background(@admin-button-blue2);
   }
-
 }
 
 .close-button {
@@ -121,12 +120,11 @@
   height: 24px;
   line-height: 24px;
 
-  &:before {
+  &::before {
     vertical-align: bottom;
   }
 
   span {
     display: none;
   }
-
 }
