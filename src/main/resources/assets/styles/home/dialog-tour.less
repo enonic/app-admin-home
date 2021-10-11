@@ -29,22 +29,22 @@
           }
         }
 
-        &:last-child {
-          float: right;
-          background-color: @admin-green;
-
-          &:hover {
-            background-color: #79c82d;
-          }
-        }
-
         &:first-child {
           float: left;
           background-color: @form-button-bg;
+        }
 
-          &:hover {
-            background-color: #b3b3b3;
-          }
+        &:last-child {
+          float: right;
+          background-color: @admin-green;
+        }
+
+        &:first-child:hover {
+          background-color: #b3b3b3;
+        }
+
+        &:last-child:hover {
+          background-color: #79c82d;
         }
       }
     }
