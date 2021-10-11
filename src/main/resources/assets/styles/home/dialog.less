@@ -1,175 +1,3 @@
-.xp-about-dialog {
-  max-width: 496px;
-  background-color: rgba(0, 0, 0, 0.8);
-  padding: 0 !important;
-  border: none;
-
-  .cancel-button-top {
-    background-color: rgba(0, 0, 0, 0);
-
-    &:hover {
-      &::before,
-      &::after {
-        background-color: @admin-white;
-      }
-    }
-  }
-
-  .modal-dialog-header {
-    margin: 0;
-    padding: 0;
-
-    h1,
-    h2 {
-      margin: 0;
-    }
-  }
-
-  .modal-dialog-body {
-    padding: 30px;
-    padding-bottom: 0;
-    overflow: visible;
-    max-height: 90vh;
-
-    .xp-about-dialog-content {
-      color: #bfbfbf;
-
-      h1 {
-        margin: 0 0 12px 0;
-      }
-
-      a {
-        color: #70879e;
-      }
-
-      .xp-about-dialog-app-icon {
-        float: left;
-        margin: 0 30px 35px 0;
-      }
-
-      .xp-about-dialog-version-block {
-        font-size: 14px;
-        margin-bottom: 15px;
-
-        .xp-about-dialog-version {
-          font-weight: bold;
-        }
-      }
-
-      .xp-about-dialog-text {
-        font-size: 13px;
-        font-weight: 700;
-        text-align: justify;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-
-      .xp-about-dialog-license {
-        display: flex;
-        flex-direction: column;
-        min-height: 40px;
-        margin-left: -30px;
-        margin-bottom: -40px;
-        width: calc(100% + 60px);
-        background-color: #545251;
-        box-sizing: border-box;
-
-        &:hover:not(div, span) {
-          opacity: 0.8;
-        }
-
-        button {
-          background-color: #545251;
-          height: 40px;
-          margin: 0 auto;
-          position: relative;
-
-          &::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            right: 19px;
-            width: 0;
-            height: 0;
-            margin: -3px 0 0 0;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-top: 9px solid white;
-            -webkit-transition: 0.2s;
-            transition: 0.2s;
-            -webkit-transition-timing-function: cubic-bezier(0, 0.4, 1, 0.6);
-            transition-timing-function: cubic-bezier(0, 0.4, 1, 0.6);
-          }
-
-          span {
-            padding-right: 17px;
-          }
-        }
-
-        .xp-license-info-header,
-        .xp-license-info-body {
-          display: none;
-        }
-
-        .xp-license-info-header {
-          text-align: center;
-          font-size: 14px;
-          padding-bottom: 10px;
-
-          a {
-            margin-left: 5px;
-          }
-        }
-
-        .xp-license-info-body {
-          white-space: pre-wrap;
-          padding: 0 20px;
-          max-height: 60vh;
-          overflow-y: auto;
-          scrollbar-color: #454448 #545251;
-
-          @media screen and (max-height: 768px) {
-            max-height: 40vh;
-          }
-
-          &::-webkit-scrollbar-track {
-            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            background-color: #545251;
-          }
-
-          &::-webkit-scrollbar {
-            background-color: #545251;
-          }
-
-          &::-webkit-scrollbar-thumb {
-            border-radius: 10px;
-            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-            background-color: #454448;
-          }
-        }
-
-        &.expanded {
-          padding-bottom: 20px;
-
-          .xp-license-info-header,
-          .xp-license-info-body {
-            display: block;
-          }
-
-          button::after {
-            transform: rotateX(180deg);
-          }
-        }
-      }
-
-    }
-  }
-
-  .modal-dialog-footer {
-    display: none;
-  }
-}
 
 .xp-tour-dialog {
   max-width: 560px;
@@ -357,5 +185,177 @@
         }
       }
     }
+  }
+}
+
+.xp-about-dialog {
+  max-width: 496px;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 0 !important;
+  border: none;
+
+  .cancel-button-top {
+    background-color: rgba(0, 0, 0, 0);
+
+    &:hover {
+      &::before,
+      &::after {
+        background-color: @admin-white;
+      }
+    }
+  }
+
+  .modal-dialog-header {
+    margin: 0;
+    padding: 0;
+
+    h1,
+    h2 {
+      margin: 0;
+    }
+  }
+
+  .modal-dialog-body {
+    padding: 30px;
+    padding-bottom: 0;
+    overflow: visible;
+    max-height: 90vh;
+
+    .xp-about-dialog-content {
+      color: #bfbfbf;
+
+      h1 {
+        margin: 0 0 12px 0;
+      }
+
+      a {
+        color: #70879e;
+      }
+
+      .xp-about-dialog-app-icon {
+        float: left;
+        margin: 0 30px 35px 0;
+      }
+
+      .xp-about-dialog-version-block {
+        font-size: 14px;
+        margin-bottom: 15px;
+
+        .xp-about-dialog-version {
+          font-weight: bold;
+        }
+      }
+
+      .xp-about-dialog-text {
+        font-size: 13px;
+        font-weight: 700;
+        text-align: justify;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .xp-about-dialog-license {
+        display: flex;
+        flex-direction: column;
+        min-height: 40px;
+        margin-left: -30px;
+        margin-bottom: -40px;
+        width: calc(100% + 60px);
+        background-color: #545251;
+        box-sizing: border-box;
+
+        &:hover:not(div, span) {
+          opacity: 0.8;
+        }
+
+        button {
+          background-color: #545251;
+          height: 40px;
+          margin: 0 auto;
+          position: relative;
+
+          &::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: 19px;
+            width: 0;
+            height: 0;
+            margin: -3px 0 0 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 9px solid white;
+            -webkit-transition: 0.2s;
+            transition: 0.2s;
+            -webkit-transition-timing-function: cubic-bezier(0, 0.4, 1, 0.6);
+            transition-timing-function: cubic-bezier(0, 0.4, 1, 0.6);
+          }
+
+          span {
+            padding-right: 17px;
+          }
+        }
+
+        .xp-license-info-header,
+        .xp-license-info-body {
+          display: none;
+        }
+
+        .xp-license-info-header {
+          text-align: center;
+          font-size: 14px;
+          padding-bottom: 10px;
+
+          a {
+            margin-left: 5px;
+          }
+        }
+
+        .xp-license-info-body {
+          white-space: pre-wrap;
+          padding: 0 20px;
+          max-height: 60vh;
+          overflow-y: auto;
+          scrollbar-color: #454448 #545251;
+
+          @media screen and (max-height: 768px) {
+            max-height: 40vh;
+          }
+
+          &::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            background-color: #545251;
+          }
+
+          &::-webkit-scrollbar {
+            background-color: #545251;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            background-color: #454448;
+          }
+        }
+
+        &.expanded {
+          padding-bottom: 20px;
+
+          .xp-license-info-header,
+          .xp-license-info-body {
+            display: block;
+          }
+
+          button::after {
+            transform: rotateX(180deg);
+          }
+        }
+      }
+    }
+  }
+
+  .modal-dialog-footer {
+    display: none;
   }
 }
