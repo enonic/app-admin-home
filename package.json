@@ -14,7 +14,7 @@
     "fix": "eslint --fix **/*.ts"
   },
   "dependencies": {
-    "core-js": "^3.18.2",
+    "core-js": "^3.18.3",
     "jquery": "^3.6.0",
     "lib-admin-ui": "file:./.xp/dev/lib-admin-ui",
     "q": "^1.5.1",
