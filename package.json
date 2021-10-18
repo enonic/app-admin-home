@@ -38,7 +38,7 @@
     "enonic-admin-artifacts": "^1.8.1",
     "eslint": "^7.32.0",
     "less": "^4.1.2",
-    "less-loader": "^10.0.1",
+    "less-loader": "^10.2.0",
     "mini-css-extract-plugin": "^2.4.2",
     "postcss-loader": "^6.2.0",
     "postcss-normalize": "^10.0.1",
