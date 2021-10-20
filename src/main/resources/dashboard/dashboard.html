@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
+    <title>Enonic XP Dashboard</title>
+</head>
+<body>
+    <h1>Enonic XP Dashboard</h1>
+    Version: {{xpVersion}}
+
+    <h2>Web Apps</h2>
+    <div>
+        {{#applications}}
+        <div style="border: 1px solid #53585F;">
+            {{displayName}} - {{applicationKey}}
+            <a href="{{deploymentUrl}}" target="_blank">{{deploymentUrl}}</a>
+        </div>
+        {{/applications}}
+    </div>
+</body>
+</html>
