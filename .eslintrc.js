@@ -40,6 +40,7 @@ module.exports = {
 
         // '@typescript-eslint/explicit-function-return-type': ['error', {allowExpressions: true}],
         '@typescript-eslint/explicit-function-return-type': ['off'],
+        '@typescript-eslint/no-unsafe-argument': ['off'],
 
         // '@typescript-eslint/member-ordering': ['error'],
         '@typescript-eslint/member-ordering': ['off'],
