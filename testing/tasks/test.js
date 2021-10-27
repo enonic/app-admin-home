@@ -22,6 +22,7 @@ function execute() {
     return new Promise((resolve) => {
         mocha.run((failures) => {
             if (failures === 0) {
+                console.log("All tests are passed");
                 return resolve();
             }
             process.exit(failures);
@@ -46,26 +47,35 @@ async function runTests() {
 
 async function uiTests() {
     console.log("Download chrome driver");
-    await selenium.install({
-        version: seleniumVersion,
-        baseURL: 'https://selenium-release.storage.googleapis.com',
-        drivers: {
-            chrome: {
-                version: driverVersion,
-                arch: process.arch,
-                baseURL: 'https://chromedriver.storage.googleapis.com'
-            },
-        }
-    });
-
-    console.log("Start selenium server");
-    const seleniumChildProcess = await selenium.start({
-        drivers: {
-            chrome: {
-                version: driverVersion,
-            },
-        }
-    });
+    try {
+        await selenium.install({
+            version: seleniumVersion,
+            baseURL: 'https://selenium-release.storage.googleapis.com',
+            drivers: {
+                chrome: {
+                    version: driverVersion,
+                    arch: process.arch,
+                    baseURL: 'https://chromedriver.storage.googleapis.com'
+                },
+            }
+        });
+    } catch (err) {
+        console.log("Selenium install error############: " + err);
+        process.exit(1);
+    }
+    try {
+        console.log("Start selenium server");
+        const seleniumChildProcess = await selenium.start({
+            drivers: {
+                chrome: {
+                    version: driverVersion,
+                },
+            }
+        });
+    } catch (err) {
+        console.log("Selenium Start error############: " + err);
+        process.exit(1);
+    }
     await runTests();
     await seleniumChildProcess.kill();
 }
