@@ -73,7 +73,7 @@ exports.get = function() {
             path: ''
         }),
         backgroundUri: portal.assetUrl({
-            path: 'images/background.jpg'
+            path: 'images/background.webp'
         }),
         launcherUrl: admin.getLauncherUrl(),
         launcherPath: admin.getLauncherPath(),
