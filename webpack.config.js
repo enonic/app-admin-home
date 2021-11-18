@@ -1,6 +1,7 @@
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 const path = require('path');
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -40,6 +41,22 @@ module.exports = {
                     {loader: 'postcss-loader', options: {sourceMap: !isProd}},
                     {loader: 'less-loader', options: {sourceMap: !isProd}},
                 ]
+            },
+            {
+                test: /\.(jpg)$/,
+                type: "asset",
+                use: [
+                    {
+                        loader: ImageMinimizerPlugin.loader,
+                        options: {
+                            deleteOriginalAssets: true,
+                            filename: "[path][name].webp",
+                            minimizerOptions: {
+                                plugins: ["imagemin-webp"],
+                            },
+                        },
+                    }
+                ]
             }
         ]
     },
@@ -64,7 +81,21 @@ module.exports = {
         new CircularDependencyPlugin({
             exclude: /a\.js|node_modules/,
             failOnError: true
-        }),
+        }),/*
+        new ImageMinimizerPlugin({
+            // Only apply this one to files equal to or over 8192 bytes
+            filter: (source) => {
+                if (source.byteLength >= 8192) {
+                    return true;
+                }
+
+                return false;
+            },
+            filename: "[path][name].webp",
+            minimizerOptions: {
+                plugins: ["imagemin-webp"],
+            },
+        }),*/
     ],
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : 'eval-source-map',

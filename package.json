@@ -37,6 +37,8 @@
     "cssnano": "^5.0.10",
     "enonic-admin-artifacts": "^1.8.1",
     "eslint": "^8.2.0",
+    "image-minimizer-webpack-plugin": "^2.2.0",
+    "imagemin-webp": "^6.0.0",
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
     "mini-css-extract-plugin": "^2.4.4",
