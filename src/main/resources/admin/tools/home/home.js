@@ -81,7 +81,8 @@ exports.get = function() {
         tourEnabled: tourEnabled,
         dashboardIcons: dashboardIcons,
         i18nUrl: portal.serviceUrl({service: 'i18n'}),
-        marketUrl: marketUrl
+        marketUrl: marketUrl,
+        theme: 'light'  // or 'dark'
     };
 
     return {

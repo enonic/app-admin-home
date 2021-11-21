@@ -102,6 +102,7 @@ jar {
     exclude 'assets/styles/**/*.less'
     exclude 'assets/styles/**/*.js'
     exclude '**/*.d.ts'
+    exclude 'assets/images/background.jpg'
 
     def whitelist = [
         /.*bundle\.js$/,
