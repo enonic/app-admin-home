@@ -43,7 +43,7 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(jpg)$/,
+                test: /background.jpg$/,
                 type: "asset",
                 use: [
                     {
