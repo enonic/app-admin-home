@@ -81,21 +81,7 @@ module.exports = {
         new CircularDependencyPlugin({
             exclude: /a\.js|node_modules/,
             failOnError: true
-        }),/*
-        new ImageMinimizerPlugin({
-            // Only apply this one to files equal to or over 8192 bytes
-            filter: (source) => {
-                if (source.byteLength >= 8192) {
-                    return true;
-                }
-
-                return false;
-            },
-            filename: "[path][name].webp",
-            minimizerOptions: {
-                plugins: ["imagemin-webp"],
-            },
-        }),*/
+        }),
     ],
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : 'eval-source-map',
