@@ -1,6 +1,7 @@
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 const path = require('path');
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -40,12 +41,29 @@ module.exports = {
                     {loader: 'postcss-loader', options: {sourceMap: !isProd}},
                     {loader: 'less-loader', options: {sourceMap: !isProd}},
                 ]
+            },
+            {
+                test: /background.jpg$/,
+                type: "asset",
+                use: [
+                    {
+                        loader: ImageMinimizerPlugin.loader,
+                        options: {
+                            deleteOriginalAssets: true,
+                            filename: "[path][name].webp",
+                            minimizerOptions: {
+                                plugins: ["imagemin-webp"],
+                            },
+                        },
+                    }
+                ]
             }
         ]
     },
     optimization: {
         minimizer: [
             new TerserPlugin({
+                extractComments: false,
                 terserOptions: {
                     compress: {
                         drop_console: false

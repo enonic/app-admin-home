@@ -48,20 +48,17 @@
         xpVersion: '{{xpVersion}}',
         i18nUrl: '{{i18nUrl}}',
         tourEnabled: {{tourEnabled}},
-        marketUrl: '{{marketUrl}}'
+        marketUrl: '{{marketUrl}}',
+        launcher: {
+            theme: '{{theme}}'
+        }
     };
-
-    function lazyFadeIn(imgEl) {
-        imgEl.parentNode.removeChild(imgEl);
-        document.getElementById('background-image').classList.remove('empty');
-    }
 </script>
 
 <div class="home-main-container" tabindex="100" style="">
-    <img style="opacity: 0;" src="{{backgroundUri}}" onload="lazyFadeIn(this);">
     <div id="background-image" style="background-image: url(&quot;{{backgroundUri}}&quot;);" class="lazy-image empty"></div>
 
-    <div class="center-panel">
+    <div class="center-panel theme-{{theme}}">
         {{#dashboardIcons}}
         <div class="{{cls}} dashboard-item">
             {{#link}}
@@ -81,7 +78,9 @@
 
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("background-image").classList.remove("empty");
+        setTimeout(() =>
+            document.getElementById("background-image").classList.remove("empty")
+        , 100);
     });
 </script>
 

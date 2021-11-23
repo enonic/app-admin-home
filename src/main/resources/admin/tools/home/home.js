@@ -73,7 +73,7 @@ exports.get = function() {
             path: ''
         }),
         backgroundUri: portal.assetUrl({
-            path: 'images/background.jpg'
+            path: 'images/background.webp'
         }),
         launcherUrl: admin.getLauncherUrl(),
         launcherPath: admin.getLauncherPath(),
@@ -81,7 +81,8 @@ exports.get = function() {
         tourEnabled: tourEnabled,
         dashboardIcons: dashboardIcons,
         i18nUrl: portal.serviceUrl({service: 'i18n'}),
-        marketUrl: marketUrl
+        marketUrl: marketUrl,
+        theme: 'light'  // or 'dark'
     };
 
     return {
