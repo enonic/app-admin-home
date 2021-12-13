@@ -36,7 +36,7 @@
     "css-mqpacker": "^7.0.0",
     "cssnano": "^5.0.11",
     "enonic-admin-artifacts": "^1.8.1",
-    "eslint": "^8.4.0",
+    "eslint": "^8.4.1",
     "image-minimizer-webpack-plugin": "^2.2.0",
     "imagemin-webp": "^6.0.0",
     "less": "^4.1.2",
