@@ -297,6 +297,7 @@ class Launcher {
 
     private openLauncherPanel = (): void => {
         this.launcherMainContainer.removeAttribute('hidden');
+        this.launcherMainContainer.style.visibility = 'visible';
         this.listenToKeyboardEvents();
         this.toggleButton();
         this.launcherPanel.classList.remove('hidden', 'slideout');
@@ -309,6 +310,7 @@ class Launcher {
     private closeLauncherPanel = (skipTransition?: boolean): void => {
         document.removeEventListener('click', this.onLauncherClick);
         this.launcherMainContainer.setAttribute('hidden', 'true');
+        this.launcherMainContainer.style.visibility = 'hidden';
         this.unlistenToKeyboardEvents();
         this.launcherPanel.classList.remove('visible');
         this.launcherPanel.classList.add(
@@ -317,6 +319,7 @@ class Launcher {
         this.toggleButton();
         this.launcherButton.setAttribute('title', i18n('tooltip.launcher.openMenu'));
         this.unselectCurrentApp();
+
     };
 
     private listenToKeyboardEvents = (): void => KeyBindings.get().bindKeys(this.launcherBindings);
