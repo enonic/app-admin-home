@@ -128,7 +128,7 @@ class Launcher {
     }
 
     private getCloseMenuTooltip(): string {
-        return Messages.isEmpty() ? 'Open XP menu' : i18n('tooltip.launcher.closeMenu');
+        return Messages.isEmpty() ? 'Close XP menu' : i18n('tooltip.launcher.closeMenu');
     }
 
     public appendLauncherButton = (): void => {
