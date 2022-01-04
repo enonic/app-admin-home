@@ -11,7 +11,7 @@ import {BrowserHelper} from 'lib-admin-ui/BrowserHelper';
 import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/ApplicationEvent';
 import {validateConfig} from '../validator';
 import {ThemeManager} from './ThemeManager';
-import {i18n} from 'lib-admin-ui/util/Messages';
+import {i18n, Messages} from 'lib-admin-ui/util/Messages';
 import {i18nInit} from 'lib-admin-ui/util/MessagesInitializer';
 
 const config: GlobalConfig = Object.freeze(Object.assign({}, CONFIG));
@@ -135,9 +135,17 @@ class Launcher {
         });
     };
 
+    private getOpenMenuTooltip(): string {
+        return Messages.isEmpty() ? 'Open XP menu' : i18n('tooltip.launcher.openMenu');
+    }
+
+    private getCloseMenuTooltip(): string {
+        return Messages.isEmpty() ? 'Close XP menu' : i18n('tooltip.launcher.closeMenu');
+    }
+
     public appendLauncherButton = (): void => {
         const button = document.createElement('button');
-        button.setAttribute('title', i18n('tooltip.launcher.openMenu'));
+        button.setAttribute('title', this.getOpenMenuTooltip());
         button.setAttribute('class', `launcher-button ${this.getThemeClass()}`);
         button.hidden = true;
 
@@ -314,7 +322,7 @@ class Launcher {
         this.toggleButton();
         this.launcherPanel.classList.remove('hidden', 'slideout');
         this.launcherPanel.classList.add('visible');
-        this.launcherButton.setAttribute('title', i18n('tooltip.launcher.closeMenu'));
+        this.launcherButton.setAttribute('title', this.getCloseMenuTooltip());
         document.addEventListener('click', this.onLauncherClick);
     };
 
@@ -327,7 +335,7 @@ class Launcher {
             skipTransition === true ? 'hidden' : 'slideout',
         );
         this.toggleButton();
-        this.launcherButton.setAttribute('title', i18n('tooltip.launcher.openMenu'));
+        this.launcherButton.setAttribute('title', this.getOpenMenuTooltip());
         this.unselectCurrentApp();
     };
 
