@@ -120,8 +120,20 @@ class Launcher {
             this.appendLauncherButton();
             this.appendLauncherPanel();
             this.addApplicationsListeners();
+            this.addAccessibilityListeners();
         }, delay);
     }
+
+    private addAccessibilityListeners = (): void => {
+        // Set visibility to hidden after the transition end to avoid 
+        // keyboard navigation in inner items when the menu is closed
+        this.launcherPanel.addEventListener('transitionend', () => {
+            const classList = this.launcherPanel.classList;
+            if (classList.contains('slideout') || classList.contains('hidden')) {
+                this.launcherMainContainer.style.visibility = 'hidden';
+            }
+        });
+    };
 
     public appendLauncherButton = (): void => {
         const button = document.createElement('button');
@@ -303,14 +315,12 @@ class Launcher {
         this.launcherPanel.classList.remove('hidden', 'slideout');
         this.launcherPanel.classList.add('visible');
         this.launcherButton.setAttribute('title', i18n('tooltip.launcher.closeMenu'));
-
         document.addEventListener('click', this.onLauncherClick);
     };
 
     private closeLauncherPanel = (skipTransition?: boolean): void => {
         document.removeEventListener('click', this.onLauncherClick);
         this.launcherMainContainer.setAttribute('hidden', 'true');
-        this.launcherMainContainer.style.visibility = 'hidden';
         this.unlistenToKeyboardEvents();
         this.launcherPanel.classList.remove('visible');
         this.launcherPanel.classList.add(
@@ -319,7 +329,6 @@ class Launcher {
         this.toggleButton();
         this.launcherButton.setAttribute('title', i18n('tooltip.launcher.openMenu'));
         this.unselectCurrentApp();
-
     };
 
     private listenToKeyboardEvents = (): void => KeyBindings.get().bindKeys(this.launcherBindings);
