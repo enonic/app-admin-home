@@ -37,14 +37,15 @@ Promise.resolve(true).then(() => {
                 tourDialog.open();
             }
 
-            const execute = () => {
+            const execute = (e: Event | KeyboardEvent) => {
+                e.preventDefault();
                 tourDialog.open();
                 setupBodyClickListeners(tourDialog);
             };
 
-            document.querySelector('.xp-tour').addEventListener('click', () => execute());
+            document.querySelector('.xp-tour').addEventListener('click', execute);
             document.querySelector('.xp-tour').addEventListener('keypress', (e: KeyboardEvent) => {
-                if(e.key === 'Enter') { execute(); }
+                if(e.key === 'Enter') { execute(e); }
             });
         });
     }
@@ -77,15 +78,16 @@ function setupBodyClickListeners(dialog: ModalDialogWithConfirmation) {
 function setupAboutDialog() {
     const aboutDialog = createAboutDialog(config);
 
-    const execute = () => {
+    const execute = (e: Event | KeyboardEvent) => {
+        e.preventDefault();
         Body.get().appendChild(aboutDialog);
         aboutDialog.open();
         setupBodyClickListeners(aboutDialog);
     };
 
-    document.querySelector('.xp-about').addEventListener('click', () => execute());
+    document.querySelector('.xp-about').addEventListener('click', execute);
     document.querySelector('.xp-about').addEventListener('keypress', (e: KeyboardEvent) => {
-        if(e.key === 'Enter') { execute(); }
+        if(e.key === 'Enter') { execute(e); }
     });
 }
 

@@ -23,31 +23,28 @@ exports.get = function() {
         {
             src: infoIconUrl,
             cls: 'xp-about',
-            tabindex: 0,
             caption: i18n.localize({
                 key: 'home.dashboard.about',
                 bundles: ['i18n/phrases'],
                 locale: locales
-            })
+            }),
+            link: '#'
         },
         {
             src: devIconUrl,
             cls: '',
-            tabindex: -1,
             caption: 'Developer',
             link: 'https://developer.enonic.com/'
         },
         {
             src: forumIconUrl,
             cls: '',
-            tabindex: -1,
             caption: 'Discuss',
             link: 'https://discuss.enonic.com/'
         },
         {
             src: marketIconUrl,
             cls: '',
-            tabindex: -1,
             caption: i18n.localize({
                 key: 'home.dashboard.market',
                 bundles: ['i18n/phrases'],
@@ -62,12 +59,12 @@ exports.get = function() {
         dashboardIcons.splice(0, 0, {
             src: busIconUrl,
             cls: 'xp-tour',
-            tabindex: 0,
             caption: i18n.localize({
                 key: 'home.dashboard.tour',
                 bundles: ['i18n/phrases'],
                 locale: locales
-            })
+            }),
+            link: '#'
         });
     }
 
