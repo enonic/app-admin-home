@@ -37,11 +37,15 @@ Promise.resolve(true).then(() => {
                 tourDialog.open();
             }
 
-            document.querySelector('.xp-tour')
-                .addEventListener('click', () => {
-                    tourDialog.open();
-                    setupBodyClickListeners(tourDialog);
-                });
+            const execute = () => {
+                tourDialog.open();
+                setupBodyClickListeners(tourDialog);
+            };
+
+            document.querySelector('.xp-tour').addEventListener('click', () => execute());
+            document.querySelector('.xp-tour').addEventListener('keypress', (e: KeyboardEvent) => {
+                if(e.key === 'Enter') { execute(); }
+            });
         });
     }
 }).catch((error: Error) => {
@@ -73,10 +77,15 @@ function setupBodyClickListeners(dialog: ModalDialogWithConfirmation) {
 function setupAboutDialog() {
     const aboutDialog = createAboutDialog(config);
 
-    document.querySelector('.xp-about').addEventListener('click', () => {
+    const execute = () => {
         Body.get().appendChild(aboutDialog);
         aboutDialog.open();
         setupBodyClickListeners(aboutDialog);
+    };
+
+    document.querySelector('.xp-about').addEventListener('click', () => execute());
+    document.querySelector('.xp-about').addEventListener('keypress', (e: KeyboardEvent) => {
+        if(e.key === 'Enter') { execute(); }
     });
 }
 

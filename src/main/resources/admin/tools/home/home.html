@@ -55,12 +55,12 @@
     };
 </script>
 
-<div class="home-main-container" tabindex="100" style="">
+<div class="home-main-container" tabindex="100">
     <div id="background-image" style="background-image: url(&quot;{{backgroundUri}}&quot;);" class="lazy-image empty"></div>
 
     <div class="center-panel theme-{{theme}}">
         {{#dashboardIcons}}
-        <div class="{{cls}} dashboard-item">
+        <div class="{{cls}} dashboard-item" tabindex="{{tabindex}}">
             {{#link}}
             <a href="{{link}}" target="_blank">
             {{/link}}
