@@ -61,29 +61,70 @@ class Launcher {
             return false;
         });
 
-    private prevApp: KeyBinding = new KeyBinding('up')
+    private nextApp: KeyBinding = new KeyBinding('down')
         .setGlobal(true)
-        .setCallback(() => {
-            if (this.isPanelExpanded()) {
-
-                this.initKeyboardNavigation();
-                this.selectPreviousApp();
+        .setCallback((e: Event) => {
+            if (!this.isPanelExpanded() || !this.isAppOnFocus()) { 
+                return false; 
             }
+            this.initKeyboardNavigation();
+            this.selectNextApp();
             return false;
         });
 
-    private nextApp: KeyBinding = new KeyBinding('down')
+    private prevApp: KeyBinding = new KeyBinding('up')
         .setGlobal(true)
-        .setCallback(e => {
-            if (this.isPanelExpanded()) {
-                e.preventDefault();
-                e.returnValue = false;
-
-                this.initKeyboardNavigation();
-                this.selectNextApp();
+        .setCallback((e: Event) => {
+            if (!this.isPanelExpanded() || !this.isAppOnFocus()) { 
+                return false; 
+            }
+            this.initKeyboardNavigation();
+            this.selectPreviousApp();
+            return false;
+        });
+    
+    
+    private tabNextApp: KeyBinding = new KeyBinding('tab')
+        .setGlobal(true)
+        .setCallback((e: Event) => {
+            if (!this.isPanelExpanded() || !this.isAppOnFocus()) { 
+                return true; 
+            }
+            
+            const desiredIndexIsGreaterThanMaxIndex = this.getSelectedAppIndex() + 1 > this.getApps().length - 1;
+            
+            if(desiredIndexIsGreaterThanMaxIndex) {
+                this.unselectCurrentApp();
+                return true;
             }
 
-            return false;
+            this.initKeyboardNavigation();
+            this.selectNextApp();
+            return true;
+        });
+
+    private shiftTabPrevApp: KeyBinding = new KeyBinding('shift+tab')
+        .setGlobal(true)
+        .setCallback((e: Event) => {
+            if (!this.isPanelExpanded() || !this.launcherPanel.contains(document.activeElement)) { 
+                return true; 
+            }
+
+            if (!this.isAppOnFocus()) {
+                this.selectApp(this.getApps().length - 1);  
+                return true;
+            }
+
+            const desiredIndexIsLessThanMinIndex = this.getSelectedAppIndex() - 1 < (this.isHomeAppActive() ? 1 : 0);
+
+            if(desiredIndexIsLessThanMinIndex) {
+                this.unselectCurrentApp();
+                return true;
+            }
+
+            this.initKeyboardNavigation();
+            this.selectPreviousApp();
+            return true;
         });
 
     private runApp: KeyBinding = new KeyBinding('enter')
@@ -103,7 +144,14 @@ class Launcher {
             return false;
         });
 
-    private launcherBindings: KeyBinding[] = [this.closeLauncher, this.prevApp, this.nextApp, this.runApp];
+    private launcherBindings: KeyBinding[] = [
+        this.closeLauncher, 
+        this.prevApp, 
+        this.nextApp, 
+        this.tabNextApp, 
+        this.shiftTabPrevApp, 
+        this.runApp,
+    ];
 
     readonly params: LauncherParams;
 
@@ -125,7 +173,7 @@ class Launcher {
     }
 
     private addAccessibilityListeners = (): void => {
-        // Set visibility to hidden after the transition end to avoid 
+        // Set visibility to hidden after the transition end to avoid
         // keyboard navigation in inner items when the menu is closed
         this.launcherPanel.addEventListener('transitionend', () => {
             const classList = this.launcherPanel.classList;
@@ -134,6 +182,14 @@ class Launcher {
             }
         });
     };
+
+    private isAppOnFocus(): boolean {
+        const apps = this.getApps();
+        return apps.some((app: HTMLElement) => {
+            return app.classList.contains('selected') 
+                || app.parentNode === document.activeElement;
+        });
+    }
 
     private getOpenMenuTooltip(): string {
         return Messages.isEmpty() ? 'Open XP menu' : i18n('tooltip.launcher.openMenu');
@@ -429,10 +485,14 @@ class Launcher {
         }
     };
 
+    private getApps(): Array<HTMLElement> {
+        return Array.from(this.getLauncherMainContainer().querySelectorAll('.app-row'));
+    }
+
     private getSelectedApp = (): HTMLElement => this.launcherPanel.querySelector('.app-row.selected');
 
     private getSelectedAppIndex = (): number => {
-        const apps = this.getLauncherMainContainer().querySelectorAll('.app-row');
+        const apps = this.getApps();
         for (let i = 0; i < apps.length; i++) {
             if (apps[i].classList.contains('selected')) {
                 return i;
@@ -444,7 +504,7 @@ class Launcher {
     private selectNextApp = (): void => {
         const firstAppIndex = this.isHomeAppActive() ? 1 : 0;
         const selectedIndex = this.getSelectedAppIndex();
-        const apps = this.getLauncherMainContainer().querySelectorAll('.app-row');
+        const apps = this.getApps();
 
         this.selectApp(
             selectedIndex + 1 === apps.length || selectedIndex === -1
@@ -476,7 +536,7 @@ class Launcher {
     };
 
     private getAppByIndex = (index: number): Element => {
-        const apps = this.getLauncherMainContainer().querySelectorAll('.app-row');
+        const apps = this.getApps();
         for (let i = 0; i < apps.length; i++) {
             if (i === index) {
                 return apps[i];
