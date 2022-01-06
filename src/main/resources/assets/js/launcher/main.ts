@@ -46,6 +46,7 @@ class Launcher {
     private launcherPanel: HTMLElement;
     private launcherButton: HTMLElement;
     private launcherMainContainer: HTMLElement;
+    private focusableElements: Array<HTMLElement>;
 
     private closeLauncher: KeyBinding = new KeyBinding('esc')
         .setGlobal(true)
@@ -87,15 +88,13 @@ class Launcher {
     private tabNextApp: KeyBinding = new KeyBinding('tab')
         .setGlobal(true)
         .setCallback((e: Event) => {
-            if (!this.isPanelExpanded() || !this.isAppOnFocus()) { 
-                return true; 
-            }
-            
             const desiredIndexIsGreaterThanMaxIndex = this.getSelectedAppIndex() + 1 > this.getApps().length - 1;
-            
-            if(desiredIndexIsGreaterThanMaxIndex) {
+
+            if (!this.isPanelExpanded() 
+                || desiredIndexIsGreaterThanMaxIndex
+                || !this.launcherPanel.contains(this.getNextFocusableElement())) { 
                 this.unselectCurrentApp();
-                return true;
+                return true; 
             }
 
             this.initKeyboardNavigation();
@@ -107,6 +106,7 @@ class Launcher {
         .setGlobal(true)
         .setCallback((e: Event) => {
             if (!this.isPanelExpanded() || !this.launcherPanel.contains(document.activeElement)) { 
+                this.unselectCurrentApp();
                 return true; 
             }
 
@@ -115,7 +115,7 @@ class Launcher {
                 return true;
             }
 
-            const desiredIndexIsLessThanMinIndex = this.getSelectedAppIndex() - 1 < (this.isHomeAppActive() ? 1 : 0);
+            const desiredIndexIsLessThanMinIndex = this.getSelectedAppIndex() - 1 < 0;
 
             if(desiredIndexIsLessThanMinIndex) {
                 this.unselectCurrentApp();
@@ -183,12 +183,45 @@ class Launcher {
         });
     };
 
+    private addAppItemsListeners = (): void => {
+        this.getApps().forEach((app: HTMLElement, index:number) => {
+            app.addEventListener('mouseenter', () => {
+                this.selectApp(index);
+            });
+        });
+    };
+
     private isAppOnFocus(): boolean {
         const apps = this.getApps();
-        return apps.some((app: HTMLElement) => {
-            return app.classList.contains('selected') 
-                || app.parentNode === document.activeElement;
-        });
+        return apps.some((app: HTMLElement) => app.classList.contains('selected'));
+    }
+
+    private setFocusableElements(): void {
+        const tags = ["a", "button", "input", "select", "textarea", "[tabindex]", "[contenteditable]"];
+        const maxTabIndex = 1000;
+
+        const focusable = [].slice.call(document.querySelectorAll(tags.join(', ')))
+            .filter((el: HTMLInputElement) => {
+                if(el.disabled || (el.getAttribute("tabindex") && parseInt(el.getAttribute("tabindex")) < 0)) { 
+                    return false; 
+                }
+                return true;
+            })
+            .sort((a: HTMLInputElement, b: HTMLInputElement) => {
+                const aTabIndex = (parseFloat(a.getAttribute("tabindex") || maxTabIndex.toString()) || maxTabIndex);
+                const bTabIndex = (parseFloat(b.getAttribute("tabindex") || maxTabIndex.toString()) || maxTabIndex);
+                return aTabIndex - bTabIndex;
+            });
+
+        this.focusableElements = Array.from(focusable);
+    }
+
+    private getNextFocusableElement(): HTMLElement | null {        
+        const focusIndex = this.focusableElements.indexOf(document.activeElement as HTMLElement);
+
+        return (this.focusableElements[focusIndex + 1]) 
+            ? this.focusableElements[focusIndex + 1]
+            : null;
     }
 
     private getOpenMenuTooltip(): string {
@@ -287,6 +320,8 @@ class Launcher {
                     }
                 }
                 this.highlightActiveApp();
+                this.addAppItemsListeners();
+                this.setFocusableElements();
             });
 
         this.launcherPanel = container;
@@ -447,6 +482,8 @@ class Launcher {
                         const parent = oldLauncherContent.parentNode;
                         parent.replaceChild(newLauncherContent, oldLauncherContent);
                         this.highlightActiveApp();
+                        this.addAppItemsListeners();
+                        this.setFocusableElements();
                     })
             ,
             1000,
@@ -502,7 +539,7 @@ class Launcher {
     };
 
     private selectNextApp = (): void => {
-        const firstAppIndex = this.isHomeAppActive() ? 1 : 0;
+        const firstAppIndex = 0;
         const selectedIndex = this.getSelectedAppIndex();
         const apps = this.getApps();
 
@@ -517,11 +554,8 @@ class Launcher {
         const selectedIndex = this.getSelectedAppIndex();
         let nextIndex;
         if (selectedIndex === -1) {
-            nextIndex = this.isHomeAppActive() ? 1 : 0;
-        } else if (
-            selectedIndex === 0 ||
-            (selectedIndex === 1 && this.isHomeAppActive())
-        ) {
+            nextIndex = 0;
+        } else if (selectedIndex === 0 ) {
             nextIndex = document.querySelectorAll('.app-row').length - 1;
         } else {
             nextIndex = selectedIndex - 1;
@@ -533,6 +567,7 @@ class Launcher {
     private selectApp = (index: number): void => {
         this.unselectCurrentApp();
         this.getAppByIndex(index).classList.add('selected');
+        setTimeout(() => {(<HTMLElement> this.getSelectedApp().parentNode).focus()}, 100);
     };
 
     private getAppByIndex = (index: number): Element => {
@@ -555,7 +590,7 @@ class Launcher {
 
     private getLauncherMainContainer = (): HTMLElement => this.launcherMainContainer || document.querySelector('.launcher-main-container');
 
-    private isHomeAppActive = () => this.getLauncherMainContainer().classList.contains('home');
+    // private isHomeAppActive = () => this.getLauncherMainContainer().classList.contains('home');
 }
 
 const init = async (): Promise<void> => {
