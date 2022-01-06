@@ -26,6 +26,7 @@ Promise.resolve(true).then(() => {
     startLostConnectionDetector();
     setupWebSocketListener();
     setupAboutDialog();
+    addListenersToDashboardItems();
 
     if (config.tourEnabled) {
         void init(config).then(function (tourDialog: ModalDialogWithConfirmation) {
@@ -97,4 +98,16 @@ function startLostConnectionDetector() {
         .setSessionExpireRedirectUrl(CONFIG.adminUrl + '/tool')
         .setNotificationMessage(i18n('notify.connection.loss'))
         .startPolling(true);
+}
+
+function addListenersToDashboardItems() {
+    const dashboardItems = Array.from(document.getElementsByClassName('dashboard-item'));
+    
+    dashboardItems.forEach((item: HTMLElement) => {
+        item.addEventListener('keypress', (e: KeyboardEvent) => {
+            if(e.key === 'Enter') { 
+                (item.firstElementChild as HTMLElement).click(); 
+            }
+        });
+    });
 }
