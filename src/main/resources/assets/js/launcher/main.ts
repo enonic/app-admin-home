@@ -188,6 +188,14 @@ class Launcher {
             app.addEventListener('mouseenter', () => {
                 this.selectApp(index);
             });
+
+            if(index === 0){
+                app.parentNode.addEventListener('keydown', (e: KeyboardEvent) => {
+                    if(e.key === 'Tab' && e.shiftKey){ 
+                        this.launcherPanel.focus();
+                    }
+                });
+            }
         });
     };
 
@@ -294,6 +302,7 @@ class Launcher {
     private appendLauncherPanel = (): void => {
         const container = document.createElement('div');
         container.setAttribute('class', `launcher-panel ${this.getThemeClass()}`);
+        container.setAttribute('tabindex', '0');
         container.classList.add('hidden');
 
         void this.fetchLauncherContents()
@@ -414,6 +423,7 @@ class Launcher {
         this.launcherPanel.classList.remove('hidden', 'slideout');
         this.launcherPanel.classList.add('visible');
         this.launcherButton.setAttribute('title', this.getCloseMenuTooltip());
+        this.launcherPanel.focus();
         document.addEventListener('click', this.onLauncherClick);
     };
 
@@ -589,8 +599,6 @@ class Launcher {
     };
 
     private getLauncherMainContainer = (): HTMLElement => this.launcherMainContainer || document.querySelector('.launcher-main-container');
-
-    // private isHomeAppActive = () => this.getLauncherMainContainer().classList.contains('home');
 }
 
 const init = async (): Promise<void> => {
