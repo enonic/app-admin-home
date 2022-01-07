@@ -205,23 +205,22 @@ class Launcher {
     }
 
     private setFocusableElements(): void {
-        const tags = ["a", "button", "input", "select", "textarea", "[tabindex]", "[contenteditable]"];
+        const tags = ['a', 'button', 'input', 'select', 'textarea', '[tabindex]', '[contenteditable]'];
         const maxTabIndex = 1000;
 
-        const focusable = [].slice.call(document.querySelectorAll(tags.join(', ')))
-            .filter((el: HTMLInputElement) => {
-                if(el.disabled || (el.getAttribute("tabindex") && parseInt(el.getAttribute("tabindex")) < 0)) { 
+        const focusable = Array.from(document.querySelectorAll<HTMLElement>(tags.join(', '))) ;
+        
+        this.focusableElements = focusable.filter((el: HTMLInputElement) => {
+                if(el.disabled || (el.getAttribute('tabindex') && parseInt(el.getAttribute('tabindex')) < 0)) { 
                     return false; 
                 }
                 return true;
             })
             .sort((a: HTMLInputElement, b: HTMLInputElement) => {
-                const aTabIndex = (parseFloat(a.getAttribute("tabindex") || maxTabIndex.toString()) || maxTabIndex);
-                const bTabIndex = (parseFloat(b.getAttribute("tabindex") || maxTabIndex.toString()) || maxTabIndex);
+                const aTabIndex = (parseFloat(a.getAttribute('tabindex') || maxTabIndex.toString()) || maxTabIndex);
+                const bTabIndex = (parseFloat(b.getAttribute('tabindex') || maxTabIndex.toString()) || maxTabIndex);
                 return aTabIndex - bTabIndex;
             });
-
-        this.focusableElements = Array.from(focusable);
     }
 
     private getNextFocusableElement(): HTMLElement | null {        
@@ -565,7 +564,7 @@ class Launcher {
         let nextIndex;
         if (selectedIndex === -1) {
             nextIndex = 0;
-        } else if (selectedIndex === 0 ) {
+        } else if (selectedIndex === 0) {
             nextIndex = document.querySelectorAll('.app-row').length - 1;
         } else {
             nextIndex = selectedIndex - 1;
@@ -577,7 +576,9 @@ class Launcher {
     private selectApp = (index: number): void => {
         this.unselectCurrentApp();
         this.getAppByIndex(index).classList.add('selected');
-        setTimeout(() => {(<HTMLElement> this.getSelectedApp().parentNode).focus()}, 100);
+        setTimeout(() => { 
+            (<HTMLElement> this.getSelectedApp().parentNode).focus();
+        }, 100);
     };
 
     private getAppByIndex = (index: number): Element => {
