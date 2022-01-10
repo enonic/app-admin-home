@@ -34,7 +34,7 @@
     "circular-dependency-plugin": "^5.2.2",
     "css-loader": "^6.5.1",
     "css-mqpacker": "^7.0.0",
-    "cssnano": "^5.0.14",
+    "cssnano": "^5.0.15",
     "enonic-admin-artifacts": "^1.8.1",
     "eslint": "^8.6.0",
     "imagemin-webp-webpack-plugin": "^3.3.6",
