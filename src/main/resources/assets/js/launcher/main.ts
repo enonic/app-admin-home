@@ -65,8 +65,8 @@ class Launcher {
     private nextApp: KeyBinding = new KeyBinding('down')
         .setGlobal(true)
         .setCallback((e: Event) => {
-            if (!this.isPanelExpanded() || !this.isAppOnFocus()) { 
-                return false; 
+            if (!this.isPanelExpanded() || !this.isAppOnFocus()) {
+                return false;
             }
             this.initKeyboardNavigation();
             this.selectNextApp();
@@ -76,25 +76,25 @@ class Launcher {
     private prevApp: KeyBinding = new KeyBinding('up')
         .setGlobal(true)
         .setCallback((e: Event) => {
-            if (!this.isPanelExpanded() || !this.isAppOnFocus()) { 
-                return false; 
+            if (!this.isPanelExpanded() || !this.isAppOnFocus()) {
+                return false;
             }
             this.initKeyboardNavigation();
             this.selectPreviousApp();
             return false;
         });
-    
-    
+
+
     private tabNextApp: KeyBinding = new KeyBinding('tab')
         .setGlobal(true)
         .setCallback((e: Event) => {
             const desiredIndexIsGreaterThanMaxIndex = this.getSelectedAppIndex() + 1 > this.getApps().length - 1;
 
-            if (!this.isPanelExpanded() 
+            if (!this.isPanelExpanded()
                 || desiredIndexIsGreaterThanMaxIndex
-                || !this.launcherPanel.contains(this.getNextFocusableElement())) { 
+                || !this.launcherPanel.contains(this.getNextFocusableElement())) {
                 this.unselectCurrentApp();
-                return true; 
+                return true;
             }
 
             this.initKeyboardNavigation();
@@ -105,13 +105,13 @@ class Launcher {
     private shiftTabPrevApp: KeyBinding = new KeyBinding('shift+tab')
         .setGlobal(true)
         .setCallback((e: Event) => {
-            if (!this.isPanelExpanded() || !this.launcherPanel.contains(document.activeElement)) { 
+            if (!this.isPanelExpanded() || !this.launcherPanel.contains(document.activeElement)) {
                 this.unselectCurrentApp();
-                return true; 
+                return true;
             }
 
             if (!this.isAppOnFocus()) {
-                this.selectApp(this.getApps().length - 1);  
+                this.selectApp(this.getApps().length - 1);
                 return true;
             }
 
@@ -145,11 +145,11 @@ class Launcher {
         });
 
     private launcherBindings: KeyBinding[] = [
-        this.closeLauncher, 
-        this.prevApp, 
-        this.nextApp, 
-        this.tabNextApp, 
-        this.shiftTabPrevApp, 
+        this.closeLauncher,
+        this.prevApp,
+        this.nextApp,
+        this.tabNextApp,
+        this.shiftTabPrevApp,
         this.runApp,
     ];
 
@@ -191,8 +191,8 @@ class Launcher {
 
             if(index === 0){
                 app.parentNode.addEventListener('keydown', (e: KeyboardEvent) => {
-                    if(e.key === 'Tab' && e.shiftKey){ 
-                        this.launcherPanel.focus();
+                    if(e.key === 'Tab' && e.shiftKey){
+                        setTimeout(() => this.launcherButton.focus(), 100);
                     }
                 });
             }
@@ -209,10 +209,10 @@ class Launcher {
         const maxTabIndex = 1000;
 
         const focusable = Array.from(document.querySelectorAll<HTMLElement>(tags.join(', '))) ;
-        
+
         this.focusableElements = focusable.filter((el: HTMLInputElement) => {
-                if(el.disabled || (el.getAttribute('tabindex') && parseInt(el.getAttribute('tabindex')) < 0)) { 
-                    return false; 
+                if(el.disabled || (el.getAttribute('tabindex') && parseInt(el.getAttribute('tabindex')) < 0)) {
+                    return false;
                 }
                 return true;
             })
@@ -223,10 +223,10 @@ class Launcher {
             });
     }
 
-    private getNextFocusableElement(): HTMLElement | null {        
+    private getNextFocusableElement(): HTMLElement | null {
         const focusIndex = this.focusableElements.indexOf(document.activeElement as HTMLElement);
 
-        return (this.focusableElements[focusIndex + 1]) 
+        return (this.focusableElements[focusIndex + 1])
             ? this.focusableElements[focusIndex + 1]
             : null;
     }
@@ -255,6 +255,13 @@ class Launcher {
         button.appendChild(spanP);
 
         button.addEventListener('click', this.togglePanelState);
+        button.addEventListener('keydown', (e: KeyboardEvent) => {
+            if(e.key === 'Tab' && !e.shiftKey){
+                e.preventDefault();
+                this.selectApp(0);
+                return false;
+             }
+        });
 
         const containerSelector = this.params.getContainerSelector();
         const container = containerSelector ? document.querySelector(containerSelector) : document.body;
@@ -318,7 +325,6 @@ class Launcher {
 
                 if (config.autoOpenLauncher) {
                     this.openLauncherPanel();
-                    this.launcherButton.focus();
                 } else {
                     const appTiles = container
                         .querySelector('.launcher-app-container')
@@ -422,7 +428,7 @@ class Launcher {
         this.launcherPanel.classList.remove('hidden', 'slideout');
         this.launcherPanel.classList.add('visible');
         this.launcherButton.setAttribute('title', this.getCloseMenuTooltip());
-        this.launcherPanel.focus();
+        this.launcherButton.focus();
         document.addEventListener('click', this.onLauncherClick);
     };
 
@@ -575,10 +581,11 @@ class Launcher {
 
     private selectApp = (index: number): void => {
         this.unselectCurrentApp();
-        this.getAppByIndex(index).classList.add('selected');
-        setTimeout(() => { 
-            (<HTMLElement> this.getSelectedApp().parentNode).focus();
-        }, 100);
+        const app = this.getAppByIndex(index);
+        setTimeout(() => {
+            (<HTMLElement> app.parentNode).focus();
+            app.classList.add('selected');
+        }, 1);
     };
 
     private getAppByIndex = (index: number): Element => {
