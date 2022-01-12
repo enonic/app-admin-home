@@ -26,6 +26,7 @@ Promise.resolve(true).then(() => {
     startLostConnectionDetector();
     setupWebSocketListener();
     setupAboutDialog();
+    addListenersToDashboardItems();
 
     if (config.tourEnabled) {
         void init(config).then(function (tourDialog: ModalDialogWithConfirmation) {
@@ -37,11 +38,16 @@ Promise.resolve(true).then(() => {
                 tourDialog.open();
             }
 
-            document.querySelector('.xp-tour')
-                .addEventListener('click', () => {
-                    tourDialog.open();
-                    setupBodyClickListeners(tourDialog);
-                });
+            const execute = (e: Event | KeyboardEvent) => {
+                e.preventDefault();
+                tourDialog.open();
+                setupBodyClickListeners(tourDialog);
+            };
+
+            document.querySelector('.xp-tour').addEventListener('click', execute);
+            document.querySelector('.xp-tour').addEventListener('keypress', (e: KeyboardEvent) => {
+                if(e.key === 'Enter') { execute(e); }
+            });
         });
     }
 }).catch((error: Error) => {
@@ -73,10 +79,16 @@ function setupBodyClickListeners(dialog: ModalDialogWithConfirmation) {
 function setupAboutDialog() {
     const aboutDialog = createAboutDialog(config);
 
-    document.querySelector('.xp-about').addEventListener('click', () => {
+    const execute = (e: Event | KeyboardEvent) => {
+        e.preventDefault();
         Body.get().appendChild(aboutDialog);
         aboutDialog.open();
         setupBodyClickListeners(aboutDialog);
+    };
+
+    document.querySelector('.xp-about').addEventListener('click', execute);
+    document.querySelector('.xp-about').addEventListener('keypress', (e: KeyboardEvent) => {
+        if(e.key === 'Enter') { execute(e); }
     });
 }
 
@@ -86,4 +98,16 @@ function startLostConnectionDetector() {
         .setSessionExpireRedirectUrl(CONFIG.adminUrl + '/tool')
         .setNotificationMessage(i18n('notify.connection.loss'))
         .startPolling(true);
+}
+
+function addListenersToDashboardItems() {
+    const dashboardItems = Array.from(document.getElementsByClassName('dashboard-item'));
+    
+    dashboardItems.forEach((item: HTMLElement) => {
+        item.addEventListener('keypress', (e: KeyboardEvent) => {
+            if(e.key === 'Enter') { 
+                (item.firstElementChild as HTMLElement).click(); 
+            }
+        });
+    });
 }

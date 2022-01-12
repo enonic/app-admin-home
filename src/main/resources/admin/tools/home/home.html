@@ -60,9 +60,9 @@
 
     <div class="center-panel theme-{{theme}}">
         {{#dashboardIcons}}
-        <div class="{{cls}} dashboard-item">
+        <div class="{{cls}} dashboard-item" tabindex="0">
             {{#link}}
-            <a href="{{link}}" target="_blank">
+            <a href="{{link}}" target="_blank" tabindex="-1">
             {{/link}}
                 <img src="{{src}}">
                 <div>{{caption}}</div>

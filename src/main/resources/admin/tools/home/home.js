@@ -27,7 +27,8 @@ exports.get = function() {
                 key: 'home.dashboard.about',
                 bundles: ['i18n/phrases'],
                 locale: locales
-            })
+            }),
+            link: '#'
         },
         {
             src: devIconUrl,
@@ -62,7 +63,8 @@ exports.get = function() {
                 key: 'home.dashboard.tour',
                 bundles: ['i18n/phrases'],
                 locale: locales
-            })
+            }),
+            link: '#'
         });
     }
 
