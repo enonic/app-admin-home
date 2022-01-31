@@ -12,7 +12,7 @@
     "selenium-standalone": "^8.0.9",
     "webdriverio": "^7.16.13",
     "glob": "^7.2.0",
-    "chai": "^4.3.4",
+    "chai": "^4.3.6",
     "properties-reader": "^2.2.0",
     "mochawesome": "^7.0.1"
   }
