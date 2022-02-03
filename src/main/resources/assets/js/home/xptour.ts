@@ -80,6 +80,12 @@ function initDialog(config: GlobalConfig) {
     });
     tourDialog.addClass('xp-tour-dialog');
 
+    tourDialog.onKeyDown((event: KeyboardEvent) => {
+        if(event.key === 'Escape'){
+            tourDialog.close();
+        }
+    });
+
     initNavigation(config);
 }
 
