@@ -24,6 +24,7 @@ import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/A
 import {ProgressBar} from 'lib-admin-ui/ui/ProgressBar';
 import {InstallUrlApplicationRequest} from './resource/InstallUrlApplicationRequest';
 import {ApplicationInstallResult} from './resource/ApplicationInstallResult';
+import {KeyHelper} from 'lib-admin-ui/ui/KeyHelper';
 
 let tourDialog: ModalDialogWithConfirmation;
 let demoAppsLoadMask: LoadMask;
@@ -81,7 +82,7 @@ function initDialog(config: GlobalConfig) {
     tourDialog.addClass('xp-tour-dialog');
 
     tourDialog.onKeyDown((event: KeyboardEvent) => {
-        if(event.key === 'Escape'){
+        if(KeyHelper.isEscKey(event)){
             tourDialog.close();
         }
     });
