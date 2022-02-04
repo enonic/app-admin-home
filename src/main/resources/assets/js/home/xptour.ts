@@ -82,7 +82,7 @@ function initDialog(config: GlobalConfig) {
     tourDialog.addClass('xp-tour-dialog');
 
     tourDialog.onKeyDown((event: KeyboardEvent) => {
-        if(KeyHelper.isEscKey(event)){
+        if (KeyHelper.isEscKey(event)){
             tourDialog.close();
         }
     });
