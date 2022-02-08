@@ -1,46 +1,24 @@
 import * as $ from 'jquery';
-// Polyfills added for compatibility with IE11
-import 'whatwg-fetch';
-import 'core-js/features/object';
-import 'core-js/features/promise';
-// End of Polyfills
 import {KeyBinding} from 'lib-admin-ui/ui/KeyBinding';
 import {KeyBindings} from 'lib-admin-ui/ui/KeyBindings';
 import {AppHelper} from 'lib-admin-ui/util/AppHelper';
-import {BrowserHelper} from 'lib-admin-ui/BrowserHelper';
 import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/ApplicationEvent';
-import {validateConfig} from '../validator';
 import {ThemeManager} from './ThemeManager';
-import {i18n, Messages} from 'lib-admin-ui/util/Messages';
-import {i18nInit} from 'lib-admin-ui/util/MessagesInitializer';
+import {i18nFetch} from 'lib-admin-ui/util/MessagesInitializer';
 
-const config: GlobalConfig = Object.freeze(Object.assign({}, CONFIG));
+const launcherUrl = '/admin/tool/com.enonic.xp.app.main/launcher';
+const i18nServiceUrl = '/admin/tool/_/service/com.enonic.xp.app.main/i18n';
+const isHomeApp = document.location.href.endsWith('/admin/tool');
 
-class LauncherParams {
-    private readonly theme: string;
-    private readonly customCls: string;
-    private readonly container: string;
+const currentScript = document.currentScript;
 
-    constructor(params: LauncherConfig) {
-        if (params) {
-            this.theme = ThemeManager.getTheme(params.theme);
-            this.customCls = params.cls;
-            this.container = params.container;
-        }
-    }
-
-    getTheme(): string {
-        return this.theme;
-    }
-
-    getCustomCls(): string {
-        return this.customCls;
-    }
-
-    getContainerSelector(): string {
-        return this.container;
-    }
+interface JSONObject {
+    [key: string]: string;
 }
+
+let i18nStore: Map<string, string>;
+
+const i18n = (key: string): string => i18nStore.has(key) ? i18nStore.get(key) : `#${key}#`;
 
 class Launcher {
     private launcherPanel: HTMLElement;
@@ -153,23 +131,17 @@ class Launcher {
         this.runApp,
     ];
 
-    readonly params: LauncherParams;
+    readonly config: JSONObject;
 
-    constructor(params?: LauncherParams) {
-        this.params = params;
-        const {valid, errors} = validateConfig(config);
-        if (!valid) {
-            throw new Error(errors.join('\n'));
-        }
-
-        const delay = BrowserHelper.isIE() ? 500 : 200;
+    constructor(config: JSONObject) {
+        this.config = config;
 
         setTimeout(() => {
             this.appendLauncherButton();
             this.appendLauncherPanel();
             this.addApplicationsListeners();
             this.addAccessibilityListeners();
-        }, delay);
+        }, 200);
     }
 
     private addAccessibilityListeners = (): void => {
@@ -231,17 +203,9 @@ class Launcher {
             : null;
     }
 
-    private getOpenMenuTooltip(): string {
-        return Messages.isEmpty() ? 'Open XP menu' : i18n('tooltip.launcher.openMenu');
-    }
-
-    private getCloseMenuTooltip(): string {
-        return Messages.isEmpty() ? 'Close XP menu' : i18n('tooltip.launcher.closeMenu');
-    }
-
     public appendLauncherButton = (): void => {
         const button = document.createElement('button');
-        button.setAttribute('title', this.getOpenMenuTooltip());
+        button.setAttribute('title', i18n('launcher.tooltip.openMenu'));
         button.setAttribute('class', `launcher-button ${this.getThemeClass()}`);
         button.hidden = true;
 
@@ -263,7 +227,7 @@ class Launcher {
              }
         });
 
-        const containerSelector = this.params.getContainerSelector();
+        const containerSelector: string = this.config['container'];
         const container = containerSelector ? document.querySelector(containerSelector) : document.body;
         if (container) {
             container.appendChild(button);
@@ -274,11 +238,11 @@ class Launcher {
     };
 
     private getThemeClass = (): string => {
-        if (this.params.getCustomCls()) {
-            return `theme-custom ${this.params.getCustomCls()}`;
+        if (this.config['custom-class']) {
+            return `theme-custom ${this.config['custom-class']}`;
         }
 
-        return `theme-${ThemeManager.getTheme(this.params.getTheme())}`;
+        return `theme-${ThemeManager.getTheme(this.config['theme'])}`;
     };
 
     private isPanelExpanded = (): boolean => this.launcherPanel.classList.contains('visible');
@@ -293,7 +257,7 @@ class Launcher {
     private launcherButtonHasFocus = (): boolean => document.activeElement === this.launcherButton;
 
     private fetchLauncherContents = (): Promise<ChildNode> => {
-        return fetch(config.launcherUrl)
+        return fetch(launcherUrl)
             .then(response => response.text())
             .then((html: string) => {
                 const div = document.createElement('div');
@@ -317,13 +281,13 @@ class Launcher {
                 this.launcherMainContainer = <HTMLElement>container.firstChild;
                 this.launcherButton.hidden = false;
                 this.launcherMainContainer.setAttribute('hidden', 'true');
-                if (config.appId === 'home') {
+                if (isHomeApp) {
                     this.launcherMainContainer.classList.add('home');
                 }
                 document.body.appendChild(container);
                 Launcher.addLongClickHandler(container);
 
-                if (config.autoOpenLauncher) {
+                if (this.config['autoOpenLauncher'] === 'true') {
                     this.openLauncherPanel();
                 } else {
                     const appTiles = container
@@ -361,7 +325,7 @@ class Launcher {
 
     private static isModalDialogActiveOnHomePage = (element: EventTarget): boolean => {
         return (
-            config.appId === 'home' &&
+            isHomeApp &&
             (document.body.classList.contains('modal-dialog') ||
              $(element).closest('.xp-admin-common-modal-dialog').length > 0)
         );
@@ -390,11 +354,7 @@ class Launcher {
         for (let i = 0; i < appTiles.length; i++) {
             // eslint-disable-next-line no-loop-func
             appTiles[i].addEventListener('click', e => {
-                if (
-                    config.appId ===
-                    (<Element>e.currentTarget).getAttribute('data-id') &&
-                    config.appId === 'home'
-                ) {
+                if (isHomeApp && (<Element>e.currentTarget).getAttribute('data-id') === 'home') {
                     e.preventDefault();
                     return;
                 }
@@ -427,7 +387,7 @@ class Launcher {
         this.toggleButton();
         this.launcherPanel.classList.remove('hidden', 'slideout');
         this.launcherPanel.classList.add('visible');
-        this.launcherButton.setAttribute('title', this.getCloseMenuTooltip());
+        this.launcherButton.setAttribute('title', i18n('launcher.tooltip.closeMenu'));
         this.launcherButton.focus();
         document.addEventListener('click', this.onLauncherClick);
     };
@@ -441,7 +401,7 @@ class Launcher {
             skipTransition === true ? 'hidden' : 'slideout',
         );
         this.toggleButton();
-        this.launcherButton.setAttribute('title', this.getOpenMenuTooltip());
+        this.launcherButton.setAttribute('title', i18n('launcher.tooltip.openMenu'));
         this.unselectCurrentApp();
     };
 
@@ -457,12 +417,10 @@ class Launcher {
     };
 
     private highlightActiveApp = (): void => {
-        if (!config.appId) {
-            return;
-        }
         const appRows = this.launcherPanel.querySelectorAll('.app-row');
         for (let i = 0; i < appRows.length; i++) {
-            if (appRows[i].id === config.appId) {
+            if ((appRows[i].id === 'home' && isHomeApp) ||
+                document.location.href.includes(`/${appRows[i].id}/`)) {
                 appRows[i].classList.add('active');
             }
         }
@@ -609,18 +567,24 @@ class Launcher {
     private getLauncherMainContainer = (): HTMLElement => this.launcherMainContainer || document.querySelector('.launcher-main-container');
 }
 
+const getConfigAttribute = (attribute: string): string => {
+    return currentScript?.getAttribute(`data-config-${attribute}`);
+};
+
+const getConfig = (): JSONObject => {
+    return {
+        theme: getConfigAttribute('theme'),
+        autoOpenLauncher: getConfigAttribute('auto-open'),
+        container: getConfigAttribute('container'),
+        customCls: getConfigAttribute('custom-class'),
+    };
+};
+
 const init = async (): Promise<void> => {
-    let i18nUrl = config.i18nUrl;
+    const config: JSONObject = getConfig();
 
-    if (!i18nUrl && config.services) {
-        i18nUrl = config.services.i18nUrl;
-    }
-
-    if (i18nUrl) {
-        await i18nInit(i18nUrl);
-    }
-
-    new Launcher(new LauncherParams(config.launcher));
+    i18nStore = await i18nFetch(i18nServiceUrl);
+    new Launcher(config);
 };
 
 window.addEventListener('load', () => void init());

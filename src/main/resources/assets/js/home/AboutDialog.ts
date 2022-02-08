@@ -4,13 +4,14 @@ import {DivEl} from 'lib-admin-ui/dom/DivEl';
 import {AEl} from 'lib-admin-ui/dom/AEl';
 import {Button} from 'lib-admin-ui/ui/button/Button';
 import {i18n} from 'lib-admin-ui/util/Messages';
+import {CONFIG} from 'lib-admin-ui/util/Config';
 
 const noticeUrl = 'https://raw.githubusercontent.com/enonic/xp/master/NOTICE.txt';
 const licenseUrl = 'https://raw.githubusercontent.com/enonic/xp/master/LICENSE.txt';
 
-export function create(config: GlobalConfig): ModalDialogWithConfirmation {
+export function create(): ModalDialogWithConfirmation {
     const aboutDialog = new ModalDialogWithConfirmation({skipTabbable: true});
-    const aboutDialogContent = getAboutDialogContent(config);
+    const aboutDialogContent = getAboutDialogContent();
     aboutDialog.addClass('xp-about-dialog');
     aboutDialogContent.onAdded(createLicenseInfoContainer);
 
@@ -65,15 +66,15 @@ function toggleLicenseInfo(outerContainer: Element, licenseInfoContainer: DivEl)
     });
 }
 
-function getAboutDialogContent(config: GlobalConfig) {
+function getAboutDialogContent() {
     const html = `
         <div class="xp-about-dialog-content">
             <div class="xp-about-dialog-app-icon">
-                <img src="${config.assetsUri}/icons/app-icon.svg">
+                <img src="${CONFIG.getString('assetsUri')}/icons/app-icon.svg">
             </div>
             <h1>Enonic XP</h1>
             <div class="xp-about-dialog-version-block">
-                <span class="xp-about-dialog-version">${config.xpVersion}</span>&nbsp;&nbsp;
+                <span class="xp-about-dialog-version">${CONFIG.getString('xpVersion')}</span>&nbsp;&nbsp;
                 <a href="https://developer.enonic.com/docs/xp/stable/release" target="_blank">
                     ${i18n('home.dashboard.about.dialog.whatsnew')}
                 </a>
