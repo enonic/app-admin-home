@@ -145,7 +145,7 @@ class XpTourDialog extends Page {
 
     async waitForApplicationInstalled(appName) {
         try {
-            let statusSelector = xpath.applicationStatusByName(appName);
+            let statusSelector = xpath.container + xpath.applicationStatusByName(appName);
             await this.getBrowser().waitUntil(async () => {
                 let result = await this.getAttribute(statusSelector, "class");
                 return result.includes("installed");

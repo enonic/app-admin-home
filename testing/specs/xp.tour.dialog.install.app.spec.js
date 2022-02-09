@@ -45,8 +45,8 @@ describe('XP tour dialog - install applications and check their statuses', funct
         await xpTourDialog.waitForInstallAppsButtonDisplayed();
         //3. Click on Install Apps button:
         await xpTourDialog.clickOnInstallAppsButton();
-        await xpTourDialog.waitForApplicationInstalled('Content Studio');
         await testUtils.saveScreenshot('xp_tour_apps_installed', this);
+        await xpTourDialog.waitForApplicationInstalled('Content Studio');
         //'Live Trace' should be Installed
         await xpTourDialog.waitForApplicationInstalled('Live Trace');
         //'Data Toolbox' should be Installed:
