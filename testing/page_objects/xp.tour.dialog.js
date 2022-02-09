@@ -10,7 +10,7 @@ const xpath = {
     installAppsButton: `//button[contains(@id,'DialogButton')]/span[text()='Install Apps']`,
     title: "//h2[@class='title']",
     applicationStatusByName: name =>
-        `//div[@class='demo-app' and descendant::div[@class='demo-app-title' and contains(.,'${name}')]]//div[contains(@class,'demo-app-status')]`,
+        `//div[@class='demo-app' and descendant::div[contains(@class,'demo-app-title') and contains(.,'${name}')]]//div[contains(@class,'demo-app-status')]`,
     applicationInLauncherPanel: name =>
         `//div[@class='launcher-app-container' and descendant::p[@class='app-name' and contains(.,'${name}')]]`,
 };
