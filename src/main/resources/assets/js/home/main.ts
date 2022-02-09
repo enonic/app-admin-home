@@ -6,30 +6,30 @@ import {BodyMask} from 'lib-admin-ui/ui/mask/BodyMask';
 import {Body} from 'lib-admin-ui/dom/Body';
 import {ConnectionDetector} from 'lib-admin-ui/system/ConnectionDetector';
 import {i18nInit} from 'lib-admin-ui/util/MessagesInitializer';
-import {showError} from 'lib-admin-ui/notify/MessageBus';
 import {i18n} from 'lib-admin-ui/util/Messages';
 import {create as createAboutDialog} from './AboutDialog';
-import {validateConfig} from '../validator';
 import {init} from './xptour';
 import 'core-js/features/promise';
 import 'core-js/features/object';
+import {CONFIG} from 'lib-admin-ui/util/Config';
 
-const config = Object.freeze(Object.assign({}, CONFIG));
-
-Promise.resolve(true).then(() => {
-    const {valid, errors} = validateConfig(config);
-    if (!valid) {
-        throw new Error(errors.join('\n'));
+void (async () => {
+    if (!document.currentScript) {
+        throw 'Legacy browsers are not supported';
     }
-    return config;
-}).then(() => i18nInit(config.i18nUrl)).then(() => {
+    const configServiceUrl = document.currentScript.getAttribute('data-config-service-url');
+
+    await CONFIG.init(configServiceUrl);
+
+    await i18nInit(CONFIG.getString('i18nUrl'));
+
     startLostConnectionDetector();
     setupWebSocketListener();
     setupAboutDialog();
     addListenersToDashboardItems();
 
-    if (config.tourEnabled) {
-        void init(config).then(function (tourDialog: ModalDialogWithConfirmation) {
+    if (CONFIG.getString('tourEnabled')) {
+        void init().then(function (tourDialog: ModalDialogWithConfirmation) {
             const enonicXPTourCookie = CookieHelper.getCookie(
                 'enonic_xp_tour',
             );
@@ -46,13 +46,11 @@ Promise.resolve(true).then(() => {
 
             document.querySelector('.xp-tour').addEventListener('click', execute);
             document.querySelector('.xp-tour').addEventListener('keypress', (e: KeyboardEvent) => {
-                if(e.key === 'Enter') { execute(e); }
+                if (e.key === 'Enter') { execute(e); }
             });
         });
     }
-}).catch((error: Error) => {
-    showError(error.message);
-});
+})();
 
 function setupWebSocketListener() {
     const dummyApp = new Application('home', 'home', 'home', '');
@@ -77,7 +75,7 @@ function setupBodyClickListeners(dialog: ModalDialogWithConfirmation) {
 }
 
 function setupAboutDialog() {
-    const aboutDialog = createAboutDialog(config);
+    const aboutDialog = createAboutDialog();
 
     const execute = (e: Event | KeyboardEvent) => {
         e.preventDefault();
@@ -95,7 +93,7 @@ function setupAboutDialog() {
 function startLostConnectionDetector() {
     ConnectionDetector.get()
         .setAuthenticated(true)
-        .setSessionExpireRedirectUrl(CONFIG.adminUrl + '/tool')
+        .setSessionExpireRedirectUrl(`${CONFIG.getString('adminUrl')}/tool`)
         .setNotificationMessage(i18n('notify.connection.loss'))
         .startPolling(true);
 }

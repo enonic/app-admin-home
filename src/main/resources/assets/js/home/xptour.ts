@@ -24,6 +24,7 @@ import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/A
 import {ProgressBar} from 'lib-admin-ui/ui/ProgressBar';
 import {InstallUrlApplicationRequest} from './resource/InstallUrlApplicationRequest';
 import {ApplicationInstallResult} from './resource/ApplicationInstallResult';
+import {CONFIG} from 'lib-admin-ui/util/Config';
 import {KeyHelper} from 'lib-admin-ui/ui/KeyHelper';
 
 let tourDialog: ModalDialogWithConfirmation;
@@ -41,9 +42,9 @@ const demoAppsNames = [
     'com.enonic.app.livetrace',
 ];
 
-export function init(config: GlobalConfig) {
-    initDialog(config);
-    initTourSteps(config);
+export function init() {
+    initDialog();
+    initTourSteps();
 
     return checkAdminRights().then(() => {
         if (isSystemAdmin) {
@@ -74,7 +75,7 @@ function checkAdminRights() {
         });
 }
 
-function initDialog(config: GlobalConfig) {
+function initDialog() {
     tourDialog = new ModalDialogWithConfirmation({
         title: i18n('tour.title.stepXofY', 1, 3),
         skipTabbable: true,
@@ -87,10 +88,10 @@ function initDialog(config: GlobalConfig) {
         }
     });
 
-    initNavigation(config);
+    initNavigation();
 }
 
-function initNavigation(config: GlobalConfig) {
+function initNavigation() {
     const previousStepAction = new Action(i18n('tour.action.skip'));
     const previousStepActionButton = tourDialog.addAction(previousStepAction);
 
@@ -172,7 +173,7 @@ function initNavigation(config: GlobalConfig) {
                     nextStepActionButton.setLabel(i18n('tour.action.finish'));
                     nextStepActionButton.addClass('last-step');
 
-                    fetchDemoAppsFromMarket(config)
+                    fetchDemoAppsFromMarket()
                         .then(function (apps: MarketApplication[]) {
                             marketDemoApps = apps || [];
                             canInstallDemoApps = marketDemoApps
@@ -192,7 +193,7 @@ function initNavigation(config: GlobalConfig) {
                                 );
                                 if (canInstallDemoApps) {
                                     nextStepActionButton.setLabel(
-                                        i18n('tour.action.install'),
+                                        i18n('tour.action.installApps'),
                                     );
                                     nextStepActionButton.removeClass(
                                         'last-step',
@@ -214,7 +215,7 @@ function initNavigation(config: GlobalConfig) {
                     );
                     nextStepActionButton.setEnabled(false);
                 } else if (canInstallDemoApps) {
-                    nextStepActionButton.setLabel(i18n('tour.action.install'));
+                    nextStepActionButton.setLabel(i18n('tour.action.installApps'));
                 } else {
                     nextStepActionButton.setLabel(i18n('tour.action.finish'));
                     nextStepActionButton.addClass('last-step');
@@ -224,11 +225,11 @@ function initNavigation(config: GlobalConfig) {
     });
 }
 
-function initTourSteps(config: GlobalConfig) {
-    tourSteps = [createStep1(config), createStep2(config)];
+function initTourSteps() {
+    tourSteps = [createStep1(), createStep2()];
 }
 
-function createStep1(config: GlobalConfig) {
+function createStep1() {
     const html = `
         <div class="xp-tour-step step-1">
             <div class="subtitle">
@@ -236,7 +237,7 @@ function createStep1(config: GlobalConfig) {
                 <div class="subtitle-part-2">${i18n('tour.step1.subtitle2')}</div>
             </div>
             <div class="caption">${i18n('tour.step1.caption')}</div>
-            <img src="${config.assetsUri}/images/launcher.svg">
+            <img src="${CONFIG.getString('assetsUri')}/images/launcher.svg">
             <div class="text">
                 <div class="paragraph1">${i18n('tour.step1.paragraph1')}</div>
                 <div class="paragraph2">${i18n('tour.step1.paragraph2')}</div>
@@ -246,7 +247,7 @@ function createStep1(config: GlobalConfig) {
     return Element.fromString(html);
 }
 
-function createStep2(config: GlobalConfig) {
+function createStep2() {
     const html = `
     <div class="xp-tour-step step-2">
         <div class="subtitle">
@@ -254,7 +255,7 @@ function createStep2(config: GlobalConfig) {
             <div class="subtitle-part-2">${i18n('tour.step2.subtitle2')}</div>
         </div>
         <div class="caption">${i18n('tour.step2.caption')}</div>
-        <img src="${config.assetsUri}/images/market.svg">
+        <img src="${CONFIG.getString('assetsUri')}/images/market.svg">
         <div class="text">
             <div class="paragraph1">
                 ${i18n('tour.step2.paragraph1')}
@@ -303,7 +304,7 @@ function getDemoAppsHtml() {
         const status = MarketAppStatusFormatter.createStatusElement(marketDemoApp.getStatus()).toString();
         const appStatus = MarketAppStatusFormatter.getStatusCssClass(marketDemoApp.getStatus());
         html += `
-            <div class="demo-app" id="${marketDemoApp.getName()}">
+            <div class="demo-app ${appStatus}" id="${marketDemoApp.getName()}">
                 <a href="${marketDemoApp.getUrl()}" target="_blank">
                     <img class="demo-app-icon" src="${marketDemoApp.getIconUrl()}">
                     <div class="demo-app-title">${marketDemoApp.getDisplayName()}</div>
@@ -315,13 +316,14 @@ function getDemoAppsHtml() {
     return html;
 }
 
-function fetchDemoAppsFromMarket(config: GlobalConfig): Q.Promise<MarketApplication[]> {
+function fetchDemoAppsFromMarket(): Q.Promise<MarketApplication[]> {
     const appPromises: Q.Promise<any>[] = [
         new ListApplicationsRequest().sendAndParse(),
         new ListMarketApplicationsRequest()
+            .setUrl(CONFIG.getString('marketUrl'))
             .setStart(0)
             .setCount(demoAppsNames.length)
-            .setVersion(config.xpVersion)
+            .setVersion(CONFIG.getString('xpVersion'))
             .setIds(demoAppsNames)
             .sendAndParse(),
     ];
@@ -416,9 +418,7 @@ function loadApp(marketDemoApp: MarketApplication) {
                 .querySelector('.demo-app-status');
             if (!result.getFailure()) {
                 statusContainer.className = 'demo-app-status installed';
-                statusContainer.textContent = i18n(
-                    'status.installed',
-                );
+                statusContainer.textContent = i18n('status.installed');
             } else {
                 statusContainer.className = 'demo-app-status failure';
                 statusContainer.textContent = i18n('tour.apps.status.failed');

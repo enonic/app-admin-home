@@ -65,6 +65,13 @@ class Page {
         await this.keys('Escape');
         return await this.pause(500);
     }
+    getBrowser() {
+        return this.browser;
+    }
+    async getAttribute(selector, attributeName) {
+        let element = await this.findElement(selector);
+        return await element.getAttribute(attributeName);
+    }
 }
 
 module.exports = Page;

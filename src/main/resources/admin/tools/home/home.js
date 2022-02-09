@@ -1,25 +1,18 @@
-var i18n = require('/lib/xp/i18n');
-var admin = require('/lib/xp/admin');
-var portal = require('/lib/xp/portal');
-var mustache = require('/lib/mustache');
-
-function getMarketUrl() {
-    var marketConfigBean = __.newBean('com.enonic.xp.app.main.GetMarketConfigBean');
-    return __.toNativeObject(marketConfigBean.getMarketUrl());
-}
+const i18n = require('/lib/xp/i18n');
+const admin = require('/lib/xp/admin');
+const portal = require('/lib/xp/portal');
+const mustache = require('/lib/mustache');
 
 exports.get = function() {
 
-    var busIconUrl = portal.assetUrl({ path: 'icons/bus.svg' });
-    var infoIconUrl = portal.assetUrl({ path: 'icons/info-with-circle.svg' });
-    var devIconUrl = portal.assetUrl({ path: 'icons/developer.svg' });
-    var forumIconUrl = portal.assetUrl({ path: 'icons/discuss.svg' });
-    var marketIconUrl = portal.assetUrl({ path: 'icons/market.svg' });
+    const busIconUrl = portal.assetUrl({ path: 'icons/bus.svg' });
+    const infoIconUrl = portal.assetUrl({ path: 'icons/info-with-circle.svg' });
+    const devIconUrl = portal.assetUrl({ path: 'icons/developer.svg' });
+    const forumIconUrl = portal.assetUrl({ path: 'icons/discuss.svg' });
+    const marketIconUrl = portal.assetUrl({ path: 'icons/market.svg' });
 
-    var marketUrl = getMarketUrl();
-
-    var locales = admin.getLocales();
-    var dashboardIcons = [
+    const locales = admin.getLocales();
+    const dashboardIcons = [
         {
             src: infoIconUrl,
             cls: 'xp-about',
@@ -54,7 +47,7 @@ exports.get = function() {
         }
     ];
 
-    var tourEnabled = !(app.config.tourDisabled === 'true' || false);
+    const tourEnabled = !(app.config.tourDisabled === 'true' || false);
     if (tourEnabled) {
         dashboardIcons.splice(0, 0, {
             src: busIconUrl,
@@ -68,23 +61,16 @@ exports.get = function() {
         });
     }
 
-    var view = resolve('./home.html');
-    var params = {
-        adminUrl: admin.getBaseUri(),
-        assetsUri: portal.assetUrl({
-            path: ''
-        }),
+    const view = resolve('./home.html');
+    const params = {
+        assetsUri: portal.assetUrl({path: ''}),
         backgroundUri: portal.assetUrl({
             path: 'images/background.webp'
         }),
-        launcherUrl: admin.getLauncherUrl(),
         launcherPath: admin.getLauncherPath(),
-        xpVersion: admin.getVersion(),
-        tourEnabled: tourEnabled,
         dashboardIcons: dashboardIcons,
-        i18nUrl: portal.serviceUrl({service: 'i18n'}),
-        marketUrl: marketUrl,
-        theme: 'light'  // or 'dark'
+        theme: 'light',
+        configServiceUrl: portal.serviceUrl({service: 'config'})
     };
 
     return {
