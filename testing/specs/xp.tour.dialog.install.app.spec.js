@@ -24,7 +24,7 @@ describe('XP tour dialog - install applications and check their statuses', funct
         //3.  Go to the last step:
         await xpTourDialog.clickOnNextButton();
         await xpTourDialog.waitForInstallAppsButtonDisplayed();
-        testUtils.saveScreenshot('xp_tour_last_step', this);
+        await testUtils.saveScreenshot('xp_tour_last_step', this);
         let result = await xpTourDialog.getNamesOfAvailableApplications();
         assert.isTrue(result.includes('LIVE TRACE'), 'Live trace app should be available');
         assert.isTrue(result.includes('CONTENT STUDIO'), 'Content Studio app should be available');
@@ -39,18 +39,20 @@ describe('XP tour dialog - install applications and check their statuses', funct
         await loginPage.doLogin();
         //1. 'XP tour' dialog must be loaded
         await xpTourDialog.waitForDialogLoaded();
-        await testUtils.saveScreenshot("xp_tour_dialog_must_be_present3", this);
+        await testUtils.saveScreenshot("xp_tour_dialog_should_be_loaded", this);
         //2. Go to the last step:
         await xpTourDialog.goToInstallStep();
         await xpTourDialog.waitForInstallAppsButtonDisplayed();
         //3. Click on Install Apps button:
         await xpTourDialog.clickOnInstallAppsButton();
+        await xpTourDialog.pause(4000);
         await testUtils.saveScreenshot('xp_tour_apps_installed', this);
-        await xpTourDialog.waitForApplicationInstalled('Content Studio');
+
         //'Live Trace' should be Installed
         await xpTourDialog.waitForApplicationInstalled('Live Trace');
         //'Data Toolbox' should be Installed:
         await xpTourDialog.waitForApplicationInstalled('Data Toolbox');
+        await xpTourDialog.waitForApplicationInstalled('Content Studio');
         // Finish button gets visible:
         await xpTourDialog.waitForAppFinishButtonVisible();
     });

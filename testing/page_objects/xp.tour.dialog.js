@@ -126,14 +126,14 @@ class XpTourDialog extends Page {
         try {
             return await this.waitForElementDisplayed(this.finishButton, appConst.mediumTimeout);
         } catch (err) {
-            this.saveScreenshot('err_finish_button_launcher_panel');
+            await this.saveScreenshot('err_finish_button_launcher_panel');
             throw new Error("Finish button is not visible in the dialog: " + err);
         }
     }
 
     async waitForApplicationsStatus(appName) {
         try {
-            let statusSelector = xpath.applicationStatusByName(appName);
+            let statusSelector = xpath.container + xpath.applicationStatusByName(appName);
             let element = await this.findElement(statusSelector);
             await element.waitForDisplayed({timeout: appConst.INSTALL_APP_TIMEOUT});
             return await element.getText();
@@ -145,7 +145,14 @@ class XpTourDialog extends Page {
 
     async waitForApplicationInstalled(appName) {
         try {
-            let statusSelector = xpath.container + xpath.applicationStatusByName(appName);
+            let statusSelector;
+            if (appName === 'Content Studio') {
+                statusSelector = xpath.container + xpath.applicationStatusByName(appName);
+
+            } else {
+                statusSelector = xpath.container + xpath.applicationStatusByName(appName);
+            }
+
             await this.getBrowser().waitUntil(async () => {
                 let result = await this.getAttribute(statusSelector, "class");
                 return result.includes("installed");
