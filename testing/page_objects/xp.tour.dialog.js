@@ -68,8 +68,8 @@ class XpTourDialog extends Page {
 
     async waitForDialogLoaded() {
         try {
-             await this.waitForElementDisplayed(xpath.container, appConst.longTimeout);
-             return await this.pause(700);
+            await this.waitForElementDisplayed(xpath.container, appConst.longTimeout);
+            return await this.pause(700);
         } catch (err) {
             this.saveScreenshot("err_xp_tour_dialog_load");
             throw new Error("XP tour dialog is not loaded in 5 seconds!")
@@ -138,7 +138,20 @@ class XpTourDialog extends Page {
             await element.waitForDisplayed({timeout: appConst.INSTALL_APP_TIMEOUT});
             return await element.getText();
         } catch (err) {
-            this.saveScreenshot('err_wait_app_status');
+            await this.saveScreenshot(appConst.generateRandomName('err_app_status'));
+            throw new Error("XP Tour dialog - error when getting app status: " + err);
+        }
+    }
+
+    async waitForApplicationInstalled(appName) {
+        try {
+            let statusSelector = xpath.applicationStatusByName(appName);
+            await this.getBrowser().waitUntil(async () => {
+                let result = await this.getAttribute(statusSelector, "class");
+                return result.includes("installed");
+            }, {timeout: appConst.INSTALL_APP_TIMEOUT, timeoutMsg: "Application should be installed"});
+        } catch (err) {
+            await this.saveScreenshot(appConst.generateRandomName('err_app_status'));
             throw new Error("XP Tour dialog - error when getting app status: " + err);
         }
     }
