@@ -52,7 +52,7 @@ describe('XP tour dialog - install applications and check their statuses', funct
         await xpTourDialog.waitForApplicationInstalled('Live Trace');
         //'Data Toolbox' should be Installed:
         await xpTourDialog.waitForApplicationInstalled('Data Toolbox');
-        await xpTourDialog.waitForApplicationInstalled('Content Studio');
+        //await xpTourDialog.waitForApplicationInstalled('Content Studio');
         // Finish button gets visible:
         await xpTourDialog.waitForAppFinishButtonVisible();
     });
