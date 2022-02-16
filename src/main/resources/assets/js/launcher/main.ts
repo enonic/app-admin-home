@@ -6,9 +6,10 @@ import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/A
 import {ThemeManager} from './ThemeManager';
 import {i18nFetch} from 'lib-admin-ui/util/MessagesInitializer';
 
-const launcherUrl = '/admin/tool/com.enonic.xp.app.main/launcher';
-const i18nServiceUrl = '/admin/tool/_/service/com.enonic.xp.app.main/i18n';
-const isHomeApp = document.location.href.endsWith('/admin/tool');
+const homeToolPath = window.location.pathname.split('/').slice(0, 3).join('/');
+const launcherUrl = `${homeToolPath}/com.enonic.xp.app.main/launcher`;
+const i18nServiceUrl = `${homeToolPath}/_/service/com.enonic.xp.app.main/i18n`;
+const isHomeApp = document.location.href.endsWith(homeToolPath);
 
 const currentScript = document.currentScript;
 
