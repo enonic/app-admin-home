@@ -12,7 +12,10 @@ exports.get = function () {
 
 var getPhrases = function() {
     var locales = admin.getLocales();
-    var bundle = i18n.getPhrases(locales, ['i18n/phrases']);
+    var bundle = i18n.getPhrases(locales, ['i18n/common']);
+    var phrases = i18n.getPhrases(locales, ['i18n/phrases']);
+
+    for (var key in phrases) { bundle[key] = phrases[key] }
 
     return bundle;
 };
