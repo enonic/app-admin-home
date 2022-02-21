@@ -301,39 +301,40 @@
 
 .launcher-panel {
   position: fixed;
+  box-shadow: none;
   top: 0;
   right: 0;
   z-index: @z-index-launcher-panel;
   width: @panel-outer-width;
   height: 100%;
   outline: none;
-
-  &.hidden,
-  &.slideout {
-    right: calc(-@panel-outer-width);
-  }
-
-  &.visible {
-    right: 0;
-    box-shadow: -2px 0 7px 5px rgba(0, 0, 0, 0.3);
-  }
-
-  &.visible,
-  &.slideout {
-    -webkit-transition: right 300ms ease-out;
-    transition: right 300ms ease-out;
-  }
+  visibility: hidden;
+  transition: visibility 0s .5s;
 
   .launcher-main-container {
     display: block;
     outline: none;
+    width: 100%;
+    transition: transform .5s;
+    transform: translate3d(100%, 0, 0);
 
     > div {
-      width: @panel-outer-width;
+      width: 100%;
     }
 
     .launcher-title {
       width: calc(@panel-outer-width - 30px);
+    }
+  }
+
+  &.visible {
+    visibility: visible;
+    transition: visibility 0s, box-shadow 0s .5s;
+    box-shadow: -2px 0 7px 5px rgba(0, 0, 0, 0.3);
+
+    .launcher-main-container {
+      transform: translate3d(0, 0, 0);
+      transition-delay: 0s;
     }
   }
 }
