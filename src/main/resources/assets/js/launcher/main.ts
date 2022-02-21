@@ -141,20 +141,8 @@ class Launcher {
             this.appendLauncherButton();
             this.appendLauncherPanel();
             this.addApplicationsListeners();
-            this.addAccessibilityListeners();
         }, 200);
     }
-
-    private addAccessibilityListeners = (): void => {
-        // Set visibility to hidden after the transition end to avoid
-        // keyboard navigation in inner items when the menu is closed
-        this.launcherPanel.addEventListener('transitionend', () => {
-            const classList = this.launcherPanel.classList;
-            if (classList.contains('slideout') || classList.contains('hidden')) {
-                this.launcherMainContainer.style.visibility = 'hidden';
-            }
-        });
-    };
 
     private addAppItemsListeners = (): void => {
         this.getApps().forEach((app: HTMLElement, index:number) => {
@@ -270,28 +258,49 @@ class Launcher {
             });
     };
 
+    private executeOnDOMInit = (): void => {
+        const handler = () => {
+            this.launcherPanel.removeAttribute('hidden');
+            if (this.config['autoOpenLauncher'] === 'true') {
+                this.openLauncherPanel();
+            }
+        };
+
+        const observer = new MutationObserver((mutations_list) => {
+            mutations_list.forEach((mutation) => {
+                mutation.addedNodes.forEach((added_node) => {
+                    if (added_node == this.launcherPanel) {
+                        setTimeout(() => handler(), 500);
+                        observer.disconnect();
+                    }
+                });
+            });
+        });
+        observer.observe(document.body, {subtree: false, childList: true});
+    };
+
     private appendLauncherPanel = (): void => {
-        const container = document.createElement('div');
-        container.setAttribute('class', `launcher-panel ${this.getThemeClass()}`);
-        container.setAttribute('tabindex', '0');
-        container.classList.add('hidden');
+        this.launcherPanel = document.createElement('div');
+        this.launcherPanel.setAttribute('class', `launcher-panel ${this.getThemeClass()}`);
+        this.launcherPanel.setAttribute('tabindex', '0');
+        this.launcherPanel.setAttribute('hidden', '');
 
         void this.fetchLauncherContents()
             .then((launcherEl: HTMLElement) => {
-                container.appendChild(launcherEl);
-                this.launcherMainContainer = <HTMLElement>container.firstChild;
+                this.launcherPanel.appendChild(launcherEl);
+                this.launcherMainContainer = <HTMLElement>this.launcherPanel.firstChild;
                 this.launcherButton.hidden = false;
-                this.launcherMainContainer.setAttribute('hidden', 'true');
                 if (isHomeApp) {
                     this.launcherMainContainer.classList.add('home');
                 }
-                document.body.appendChild(container);
-                Launcher.addLongClickHandler(container);
 
-                if (this.config['autoOpenLauncher'] === 'true') {
-                    this.openLauncherPanel();
-                } else {
-                    const appTiles = container
+                this.executeOnDOMInit();
+
+                document.body.appendChild(this.launcherPanel);
+                Launcher.addLongClickHandler(this.launcherPanel);
+
+                if (this.config['autoOpenLauncher'] !== 'true') {
+                    const appTiles = this.launcherPanel
                         .querySelector('.launcher-app-container')
                         .querySelectorAll('a');
                     for (let i = 0; i < appTiles.length; i++) {
@@ -302,8 +311,6 @@ class Launcher {
                 this.addAppItemsListeners();
                 this.setFocusableElements();
             });
-
-        this.launcherPanel = container;
     };
 
     private onLauncherClick = (e: MouseEvent): void => {
@@ -382,11 +389,8 @@ class Launcher {
     };
 
     private openLauncherPanel = (): void => {
-        this.launcherMainContainer.removeAttribute('hidden');
-        this.launcherMainContainer.style.visibility = 'visible';
         this.listenToKeyboardEvents();
         this.toggleButton();
-        this.launcherPanel.classList.remove('hidden', 'slideout');
         this.launcherPanel.classList.add('visible');
         this.launcherButton.setAttribute('title', i18n('launcher.tooltip.closeMenu'));
         this.launcherButton.focus();
@@ -395,12 +399,8 @@ class Launcher {
 
     private closeLauncherPanel = (skipTransition?: boolean): void => {
         document.removeEventListener('click', this.onLauncherClick);
-        this.launcherMainContainer.setAttribute('hidden', 'true');
         this.unlistenToKeyboardEvents();
         this.launcherPanel.classList.remove('visible');
-        this.launcherPanel.classList.add(
-            skipTransition === true ? 'hidden' : 'slideout',
-        );
         this.toggleButton();
         this.launcherButton.setAttribute('title', i18n('launcher.tooltip.openMenu'));
         this.unselectCurrentApp();
