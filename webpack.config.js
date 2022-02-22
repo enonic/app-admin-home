@@ -1,8 +1,8 @@
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 const path = require('path');
-const ImageminWebpWebpackPlugin= require("imagemin-webp-webpack-plugin");
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -42,11 +42,32 @@ module.exports = {
                     {loader: 'less-loader', options: {sourceMap: !isProd}},
                 ]
             },
+            {
+                test: /background.jpg$/,
+                type: "asset",
+                use: [
+                    {
+                        loader: ImageMinimizerPlugin.loader,
+                        options: {
+                            minimizer: {
+                                filename: "[path][name].webp",
+                                implementation: ImageMinimizerPlugin.squooshGenerate,
+                                options: {
+                                    encodeOptions: {
+                                        webp: {
+                                            quality: 75,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    }
+                ]
+            }
         ]
     },
     optimization: {
         minimizer: [
-
             new TerserPlugin({
                 extractComments: false,
                 terserOptions: {
@@ -56,7 +77,7 @@ module.exports = {
                     keep_classnames: true,
                     keep_fnames: true
                 }
-            })
+            }),
         ]
     },
     plugins: [
@@ -68,15 +89,6 @@ module.exports = {
             exclude: /a\.js|node_modules/,
             failOnError: true
         }),
-        new ImageminWebpWebpackPlugin({
-            config: [{
-                test: /background.jpg$/,
-                options: {
-                    quality:  75
-                }
-            }],
-            detailedLogs: true
-        })
     ],
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : 'source-map',
