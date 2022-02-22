@@ -77,19 +77,7 @@ module.exports = {
                     keep_classnames: true,
                     keep_fnames: true
                 }
-            }),/*
-            new ImageMinimizerPlugin({
-                loader: false,
-                generator: [
-                    {
-                        type: "asset",
-                        implementation: ImageMinimizerPlugin.imageminGenerate,
-                        options: {
-                            plugins: ["imagemin-webp"],
-                        },
-                    },
-                ],
-            }),*/
+            }),
         ]
     },
     plugins: [
