@@ -574,7 +574,7 @@ const getConfigAttribute = (attribute: string): string => {
 
 const getConfig = (): JSONObject => {
     return {
-        theme: getConfigAttribute('theme'),
+        theme: getConfigAttribute('theme') || 'light',
         autoOpenLauncher: getConfigAttribute('auto-open'),
         container: getConfigAttribute('container'),
         customCls: getConfigAttribute('custom-class'),
