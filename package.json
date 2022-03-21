@@ -28,7 +28,7 @@
     "@types/jquery": "^3.5.13",
     "@types/q": "^1.5.5",
     "@typescript-eslint/eslint-plugin": "^5.15.0",
-    "@typescript-eslint/parser": "^5.14.0",
+    "@typescript-eslint/parser": "^5.16.0",
     "autoprefixer": "^10.4.4",
     "browserslist": "^4.20.2",
     "browserslist-config-enonic": "^1.0.6",
