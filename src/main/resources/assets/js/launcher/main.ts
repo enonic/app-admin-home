@@ -468,9 +468,12 @@ class Launcher {
     private initApplicationsListeners = (): boolean => {
         if (ApplicationEvent) {
             ApplicationEvent.on(e => {
-                const statusChanged =
-                    ApplicationEventType.STARTED === e.getEventType() ||
-                    ApplicationEventType.STOPPED === e.getEventType();
+                const eventType: ApplicationEventType = e.getEventType();
+                const statusChanged: boolean =
+                    ApplicationEventType.STARTED === eventType ||
+                    ApplicationEventType.STOPPED === eventType ||
+                    ApplicationEventType.UNINSTALLED === eventType;
+
                 if (statusChanged) {
                     this.reloadLauncher();
                 }
