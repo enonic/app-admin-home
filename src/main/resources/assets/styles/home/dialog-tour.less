@@ -119,10 +119,7 @@
           display: inline-block;
           text-align: center;
           position: relative;
-
-          &.installed {
-            opacity: 0.5;
-          }
+          opacity: 0.5;
 
           img {
             float: none;
@@ -144,19 +141,24 @@
           }
 
           .demo-app-status {
+            display: none;
             position: absolute;
             width: 100%;
             bottom: -28px;
             font-size: 16px;
             color: @admin-green;
 
-            &.install,
-            &.update {
-              display: none;
-            }
-
             &.failure {
+              display: block;
               color: @input-red-text;
+            }
+          }
+
+          &.installed {
+            opacity: 1;
+
+            .demo-app-status {
+              display: block;
             }
           }
         }
