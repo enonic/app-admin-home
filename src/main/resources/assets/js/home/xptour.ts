@@ -229,7 +229,7 @@ function initTourSteps() {
     tourSteps = [createStep1(), createStep2()];
 }
 
-function createStep1() {
+function createStep1(): Element {
     const html = `
         <div class="xp-tour-step step-1">
             <div class="subtitle">
@@ -244,10 +244,10 @@ function createStep1() {
             </div>
         </div>`;
 
-    return Element.fromString(html);
+    return Element.fromHtml(html);
 }
 
-function createStep2() {
+function createStep2(): Element {
     const html = `
     <div class="xp-tour-step step-2">
         <div class="subtitle">
@@ -272,10 +272,10 @@ function createStep2() {
         </div>
     </div>`;
 
-    return Element.fromString(html);
+    return Element.fromHtml(html);
 }
 
-function createStep3() {
+function createStep3(): Element {
     const html = `
         <div class="xp-tour-step step-3">
             <div class="subtitle">
@@ -289,7 +289,7 @@ function createStep3() {
             <div class="demo-apps">${getAppsDiv()}</div>
         </div>`;
 
-    return Element.fromString(html);
+    return Element.fromHtml(html);
 }
 
 function getAppsDiv() {
@@ -305,11 +305,11 @@ function getDemoAppsHtml() {
         const appStatus = MarketAppStatusFormatter.getStatusCssClass(marketDemoApp.getStatus());
         html += `
             <div class="demo-app ${appStatus}" id="${marketDemoApp.getName()}">
-                <a href="${marketDemoApp.getUrl()}" target="_blank">
+                <a href="${marketDemoApp.getUrl()}" target="_blank" rel="noopener">
                     <img class="demo-app-icon" src="${marketDemoApp.getIconUrl()}">
                     <div class="demo-app-title">${marketDemoApp.getDisplayName()}</div>
                 </a>
-                <div class="demo-app-status ${appStatus}">${status}</div>
+                <div class="demo-app-status">${status}</div>
             </div>`;
     });
 
@@ -412,15 +412,17 @@ function loadApp(marketDemoApp: MarketApplication) {
             ApplicationEvent.un(progressHandler);
             progressBar.remove();
 
-            const statusContainer = tourSteps[tourSteps.length - 1]
+            const appContainer: HTMLElement = tourSteps[tourSteps.length - 1]
                 .findChildById(marketDemoApp.getName(), true)
-                .getHTMLElement()
-                .querySelector('.demo-app-status');
+                .getHTMLElement();
+
+            const statusContainer: HTMLElement = appContainer.querySelector('.demo-app-status');
+
             if (!result.getFailure()) {
-                statusContainer.className = 'demo-app-status installed';
+                appContainer.className = 'demo-app installed';
                 statusContainer.textContent = i18n('status.installed');
             } else {
-                statusContainer.className = 'demo-app-status failure';
+                appContainer.className = 'demo-app failure';
                 statusContainer.textContent = i18n('tour.apps.status.failed');
             }
         }).catch(e => DefaultErrorHandler.handle(e));
