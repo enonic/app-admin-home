@@ -133,7 +133,7 @@ class XpTourDialog extends Page {
 
     async waitForApplicationsStatus(appName) {
         try {
-            let statusSelector = xpath.container + xpath.applicationStatusByName(appName)+ "/span";
+            let statusSelector = xpath.container + xpath.applicationStatusByName(appName) + "/span";
             let element = await this.findElement(statusSelector);
             await element.waitForDisplayed({timeout: appConst.INSTALL_APP_TIMEOUT});
             return await element.getText();
@@ -145,14 +145,7 @@ class XpTourDialog extends Page {
 
     async waitForApplicationInstalled(appName) {
         try {
-            let statusSelector;
-            if (appName === 'Content Studio') {
-                statusSelector = xpath.container + xpath.applicationStatusByName(appName);
-
-            } else {
-                statusSelector = xpath.container + xpath.applicationStatusByName(appName);
-            }
-
+            let statusSelector = xpath.container + `//div[contains(@id,'enonic') and descendant::div[contains(@class,'demo-app-title') and contains(.,'${appName}')]]`//xpath.applicationStatusByName(appName);
             await this.getBrowser().waitUntil(async () => {
                 let result = await this.getAttribute(statusSelector, "class");
                 return result.includes("installed");

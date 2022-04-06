@@ -37,7 +37,7 @@ describe('XP tour dialog - install applications and check their statuses', funct
             assert.equal(result.length, 3, 'Three applications should be available for installing');
         });
 
-     //Verifies Incorrect styling inside XP Tour #614
+    //Verifies Incorrect styling inside XP Tour #614
     it("GIVEN Last step is opened WHEN 'Install Apps' button has been pressed THEN three application should be installed",
         async function () {
             const loginPage = new LoginPage();
@@ -55,7 +55,7 @@ describe('XP tour dialog - install applications and check their statuses', funct
             await xpTourDialog.pause(4000);
             await testUtils.saveScreenshot('xp_tour_apps_installed', this);
             //4. Verify the styles- three applications should be displayed as installed:
-            await xpTourDialog.waitForApplicationInstalled(APP_LIVE_TRACE);
+            await xpTourDialog.waitForApplicationInstalled('Live Trace');
             await xpTourDialog.waitForApplicationInstalled('Data Toolbox');
             await xpTourDialog.waitForApplicationInstalled(APP_CONTENT_STUDIO);
             //5. Verify that 'Finish' button is visible now:
