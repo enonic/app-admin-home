@@ -10,7 +10,7 @@ const xpath = {
     installAppsButton: `//button[contains(@id,'DialogButton')]/span[text()='Install Apps']`,
     title: "//h2[@class='title']",
     applicationStatusByName: name =>
-        `//div[@class='demo-app' and descendant::div[contains(@class,'demo-app-title') and contains(.,'${name}')]]//div[contains(@class,'demo-app-status')]`,
+        `//div[contains(@id,'enonic') and descendant::div[contains(@class,'demo-app-title') and contains(.,'${name}')]]//div[contains(@class,'demo-app-status')]`,
     applicationInLauncherPanel: name =>
         `//div[@class='launcher-app-container' and descendant::p[@class='app-name' and contains(.,'${name}')]]`,
 };
@@ -133,7 +133,7 @@ class XpTourDialog extends Page {
 
     async waitForApplicationsStatus(appName) {
         try {
-            let statusSelector = xpath.container + xpath.applicationStatusByName(appName);
+            let statusSelector = xpath.container + xpath.applicationStatusByName(appName)+ "/span";
             let element = await this.findElement(statusSelector);
             await element.waitForDisplayed({timeout: appConst.INSTALL_APP_TIMEOUT});
             return await element.getText();
