@@ -54,17 +54,19 @@ async function uiTests() {
             drivers: {
                 chrome: {
                     version: driverVersion,
+                    fallbackVersion:'100.0.4896.60',
                     arch: process.arch,
                     baseURL: 'https://chromedriver.storage.googleapis.com'
                 },
             }
         });
-        console.log("## Start selenium server");
+        console.log("Start selenium server");
         const seleniumChildProcess = await selenium.start({
-            seleniumArgs: [ 'standalone'],
+
             drivers: {
                 chrome: {
                     version: 'latest',
+                    fallbackVersion:'100.0.4896.60',
                 },
             }
         });
