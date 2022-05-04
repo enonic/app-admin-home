@@ -62,7 +62,7 @@ async function uiTests() {
         });
         console.log("Start selenium server");
         const seleniumChildProcess = await selenium.start({
-
+            seleniumArgs: [ 'standalone'],
             drivers: {
                 chrome: {
                     version: 'latest',
