@@ -46,12 +46,11 @@ async function runTests() {
 }
 
 async function uiTests() {
-    console.log("Download chrome driver");
+    console.log("### Download chrome driver");
     try {
         await selenium.install({
             version: seleniumVersion,
-            //baseURL: 'https://selenium-release.storage.googleapis.com',
-            fullURL: 'https://selenium-release.storage.googleapis.com/4.0-alpha-7/selenium-server-4.0.0-alpha-7.jar',
+            baseURL: 'https://github.com/SeleniumHQ/selenium/releases/download',
             drivers: {
                 chrome: {
                     version: driverVersion,
@@ -60,16 +59,17 @@ async function uiTests() {
                 },
             }
         });
-        console.log("Start selenium server");
+        console.log("## Start selenium server");
         const seleniumChildProcess = await selenium.start({
+            seleniumArgs: [ 'standalone'],
             drivers: {
                 chrome: {
-                    version: driverVersion,
+                    version: 'latest',
                 },
             }
         });
         await runTests();
-        console.log("Stop the selenium server: ");
+        console.log("### Stop the selenium server: ");
         await seleniumChildProcess.kill();
     } catch (err) {
         console.log("Selenium Start error############: " + err);
