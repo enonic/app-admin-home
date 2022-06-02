@@ -1,4 +1,4 @@
-import {ApplicationJson} from 'lib-admin-ui/application/json/ApplicationJson';
+import {ApplicationJson} from '@enonic/lib-admin-ui/application/json/ApplicationJson';
 
 export interface ApplicationInstallResultJson {
 

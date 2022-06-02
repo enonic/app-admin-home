@@ -1,8 +1,8 @@
 import {CmsApplicationResourceRequest} from './CmsApplicationResourceRequest';
 import {ApplicationInstallResult} from './ApplicationInstallResult';
 import {ApplicationInstallResultJson} from './json/ApplicationInstallResultJson';
-import {HttpMethod} from 'lib-admin-ui/rest/HttpMethod';
-import {JsonResponse} from 'lib-admin-ui/rest/JsonResponse';
+import {HttpMethod} from '@enonic/lib-admin-ui/rest/HttpMethod';
+import {JsonResponse} from '@enonic/lib-admin-ui/rest/JsonResponse';
 
 
 export class InstallUrlApplicationRequest

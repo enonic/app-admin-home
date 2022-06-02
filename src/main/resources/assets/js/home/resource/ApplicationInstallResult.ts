@@ -1,6 +1,6 @@
-import {Application} from 'lib-admin-ui/application/Application';
-import {Equitable} from 'lib-admin-ui/Equitable';
-import {ObjectHelper} from 'lib-admin-ui/ObjectHelper';
+import {Application} from '@enonic/lib-admin-ui/application/Application';
+import {Equitable} from '@enonic/lib-admin-ui/Equitable';
+import {ObjectHelper} from '@enonic/lib-admin-ui/ObjectHelper';
 import {ApplicationInstallResultJson} from './json/ApplicationInstallResultJson';
 
 export class ApplicationInstallResult
