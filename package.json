@@ -14,11 +14,9 @@
     "fix": "eslint --fix **/*.ts"
   },
   "dependencies": {
-    "core-js": "^3.22.7",
+    "@enonic/lib-admin-ui": "file:./.xp/dev/lib-admin-ui",
     "jquery": "^3.6.0",
-    "lib-admin-ui": "file:./.xp/dev/lib-admin-ui",
-    "q": "^1.5.1",
-    "whatwg-fetch": "^3.6.2"
+    "q": "^1.5.1"
   },
   "peerDependencies": {
     "postcss": "^8.1.0"

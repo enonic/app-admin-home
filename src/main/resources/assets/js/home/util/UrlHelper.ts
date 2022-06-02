@@ -1,4 +1,4 @@
-import {UriHelper} from 'lib-admin-ui/util/UriHelper';
+import {UriHelper} from '@enonic/lib-admin-ui/util/UriHelper';
 
 export class UrlHelper {
 

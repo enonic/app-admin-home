@@ -1,10 +1,10 @@
 import * as $ from 'jquery';
-import {KeyBinding} from 'lib-admin-ui/ui/KeyBinding';
-import {KeyBindings} from 'lib-admin-ui/ui/KeyBindings';
-import {AppHelper} from 'lib-admin-ui/util/AppHelper';
-import {ApplicationEvent, ApplicationEventType} from 'lib-admin-ui/application/ApplicationEvent';
+import {KeyBinding} from '@enonic/lib-admin-ui/ui/KeyBinding';
+import {KeyBindings} from '@enonic/lib-admin-ui/ui/KeyBindings';
+import {AppHelper} from '@enonic/lib-admin-ui/util/AppHelper';
+import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/application/ApplicationEvent';
 import {ThemeManager} from './ThemeManager';
-import {i18nFetch} from 'lib-admin-ui/util/MessagesInitializer';
+import {i18nFetch} from '@enonic/lib-admin-ui/util/MessagesInitializer';
 
 const homeToolPath = window.location.pathname.split('/').slice(0, 3).join('/');
 const launcherUrl = `${homeToolPath}/com.enonic.xp.app.main/launcher`;

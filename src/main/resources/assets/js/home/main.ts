@@ -1,17 +1,15 @@
-import {ModalDialogWithConfirmation} from 'lib-admin-ui/ui/dialog/ModalDialogWithConfirmation';
-import {CookieHelper} from 'lib-admin-ui/util/CookieHelper';
-import {Application} from 'lib-admin-ui/app/Application';
-import {ServerEventsListener} from 'lib-admin-ui/event/ServerEventsListener';
-import {BodyMask} from 'lib-admin-ui/ui/mask/BodyMask';
-import {Body} from 'lib-admin-ui/dom/Body';
-import {ConnectionDetector} from 'lib-admin-ui/system/ConnectionDetector';
-import {i18nInit} from 'lib-admin-ui/util/MessagesInitializer';
-import {i18n} from 'lib-admin-ui/util/Messages';
+import {ModalDialogWithConfirmation} from '@enonic/lib-admin-ui/ui/dialog/ModalDialogWithConfirmation';
+import {CookieHelper} from '@enonic/lib-admin-ui/util/CookieHelper';
+import {Application} from '@enonic/lib-admin-ui/app/Application';
+import {ServerEventsListener} from '@enonic/lib-admin-ui/event/ServerEventsListener';
+import {BodyMask} from '@enonic/lib-admin-ui/ui/mask/BodyMask';
+import {Body} from '@enonic/lib-admin-ui/dom/Body';
+import {ConnectionDetector} from '@enonic/lib-admin-ui/system/ConnectionDetector';
+import {i18nInit} from '@enonic/lib-admin-ui/util/MessagesInitializer';
+import {i18n} from '@enonic/lib-admin-ui/util/Messages';
 import {create as createAboutDialog} from './AboutDialog';
 import {init} from './xptour';
-import 'core-js/features/promise';
-import 'core-js/features/object';
-import {CONFIG} from 'lib-admin-ui/util/Config';
+import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 
 void (async () => {
     if (!document.currentScript) {
@@ -100,11 +98,11 @@ function startLostConnectionDetector() {
 
 function addListenersToDashboardItems() {
     const dashboardItems = Array.from(document.getElementsByClassName('dashboard-item'));
-    
+
     dashboardItems.forEach((item: HTMLElement) => {
         item.addEventListener('keypress', (e: KeyboardEvent) => {
-            if(e.key === 'Enter') { 
-                (item.firstElementChild as HTMLElement).click(); 
+            if(e.key === 'Enter') {
+                (item.firstElementChild as HTMLElement).click();
             }
         });
     });
