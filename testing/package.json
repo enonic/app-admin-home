@@ -10,7 +10,7 @@
     "assert": "^2.0.0",
     "mocha": "^10.0.0",
     "selenium-standalone": "^8.1.4",
-    "webdriverio": "^7.19.7",
+    "webdriverio": "^7.20.1",
     "glob": "^8.0.3",
     "chai": "^4.3.6",
     "properties-reader": "^2.2.0",
