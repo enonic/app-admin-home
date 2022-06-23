@@ -6,10 +6,13 @@ import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/appli
 import {ThemeManager} from './ThemeManager';
 import {i18nFetch} from '@enonic/lib-admin-ui/util/MessagesInitializer';
 
-const homeToolPath = window.location.pathname.split('/').slice(0, 3).join('/');
-const launcherUrl = `${homeToolPath}/com.enonic.xp.app.main/launcher`;
-const i18nServiceUrl = `${homeToolPath}/_/service/com.enonic.xp.app.main/i18n`;
-const isHomeApp = document.location.href.endsWith(homeToolPath);
+const toolKey = 'tool';
+const homeAppToolKey = 'com.enonic.xp.app.main';
+const pathName = window.location.pathname;
+const toolBasePath = pathName.slice(0, pathName.indexOf(`/${toolKey}`)) + `/${toolKey}`;
+const launcherUrl = `${toolBasePath}/${homeAppToolKey}/launcher`;
+const i18nServiceUrl = `${toolBasePath}/_/service/${homeAppToolKey}/i18n`;
+const isHomeApp: boolean = document.location.href.endsWith(toolBasePath) || document.location.href.endsWith(`${toolBasePath}/`);
 
 const currentScript = document.currentScript;
 
