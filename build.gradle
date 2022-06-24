@@ -35,7 +35,7 @@ dependencies {
     include "com.enonic.xp:lib-i18n:${xpVersion}"
     include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
     devResources "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
-    include "com.enonic.lib:lib-mustache:2.0.0"
+    include "com.enonic.lib:lib-mustache:2.1.0"
 
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
