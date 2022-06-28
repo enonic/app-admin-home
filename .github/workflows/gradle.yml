@@ -54,6 +54,7 @@ jobs:
         run: ./gradlew build -Pcom.enonic.xp.app.production=true
 
       - name: Run Base Selenium Tests
+        id: selenium
         if: "github.event.head_commit.message != 'Updated to next SNAPSHOT version'"
         run: ./gradlew :testing:testAdminHomeApp
 
@@ -70,7 +71,7 @@ jobs:
           SLACK_COLOR: ${{ job.status }}
 
       - uses: actions/upload-artifact@v3
-        if: always()
+        if: always() && steps.selenium.conclusion != 'skipped'
         with:
           name: ui-test-report
           path: |
