@@ -40,22 +40,22 @@ describe('XP tour dialog specification', function () {
         await xpTourDialog.waitForDialogLoaded();
         //2. `Skip Tour` button has been pressed
         await xpTourDialog.clickOnSkipTourButton();
-        testUtils.saveScreenshot('xp_tour_skipped', this);
+        await testUtils.saveScreenshot('xp_tour_skipped', this);
         //3. 'XP tour dialog must be closed'
         await xpTourDialog.waitForDialogClosed();
     });
 
-    it.skip("GIVEN XP tour dialog is opened WHEN 'Esc' key has been pressed THEN dialog should be closed", async function() {
+    it("GIVEN XP tour dialog is opened WHEN 'Esc' key has been pressed THEN dialog should be closed", async function() {
         const loginPage = new LoginPage();
         const xpTourDialog = new XpTourDialog();
         await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);
         await loginPage.doLogin();
         //1. modal dialog should be loaded automatically:
         await xpTourDialog.waitForDialogLoaded();
-        testUtils.saveScreenshot('xp_tour_esc1', this);
+        await testUtils.saveScreenshot('xp_tour_esc1', this);
         //2. 'Esc' key has been pressed
         await xpTourDialog.pressEscKey();
-        testUtils.saveScreenshot('xp_tour_esc2', this);
+        await testUtils.saveScreenshot('xp_tour_esc2', this);
         //3. 'XP tour dialog must be closed'
         await xpTourDialog.waitForDialogClosed();
     });
@@ -69,7 +69,7 @@ describe('XP tour dialog specification', function () {
         await xpTourDialog.waitForDialogLoaded();
         //2. Cancel-top button has been clicked:
         await xpTourDialog.clickOnCancelButtonTop();
-        testUtils.saveScreenshot('xp_tour_canceled', this);
+        await testUtils.saveScreenshot('xp_tour_canceled', this);
         await xpTourDialog.waitForDialogClosed();
     });
 
