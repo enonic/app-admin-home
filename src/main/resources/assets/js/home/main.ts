@@ -10,6 +10,12 @@ import {i18n} from '@enonic/lib-admin-ui/util/Messages';
 import {create as createAboutDialog} from './AboutDialog';
 import {init} from './xptour';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
+import {GetDashboardWidgetsRequest} from './resource/widget/GetDashboardWidgetsRequest';
+import {Widget} from '@enonic/lib-admin-ui/content/Widget';
+import {DefaultErrorHandler} from '@enonic/lib-admin-ui/DefaultErrorHandler';
+import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
+import {Element} from '@enonic/lib-admin-ui/dom/Element';
+import {ElementHelper} from '@enonic/lib-admin-ui/dom/ElementHelper';
 
 void (async () => {
     if (!document.currentScript) {
@@ -25,6 +31,8 @@ void (async () => {
     setupWebSocketListener();
     setupAboutDialog();
     addListenersToDashboardItems();
+
+    appendDashboardWidgets('widget-container');
 
     if (CONFIG.getString('tourEnabled')) {
         void init().then(function (tourDialog: ModalDialogWithConfirmation) {
@@ -106,4 +114,37 @@ function addListenersToDashboardItems() {
             }
         });
     });
+}
+
+function appendDashboardWidgets(containerId: string) {
+    const widgetContainer = document.getElementById(containerId);
+    if (!widgetContainer) {
+        throw 'Widget container not found!';
+    }
+    new GetDashboardWidgetsRequest().fetchWidgets().then((widgets: Widget[]) => {
+        let baseUrl = document.location.href;
+        if (!baseUrl.endsWith('/')) {
+            baseUrl += '/';
+        }
+        const widgetElements: Element[] = [];
+        widgets.forEach((widget: Widget) => {
+            fetch(baseUrl + widget.getUrl())
+                .then(response => response.text())
+                .then((html: string) => {
+                    const widgetWidthCls: string = widget.getConfig()['width'] || 'auto';
+                    const widgetEl = Element.fromCustomarilySanitizedString(html,true, {addTags: ['widget']});
+                    widgetEl.setClass(widgetWidthCls);
+                    widgetElements.push(widgetEl);
+                })
+                .then(() => {
+                    if (widgetElements.length > 0) {
+                        const widgetGrid = new DivEl('widget-grid');
+                        widgetGrid.appendChildren(...widgetElements);
+                        widgetContainer.appendChild(widgetGrid.getHTMLElement());
+                    }
+                })
+                .catch(DefaultErrorHandler.handle);
+        });
+
+    }).catch(DefaultErrorHandler.handle);
 }
