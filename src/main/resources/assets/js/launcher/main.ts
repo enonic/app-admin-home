@@ -199,7 +199,7 @@ class Launcher {
         const button = document.createElement('button');
         button.setAttribute('title', i18n('launcher.tooltip.openMenu'));
         button.setAttribute('class', `launcher-button ${this.getThemeClass()}`);
-        button.hidden = true;
+        button.setAttribute('style', 'display: none;');
 
         const spanX = document.createElement('span');
         spanX.setAttribute('class', 'span-x');
@@ -263,7 +263,6 @@ class Launcher {
 
     private executeOnDOMInit = (): void => {
         const handler = () => {
-            this.launcherPanel.removeAttribute('hidden');
             if (this.config['autoOpenLauncher'] === 'true') {
                 this.openLauncherPanel();
             }
@@ -286,13 +285,12 @@ class Launcher {
         this.launcherPanel = document.createElement('div');
         this.launcherPanel.setAttribute('class', `launcher-panel ${this.getThemeClass()}`);
         this.launcherPanel.setAttribute('tabindex', '0');
-        this.launcherPanel.setAttribute('hidden', '');
+        this.launcherPanel.setAttribute('style', 'display: none;');
 
         void this.fetchLauncherContents()
             .then((launcherEl: HTMLElement) => {
                 this.launcherPanel.appendChild(launcherEl);
                 this.launcherMainContainer = <HTMLElement>this.launcherPanel.firstChild;
-                this.launcherButton.hidden = false;
                 if (isHomeApp) {
                     this.launcherMainContainer.classList.add('home');
                 }
