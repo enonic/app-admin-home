@@ -15,6 +15,7 @@ import {Widget} from '@enonic/lib-admin-ui/content/Widget';
 import {DefaultErrorHandler} from '@enonic/lib-admin-ui/DefaultErrorHandler';
 import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
 import {Element} from '@enonic/lib-admin-ui/dom/Element';
+import {ElementHelper} from '@enonic/lib-admin-ui/dom/ElementHelper';
 
 const showBackgroundImageOnLoad = () => {
     document.addEventListener('DOMContentLoaded', () => {
@@ -122,38 +123,21 @@ const addListenersToDashboardItems = () => {
     });
 };
 
-const appendDashboardWidgets = (containerId: string) => {
-    const widgetContainer = document.getElementById(containerId);
-    if (!widgetContainer) {
-        throw 'Widget container not found!';
+function appendDashboardWidgets(containerId: string) {
+    const widgetContainerEl = document.getElementById(containerId);
+    if (!widgetContainerEl) {
+        throw new Error('Widget container not found!');
     }
-    new GetDashboardWidgetsRequest().fetchWidgets().then((widgets: Widget[]) => {
-        let baseUrl = document.location.href;
-        if (!baseUrl.endsWith('/')) {
-            baseUrl += '/';
-        }
-        const widgetElements: Element[] = [];
-        widgets.forEach((widget: Widget) => {
-            fetch(baseUrl + widget.getUrl())
-                .then(response => response.text())
-                .then((html: string) => {
-                    const widgetWidthCls: string = widget.getConfig()['width'] || 'auto';
-                    const widgetEl = Element.fromCustomarilySanitizedString(html,true, {addTags: ['widget']});
-                    widgetEl.setClass(widgetWidthCls);
-                    widgetElements.push(widgetEl);
-                })
-                .then(() => {
-                    if (widgetElements.length > 0) {
-                        const widgetGrid = new DivEl('widget-grid');
-                        widgetGrid.appendChildren(...widgetElements);
-                        widgetContainer.appendChild(widgetGrid.getHTMLElement());
-                    }
-                })
-                .catch(DefaultErrorHandler.handle);
-        });
 
-    }).catch(DefaultErrorHandler.handle);
-};
+    const widgetPanel = new WidgetPanel();
+    widgetPanel.layout()
+        .then((hasWidgets: true) => {
+            const widgetContainer: Element = Element.fromHtmlElement(widgetContainerEl);
+            widgetContainer.addClass('widgets-visible');
+            widgetContainer.appendChild(widgetPanel);
+        })
+        .catch(DefaultErrorHandler.handle);
+}
 
 void (async () => {
     showBackgroundImageOnLoad();
