@@ -11,6 +11,16 @@
 .home-main-container {
   .home-main-container-mixin(1, bottom);
 
+  #background-image {
+    top: 0;
+    right: 0;
+  }
+
+  &.widgets-visible #background-image {
+    opacity: 0.5;
+    filter: blur(2px);
+  }
+
   #non-existing {
     background-image: url('../images/background.jpg');
   }
