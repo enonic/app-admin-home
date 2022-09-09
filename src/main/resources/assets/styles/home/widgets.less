@@ -1,13 +1,15 @@
 #widget-container {
   width: 100%;
-  padding: 50px;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: scroll;
 
   .widget-panel {
+    grid-gap: 20px;
     z-index: 1;
     position: relative;
     display: grid;
-    grid-gap: 50px;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     grid-auto-rows: 200px;
     grid-auto-flow: dense;
 
@@ -15,21 +17,90 @@
       background-color: white;
       width: auto;
       border: 1px solid lightgray;
+      box-shadow: 1px 2px 4px 1px rgb(255 255 255 / 35%);
+      padding: 10px;
+      overflow: scroll;
+    }
+  }
+}
+  /*
+320px — 480px: Mobile devices.
+481px — 768px: iPads, Tablets.
+769px — 1024px: Small screens, laptops.
+1025px — 1200px: Desktops, large screens.
+1201px and more — Extra large screens, TV.
+   */
 
-      .small {
-        grid-column: span 1;
+@media screen and (min-width: 481px) {
+  #widget-container {
+    .widget-panel {
+      grid-template-columns: repeat(2, minmax(210px, 1fr));
+
+      widget {
+        &.small,
+        &.medium {
+          grid-column: span 1;
+        }
+
+        &.large,
+        &.full {
+          grid-column: span 2;
+        }
       }
+    }
+  }
+}
 
-      .medium {
-        grid-column: span 2;
+@media screen and (min-width: 769px) {
+  #widget-container {
+    padding: 30px;
+
+    .widget-panel {
+      grid-gap: 30px;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+
+      widget {
+        &.small {
+          grid-column: span 1;
+        }
+
+        &.medium {
+          grid-column: span 2;
+        }
+
+        &.large,
+        &.full {
+          grid-column: span 3;
+        }
       }
+    }
+  }
+}
 
-      .large {
-        grid-column: span 3;
-      }
+@media screen and (min-width: 1025px) {
+  #widget-container {
+    padding: 40px;
 
-      .full {
-        grid-column: span 4;
+    .widget-panel {
+      grid-gap: 40px;
+      grid-template-columns: repeat(4, minmax(210px, 1fr));
+
+      widget {
+        &.small {
+          grid-column: span 1;
+        }
+
+        &.medium {
+          grid-column: span 2;
+        }
+
+        &.large {
+          grid-column: span 3;
+        }
+
+        &.full {
+          grid-column: span 4;
+        }
       }
     }
   }
