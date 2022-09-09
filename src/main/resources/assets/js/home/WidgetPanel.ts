@@ -26,7 +26,6 @@ export class WidgetPanel
 
     private fetchWidgets(): Q.Promise<Element[]> {
         const deferred = Q.defer<Element[]>();
-        const widgetElements: Element[] = [];
 
         new GetDashboardWidgetsRequest().fetchWidgets()
             .then((widgets: Widget[]) => {
@@ -35,16 +34,12 @@ export class WidgetPanel
                     baseUrl += '/';
                 }
 
-                widgets.forEach((widget: Widget) => {
-                    this.fetchWidget(widget, baseUrl)
-                        .then((widgetEl: Element) => {
-                            widgetElements.push(widgetEl);
-                        })
-                        .then(() => {
-                            deferred.resolve(widgetElements);
-                        })
-                        .catch(DefaultErrorHandler.handle);
-                });
+                const fetchWidgetPromises = [];
+                widgets.forEach((widget: Widget) => fetchWidgetPromises.push(this.fetchWidget(widget, baseUrl)));
+
+                Q.all(fetchWidgetPromises)
+                    .then((widgetElements: Element[]) => deferred.resolve(widgetElements))
+                    .catch(DefaultErrorHandler.handle);
             })
             .catch(DefaultErrorHandler.handle);
 
@@ -57,7 +52,15 @@ export class WidgetPanel
             .then(response => response.text())
             .then((html: string) => {
                 const widgetWidthCls: string = widget.getConfig()['width'] || 'auto';
-                const widgetEl: Element = Element.fromCustomarilySanitizedString(html,true, {addTags: ['widget']});
+                const widgetEl: Element = Element.fromCustomarilySanitizedString(
+                    html,
+                    true,
+                    {
+                        addTags: [
+                            'widget',
+                            'link',
+                        ]},
+                );
                 widgetEl.setClass(widgetWidthCls);
                 deferred.resolve(widgetEl);
             })
