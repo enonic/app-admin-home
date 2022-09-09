@@ -59,7 +59,9 @@ export class WidgetPanel
                         addTags: [
                             'widget',
                             'link',
-                        ]},
+                        ],
+                        addAttributes: ['target'],
+                    },
                 );
                 widgetEl.setClass(widgetWidthCls);
                 deferred.resolve(widgetEl);
