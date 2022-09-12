@@ -37,7 +37,7 @@ dependencies {
     devResources "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
     include "com.enonic.lib:lib-mustache:2.1.0"
 
-    testImplementation "org.mockito:mockito-core:4.7.0"
+    testImplementation "org.mockito:mockito-core:4.8.0"
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.9.0"
     testImplementation( testFixtures( "com.enonic.xp:jaxrs-impl:${xpVersion}" ) )
 
