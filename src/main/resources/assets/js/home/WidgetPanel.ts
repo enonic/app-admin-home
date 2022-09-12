@@ -2,6 +2,7 @@ import * as Q from 'q';
 import {GetDashboardWidgetsRequest} from './resource/widget/GetDashboardWidgetsRequest';
 import {Widget} from '@enonic/lib-admin-ui/content/Widget';
 import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
+import {H5El} from '@enonic/lib-admin-ui/dom/H5El';
 import {Element} from '@enonic/lib-admin-ui/dom/Element';
 import {DefaultErrorHandler} from '@enonic/lib-admin-ui/DefaultErrorHandler';
 
@@ -48,6 +49,7 @@ export class WidgetPanel
 
     private fetchWidget(widget: Widget, baseUrl: string): Q.Promise<Element> {
         const deferred = Q.defer<Element>();
+        widgetEl.prependChild(new H5El('widget-header').setHtml(widget.getDisplayName()));
         fetch(baseUrl + widget.getUrl())
             .then(response => response.text())
             .then((html: string) => {
