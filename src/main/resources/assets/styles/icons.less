@@ -1,0 +1,26 @@
+@font-face {
+  font-family: 'icomoon';
+  src:
+    url('../icons/fonts/icomoon.woff2') format('woff2'),
+    url('../icons/fonts/icomoon.woff') format('woff');
+}
+
+.icon() {
+  .icon-mixin('icomoon');
+}
+
+.icon-home {
+  .icon();
+
+  &::before {
+    content: "\e999";
+  }
+}
+
+.icon-spinner {
+  .icon();
+
+  &::before {
+    content: "\e007";
+  }
+}
