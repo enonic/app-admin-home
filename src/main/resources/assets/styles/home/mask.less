@@ -14,6 +14,22 @@
     top: 50%;
     display: none;
 
+    .spinner {
+      position: absolute;
+      float: left;
+      top: -24px;
+      left: -24px;
+      width: 48px;
+      height: 48px;
+
+      .animation(rotate360, 0.5s, 0s, linear);
+      .icon-spinner;
+
+      &:before {
+        font-size: 48px;
+      }
+    }
+
     .text {
       margin-left: 10px;
       color: @admin-black;

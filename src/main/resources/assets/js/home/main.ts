@@ -119,12 +119,8 @@ function appendDashboardWidgets(containerId: string) {
         throw new Error('Widget container not found!');
     }
 
+    const widgetContainer: Element = Element.fromHtmlElement(widgetContainerEl);
     const widgetPanel = new WidgetPanel();
-    widgetPanel.layout()
-        .then((hasWidgets: true) => {
-            const widgetContainer: Element = Element.fromHtmlElement(widgetContainerEl);
-            widgetContainer.addClass('widgets-visible');
-            widgetContainer.appendChild(widgetPanel);
-        })
-        .catch(DefaultErrorHandler.handle);
+    widgetContainer.appendChild(widgetPanel);
+    widgetPanel.fetchAndAppendWidgets();
 }

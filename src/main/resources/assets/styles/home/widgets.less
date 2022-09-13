@@ -2,7 +2,7 @@
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
-  overflow: scroll;
+  overflow: auto;
 
   .widget-panel {
     grid-gap: 20px;
@@ -13,13 +13,13 @@
     grid-auto-rows: 250px;
     grid-auto-flow: dense;
 
-    widget {
+    .widget-placeholder {
       background-color: rgb(255, 255, 255, 0.8);
       width: auto;
       border-radius: 8px;
       box-shadow: 2px 2px 4px 1px rgb(0 0 0 / 35%);
       padding: 10px;
-      overflow: scroll;
+      overflow: auto;
       display: flex;
       flex-direction: column;
 
@@ -32,11 +32,17 @@
       }
 
       .widget-contents {
-        flex: 1;
         padding: 5px;
+        opacity: 0;
+      }
+
+      &.loaded .widget-contents {
+        transition: opacity 2s;
+        opacity: 1;
       }
     }
   }
+
 }
   /*
 320px — 480px: Mobile devices.
@@ -51,7 +57,7 @@
     .widget-panel {
       grid-template-columns: repeat(2, minmax(210px, 1fr));
 
-      widget {
+      .widget-placeholder {
         &.small,
         &.medium {
           grid-column: span 1;
@@ -74,7 +80,7 @@
       grid-gap: 30px;
       grid-template-columns: repeat(3, minmax(220px, 1fr));
 
-      widget {
+      .widget-placeholder {
         &.small {
           grid-column: span 1;
         }
@@ -100,7 +106,7 @@
       grid-gap: 40px;
       grid-template-columns: repeat(4, minmax(210px, 1fr));
 
-      widget {
+      .widget-placeholder {
         &.small {
           grid-column: span 1;
         }
