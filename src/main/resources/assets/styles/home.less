@@ -13,13 +13,11 @@
   .home-main-container-mixin(1, bottom);
 
   #background-image {
+    position: fixed;
+    left: 0;
     top: 0;
     right: 0;
-  }
-
-  &.widgets-visible #background-image {
-    opacity: 0.5;
-    filter: blur(2px);
+    bottom: 0;
   }
 
   #non-existing {

@@ -19,7 +19,7 @@
       border-radius: 8px;
       box-shadow: 2px 2px 4px 1px rgb(0 0 0 / 35%);
       padding: 10px;
-      overflow: auto;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
 
@@ -32,8 +32,9 @@
       }
 
       .widget-contents {
-        padding: 5px;
+        padding: 5px 10px;
         opacity: 0;
+        overflow-x: hidden;
       }
 
       &.loaded .widget-contents {
