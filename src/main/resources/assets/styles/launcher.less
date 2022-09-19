@@ -36,6 +36,10 @@
     &:hover {
       color: @admin-bg-light-gray;
     }
+
+    &.visible:not(.toggled) {
+      text-shadow: 1px 1px 4px @admin-bg-dark-gray;
+    }
   }
 
   &.theme-light {
@@ -62,7 +66,6 @@
     visibility: visible;
     opacity: 1;
     transition: opacity 0.3s, visibility 0.3s;
-    text-shadow: 1px 1px 4px @admin-bg-dark-gray;
   }
 
   span {
