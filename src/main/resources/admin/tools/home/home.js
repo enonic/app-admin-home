@@ -69,7 +69,7 @@ exports.get = function() {
         }),
         launcherPath: admin.getLauncherPath(),
         dashboardIcons: dashboardIcons,
-        theme: 'dark',
+        theme: 'light',
         configServiceUrl: portal.serviceUrl({service: 'config'})
     };
 
