@@ -3,7 +3,7 @@ import {GetDashboardWidgetsRequest} from './resource/widget/GetDashboardWidgetsR
 import {Widget} from '@enonic/lib-admin-ui/content/Widget';
 import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
 import {H5El} from '@enonic/lib-admin-ui/dom/H5El';
-import {Element} from '@enonic/lib-admin-ui/dom/Element';
+import {Element as LibAdminElement} from '@enonic/lib-admin-ui/dom/Element';
 import {DefaultErrorHandler} from '@enonic/lib-admin-ui/DefaultErrorHandler';
 import {LoadMask} from '@enonic/lib-admin-ui/ui/mask/LoadMask';
 import {Exception} from '@enonic/lib-admin-ui/Exception';
@@ -18,7 +18,7 @@ export class WidgetPanel
     fetchAndAppendWidgets(): void {
         new GetDashboardWidgetsRequest().fetchWidgets()
             .then((widgets: Widget[]) => {
-                let baseUrl = document.location.href;
+                let baseUrl: string = document.location.href;
                 if (!baseUrl.endsWith('/')) {
                     baseUrl += '/';
                 }
@@ -30,7 +30,7 @@ export class WidgetPanel
 
     private fetchAndAppendWidget(widget: Widget, baseUrl: string) {
         const widgetWidthCls: string = widget.getConfig()['width'] || 'auto';
-        const widgetPlaceholder: Element = new DivEl(`widget-placeholder ${widgetWidthCls}`)
+        const widgetPlaceholder: LibAdminElement = new DivEl(`widget-placeholder ${widgetWidthCls}`)
                                             .appendChild(new H5El('widget-header').setHtml(widget.getDisplayName()));
         this.appendChild(widgetPlaceholder);
 
@@ -42,7 +42,7 @@ export class WidgetPanel
                 fetch(baseUrl + widget.getUrl())
                     .then(response => response.text())
                     .then((html: string) => {
-                        const sanitisedWidgetEl: Element = this.getSanitisedWidget(widget, html);
+                        const sanitisedWidgetEl: LibAdminElement = this.getSanitisedWidget(widget, html);
 
                         this.injectWidgetAssets(sanitisedWidgetEl)
                             .then(() => {
@@ -57,14 +57,15 @@ export class WidgetPanel
             .catch(DefaultErrorHandler.handle);
     }
 
-    private getSanitisedWidget(widget: Widget, widgetHtml: string): Element {
-        const widgetEl: Element = Element.fromCustomarilySanitizedString(
+    private getSanitisedWidget(widget: Widget, widgetHtml: string): LibAdminElement {
+        const widgetEl: LibAdminElement = LibAdminElement.fromCustomarilySanitizedString(
             widgetHtml,
             true,
             {
                 addTags: [
                     'widget',
                     'link', // allow widget assets
+                    'script',
                 ],
                 addAttributes: ['target'],  // allow opening links in a new window
             },
@@ -77,24 +78,37 @@ export class WidgetPanel
         return widgetEl;
     }
 
-    private injectWidgetAssets(widgetEl: Element): Q.Promise<void[]>  {
-
-        const linkHTMLElements = widgetEl.getHTMLElement().getElementsByTagName('link');
-
-        if (!linkHTMLElements.length) {
-            return Q.resolve();
-        }
-
+    private injectWidgetAssets(widgetEl: LibAdminElement): Q.Promise<void[]>  {
         const promises: Q.Promise<void>[] = [];
-        for (let i = 0; i < linkHTMLElements.length; i++) {
-            const deferred = Q.defer<void>();
+        promises.push(...this.injectElements(widgetEl, 'link'));
+        promises.push(...this.injectElements(widgetEl, 'script'));
+        return Q.all(promises);
+    }
+
+    private injectElements(widgetEl: LibAdminElement, tag: string): Q.Promise<void>[] {
+        const elements: HTMLCollectionOf<Element> = widgetEl.getHTMLElement().getElementsByTagName(tag);
+        const elementsToRemove: Element[] = [];
+        const promises: Q.Promise<void>[] = [];
+
+        for (let i = 0; i < elements.length; i++) {
+            const deferred: Q.Deferred<void> = Q.defer<void>();
             promises.push(deferred.promise);
-            const el = linkHTMLElements.item(i);
-            el.remove();
-            el.onload = () => deferred.resolve();
-            document.head.appendChild(el);
+            const el: Element = elements.item(i);
+            elementsToRemove.push(el);
+
+            const newElement: HTMLElement = document.createElement(tag);
+            newElement.onload = () => deferred.resolve();
+            newElement.onerror = () => deferred.resolve();
+
+            el.getAttributeNames().forEach((attr: string) => {
+                newElement.setAttribute(attr, el.getAttribute(attr));
+            });
+
+            document.head.appendChild(newElement);
         }
 
-        return Q.all(promises);
+        elementsToRemove.forEach((el: Element) => el.remove());
+
+        return promises;
     }
 }
