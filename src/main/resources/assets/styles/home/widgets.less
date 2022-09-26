@@ -59,14 +59,16 @@
       grid-template-columns: repeat(2, minmax(210px, 1fr));
 
       .widget-placeholder {
-        &.small,
-        &.medium {
-          grid-column: span 1;
-        }
+        &.width- {
+          &small,
+          &medium {
+            grid-column: span 1;
+          }
 
-        &.large,
-        &.full {
-          grid-column: span 2;
+          &large,
+          &full {
+            grid-column: span 2;
+          }
         }
       }
     }
@@ -81,17 +83,19 @@
       grid-template-columns: repeat(3, minmax(220px, 1fr));
 
       .widget-placeholder {
-        &.small {
-          grid-column: span 1;
-        }
+        &.width- {
+          &small {
+            grid-column: span 1;
+          }
 
-        &.medium {
-          grid-column: span 2;
-        }
+          &medium {
+            grid-column: span 2;
+          }
 
-        &.large,
-        &.full {
-          grid-column: span 3;
+          &large,
+          &full {
+            grid-column: span 3;
+          }
         }
       }
     }

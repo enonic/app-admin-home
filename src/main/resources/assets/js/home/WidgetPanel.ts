@@ -11,27 +11,37 @@ import {Exception} from '@enonic/lib-admin-ui/Exception';
 export class WidgetPanel
     extends DivEl {
 
+    private static widgetUrlPrefix: string;
+
     constructor() {
         super('widget-panel');
+
+        WidgetPanel.widgetUrlPrefix = WidgetPanel.getUrlPrefix();
+    }
+
+    private static getUrlPrefix(): string {
+        let baseUrl: string = document.location.href;
+        if (!baseUrl.endsWith('/')) {
+            baseUrl += '/';
+        }
+
+        return baseUrl;
     }
 
     fetchAndAppendWidgets(): void {
         new GetDashboardWidgetsRequest().fetchWidgets()
             .then((widgets: Widget[]) => {
-                let baseUrl: string = document.location.href;
-                if (!baseUrl.endsWith('/')) {
-                    baseUrl += '/';
-                }
-
-                widgets.forEach((widget: Widget) => this.fetchAndAppendWidget(widget, baseUrl));
+                widgets.forEach((widget: Widget) => this.fetchAndAppendWidget(widget));
             })
             .catch(DefaultErrorHandler.handle);
     }
 
-    private fetchAndAppendWidget(widget: Widget, baseUrl: string) {
-        const widgetWidthCls: string = widget.getConfig()['width'] || 'auto';
-        const widgetPlaceholder: LibAdminElement = new DivEl(`widget-placeholder ${widgetWidthCls}`)
-                                            .appendChild(new H5El('widget-header').setHtml(widget.getDisplayName()));
+    private fetchAndAppendWidget(widget: Widget) {
+        const widthCls: string = widget.getConfig()['width'] || 'auto';
+        const stylingCls: string = widget.getConfig()['style'] || '';
+        const widgetPlaceholder: LibAdminElement =
+            new DivEl(`widget-placeholder width-${widthCls}${stylingCls ? ` style-${stylingCls}` : ''}`)
+            .appendChild(new H5El('widget-header').setHtml(widget.getDisplayName()));
         this.appendChild(widgetPlaceholder);
 
         widgetPlaceholder.render()
@@ -39,18 +49,21 @@ export class WidgetPanel
                 const loadMask: LoadMask = new LoadMask(widgetPlaceholder);
                 loadMask.show();
 
-                fetch(baseUrl + widget.getUrl())
-                    .then(response => response.text())
-                    .then((html: string) => {
-                        const sanitisedWidgetEl: LibAdminElement = this.getSanitisedWidget(widget, html);
+                this.fetchWidget(widget, widgetPlaceholder).finally(() => loadMask.hide());
+            })
+            .catch(DefaultErrorHandler.handle);
+    }
 
-                        this.injectWidgetAssets(sanitisedWidgetEl)
-                            .then(() => {
-                                widgetPlaceholder.appendChild(sanitisedWidgetEl.addClass('widget-contents'));
-                                widgetPlaceholder.addClass('loaded');
-                            })
-                            .catch(DefaultErrorHandler.handle)
-                            .finally(() => loadMask.hide());
+    private fetchWidget(widget: Widget, widgetContainer: LibAdminElement): Promise<void> {
+        return fetch(WidgetPanel.widgetUrlPrefix + widget.getUrl())
+            .then(response => response.text())
+            .then((html: string) => {
+                const sanitisedWidgetEl: LibAdminElement = this.getSanitisedWidget(widget, html);
+
+                this.injectWidgetAssets(sanitisedWidgetEl)
+                    .then(() => {
+                        widgetContainer.appendChild(sanitisedWidgetEl.addClass('widget-contents'));
+                        widgetContainer.addClass('loaded');
                     })
                     .catch(DefaultErrorHandler.handle);
             })
