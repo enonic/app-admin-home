@@ -10,12 +10,8 @@ import {i18n} from '@enonic/lib-admin-ui/util/Messages';
 import {create as createAboutDialog} from './AboutDialog';
 import {init} from './xptour';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
-import {GetDashboardWidgetsRequest} from './resource/widget/GetDashboardWidgetsRequest';
-import {Widget} from '@enonic/lib-admin-ui/content/Widget';
-import {DefaultErrorHandler} from '@enonic/lib-admin-ui/DefaultErrorHandler';
-import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
 import {Element} from '@enonic/lib-admin-ui/dom/Element';
-import {ElementHelper} from '@enonic/lib-admin-ui/dom/ElementHelper';
+import {WidgetPanel} from './WidgetPanel';
 
 const showBackgroundImageOnLoad = () => {
     document.addEventListener('DOMContentLoaded', () => {
@@ -130,7 +126,7 @@ function appendDashboardWidgets(containerId: string) {
     }
 
     const widgetContainer: Element = Element.fromHtmlElement(widgetContainerEl);
-    const widgetPanel = new WidgetPanel();
+    const widgetPanel: WidgetPanel = new WidgetPanel();
     widgetContainer.appendChild(widgetPanel);
     widgetPanel.fetchAndAppendWidgets();
 }

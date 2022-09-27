@@ -1,0 +1,19 @@
+<widget id="widget-shortcuts">
+    <script type="text/javascript" src="{{jsUri}}" data-config-service-url="{{configServiceUrl}}"></script>
+    <link rel="stylesheet" href="{{stylesUri}}" type="text/css" media="all"/>
+
+    <div class="widget-shortcuts-container">
+        {{#dashboardIcons}}
+        <div class="{{cls}} widget-shortcuts-item" tabindex="0">
+            {{#link}}
+            <a href="{{link}}" target="_blank" tabindex="-1">
+                {{/link}}
+                <img src="{{src}}">
+                <div>{{caption}}</div>
+                {{#link}}
+            </a>
+            {{/link}}
+        </div>
+        {{/dashboardIcons}}
+    </div>
+</widget>
