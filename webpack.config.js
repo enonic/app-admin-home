@@ -11,8 +11,10 @@ module.exports = {
     entry: {
         'js/home/bundle': './js/home/main.ts',
         'js/launcher/bundle': './js/launcher/main.ts',
+        'js/widgets/shortcuts': './js/widgets/shortcuts.ts',
         'styles/home': './styles/home.less',
         'styles/launcher': './styles/launcher.less',
+        'styles/widgets/shortcuts': './styles/widgets/shortcuts.less',
     },
     output: {
         path: path.join(__dirname, '/build/resources/main/assets'),
