@@ -12,7 +12,7 @@ import {ModalDialogWithConfirmation} from '@enonic/lib-admin-ui/ui/dialog/ModalD
 import {Action} from '@enonic/lib-admin-ui/ui/Action';
 import {LoadMask} from '@enonic/lib-admin-ui/ui/mask/LoadMask';
 import {DefaultErrorHandler} from '@enonic/lib-admin-ui/DefaultErrorHandler';
-import {ListApplicationsRequest} from './resource/ListApplicationsRequest';
+import {ListApplicationsRequest} from '../home/resource/ListApplicationsRequest';
 import {ListMarketApplicationsRequest} from '@enonic/lib-admin-ui/application/ListMarketApplicationsRequest';
 import {MarketApplicationResponse} from '@enonic/lib-admin-ui/application/MarketApplicationResponse';
 import {Application} from '@enonic/lib-admin-ui/application/Application';
@@ -22,8 +22,8 @@ import {Path} from '@enonic/lib-admin-ui/rest/Path';
 import {ServerEventsListener} from '@enonic/lib-admin-ui/event/ServerEventsListener';
 import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/application/ApplicationEvent';
 import {ProgressBar} from '@enonic/lib-admin-ui/ui/ProgressBar';
-import {InstallUrlApplicationRequest} from './resource/InstallUrlApplicationRequest';
-import {ApplicationInstallResult} from './resource/ApplicationInstallResult';
+import {InstallUrlApplicationRequest} from '../home/resource/InstallUrlApplicationRequest';
+import {ApplicationInstallResult} from '../home/resource/ApplicationInstallResult';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 import {KeyHelper} from '@enonic/lib-admin-ui/ui/KeyHelper';
 
@@ -380,7 +380,7 @@ function loadDemoApps(): Q.Promise<void>[] {
 
 // Required to update progress bar
 function enableApplicationServerEventsListener() {
-    const application = new AppApplication(
+    const application: AppApplication = new AppApplication(
         'applications',
         'Applications',
         'AM',
@@ -393,10 +393,10 @@ function enableApplicationServerEventsListener() {
 }
 
 function loadApp(marketDemoApp: MarketApplication) {
-    const url = marketDemoApp.getLatestVersionDownloadUrl();
-    const demoAppContainer = document.getElementById(marketDemoApp.getName());
+    const url: string = marketDemoApp.getLatestVersionDownloadUrl();
+    const demoAppContainer: HTMLElement = document.getElementById(marketDemoApp.getName());
 
-    const progressBar = new ProgressBar(0);
+    const progressBar: ProgressBar = new ProgressBar(0);
     const progressHandler = function (event: ApplicationEvent) {
         if (event.getApplicationUrl() === url && event.getEventType() === ApplicationEventType.PROGRESS) {
             progressBar.setValue(event.getProgress());
@@ -429,7 +429,7 @@ function loadApp(marketDemoApp: MarketApplication) {
 }
 
 function updateHeaderStep(step: number) {
-    const totalSteps = isSystemAdmin ? '3' : '2';
+    const totalSteps: string = isSystemAdmin ? '3' : '2';
     tourDialog.setHeading(i18n('tour.title.stepXofY', step, totalSteps));
 }
 
