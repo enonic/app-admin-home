@@ -19,6 +19,11 @@ describe('Home Page specification - check buttons and open About dialog(licensin
             await shortcutsWidget.clickOnXpTourItem();
             await homePage.pause(1000);
             await testUtils.saveScreenshot("xp_tour1");
+            await testUtils.doSwitchToNextTab();
+            await homePage.pause(1000);
+            await testUtils.saveScreenshot("xp_tour2");
+            await homePage.pause(1000);
+            await testUtils.saveScreenshot("xp_tour3");
             // let discuss = await homePage.isDiscussButtonDisplayed();
             // assert.isTrue(discuss, "Discuss button should be displayed in the dashboard");
             // let developer = await homePage.isDeveloperButtonDisplayed();
