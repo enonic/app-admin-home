@@ -38,10 +38,14 @@ export class WidgetPanel
 
     private fetchAndAppendWidget(widget: Widget) {
         const widthCls: string = widget.getConfig()['width'] || 'auto';
-        const stylingCls: string = widget.getConfig()['style'] || '';
+        const styleCls: string = widget.getConfig()['style'] || '';
         const widgetPlaceholder: LibAdminElement =
-            new DivEl(`widget-placeholder width-${widthCls}${stylingCls ? ` style-${stylingCls}` : ''}`)
-            .appendChild(new H5El('widget-header').setHtml(widget.getDisplayName()));
+            new DivEl(`widget-placeholder width-${widthCls.toLowerCase()}${styleCls ? ` style-${styleCls.toLowerCase()}` : ''}`);
+
+        if (styleCls !== 'custom') {
+            widgetPlaceholder.appendChild(new H5El('widget-header').setHtml(widget.getDisplayName()));
+        }
+
         this.appendChild(widgetPlaceholder);
 
         widgetPlaceholder.render()

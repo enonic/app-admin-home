@@ -14,11 +14,8 @@
     grid-auto-flow: dense;
 
     .widget-placeholder {
-      background-color: rgba(255, 255, 255, 0.95);
+
       width: auto;
-      border-radius: 8px;
-      box-shadow: 2px 2px 4px 1px rgb(0 0 0 / 35%);
-      padding: 10px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -32,7 +29,6 @@
       }
 
       .widget-contents {
-        padding: 5px 10px;
         opacity: 0;
         overflow-x: hidden;
       }
@@ -40,6 +36,17 @@
       &.loaded .widget-contents {
         transition: opacity 2s;
         opacity: 1;
+      }
+
+      &:not(.style-custom) {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 8px;
+        box-shadow: 2px 2px 4px 1px rgb(0 0 0 / 35%);
+        padding: 10px;
+
+        .widget-contents {
+          padding: 5px 10px;
+        }
       }
     }
   }
