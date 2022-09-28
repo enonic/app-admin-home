@@ -10,6 +10,13 @@ const fs = require('fs');
 const path = require('path');
 module.exports = {
 
+    getBrowser() {
+        if (typeof browser !== "undefined") {
+            return browser;
+        } else {
+            return webDriverHelper.browser;
+        }
+    },
     async doLoginAndCloseXpTourDialog() {
         let loginPage = new LoginPage();
         let xpTourDialog = new XpTourDialog();
