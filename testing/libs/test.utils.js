@@ -32,6 +32,10 @@ module.exports = {
             return console.log('cookie is being deleted...');
         });
     },
+    async doSwitchToNextTab() {
+        let tabs = await this.getBrowser().getWindowHandles();
+        return await this.getBrowser().switchToWindow(tabs[tabs.length - 1]);
+    },
     saveScreenshot: function (name, that) {
 
         let screenshotsDir = path.join(__dirname, '/../build/mochawesome-report/screenshots/');
