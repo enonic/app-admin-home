@@ -15,7 +15,7 @@ describe('XP tour dialog - install applications and check their statuses', funct
     const APP_GUILLOTINE = 'Guillotine App';
     const APP_DATA_TOOLBOX = 'Data Toolbox';
 
-    it('GIVEN XP tour dialog is opened WHEN Next-button has been pressed 2 times THEN Install button should appear',
+    it.skip('GIVEN XP tour dialog is opened WHEN Next-button has been pressed 2 times THEN Install button should appear',
         async function () {
             const loginPage = new LoginPage();
             const xpTourDialog = new XpTourDialog();
@@ -39,7 +39,7 @@ describe('XP tour dialog - install applications and check their statuses', funct
         });
 
     //Verifies Incorrect styling inside XP Tour #614
-    it("GIVEN Last step is opened WHEN 'Install Apps' button has been pressed THEN three application should be installed",
+    it.skip("GIVEN Last step is opened WHEN 'Install Apps' button has been pressed THEN three application should be installed",
         async function () {
             const loginPage = new LoginPage();
             const xpTourDialog = new XpTourDialog();
@@ -65,7 +65,7 @@ describe('XP tour dialog - install applications and check their statuses', funct
 
     //verifies https://github.com/enonic/app-admin-home/issues/56
     //Welcome Tour dialog - unknown status of applications in the last step
-    it('GIVEN XP tour dialog is opened WHEN last step has been opened THEN expected status of apps should be displayed AND applications should be present in Launcher Panel',
+    it.skip('GIVEN XP tour dialog is opened WHEN last step has been opened THEN expected status of apps should be displayed AND applications should be present in Launcher Panel',
         async function () {
             const loginPage = new LoginPage();
             const xpTourDialog = new XpTourDialog();
