@@ -37,6 +37,20 @@ export class WidgetPanel
     }
 
     private fetchAndAppendWidget(widget: Widget) {
+        const widgetPlaceholder: LibAdminElement = this.createWidgetPlaceholder(widget);
+        this.appendChild(widgetPlaceholder);
+
+        widgetPlaceholder.render()
+            .then(() => {
+                const loadMask: LoadMask = new LoadMask(widgetPlaceholder);
+                loadMask.show();
+
+                return this.fetchWidget(widget, widgetPlaceholder).finally(() => loadMask.hide());
+            })
+            .catch(DefaultErrorHandler.handle);
+    }
+
+    private createWidgetPlaceholder(widget: Widget): LibAdminElement {
         const widthCls: string = widget.getConfig()['width'] || 'auto';
         const styleCls: string = widget.getConfig()['style'] || '';
         const widgetPlaceholder: LibAdminElement =
@@ -46,16 +60,7 @@ export class WidgetPanel
             widgetPlaceholder.appendChild(new H5El('widget-header').setHtml(widget.getDisplayName()));
         }
 
-        this.appendChild(widgetPlaceholder);
-
-        widgetPlaceholder.render()
-            .then(() => {
-                const loadMask: LoadMask = new LoadMask(widgetPlaceholder);
-                loadMask.show();
-
-                this.fetchWidget(widget, widgetPlaceholder).finally(() => loadMask.hide());
-            })
-            .catch(DefaultErrorHandler.handle);
+        return widgetPlaceholder;
     }
 
     private fetchWidget(widget: Widget, widgetContainer: LibAdminElement): Promise<void> {
@@ -64,14 +69,12 @@ export class WidgetPanel
             .then((html: string) => {
                 const sanitisedWidgetEl: LibAdminElement = this.getSanitisedWidget(widget, html);
 
-                this.injectWidgetAssets(sanitisedWidgetEl)
+                return this.injectWidgetAssets(sanitisedWidgetEl)
                     .then(() => {
-                        widgetContainer.appendChild(sanitisedWidgetEl.addClass('widget-contents'));
-                        widgetContainer.addClass('loaded');
-                    })
-                    .catch(DefaultErrorHandler.handle);
-            })
-            .catch(DefaultErrorHandler.handle);
+                        widgetContainer.appendChild(sanitisedWidgetEl.addClass('widget-contents')).addClass('loaded');
+                        return Q.resolve();
+                    });
+            });
     }
 
     private getSanitisedWidget(widget: Widget, widgetHtml: string): LibAdminElement {
