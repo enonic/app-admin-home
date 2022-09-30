@@ -5,26 +5,40 @@ const lib = require('../libs/elements');
 const XPATH = {
     container: "//div[contains(@class,'widget-placeholder') ]",
     header: "//h5[contains(@class,'widget-header')]",
-    xpTourTab: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='XP Tour']]",
-    aboutTab: "//div[contains(@class,'shortcuts-item') and child::a[text()='About']]",
-    licenseHeader: "//div[contains(@class,'xp-license-info-header')]"
+    xpTourDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='XP Tour']]",
+    aboutDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='About']]",
+    developerDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='Developer']]",
+    discussDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='Discuss']]",
+    marketDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='Market']]",
 };
 
 class ShortcutsWidget extends Page {
 
     get header() {
-        return XPATH.container + XPATH.licensingButton;
+        return XPATH.container + XPATH.header;
     }
 
     get xpTourItem() {
-        return XPATH.container + XPATH.xpTourTab;
+        return XPATH.container + XPATH.xpTourDivItem;
     }
 
-    get aboutTab() {
-        return XPATH.container + XPATH.aboutTab;
+    get aboutItem() {
+        return XPATH.container + XPATH.aboutDivItem;
     }
 
-    async clickOnXpTourItem() {
+    get developerItem() {
+        return XPATH.container + XPATH.developerDivItem;
+    }
+
+    get marketItem() {
+        return XPATH.container + XPATH.marketDivItem;
+    }
+
+    get discussItem() {
+        return XPATH.container + XPATH.discussDivItem;
+    }
+
+    async clickOnXpTourButton() {
         try {
             await this.waitForXpTourItemDisplayed();
             await this.clickOnElement(this.xpTourItem);
@@ -36,7 +50,7 @@ class ShortcutsWidget extends Page {
         }
     }
 
-    async clickOnAboutItem() {
+    async clickOnAboutButton() {
         try {
             await this.waitForAboutItemDisplayed();
             await this.clickOnElement(this.xpTourItem);
@@ -58,16 +72,28 @@ class ShortcutsWidget extends Page {
         }
     }
 
+    waitForDiscussItemDisplayed() {
+        return this.waitForElementDisplayed(this.discussItem);
+    }
+
+    waitForDeveloperItemDisplayed() {
+        return this.waitForElementDisplayed(this.developerItem);
+    }
+
+    waitForMarketItemDisplayed() {
+        return this.waitForElementDisplayed(this.marketItem);
+    }
+
     waitForXpTourItemDisplayed() {
         return this.waitForElementDisplayed(this.xpTourItem);
     }
 
     waitForAboutItemDisplayed() {
-        return this.waitForElementDisplayed(this.aboutTab);
+        return this.waitForElementDisplayed(this.aboutItem);
     }
 
     getHeader() {
-        return this.getText(this.getHeader());
+        return this.getText(this.header);
     }
 }
 
