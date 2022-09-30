@@ -31,8 +31,9 @@ class AboutDialog extends Page {
         try {
             return await this.waitForElementDisplayed(XPATH.container, appConst.mediumTimeout);
         } catch (err) {
-            await this.saveScreenshot("err_about_dialog_not_loaded");
-            throw new Error("About dialog is not loaded in 3 seconds!")
+            let screenshot = appConst.generateRandomName("err_about_dlg");
+            await this.saveScreenshot(screenshot);
+            throw new Error("About dialog is not loaded in 3 seconds! screenshot: " + screenshot + "  " + err);
         }
     }
 
@@ -48,8 +49,14 @@ class AboutDialog extends Page {
         return this.waitForElementNotDisplayed(XPATH.container + "//div[contains(@class,'xp-license-info-body')]");
     }
 
-    waitForDialogClosed() {
-        return this.waitForElementNotDisplayed(XPATH.container, appConst.shortTimeout);
+    async waitForDialogClosed() {
+        try {
+            return await this.waitForElementNotDisplayed(XPATH.container, appConst.shortTimeout);
+        } catch (err) {
+            let screenshot = appConst.generateRandomName("err_about_dlg");
+            await this.saveScreenshot(screenshot);
+            throw new Error("About dialog should be closed! screenshot: " + screenshot + " " + err);
+        }
     }
 
     getTitle() {
