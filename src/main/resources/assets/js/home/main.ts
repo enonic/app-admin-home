@@ -11,26 +11,49 @@ import {create as createAboutDialog} from './AboutDialog';
 import {init} from './xptour';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 
-void (async () => {
+const showBackgroundImageOnLoad = () => {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+                document.getElementById('background-image').classList.remove('empty');
+            }
+            , 100);
+    });
+};
+
+const initConfig = async () => {
     if (!document.currentScript) {
         throw 'Legacy browsers are not supported';
     }
-    const configServiceUrl = document.currentScript.getAttribute('data-config-service-url');
+
+    const configServiceUrl: string = document.currentScript.getAttribute('data-config-service-url');
 
     await CONFIG.init(configServiceUrl);
 
     await i18nInit(CONFIG.getString('i18nUrl'));
+};
 
-    startLostConnectionDetector();
-    setupWebSocketListener();
-    setupAboutDialog();
-    addListenersToDashboardItems();
+const setupBodyClickListeners = (dialog: ModalDialogWithConfirmation) => {
+    const bodyEl: HTMLElement = BodyMask.get().getHTMLElement();
 
+    const listener = (e: MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (dialog.isVisible()) {
+            dialog.close();
+        }
+
+        bodyEl.removeEventListener('click', listener);
+    };
+
+    bodyEl.addEventListener('click', listener);
+};
+
+const initTour = () => {
     if (CONFIG.getString('tourEnabled')) {
-        void init().then(function (tourDialog: ModalDialogWithConfirmation) {
-            const enonicXPTourCookie = CookieHelper.getCookie(
-                'enonic_xp_tour',
-            );
+        void init().then((tourDialog: ModalDialogWithConfirmation) => {
+            const enonicXPTourCookie: string = CookieHelper.getCookie('enonic_xp_tour');
+
             if (!enonicXPTourCookie) {
                 CookieHelper.setCookie('enonic_xp_tour', 'tour', 365);
                 tourDialog.open();
@@ -48,32 +71,18 @@ void (async () => {
             });
         });
     }
-})();
+};
 
-function setupWebSocketListener() {
-    const dummyApp = new Application('home', 'home', 'home', '');
+const setupWebSocketListener = () => {
+    const dummyApp: Application = new Application('home', 'home', 'home', '');
     dummyApp.setWindow(window);
 
-    const serverEventsListener = new ServerEventsListener([dummyApp]);
+    const serverEventsListener: ServerEventsListener = new ServerEventsListener([dummyApp]);
     serverEventsListener.start();
-}
+};
 
-function setupBodyClickListeners(dialog: ModalDialogWithConfirmation) {
-    const bodyEl = BodyMask.get().getHTMLElement();
-
-    function listener(e: MouseEvent) {
-        e.stopPropagation();
-        e.preventDefault();
-        if (dialog.isVisible()) {
-            dialog.close();
-        }
-        bodyEl.removeEventListener('click', listener);
-    }
-    bodyEl.addEventListener('click', listener);
-}
-
-function setupAboutDialog() {
-    const aboutDialog = createAboutDialog();
+const setupAboutDialog = () => {
+    const aboutDialog: ModalDialogWithConfirmation = createAboutDialog();
 
     const execute = (e: Event | KeyboardEvent) => {
         e.preventDefault();
@@ -84,26 +93,36 @@ function setupAboutDialog() {
 
     document.querySelector('.xp-about').addEventListener('click', execute);
     document.querySelector('.xp-about').addEventListener('keypress', (e: KeyboardEvent) => {
-        if(e.key === 'Enter') { execute(e); }
+        if (e.key === 'Enter') { execute(e); }
     });
-}
+};
 
-function startLostConnectionDetector() {
+const startLostConnectionDetector = () => {
     ConnectionDetector.get()
         .setAuthenticated(true)
         .setSessionExpireRedirectUrl(`${CONFIG.getString('adminUrl')}/tool`)
         .setNotificationMessage(i18n('notify.connection.loss'))
         .startPolling(true);
-}
+};
 
-function addListenersToDashboardItems() {
-    const dashboardItems = Array.from(document.getElementsByClassName('dashboard-item'));
+const addListenersToDashboardItems = () => {
+    const dashboardItems: Element[] = Array.from(document.getElementsByClassName('dashboard-item'));
 
     dashboardItems.forEach((item: HTMLElement) => {
         item.addEventListener('keypress', (e: KeyboardEvent) => {
-            if(e.key === 'Enter') {
+            if (e.key === 'Enter') {
                 (item.firstElementChild as HTMLElement).click();
             }
         });
     });
-}
+};
+
+void (async () => {
+    showBackgroundImageOnLoad();
+    await initConfig();
+    startLostConnectionDetector();
+    setupWebSocketListener();
+    setupAboutDialog();
+    addListenersToDashboardItems();
+    initTour();
+})();
