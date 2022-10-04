@@ -82,11 +82,7 @@ export class WidgetPanel
             widgetHtml,
             true,
             {
-                addTags: [
-                    'widget',
-                    'link', // allow widget assets
-                    'script',
-                ],
+                addTags: this.getAllowedWidgetTags(widget),
                 addAttributes: ['target'],  // allow opening links in a new window
             },
         );
@@ -96,6 +92,20 @@ export class WidgetPanel
         }
 
         return widgetEl;
+    }
+
+    private getAllowedWidgetTags(widget: Widget): string[] {
+        const result: string[] = [
+            'widget',
+            'link', // allow widget assets
+            'script',
+        ];
+
+        if (widget.getWidgetDescriptorKey().getName() === 'youtube') {
+            result.push('iframe');
+        }
+
+        return result;
     }
 
     private injectWidgetAssets(widgetEl: LibAdminElement): Q.Promise<void[]>  {

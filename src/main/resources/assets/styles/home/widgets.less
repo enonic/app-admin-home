@@ -117,20 +117,22 @@
       grid-template-columns: repeat(4, minmax(210px, 1fr));
 
       .widget-placeholder {
-        &.small {
-          grid-column: span 1;
-        }
+        &.width- {
+          &small {
+            grid-column: span 1;
+          }
 
-        &.medium {
-          grid-column: span 2;
-        }
+          &medium {
+            grid-column: span 2;
+          }
 
-        &.large {
-          grid-column: span 3;
-        }
+          &large {
+            grid-column: span 3;
+          }
 
-        &.full {
-          grid-column: span 4;
+          &full {
+            grid-column: span 4;
+          }
         }
       }
     }
