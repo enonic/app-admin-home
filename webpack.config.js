@@ -15,6 +15,7 @@ module.exports = {
         'styles/home': './styles/home.less',
         'styles/launcher': './styles/launcher.less',
         'styles/widgets/shortcuts': './styles/widgets/shortcuts.less',
+        'styles/widgets/youtube': './styles/widgets/youtube.less',
     },
     output: {
         path: path.join(__dirname, '/build/resources/main/assets'),

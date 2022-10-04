@@ -1,0 +1,13 @@
+.widget-youtube-container {
+  display: flex;
+  overflow: auto;
+
+  iframe {
+    width: 240px;
+    height: calc(100% - 10px);
+
+    &:not(:last-child) {
+      margin-right: 5px;
+    }
+  }
+}
