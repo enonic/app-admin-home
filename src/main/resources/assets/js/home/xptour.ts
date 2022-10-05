@@ -39,7 +39,7 @@ let isSystemAdmin = false;
 const demoAppsNames = [
     'com.enonic.app.contentstudio',
     'systems.rcd.enonic.datatoolbox',
-    'com.enonic.app.livetrace',
+    'com.enonic.app.guillotine',
 ];
 
 export function init() {
