@@ -10,6 +10,7 @@ function handleGet() {
     const devIconUrl = portal.assetUrl({ path: `${iconsPath}developer.svg` });
     const forumIconUrl = portal.assetUrl({ path: `${iconsPath}discuss.svg` });
     const marketIconUrl = portal.assetUrl({ path: `${iconsPath}market.svg` });
+    const slackIconUrl = portal.assetUrl({ path: `${iconsPath}slack.svg` });
 
     const locales = admin.getLocales();
     const dashboardIcons = [
@@ -28,6 +29,12 @@ function handleGet() {
             cls: '',
             caption: 'Developer',
             link: 'https://developer.enonic.com/'
+        },
+        {
+            src: slackIconUrl,
+            cls: '',
+            caption: 'Slack',
+            link: 'https://slack.enonic.com/'
         },
         {
             src: forumIconUrl,
