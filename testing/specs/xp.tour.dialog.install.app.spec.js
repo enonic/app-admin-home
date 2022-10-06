@@ -12,7 +12,8 @@ describe('XP tour dialog - install applications and check their statuses', funct
     webDriverHelper.setupBrowser();
     const INSTALLED_STATUS = "Installed";
     const APP_CONTENT_STUDIO = 'Content Studio';
-    const APP_LIVE_TRACE = 'Live Trace';
+    const APP_GUILLOTINE = 'Guillotine App';
+    const APP_DATA_TOOLBOX = 'Data Toolbox';
 
     it('GIVEN XP tour dialog is opened WHEN Next-button has been pressed 2 times THEN Install button should appear',
         async function () {
@@ -31,9 +32,9 @@ describe('XP tour dialog - install applications and check their statuses', funct
             await testUtils.saveScreenshot('xp_tour_last_step', this);
             //4. 3 applications to install should be present in the dialog
             let result = await xpTourDialog.getNamesOfAvailableApplications();
-            assert.isTrue(result.includes('LIVE TRACE'), 'Live trace app should be available');
-            assert.isTrue(result.includes('CONTENT STUDIO'), 'Content Studio app should be available');
-            assert.isTrue(result.includes('DATA TOOLBOX'), 'Data Toolbox app should be available');
+            assert.isTrue(result.includes(APP_GUILLOTINE.toUpperCase()), 'Guillotine app should be available');
+            assert.isTrue(result.includes(APP_CONTENT_STUDIO.toUpperCase()), 'Content Studio app should be available');
+            assert.isTrue(result.includes(APP_DATA_TOOLBOX.toUpperCase()), 'Data Toolbox app should be available');
             assert.equal(result.length, 3, 'Three applications should be available for installing');
         });
 
@@ -55,8 +56,8 @@ describe('XP tour dialog - install applications and check their statuses', funct
             await xpTourDialog.pause(4000);
             await testUtils.saveScreenshot('xp_tour_apps_installed', this);
             //4. Verify the styles- three applications should be displayed as installed:
-            await xpTourDialog.waitForApplicationInstalled('Live Trace');
-            await xpTourDialog.waitForApplicationInstalled('Data Toolbox');
+            await xpTourDialog.waitForApplicationInstalled(APP_GUILLOTINE);
+            await xpTourDialog.waitForApplicationInstalled(APP_DATA_TOOLBOX);
             await xpTourDialog.waitForApplicationInstalled(APP_CONTENT_STUDIO);
             //5. Verify that 'Finish' button is visible now:
             await xpTourDialog.waitForAppFinishButtonVisible();
@@ -79,15 +80,12 @@ describe('XP tour dialog - install applications and check their statuses', funct
             await testUtils.saveScreenshot('xp_tour_issue_56', this);
             //4. 'Installed' status should be displayed for each application:
             let status = await xpTourDialog.waitForApplicationsStatus(APP_CONTENT_STUDIO);
-            assert.equal(status, INSTALLED_STATUS, "Installed status should appear(Content Studio)");
+            assert.equal(status, INSTALLED_STATUS, "Installed status should appear for Content Studio");
             status = await xpTourDialog.waitForApplicationsStatus('Data Toolbox');
-            assert.equal(status, INSTALLED_STATUS, "Installed status should appear(Data Toolbox)");
-            status = await xpTourDialog.waitForApplicationsStatus(APP_LIVE_TRACE);
-            assert.equal(status, INSTALLED_STATUS, "Installed status should appear(Live Trace)");
+            assert.equal(status, INSTALLED_STATUS, "Installed status should appear for Data Toolbox");
             //5. Verify that three new links get visible in Launcher Panel:
             await xpTourDialog.waitForAppPresentInLauncherPanel(APP_CONTENT_STUDIO);
             await xpTourDialog.waitForAppPresentInLauncherPanel('Data toolbox');
-            await xpTourDialog.waitForAppPresentInLauncherPanel(APP_LIVE_TRACE);
         });
 
     beforeEach(() => testUtils.doDeleteCookie());
