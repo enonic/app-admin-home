@@ -28,10 +28,20 @@ export class WidgetPanel
         return baseUrl;
     }
 
+    private sortByOrder(widget1: Widget, widget2: Widget): number {
+        return this.getWidgetOrder(widget1) < this.getWidgetOrder(widget2) ? 1 : -1;
+    }
+
+    private getWidgetOrder(widget: Widget): number {
+        return parseInt(widget.getConfig()['order']) || Number.MAX_VALUE;
+    }
+
     fetchAndAppendWidgets(): void {
         new GetDashboardWidgetsRequest().fetchWidgets()
             .then((widgets: Widget[]) => {
-                widgets.forEach((widget: Widget) => this.fetchAndAppendWidget(widget));
+                widgets
+                    .sort((w1: Widget, w2: Widget) => this.sortByOrder(w1, w2))
+                    .forEach((widget: Widget) => this.fetchAndAppendWidget(widget));
             })
             .catch(DefaultErrorHandler.handle);
     }

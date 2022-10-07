@@ -6,5 +6,6 @@
   <config>
     <property name="width" value="medium"/>
     <property name="style" value="custom"/>
+    <property name="order" value="0"/>
   </config>
 </widget>
