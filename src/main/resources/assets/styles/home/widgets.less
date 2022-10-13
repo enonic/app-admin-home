@@ -1,8 +1,8 @@
 @widget-height: 250px;
 
-#widget-container {
+#home-main-container {
   width: 100%;
-  padding: 45px 35px;
+  padding: 55px 35px 10px 35px;
   box-sizing: border-box;
   overflow: auto;
 
@@ -25,7 +25,6 @@
       .widget-header {
         margin: 0 0 0.75em 0.3em;
         font-size: 14px;
-        text-transform: capitalize;
         letter-spacing: 1px;
         color: @admin-font-gray2;
       }
@@ -41,9 +40,11 @@
       }
 
       &:not(.style-custom) {
-        background-color: rgba(255, 255, 255, 0.95);
-        border-radius: 8px;
-        box-shadow: 2px 2px 4px 1px rgb(0 0 0 / 35%);
+        border-radius: 4px;
+        background-color: hsl(0, 0%, 100%);
+        -webkit-box-shadow: 1px 1px 5px 0 hsl(0deg 0% 0% / 20%), 0 5px 16px 0 hsl(0deg 0% 0% / 5%);
+        box-shadow: 1px 1px 5px 0 hsl(0deg 0% 0% / 20%), 0 5px 16px 0 hsl(0deg 0% 0% / 5%);
+        opacity: 90;
         padding: 10px;
         height: @widget-height;
         box-sizing: border-box;
@@ -65,7 +66,7 @@
    */
 
 @media screen and (min-width: 481px) {
-  #widget-container {
+  #home-main-container {
     .widget-panel {
       grid-gap: 30px;
       grid-template-columns: repeat(2, minmax(210px, 1fr));
@@ -88,8 +89,7 @@
 }
 
 @media screen and (min-width: 769px) {
-  #widget-container {
-
+  #home-main-container {
     .widget-panel {
       grid-template-columns: repeat(3, minmax(220px, 1fr));
 
@@ -114,8 +114,7 @@
 }
 
 @media screen and (min-width: 1025px) {
-  #widget-container {
-
+  #home-main-container {
     .widget-panel {
       grid-template-columns: repeat(4, minmax(210px, 1fr));
 

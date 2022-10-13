@@ -5,6 +5,5 @@
   </interfaces>
   <config>
     <property name="width" value="full"/>
-    <property name="order" value="1000"/>
   </config>
 </widget>

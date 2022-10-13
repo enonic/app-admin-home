@@ -31,7 +31,13 @@ const getAboutDialogContent = (): Element => {
             <div class="xp-about-dialog-license"></div>
         </div>`;
 
-    return Element.fromString(html);
+    return Element.fromCustomarilySanitizedString(
+        html,
+        true,
+        {
+            addAttributes: ['target'],  // allow opening links in a new window
+        },
+    );
 };
 
 const fetchLicenses = (): Promise<string> => {

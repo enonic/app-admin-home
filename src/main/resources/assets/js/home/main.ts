@@ -1,78 +1,54 @@
-import {ModalDialogWithConfirmation} from '@enonic/lib-admin-ui/ui/dialog/ModalDialogWithConfirmation';
-import {CookieHelper} from '@enonic/lib-admin-ui/util/CookieHelper';
-import {Application} from '@enonic/lib-admin-ui/app/Application';
-import {ServerEventsListener} from '@enonic/lib-admin-ui/event/ServerEventsListener';
-import {BodyMask} from '@enonic/lib-admin-ui/ui/mask/BodyMask';
 import {Body} from '@enonic/lib-admin-ui/dom/Body';
+import {Application} from '@enonic/lib-admin-ui/app/Application';
+import {Path} from '@enonic/lib-admin-ui/rest/Path';
+import {AppBar} from '@enonic/lib-admin-ui/app/bar/AppBar';
+import {ServerEventsListener} from '@enonic/lib-admin-ui/event/ServerEventsListener';
 import {ConnectionDetector} from '@enonic/lib-admin-ui/system/ConnectionDetector';
 import {i18nInit} from '@enonic/lib-admin-ui/util/MessagesInitializer';
 import {i18n} from '@enonic/lib-admin-ui/util/Messages';
-import {create as createAboutDialog} from './AboutDialog';
-import {init} from './xptour';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 import {Element} from '@enonic/lib-admin-ui/dom/Element';
+import {ImgEl} from '@enonic/lib-admin-ui/dom/ImgEl';
+import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
 import {WidgetPanel} from './WidgetPanel';
+import * as Q from 'q';
 
-const showBackgroundImageOnLoad = () => {
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-                document.getElementById('background-image').classList.remove('empty');
-            }
-            , 100);
+const containerId = 'home-main-container';
+
+const loadDOM = (): Q.Promise<void> => {
+    const DOMLoaded: Q.Deferred<void> = Q.defer<void>();
+    document.addEventListener('DOMContentLoaded', () => DOMLoaded.resolve());
+    return DOMLoaded.promise;
+};
+
+const showBackgroundImage = (): Q.Promise<void> => {
+    const containerEl = document.getElementById(containerId);
+    if (!containerEl) {
+        throw new Error('Main container not found!');
+    }
+
+    const deferred: Q.Deferred<void> = Q.defer<void>();
+    const container: Element = Element.fromHtmlElement(containerEl);
+    const divEl = new DivEl('lazy-image empty');
+    divEl.setId('background-image');
+    const imgEl = new ImgEl(CONFIG.getString('backgroundUri'), 'lazy-image empty');
+
+    container.appendChildren(divEl, imgEl);
+
+    imgEl.onLoaded(() => {
+        divEl.getEl().setAttribute('style', `background-image: url('${imgEl.getSrc()}')`);
+        imgEl.remove();
+        divEl.removeClass('empty');
+        deferred.resolve();
     });
+    container.appendChild(imgEl);
+
+    return deferred.promise;
 };
 
-const initConfig = async () => {
-    if (!document.currentScript) {
-        throw 'Legacy browsers are not supported';
-    }
-
-    const configServiceUrl: string = document.currentScript.getAttribute('data-config-service-url');
-
+const initConfig = async (configServiceUrl) => {
     await CONFIG.init(configServiceUrl);
-
     await i18nInit(CONFIG.getString('i18nUrl'));
-};
-
-const setupBodyClickListeners = (dialog: ModalDialogWithConfirmation) => {
-    const bodyEl: HTMLElement = BodyMask.get().getHTMLElement();
-
-    const listener = (e: MouseEvent) => {
-        e.stopPropagation();
-        e.preventDefault();
-
-        if (dialog.isVisible()) {
-            dialog.close();
-        }
-
-        bodyEl.removeEventListener('click', listener);
-    };
-
-    bodyEl.addEventListener('click', listener);
-};
-
-const initTour = () => {
-    if (CONFIG.getString('tourEnabled')) {
-        void init().then((tourDialog: ModalDialogWithConfirmation) => {
-            const enonicXPTourCookie: string = CookieHelper.getCookie('enonic_xp_tour');
-
-            if (!enonicXPTourCookie) {
-                CookieHelper.setCookie('enonic_xp_tour', 'tour', 365);
-                tourDialog.open();
-            }
-
-            const execute = (e: Event | KeyboardEvent) => {
-                e.preventDefault();
-                tourDialog.open();
-                setupBodyClickListeners(tourDialog);
-            };
-
-            document.querySelector('.xp-tour').addEventListener('click', execute);
-            document.querySelector('.xp-tour').addEventListener('keypress', (e: KeyboardEvent) => {
-                if (e.key === 'Enter') { execute(e); }
-            });
-        });
-    }
 };
 
 const setupWebSocketListener = () => {
@@ -81,22 +57,6 @@ const setupWebSocketListener = () => {
 
     const serverEventsListener: ServerEventsListener = new ServerEventsListener([dummyApp]);
     serverEventsListener.start();
-};
-
-const setupAboutDialog = () => {
-    const aboutDialog: ModalDialogWithConfirmation = createAboutDialog();
-
-    const execute = (e: Event | KeyboardEvent) => {
-        e.preventDefault();
-        Body.get().appendChild(aboutDialog);
-        aboutDialog.open();
-        setupBodyClickListeners(aboutDialog);
-    };
-
-    document.querySelector('.xp-about').addEventListener('click', execute);
-    document.querySelector('.xp-about').addEventListener('keypress', (e: KeyboardEvent) => {
-        if (e.key === 'Enter') { execute(e); }
-    });
 };
 
 const startLostConnectionDetector = () => {
@@ -108,18 +68,18 @@ const startLostConnectionDetector = () => {
 };
 
 const addListenersToDashboardItems = () => {
-    const dashboardItems: Element[] = Array.from(document.getElementsByClassName('dashboard-item'));
+    const dashboardItems = Array.from(document.getElementsByClassName('dashboard-item'));
 
     dashboardItems.forEach((item: HTMLElement) => {
         item.addEventListener('keypress', (e: KeyboardEvent) => {
-            if (e.key === 'Enter') {
+            if(e.key === 'Enter') {
                 (item.firstElementChild as HTMLElement).click();
             }
         });
     });
 };
 
-function appendDashboardWidgets(containerId: string) {
+const appendDashboardWidgets = () => {
     const widgetContainerEl = document.getElementById(containerId);
     if (!widgetContainerEl) {
         throw new Error('Widget container not found!');
@@ -129,15 +89,39 @@ function appendDashboardWidgets(containerId: string) {
     const widgetPanel: WidgetPanel = new WidgetPanel();
     widgetContainer.appendChild(widgetPanel);
     widgetPanel.fetchAndAppendWidgets();
+};
+
+function getApplication(): Application {
+    const assetsUri: string = CONFIG.getString('assetsUri');
+    const application = new Application(
+        CONFIG.getString('appId'),
+        i18n('home.dashboard'),
+        '',
+        `${assetsUri}/icons/icon-white.svg`,
+    );
+    application.setPath(Path.fromString('/'));
+
+    return application;
+}
+
+function startApplication() {
+    const appBar = new AppBar(getApplication());
+    Body.get().appendChild(appBar);
+
+    setupWebSocketListener();
+    startLostConnectionDetector();
+    addListenersToDashboardItems();
+    appendDashboardWidgets();
 }
 
 void (async () => {
-    showBackgroundImageOnLoad();
-    await initConfig();
-    startLostConnectionDetector();
-    setupWebSocketListener();
-    setupAboutDialog();
-    addListenersToDashboardItems();
-    appendDashboardWidgets('widget-container');
-    initTour();
+    if (!document.currentScript) {
+        throw 'Legacy browsers are not supported';
+    }
+
+    const configServiceUrl: string = document.currentScript.getAttribute('data-config-service-url');
+    await loadDOM();
+    await initConfig(configServiceUrl);
+    await showBackgroundImage();
+    startApplication();
 })();
