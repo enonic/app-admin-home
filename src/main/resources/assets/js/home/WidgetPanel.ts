@@ -29,11 +29,12 @@ export class WidgetPanel
     }
 
     private sortByOrder(widget1: Widget, widget2: Widget): number {
-        return this.getWidgetOrder(widget1) < this.getWidgetOrder(widget2) ? 1 : -1;
+        return this.getWidgetOrder(widget1) - this.getWidgetOrder(widget2);
     }
 
     private getWidgetOrder(widget: Widget): number {
-        return parseInt(widget.getConfig()['order']) || Number.MAX_VALUE;
+        const widgetOrder: string = widget.getConfig()['order'];
+        return widgetOrder ? parseInt(widgetOrder) : Number.MAX_VALUE;
     }
 
     fetchAndAppendWidgets(): void {

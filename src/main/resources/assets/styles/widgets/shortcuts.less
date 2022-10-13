@@ -2,16 +2,22 @@
 @import "dialog-about";
 @import "dialog-tour";
 
+.widget-shortcuts-header {
+  margin: 0.75em 0 0.75em 0.3em;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: @admin-white;
+}
+
 .widget-shortcuts-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
   align-items: center;
 
   .widget-shortcuts-item {
     text-align: center;
     width: 70px;
-    margin: 10px;
+    margin: 20px 8px;
     cursor: pointer;
     font-size: 14px;
     -webkit-font-smoothing: antialiased;
@@ -20,22 +26,20 @@
     img {
       width: 32px;
       height: 32px;
-      filter: invert(1) sepia(1) saturate(5) hue-rotate(0deg);
-      opacity: 0.7;
     }
 
     a {
-      color: #555858;
+      color: @admin-font-gray;
       text-decoration: none;
+
+      div {
+        color: @admin-font-gray;
+      }
     }
 
     &:hover {
-      img {
-        opacity: 1;
-      }
-
       a {
-        color: black;
+        opacity: 0.7;
       }
     }
   }

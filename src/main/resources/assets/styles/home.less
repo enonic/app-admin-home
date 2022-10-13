@@ -7,6 +7,7 @@
 @import "home/progress-bar";
 @import "home/notify";
 @import "home/widgets";
+@import "home/appbar";
 
 .home-main-container {
   .home-main-container-mixin(1, bottom);
@@ -19,75 +20,14 @@
     bottom: 0;
   }
 
+  .lazy-image {
+    opacity: 0.7;
+  }
+
+  /* This is not used directly but required for processing by Webpack. DO NOT REMOVE! */
   #non-existing {
     background-image: url('../images/background.jpg');
   }
-
-  .center-panel {
-    color: @admin-white;
-    padding: 50px;
-    flex-wrap: wrap;
-
-    a {
-      color: #fff;
-      text-decoration: none;
-    }
-
-    .dashboard-item {
-      text-align: center;
-      width: 70px;
-      margin: 15px;
-      cursor: pointer;
-      font-family: "Open Sans", sans-serif;
-      font-size: 14px;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-
-      &:focus {
-        outline: 2px solid black;
-        border-radius: 3px;
-      }
-
-      img {
-        width: 32px;
-        height: 32px; // For IE
-      }
-    }
-
-    &.theme-light .dashboard-item {
-      img {
-        filter: invert(1) sepia(1) saturate(5) hue-rotate(0deg);
-        opacity: 0.7;
-      }
-
-      div,
-      a {
-        color: #555858;
-      }
-
-      &:hover {
-        img {
-          opacity: 1;
-        }
-
-        div,
-        a {
-          color: @admin-black;
-        }
-      }
-    }
-
-    &:not(.theme-light) .dashboard-item:hover {
-      opacity: 0.7;
-    }
-  }
-}
-
-.heart {
-  color: red;
-  font-size: 1.2em;
-  line-height: 1em;
-  vertical-align: middle;
 }
 
 .load-mask {
@@ -112,6 +52,10 @@ body {
 
 a {
   color: #0070de;
+
+  &:hover {
+    color: darken(#0070de, 25%);
+  }
 }
 
 body {
@@ -120,4 +64,5 @@ body {
   overflow: hidden;
   font-family: @admin-font-family;
   font-size: @admin-font-size;
+  background-color: @admin-black;
 }

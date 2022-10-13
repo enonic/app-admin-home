@@ -13,9 +13,13 @@ function handleGet() {
         status: 200,
         contentType: 'application/json',
         body: {
+            appId: app.name,
             adminUrl: admin.getBaseUri(),
             assetsUri: portal.assetUrl({
                 path: ''
+            }),
+            backgroundUri: portal.assetUrl({
+                path: 'images/background.webp'
             }),
             xpVersion: admin.getVersion(),
             i18nUrl: portal.serviceUrl({service: 'i18n'}),
