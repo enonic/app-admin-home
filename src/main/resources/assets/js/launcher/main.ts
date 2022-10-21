@@ -343,14 +343,24 @@ class Launcher {
     };
 
     private static openWindow = (windowArr: Window[], anchorEl: HTMLAnchorElement) => {
-        const windowId = anchorEl.getAttribute('data-id');
+        const windowId: string = anchorEl.getAttribute('data-id');
+        const existingWindow: Window = (windowArr[windowId] as Window);
 
-        if (windowArr[windowId] && !(windowArr[windowId] as Window).closed) {
-            (windowArr[windowId] as Window).focus();
-        } else {
-            // eslint-disable-next-line no-param-reassign
-            windowArr[windowId] = window.open(anchorEl.href, windowId);
+        if (existingWindow && !existingWindow.closed) {
+            try {
+                if (existingWindow.location.href.startsWith(anchorEl.href)) {
+                    existingWindow.focus();
+                    return;
+                }
+            }
+            catch (e) {
+                // Url in the opened tab has changed, and we no longer control it. Close, then reload.
+                existingWindow.close();
+            }
         }
+
+        // eslint-disable-next-line no-param-reassign
+        windowArr[windowId] = window.open(anchorEl.href, windowId);
     };
 
     private static addLongClickHandler = (container: HTMLElement): void => {
@@ -374,7 +384,7 @@ class Launcher {
                     e.preventDefault();
                     // tslint:disable-next-line:no-invalid-this
                     document.location.href = (<Element>e.currentTarget).getAttribute('href');
-                } else if (navigator.userAgent.search('Chrome') > -1) {
+                } else {
                     e.preventDefault();
                     Launcher.openWindow(toolWindows, <HTMLAnchorElement>e.currentTarget);
                 }
