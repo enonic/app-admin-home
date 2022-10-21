@@ -12,20 +12,22 @@
 .widget-shortcuts-container {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: start;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   .widget-shortcuts-item {
     text-align: center;
-    width: 70px;
+    width: 65px;
     margin: 20px 8px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
     img {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
     }
 
     a {
@@ -34,6 +36,7 @@
 
       div {
         color: @admin-font-gray;
+        font-weight: 600;
       }
     }
 
