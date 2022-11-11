@@ -3,7 +3,7 @@ const appConst = require('../libs/app_const');
 const lib = require('../libs/elements');
 
 const XPATH = {
-    container: "//div[contains(@id,'ModalDialog') and contains(@class,'xp-about')]",
+    container: "//div[contains(@id,'ModalDialogWithConfirmation') and contains(@class,'xp-about-dialog')]",
     licensingButton: "//button[contains(@id,'Button') and child::span[contains(.,'Licensing')]]",
     license: "//div[xp-about-dialog-license]",
     licenseHeader: "//div[contains(@class,'xp-license-info-header')]"
@@ -31,7 +31,7 @@ class AboutDialog extends Page {
         try {
             return await this.waitForElementDisplayed(XPATH.container, appConst.mediumTimeout);
         } catch (err) {
-            let screenshot = appConst.generateRandomName("err_about_dlg");
+            let screenshot = appConst.generateRandomName("err_about_dlg_load");
             await this.saveScreenshot(screenshot);
             throw new Error("About dialog is not loaded in 3 seconds! screenshot: " + screenshot + "  " + err);
         }

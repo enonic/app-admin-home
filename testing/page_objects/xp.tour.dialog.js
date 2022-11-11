@@ -2,7 +2,7 @@ const Page = require('./page');
 const appConst = require('../libs/app_const');
 
 const xpath = {
-    container: `//div[contains(@id,'ModalDialog') and descendant::h2[contains(.,'Welcome Tour')]]`,
+    container: `//div[contains(@id,'ModalDialogWithConfirmation') and descendant::h2[contains(.,'Welcome Tour')]]`,
     skipTourButton: `//button[contains(@id,'DialogButton')]//span[contains(.,'Skip Tour')]`,
     nextButton: `//button[contains(@id,'DialogButton')]/span[text()='Next']`,
     previousButton: `//button[contains(@id,'DialogButton')]/span[text()='Previous']`,
@@ -69,10 +69,11 @@ class XpTourDialog extends Page {
     async waitForDialogLoaded() {
         try {
             await this.waitForElementDisplayed(xpath.container, appConst.longTimeout);
-            return await this.pause(700);
+            return await this.pause(1000);
         } catch (err) {
-            this.saveScreenshot("err_xp_tour_dialog_load");
-            throw new Error("XP tour dialog is not loaded in 5 seconds!")
+            let screenshot = appConst.generateRandomName("err_xp_tour_dialog_load");
+            await this.saveScreenshot(screenshot);
+            throw new Error("XP tour dialog was not loaded, screenshot: " + screenshot + "  " + err);
         }
     }
 
@@ -90,8 +91,9 @@ class XpTourDialog extends Page {
             await installButton.waitForDisplayed({timeout: appConst.longTimeout});
             return await this.pause(1000);
         } catch (err) {
-            this.saveScreenshot("err_xp_tour_install_button");
-            throw new Error("Install Apps button is not visible in " + appConst.longTimeout + " " + err)
+            let screenshot = appConst.generateRandomName("err_install_apps");
+            await this.saveScreenshot(screenshot);
+            throw new Error("Install Apps button is not visible, screenshot " + screenshot + " " + err)
         }
     }
 
@@ -117,8 +119,9 @@ class XpTourDialog extends Page {
             let selector = xpath.applicationInLauncherPanel(name);
             return await this.waitForElementDisplayed(selector, appConst.shortTimeout);
         } catch (err) {
-            this.saveScreenshot('err_app_launcher_panel');
-            throw new Error("Application is not present in Launcher Panel: " + err);
+            let screenshot = appConst.generateRandomName("err_app_in_panel");
+            await this.saveScreenshot(screenshot);
+            throw new Error("Application is not present in Launcher Panel: " + screenshot + " " + err);
         }
     }
 
@@ -138,14 +141,16 @@ class XpTourDialog extends Page {
             await element.waitForDisplayed({timeout: appConst.INSTALL_APP_TIMEOUT});
             return await element.getText();
         } catch (err) {
-            await this.saveScreenshot(appConst.generateRandomName('err_app_status'));
-            throw new Error("XP Tour dialog - error when getting app status: " + err);
+            let screenshot = appConst.generateRandomName('err_app_status');
+            await this.saveScreenshot(screenshot);
+            throw new Error("XP Tour dialog - error when getting app status, screenshot: " + screenshot + "   " + err);
         }
     }
 
     async waitForApplicationInstalled(appName) {
         try {
-            let statusSelector = xpath.container + `//div[contains(@id,'enonic') and descendant::div[contains(@class,'demo-app-title') and contains(.,'${appName}')]]`//xpath.applicationStatusByName(appName);
+            let statusSelector = xpath.container +
+                                 `//div[contains(@id,'enonic') and descendant::div[contains(@class,'demo-app-title') and contains(.,'${appName}')]]`;
             await this.getBrowser().waitUntil(async () => {
                 let result = await this.getAttribute(statusSelector, "class");
                 return result.includes("installed");
@@ -170,5 +175,3 @@ class XpTourDialog extends Page {
 }
 
 module.exports = XpTourDialog;
-
-

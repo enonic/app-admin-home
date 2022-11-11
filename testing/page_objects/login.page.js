@@ -51,6 +51,3 @@ class LoginPage extends Page {
 }
 
 module.exports = LoginPage;
-
-
-
