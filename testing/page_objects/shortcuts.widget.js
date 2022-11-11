@@ -1,21 +1,26 @@
 const Page = require('./page');
 const appConst = require('../libs/app_const');
-const lib = require('../libs/elements');
 
 const XPATH = {
-    container: "//div[contains(@class,'widget-placeholder') ]",
-    header: "//h5[contains(@class,'widget-header')]",
+    container: "//div[contains(@id,'WidgetPanel') ]",
+    widgetShortcutsHeader: "//widget[contains(@id,'widget-shortcuts')]//h5[contains(@class,'widget-shortcuts-header')]",
+    youtubeWidget: "//div[descendant::widget[contains(@id,'widget-youtube')]]",
     xpTourDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='XP Tour']]",
     aboutDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='About']]",
     developerDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='Developer']]",
     discussDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='Discuss']]",
     marketDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='Market']]",
+    slackDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='Slack']]",
 };
 
 class ShortcutsWidget extends Page {
 
-    get header() {
-        return XPATH.container + XPATH.header;
+    get shortcutsHeader() {
+        return XPATH.container + XPATH.widgetShortcutsHeader;
+    }
+
+    get youtubeWidget() {
+        return XPATH.container + XPATH.youtubeWidget;
     }
 
     get xpTourItem() {
@@ -32,6 +37,10 @@ class ShortcutsWidget extends Page {
 
     get marketItem() {
         return XPATH.container + XPATH.marketDivItem;
+    }
+
+    get slackItem() {
+        return XPATH.container + XPATH.slackDivItem;
     }
 
     get discussItem() {
@@ -53,7 +62,7 @@ class ShortcutsWidget extends Page {
     async clickOnAboutButton() {
         try {
             await this.waitForAboutItemDisplayed();
-            await this.clickOnElement(this.xpTourItem);
+            await this.clickOnElement(this.aboutItem);
             return await this.pause(1000);
         } catch (err) {
             let screenshot = appConst.generateRandomName("err_about");
@@ -73,27 +82,41 @@ class ShortcutsWidget extends Page {
     }
 
     waitForDiscussItemDisplayed() {
-        return this.waitForElementDisplayed(this.discussItem);
+        return this.waitForElementDisplayed(this.discussItem, appConst.mediumTimeout);
     }
 
     waitForDeveloperItemDisplayed() {
-        return this.waitForElementDisplayed(this.developerItem);
+        return this.waitForElementDisplayed(this.developerItem, appConst.mediumTimeout);
     }
 
     waitForMarketItemDisplayed() {
-        return this.waitForElementDisplayed(this.marketItem);
+        return this.waitForElementDisplayed(this.marketItem, appConst.mediumTimeout);
+    }
+
+    waitForSlackItemDisplayed() {
+        return this.waitForElementDisplayed(this.slackItem, appConst.mediumTimeout);
     }
 
     waitForXpTourItemDisplayed() {
-        return this.waitForElementDisplayed(this.xpTourItem);
+        return this.waitForElementDisplayed(this.xpTourItem, appConst.mediumTimeout);
     }
 
     waitForAboutItemDisplayed() {
-        return this.waitForElementDisplayed(this.aboutItem);
+        return this.waitForElementDisplayed(this.aboutItem, appConst.mediumTimeout);
     }
 
-    getHeader() {
-        return this.getText(this.header);
+    getWidgetShortcutHeader() {
+        return this.getText(this.shortcutsHeader);
+    }
+
+    async waitForYoutubeWidgetDisplayed() {
+        try {
+            return this.waitForElementDisplayed(this.youtubeWidget, appConst.mediumTimeout);
+        } catch (err) {
+            let screenshot = appConst.generateRandomName("err_youtube");
+            await this.saveScreenshot(screenshot);
+            throw new Error("Youtube Widget is not loaded, screenshot:" + screenshot + "  " + err);
+        }
     }
 }
 

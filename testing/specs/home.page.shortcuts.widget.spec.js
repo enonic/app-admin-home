@@ -10,16 +10,15 @@ const ShortcutsWidget = require('../page_objects/shortcuts.widget');
 describe('Home Page, Shortcut widget specification - check widget items and open About dialog(licensing button)', function () {
     this.timeout(appConst.TIMEOUT_SUITE);
     webDriverHelper.setupBrowser();
-    const WIDGET_HEADER = "Shortcuts";
+    const WIDGET_SHORTCUTS_HEADER = "Useful links";
 
     it('WHEN Home Page is loaded THEN expected buttons should be present in toolbar',
         async function () {
             let homePage = new HomePage();
             let shortcutsWidget = new ShortcutsWidget();
             await homePage.waitForLoaded();
-            await testUtils.saveScreenshot("home_widget");
-            let actualHeader = await shortcutsWidget.getHeader();
-            assert.equal(actualHeader, WIDGET_HEADER, "Expected header should be displayed");
+            let actualHeader = await shortcutsWidget.getWidgetShortcutHeader();
+            assert.equal(actualHeader, WIDGET_SHORTCUTS_HEADER, "'Useful links' header should be displayed");
             //XP tour button should be displayed in the widget
             await shortcutsWidget.waitForXpTourItemDisplayed();
             //About button should be displayed in the widget
@@ -30,6 +29,8 @@ describe('Home Page, Shortcut widget specification - check widget items and open
             await shortcutsWidget.waitForDiscussItemDisplayed();
             //Market button should be displayed in the widget
             await shortcutsWidget.waitForMarketItemDisplayed();
+            //Slack button should be displayed in the widget
+            await shortcutsWidget.waitForSlackItemDisplayed();
         });
 
     it("GIVEN Home Page is loaded WHEN 'About' button has been clicked in the widget THEN About-dialog should appear AND 'Cancel-top' button closes the dialog",
@@ -38,10 +39,11 @@ describe('Home Page, Shortcut widget specification - check widget items and open
             let shortcutsWidget = new ShortcutsWidget();
             let aboutDialog = new AboutDialog();
             await homePage.waitForLoaded();
+            await testUtils.saveScreenshot("about_dialog_test1");
             //1. Click on 'About' button:
             await shortcutsWidget.clickOnAboutButton();
+            await testUtils.saveScreenshot("about_dialog_opened");
             await aboutDialog.waitForDialogLoaded();
-            await testUtils.saveScreenshot("about_dialog_opened", this);
             //2. Click on 'Cancel top' button
             await aboutDialog.clickOnCancelTopButton();
             await aboutDialog.waitForDialogClosed();
@@ -55,6 +57,7 @@ describe('Home Page, Shortcut widget specification - check widget items and open
             await homePage.waitForLoaded();
             //1. Click on 'About' button:
             await shortcutsWidget.clickOnAboutButton();
+            await testUtils.saveScreenshot("about_dialog_opened3");
             await aboutDialog.waitForDialogLoaded();
             //2. Click on 'Esc' key
             await aboutDialog.pressEscKey();
