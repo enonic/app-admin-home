@@ -106,6 +106,7 @@ jar {
 
     def whitelist = [
         /.*bundle\.js$/,
+        /.*\/widgets\/.*\.js$/,
     ] as List
 
     if (isProd()) {
