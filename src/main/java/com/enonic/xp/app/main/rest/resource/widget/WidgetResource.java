@@ -32,8 +32,6 @@ public class WidgetResource
 
     private WidgetDescriptorService widgetDescriptorService;
 
-    private ApplicationDescriptorService applicationDescriptorService;
-
     @POST
     @Path("list/byinterfaces")
     public List<WidgetDescriptorJson> getByInterfaces( final String[] widgetInterfaces )
@@ -51,11 +49,5 @@ public class WidgetResource
     public void setWidgetDescriptorService( final WidgetDescriptorService widgetDescriptorService )
     {
         this.widgetDescriptorService = widgetDescriptorService;
-    }
-
-    @Reference
-    public void setApplicationDescriptorService( final ApplicationDescriptorService applicationDescriptorService )
-    {
-        this.applicationDescriptorService = applicationDescriptorService;
     }
 }
