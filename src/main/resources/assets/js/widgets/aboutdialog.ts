@@ -5,6 +5,7 @@ import {AEl} from '@enonic/lib-admin-ui/dom/AEl';
 import {Button} from '@enonic/lib-admin-ui/ui/button/Button';
 import {i18n} from '@enonic/lib-admin-ui/util/Messages';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
+import {KeyHelper} from '@enonic/lib-admin-ui/ui/KeyHelper';
 
 const noticeUrl = 'https://raw.githubusercontent.com/enonic/xp/master/NOTICE.txt';
 const licenseUrl = 'https://raw.githubusercontent.com/enonic/xp/master/LICENSE.txt';
@@ -87,6 +88,13 @@ const createLicenseInfoContainer = (): void => {
 
 export const createAboutDialog = (): ModalDialogWithConfirmation => {
     const aboutDialog: ModalDialogWithConfirmation = new ModalDialogWithConfirmation({skipTabbable: true});
+
+    aboutDialog.onKeyDown((event: KeyboardEvent) => {
+        if (KeyHelper.isEscKey(event)){
+            aboutDialog.close();
+        }
+    });
+
     const aboutDialogContent = getAboutDialogContent();
     aboutDialog.addClass('xp-about-dialog');
     aboutDialogContent.onAdded(createLicenseInfoContainer);
