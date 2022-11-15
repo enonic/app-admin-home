@@ -23,11 +23,8 @@ module.exports = {
         await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);
         await loginPage.doLogin();
         await loginPage.pause(1000);
-        let result = await xpTourDialog.isDisplayed();
-        if(result){
-            await xpTourDialog.clickOnCancelButtonTop();
-        }
-
+        await xpTourDialog.waitForDialogLoaded();
+        await xpTourDialog.clickOnCancelButtonTop();
         return await loginPage.pause(700);
     },
     doDeleteCookie: function () {
