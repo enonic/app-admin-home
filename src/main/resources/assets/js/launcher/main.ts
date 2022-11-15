@@ -326,13 +326,15 @@ class Launcher {
             isClickOutside &&
             !this.launcherMainContainer.getAttribute('hidden') &&
             !Launcher.isModalDialogActiveOnHomePage(e.target) &&
-            !Launcher.isDashboardIcon(e.target)
+            !Launcher.isDashboardIcon($(e.target))
         ) {
             this.closeLauncherPanel();
         }
     };
 
-    private static isDashboardIcon = (element: EventTarget) => $(element).closest('.dashboard-item').length > 0;
+    private static isDashboardIcon = (element: JQuery<EventTarget>) =>
+        element.closest('.dashboard-item').length > 0 &&
+        element.parent().attr('href') !== '#';
 
     private static isModalDialogActiveOnHomePage = (element: EventTarget): boolean => {
         return (
