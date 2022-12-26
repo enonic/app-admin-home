@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@enonic/lib-admin-ui": "file:./.xp/dev/lib-admin-ui",
-    "jquery": "^3.6.2",
+    "jquery": "^3.6.3",
     "q": "^1.5.1"
   },
   "peerDependencies": {
