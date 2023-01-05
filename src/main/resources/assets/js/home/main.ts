@@ -88,7 +88,7 @@ const appendDashboardWidgets = () => {
     const widgetContainer: Element = Element.fromHtmlElement(widgetContainerEl);
     const widgetPanel: WidgetPanel = new WidgetPanel();
     widgetContainer.appendChild(widgetPanel);
-    widgetPanel.fetchAndAppendWidgets();
+    widgetPanel.appendWidgets();
 };
 
 function getApplication(): Application {
