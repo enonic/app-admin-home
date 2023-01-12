@@ -18,5 +18,6 @@ generated-java
 classes/
 out/
 .xp/
+.eslintcache
 
 testing/app-users/allure-results/

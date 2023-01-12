@@ -1,0 +1,27 @@
+apply plugin: 'com.github.node-gradle.node'
+
+node {
+    version = '18.13.0'
+    download = true
+}
+
+task npmInstallForce( type: NpmTask ) {
+    description = 'Update all project node dependencies'
+    args = ['install', '--force']
+}
+
+task cleanNode( type: Delete ) {
+    delete 'node_modules'
+}
+
+task copyDevResources {
+    doLast {
+        copy {
+            from configurations.devResources.files.collect { zipTree( it ) }
+            include 'dev/**'
+            into '.xp'
+        }
+    }
+}
+
+npmInstall.dependsOn copyDevResources

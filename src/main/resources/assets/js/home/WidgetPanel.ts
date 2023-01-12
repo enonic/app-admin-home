@@ -1,13 +1,13 @@
+import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/application/ApplicationEvent';
+import {Widget} from '@enonic/lib-admin-ui/content/Widget';
+import {DefaultErrorHandler} from '@enonic/lib-admin-ui/DefaultErrorHandler';
+import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
+import {Element as LibAdminElement} from '@enonic/lib-admin-ui/dom/Element';
+import {H5El} from '@enonic/lib-admin-ui/dom/H5El';
+import {Exception} from '@enonic/lib-admin-ui/Exception';
+import {LoadMask} from '@enonic/lib-admin-ui/ui/mask/LoadMask';
 import * as Q from 'q';
 import {GetDashboardWidgetsRequest} from './resource/widget/GetDashboardWidgetsRequest';
-import {Widget} from '@enonic/lib-admin-ui/content/Widget';
-import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
-import {H5El} from '@enonic/lib-admin-ui/dom/H5El';
-import {Element as LibAdminElement} from '@enonic/lib-admin-ui/dom/Element';
-import {DefaultErrorHandler} from '@enonic/lib-admin-ui/DefaultErrorHandler';
-import {LoadMask} from '@enonic/lib-admin-ui/ui/mask/LoadMask';
-import {Exception} from '@enonic/lib-admin-ui/Exception';
-import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/application/ApplicationEvent';
 
 export class WidgetPanel
     extends DivEl {
@@ -83,7 +83,7 @@ export class WidgetPanel
         widgetKeys.forEach((widgetKey: string) => {
             const widgetElement = this.findChildById(widgetKey, true);
             if (widgetElement) {
-                this.widgetCount--;
+                this.widgetCount -= 1;
                 widgetElement.remove();
             }
         });
