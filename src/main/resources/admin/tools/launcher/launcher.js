@@ -52,7 +52,7 @@ exports.get = function() {
         logoutUrl: logoutUrl,
         homeTool: {
             url: admin.getHomeToolUrl(),
-            caption: localise('launcher.tools.home.caption', locales),
+            caption: localise('home.dashboard', locales),
             description: localise(
                 'launcher.tools.home.description',
                 locales
