@@ -19,7 +19,7 @@ function handleGet() {
                 path: ''
             }),
             backgroundUri: portal.assetUrl({
-                path: 'images/background.webp'
+                path: 'images/background.jpg'
             }),
             xpVersion: admin.getVersion(),
             i18nUrl: portal.serviceUrl({service: 'i18n'}),

@@ -3,6 +3,9 @@ const CircularDependencyPlugin = require('circular-dependency-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 const path = require('path');
+const fs = require('fs');
+
+const swcConfig = JSON.parse(fs.readFileSync('./.swcrc'));
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -33,8 +36,17 @@ module.exports = {
                 use: ['source-map-loader'],
             },
             {
-                test: /\.tsx?$/,
-                use: [{loader: 'ts-loader', options: {configFile: 'tsconfig.build.json'}}]
+                test: /\.ts$/,
+                use: [
+                    {
+                        loader: 'swc-loader',
+                        options: {
+                            ...swcConfig,
+                            sourceMaps: isProd ? false : 'inline',
+                            inlineSourcesContent: !isProd,
+                        },
+                    },
+                ],
             },
             {
                 test: /\.less$/,
@@ -53,13 +65,21 @@ module.exports = {
                         loader: ImageMinimizerPlugin.loader,
                         options: {
                             minimizer: {
-                                filename: "[path][name].webp",
-                                implementation: ImageMinimizerPlugin.squooshGenerate,
+                                implementation: ImageMinimizerPlugin.sharpMinify,
                                 options: {
                                     encodeOptions: {
-                                        webp: {
-                                            quality: 75,
+                                        jpeg: {
+                                            quality: 38,
+                                            progressive: true,
+                                            compressionLevel: 9,
+                                            adaptiveFiltering: true,
+                                            effort: 10,
+                                            mozjpeg: true,
+                                            quantisationTable: 8,
                                         },
+                                        webp: {
+                                            quality: 10,
+                                        }
                                     },
                                 },
                             },
@@ -74,9 +94,6 @@ module.exports = {
             new TerserPlugin({
                 extractComments: false,
                 terserOptions: {
-                    compress: {
-                        drop_console: false
-                    },
                     keep_classnames: true,
                     keep_fnames: true
                 }

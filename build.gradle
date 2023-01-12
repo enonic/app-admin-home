@@ -21,10 +21,14 @@ app {
 configurations {
     devResources {
         attributes {
-            attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, 'dev-resources'))
+            attribute( LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named( LibraryElements, 'dev-resources' ) )
         }
     }
 }
+
+apply from: "$projectDir/gradle/env.gradle"
+apply from: "$projectDir/gradle/node.gradle"
+apply from: "$projectDir/gradle/lib-admin.gradle"
 
 dependencies {
     compileOnly "com.enonic.xp:admin-api:${xpVersion}"
@@ -44,65 +48,27 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.9.1"
 }
 
-node {
-    download = true
-    version = '16.16.0'
-}
-
-task copyDevResources {
-    doLast {
-        copy {
-            from configurations.devResources.files.collect { zipTree( it ) }
-            include 'dev/**'
-            into '.xp'
-        }
-    }
-}
-
-npmInstall.dependsOn copyDevResources
-
-task flush( type: Delete, dependsOn: clean ) {
-    description = 'Clean the project from built sources and dependencies'
-    delete '.xp'
-}
-
-task npmInstallForce( type: NpmTask ) {
-    description = 'Update all project node dependencies'
-    args = [ 'install', '--force' ]
-}
-
-task lint( type: NpmTask, dependsOn: npmInstall ) {
-    args = [ 'run', 'lint:quiet' ]
-    inputs.files fileTree( dir: 'modules', include: '**/src/main/**.*' )
-    outputs.dir file('gradle')
+task lint( type: NpmTask, group: "verification", dependsOn: npmInstall ) {
+    args = ['run', 'lint']
     outputs.upToDateWhen { false }
 }
 
-task webpack( type: NpmTask, dependsOn: [npmInstall, lint] ) {
-    environment = [ 'NODE_ENV': nodeEnvironment() ]
+check.dependsOn lint
+
+task webpack( type: NpmTask, dependsOn: npmInstall ) {
+    environment = ['NODE_ENV': nodeEnvironment()]
     description = 'Build UI resources (ts, css, etc).'
-    args = [ 'run', 'build' ]
+    args = ['run', 'build']
     inputs.dir '.xp/dev'
     inputs.dir 'src/main'
     inputs.file 'webpack.config.js'
-    outputs.dir "${buildDir}/resources/main"
-}
-
-task cleanNode( type: Delete ) {
-    delete 'node_modules'
-}
-
-test {
-    useJUnitPlatform()
-    systemProperty 'java.awt.headless', 'true'
-    jvmArgs '-noverify', '-XX:TieredStopAtLevel=1'
+    outputs.dir "$buildDir/build/resources/main/assets"
 }
 
 jar {
     exclude 'assets/styles/**/*.less'
     exclude 'assets/styles/**/*.js'
     exclude '**/*.d.ts'
-    exclude 'assets/images/background.jpg'
 
     def whitelist = [
         /.*bundle\.js$/,
@@ -115,8 +81,8 @@ jar {
         whitelist.add( /.*\.map$/ )
     }
 
-    exclude {
-        FileTreeElement el -> !el.directory && el.relativePath.contains('assets/js') && (!whitelist.any { re -> el.relativePath.toString().matches( re ) })
+    exclude { el ->
+        !el.directory && el.relativePath.contains( 'assets/js' ) && ( !whitelist.any { re -> el.relativePath.toString().matches( re ) } )
     }
 
     outputs.dir "${buildDir}/resources/main"
@@ -124,32 +90,8 @@ jar {
     dependsOn += webpack
 }
 
-if ( hasProperty( 'env' ) )
-{
-    addBuildDependency()
-}
-
-def addBuildDependency() {
-    if ( isLibAdminUiIncluded() )
-    {
-        def libAdminBuildTask = gradle.includedBuild( 'lib-admin-ui' ).task( ':build' )
-        copyDevResources.dependsOn += libAdminBuildTask
-        build.dependsOn += libAdminBuildTask
-        clean.dependsOn += gradle.includedBuild( 'lib-admin-ui' ).task( ':clean' )
-        flush.dependsOn += gradle.includedBuild( 'lib-admin-ui' ).task( ':flush' )
-    }
-}
-
-def isLibAdminUiIncluded() {
-    return new File( '../lib-admin-ui' ).exists()
-}
-
-def nodeEnvironment() {
-    def environments = [ prod : 'production', dev: 'development' ]
-    def nodeEnv = environments[hasProperty( 'env' ) ? env : 'prod']
-    return nodeEnv != null ? nodeEnv : 'production'
-}
-
-def isProd() {
-    return hasProperty( 'env' ) ? (env == 'prod') : true
+test {
+    useJUnitPlatform()
+    systemProperty 'java.awt.headless', 'true'
+    jvmArgs '-noverify', '-XX:TieredStopAtLevel=1'
 }
