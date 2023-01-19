@@ -1,6 +1,6 @@
 import * as Q from 'q';
 import {GetByInterfaceRequest} from './GetByInterfaceRequest';
-import {Widget} from '@enonic/lib-admin-ui/content/Widget';
+import {DashboardWidget} from './DashboardWidget';
 
 export class GetDashboardWidgetsRequest
     extends GetByInterfaceRequest {
@@ -9,7 +9,7 @@ export class GetDashboardWidgetsRequest
         super(['home.dashboard']);
     }
 
-    fetchWidgets(): Q.Promise<Widget[]> {
+    fetchWidgets(): Q.Promise<DashboardWidget[]> {
         return this.sendAndParse();
     }
 }
