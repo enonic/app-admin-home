@@ -1,5 +1,4 @@
 import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/application/ApplicationEvent';
-import {Widget} from '@enonic/lib-admin-ui/content/Widget';
 import {DefaultErrorHandler} from '@enonic/lib-admin-ui/DefaultErrorHandler';
 import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
 import {Element as LibAdminElement} from '@enonic/lib-admin-ui/dom/Element';
@@ -7,6 +6,7 @@ import {H5El} from '@enonic/lib-admin-ui/dom/H5El';
 import {Exception} from '@enonic/lib-admin-ui/Exception';
 import {LoadMask} from '@enonic/lib-admin-ui/ui/mask/LoadMask';
 import * as Q from 'q';
+import {DashboardWidget} from './resource/widget/DashboardWidget';
 import {GetDashboardWidgetsRequest} from './resource/widget/GetDashboardWidgetsRequest';
 
 export class WidgetPanel
@@ -27,7 +27,7 @@ export class WidgetPanel
 
     appendWidgets(): void {
         this.fetchWidgets()
-            .then((widgets: Widget[]) => {
+            .then((widgets: DashboardWidget[]) => {
                 if (widgets.length === this.widgetCount) {
                     return;
                 }
@@ -37,8 +37,8 @@ export class WidgetPanel
                 }
                 this.widgetCount = widgets.length;
                 widgets
-                    .sort((w1: Widget, w2: Widget) => this.sortByOrder(w1, w2))
-                    .forEach((widget: Widget) => this.appendWidget(widget));
+                    .sort((w1: DashboardWidget, w2: DashboardWidget) => this.sortByOrder(w1, w2))
+                    .forEach((widget: DashboardWidget) => this.appendWidget(widget));
             })
             .catch(DefaultErrorHandler.handle);
     }
@@ -98,35 +98,32 @@ export class WidgetPanel
         return baseUrl;
     }
 
-    private sortByOrder(widget1: Widget, widget2: Widget): number {
-        return this.getWidgetOrder(widget1) - this.getWidgetOrder(widget2);
+    private sortByOrder(widget1: DashboardWidget, widget2: DashboardWidget): number {
+        return widget1.getOrder() - widget2.getOrder();
     }
 
-    private getWidgetOrder(widget: Widget): number {
-        const widgetOrder: string = widget.getConfig()['order'];
-        return widgetOrder ? parseInt(widgetOrder) : Number.MAX_VALUE;
-    }
-
-    private fetchWidgets(): Q.Promise<Widget[]> {
+    private fetchWidgets(): Q.Promise<DashboardWidget[]> {
         return new GetDashboardWidgetsRequest().fetchWidgets();
     }
 
     private updateWidgets(applicationKey: string): void {
         this.fetchWidgets()
-            .then((widgets: Widget[]) => {
+            .then((widgets: DashboardWidget[]) => {
                 if (widgets.length !== this.widgetCount) {
                     this.appendWidgets();
                     return;
                 }
 
                 widgets
-                    .filter((widget: Widget) => widget.getWidgetDescriptorKey().getApplicationKey().toString() === applicationKey)
-                    .forEach((widget: Widget) => this.updateWidget(widget));
+                    .filter((widget: DashboardWidget) =>
+                        widget.getWidgetDescriptorKey().getApplicationKey().toString() === applicationKey
+                    )
+                    .forEach((widget: DashboardWidget) => this.updateWidget(widget));
             })
             .catch(DefaultErrorHandler.handle);
     }
 
-    private appendWidget(widget: Widget, existingContainer?: LibAdminElement) {
+    private appendWidget(widget: DashboardWidget, existingContainer?: LibAdminElement) {
         const widgetContainer: LibAdminElement = existingContainer || this.createWidgetPlaceholder(widget);
         if (!existingContainer) {
             this.appendChild(widgetContainer);
@@ -137,7 +134,7 @@ export class WidgetPanel
             .catch(DefaultErrorHandler.handle);
     }
 
-    private updateWidget(widget: Widget) {
+    private updateWidget(widget: DashboardWidget) {
         const widgetContainer = this.findChildById(widget.getWidgetDescriptorKey().toString());
         if (!widgetContainer) {
             return;
@@ -149,29 +146,25 @@ export class WidgetPanel
         this.appendWidget(widget, newWidgetContainer);
     }
 
-    private addWidget(widget: Widget, widgetContainer: LibAdminElement): void {
+    private addWidget(widget: DashboardWidget, widgetContainer: LibAdminElement): void {
         const loadMask: LoadMask = new LoadMask(widgetContainer);
         loadMask.show();
 
         this.fetchAndRenderWidget(widget, widgetContainer).finally(() => loadMask.hide());
     }
 
-    private createWidgetPlaceholder(widget: Widget): LibAdminElement {
-        const widthCls: string = widget.getConfig()['width'] || 'auto';
-        const styleCls: string = widget.getConfig()['style'] || '';
-        const widgetPlaceholder: LibAdminElement =
-            new DivEl(`widget-placeholder width-${widthCls.toLowerCase()}${styleCls ? ` style-${styleCls.toLowerCase()}` : ''}`);
+    private createWidgetPlaceholder(widget: DashboardWidget): LibAdminElement {
+        const widthCls = ` width-${widget.getWidth().toLowerCase()}`;
+        const heightCls = ` height-${widget.getHeight().toLowerCase()}`;
+        const styleCls: string = widget.hasCustomStyling() ? ` style-${widget.getStyle().toLowerCase()}` : '';
+        const widgetPlaceholder: LibAdminElement = new DivEl(`widget-placeholder${widthCls}${heightCls}${styleCls}`);
 
         widgetPlaceholder.setId(widget.getWidgetDescriptorKey().toString());
-
-        if (styleCls !== 'custom') {
-            widgetPlaceholder.appendChild(new H5El('widget-header').setHtml(widget.getDisplayName()));
-        }
 
         return widgetPlaceholder;
     }
 
-    private static cacheWidgetKey(widget: Widget): void {
+    private static cacheWidgetKey(widget: DashboardWidget): void {
         const applicationKey: string = widget.getWidgetDescriptorKey().getApplicationKey().toString();
         const widgetKey: string = widget.getWidgetDescriptorKey().toString();
 
@@ -184,7 +177,7 @@ export class WidgetPanel
         WidgetPanel.widgetCache.set(applicationKey, cachedWidgetKeys);
     }
 
-    private fetchAndRenderWidget(widget: Widget, widgetContainer: LibAdminElement): Promise<void> {
+    private fetchAndRenderWidget(widget: DashboardWidget, widgetContainer: LibAdminElement): Promise<void> {
         return fetch(WidgetPanel.widgetUrlPrefix + widget.getUrl())
             .then(response => response.text())
             .then((html: string) => {
@@ -193,11 +186,15 @@ export class WidgetPanel
             });
     }
 
-    private renderWidget(widget: Widget, widgetContainer: LibAdminElement, html: string): Q.Promise<void> {
+    private renderWidget(widget: DashboardWidget, widgetContainer: LibAdminElement, html: string): Q.Promise<void> {
         const sanitisedWidgetEl: LibAdminElement = this.getSanitisedWidget(widget, html);
 
         return this.injectWidgetAssets(sanitisedWidgetEl)
             .then(() => {
+                if (widget.hasHeader()) {
+                    sanitisedWidgetEl.insertChild(new H5El('widget-header').setHtml(widget.getDisplayName()), 0);
+                }
+
                 widgetContainer
                     .appendChild(sanitisedWidgetEl.addClass('widget-contents'))
                     .addClass('loaded');
@@ -205,7 +202,7 @@ export class WidgetPanel
             });
     }
 
-    private getSanitisedWidget(widget: Widget, widgetHtml: string): LibAdminElement {
+    private getSanitisedWidget(widget: DashboardWidget, widgetHtml: string): LibAdminElement {
         const widgetEl: LibAdminElement = LibAdminElement.fromCustomarilySanitizedString(
             widgetHtml,
             true,
@@ -222,7 +219,7 @@ export class WidgetPanel
         return widgetEl;
     }
 
-    private getAllowedWidgetTags(widget: Widget): string[] {
+    private getAllowedWidgetTags(widget: DashboardWidget): string[] {
         const result: string[] = [
             'widget',
             'link', // allow widget assets

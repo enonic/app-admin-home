@@ -1,5 +1,5 @@
 <widget xmlns="urn:enonic:xp:model:1.0">
-  <display-name>Shortcuts</display-name>
+  <display-name>Useful links</display-name>
   <interfaces>
     <interface>home.dashboard</interface>
   </interfaces>

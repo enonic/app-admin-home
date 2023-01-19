@@ -2,11 +2,11 @@ import {JsonResponse} from '@enonic/lib-admin-ui/rest/JsonResponse';
 import {ResourceRequest as BaseResourceRequest} from '@enonic/lib-admin-ui/rest/ResourceRequest';
 import {UrlHelper} from '../../util/UrlHelper';
 import {WidgetDescriptorJson} from '@enonic/lib-admin-ui/content/json/WidgetDescriptorJson';
-import {Widget} from '@enonic/lib-admin-ui/content/Widget';
+import {DashboardWidget} from './DashboardWidget';
 import {HttpMethod} from '@enonic/lib-admin-ui/rest/HttpMethod';
 
 export class ResourceRequest
-    extends BaseResourceRequest<Widget[]> {
+    extends BaseResourceRequest<DashboardWidget[]> {
 
     getPostfixUri(): string {
         return UrlHelper.getCmsRestUri('');
@@ -18,8 +18,8 @@ export class ResourceRequest
         this.addRequestPathElements('widget');
     }
 
-    protected parseResponse(response: JsonResponse<WidgetDescriptorJson[]>): Widget[] {
+    protected parseResponse(response: JsonResponse<WidgetDescriptorJson[]>): DashboardWidget[] {
         const json: WidgetDescriptorJson[] = response.getResult();
-        return json.map((widgetDescriptorJson: WidgetDescriptorJson) => Widget.fromJson(widgetDescriptorJson));
+        return json.map((widgetDescriptorJson: WidgetDescriptorJson) => DashboardWidget.fromJson(widgetDescriptorJson));
     }
 }

@@ -2,10 +2,7 @@
 @import "dialog-about";
 @import "dialog-tour";
 
-.widget-shortcuts-header {
-  margin: 0.75em 0 0.75em 0.3em;
-  font-size: 14px;
-  letter-spacing: 1px;
+#widget-shortcuts .widget-header {
   color: @admin-white;
 }
 
@@ -15,11 +12,12 @@
   align-items: start;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 360px;
 
   .widget-shortcuts-item {
     text-align: center;
-    width: 65px;
-    margin: 20px 8px;
+    min-width: 75px;
+    margin: 15px 8px;
     cursor: pointer;
     font-size: 13px;
     -webkit-font-smoothing: antialiased;
@@ -48,8 +46,8 @@
   }
 }
 
-@media screen and (min-width: 1201px) {
-  .widget-shortcuts-item {
-    width: 75px;
+@media screen and (max-width: 480px) {
+  .widget-shortcuts-container {
+    justify-content: space-evenly;
   }
 }
