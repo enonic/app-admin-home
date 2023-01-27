@@ -10,7 +10,7 @@ const ShortcutsWidget = require('../page_objects/shortcuts.widget');
 describe('Home Page, Shortcut widget specification - check widget items and open About dialog(licensing button)', function () {
     this.timeout(appConst.TIMEOUT_SUITE);
     webDriverHelper.setupBrowser();
-    const WIDGET_SHORTCUTS_HEADER = "Useful links";
+    const WIDGET_SHORTCUTS_HEADER = 'Useful links';
 
     it('WHEN Home Page is loaded THEN expected buttons should be present in toolbar',
         async function () {
@@ -19,17 +19,18 @@ describe('Home Page, Shortcut widget specification - check widget items and open
             await homePage.waitForLoaded();
             let actualHeader = await shortcutsWidget.getWidgetShortcutHeader();
             assert.equal(actualHeader, WIDGET_SHORTCUTS_HEADER, "'Useful links' header should be displayed");
-            //XP tour button should be displayed in the widget
+
+            // XP tour button should be displayed in the widget
             await shortcutsWidget.waitForXpTourItemDisplayed();
-            //About button should be displayed in the widget
+            // About button should be displayed in the widget
             await shortcutsWidget.waitForAboutItemDisplayed();
-            //Developer button should be displayed in the widget
+            // Developer button should be displayed in the widget
             await shortcutsWidget.waitForDeveloperItemDisplayed();
-            //Discuss button should be displayed in the widget
+            // Discuss button should be displayed in the widget
             await shortcutsWidget.waitForDiscussItemDisplayed();
-            //Market button should be displayed in the widget
+            // Market button should be displayed in the widget
             await shortcutsWidget.waitForMarketItemDisplayed();
-            //Slack button should be displayed in the widget
+            // Slack button should be displayed in the widget
             await shortcutsWidget.waitForSlackItemDisplayed();
         });
 
@@ -39,12 +40,12 @@ describe('Home Page, Shortcut widget specification - check widget items and open
             let shortcutsWidget = new ShortcutsWidget();
             let aboutDialog = new AboutDialog();
             await homePage.waitForLoaded();
-            await testUtils.saveScreenshot("about_dialog_test1");
-            //1. Click on 'About' button:
+            await testUtils.saveScreenshot('about_dialog_test1');
+            // 1. Click on 'About' button:
             await shortcutsWidget.clickOnAboutButton();
-            await testUtils.saveScreenshot("about_dialog_opened");
+            await testUtils.saveScreenshot('about_dialog_opened');
             await aboutDialog.waitForDialogLoaded();
-            //2. Click on 'Cancel top' button
+            // 2. Click on 'Cancel top' button
             await aboutDialog.clickOnCancelTopButton();
             await aboutDialog.waitForDialogClosed();
         });
@@ -55,11 +56,11 @@ describe('Home Page, Shortcut widget specification - check widget items and open
             let shortcutsWidget = new ShortcutsWidget();
             let aboutDialog = new AboutDialog();
             await homePage.waitForLoaded();
-            //1. Click on 'About' button:
+            // 1. Click on 'About' button:
             await shortcutsWidget.clickOnAboutButton();
-            await testUtils.saveScreenshot("about_dialog_opened3");
+            await testUtils.saveScreenshot('about_dialog_opened3');
             await aboutDialog.waitForDialogLoaded();
-            //2. Click on 'Esc' key
+            // 2. Click on 'Esc' key
             await aboutDialog.pressEscKey();
             await aboutDialog.waitForDialogClosed();
         });
@@ -70,15 +71,15 @@ describe('Home Page, Shortcut widget specification - check widget items and open
             let shortcutsWidget = new ShortcutsWidget();
             let aboutDialog = new AboutDialog();
             await homePage.waitForLoaded();
-            //1. Click on About button:
+            // 1. Click on About button:
             await shortcutsWidget.clickOnAboutButton();
             await aboutDialog.waitForDialogLoaded();
-            //2. Click on 'Licensing' button
+            // 2. Click on 'Licensing' button
             await aboutDialog.clickOnLicensingButton();
-            await testUtils.saveScreenshot("license_info_expanded", this);
+            await testUtils.saveScreenshot('license_info_expanded', this);
             await aboutDialog.waitForLicenseBodyDisplayed();
             let text = await aboutDialog.getLicenseText();
-            assert.isTrue(text.includes("Licenses used by Enonic XP (full license texts"));
+            assert.isTrue(text.includes('Licenses used by Enonic XP (full license texts'));
         });
 
     it("GIVEN License info is expanded WHEN Licensing button has been clicked THEN license-info gets not visible",
@@ -87,16 +88,16 @@ describe('Home Page, Shortcut widget specification - check widget items and open
             let aboutDialog = new AboutDialog();
             let shortcutsWidget = new ShortcutsWidget();
             await homePage.waitForLoaded();
-            //1. Click on About button:
+            // 1. Click on About button:
             await shortcutsWidget.clickOnAboutButton();
             await aboutDialog.waitForDialogLoaded();
-            //2. Click on 'Licensing' button and expand the info:
+            // 2. Click on 'Licensing' button and expand the info:
             await aboutDialog.clickOnLicensingButton();
-            await testUtils.saveScreenshot("license_info_expanded", this);
+            await testUtils.saveScreenshot('license_info_expanded', this);
             await aboutDialog.waitForLicenseBodyDisplayed();
-            //3. Click on 'Licensing' button and collapse the info:
+            // 3. Click on 'Licensing' button and collapse the info:
             await aboutDialog.clickOnLicensingButton();
-            await testUtils.saveScreenshot("license_info_hidden", this);
+            await testUtils.saveScreenshot('license_info_hidden', this);
             await aboutDialog.waitForLicenseBodyNotDisplayed();
         });
 

@@ -43,8 +43,8 @@ class LoginPage extends Page {
         let usernameInput = await this.findElement(this.usernameInput);
         let passwordInput = await this.findElement(this.passwordInput);
         await usernameInput.waitForDisplayed({timeout: 1000});
-        await usernameInput.addValue("su");
-        await passwordInput.addValue("password");
+        await usernameInput.addValue('su');
+        await passwordInput.addValue('password');
         await this.pause(300);
         return await this.clickOnLoginButton();
     }

@@ -10,7 +10,7 @@ describe('XP tour dialog - install applications and check their statuses', funct
 
     this.timeout(appConst.TIMEOUT_SUITE);
     webDriverHelper.setupBrowser();
-    const INSTALLED_STATUS = "Installed";
+    const INSTALLED_STATUS = 'Installed';
     const APP_CONTENT_STUDIO = 'Content Studio';
     const APP_GUILLOTINE = 'Guillotine App';
     const APP_DATA_TOOLBOX = 'Data Toolbox';
@@ -46,7 +46,7 @@ describe('XP tour dialog - install applications and check their statuses', funct
             await loginPage.doLogin();
             //1.'XP tour' dialog must be loaded automatically, tourDisabled = false:
             await xpTourDialog.waitForDialogLoaded();
-            await testUtils.saveScreenshot("xp_tour_dialog_should_be_loaded", this);
+            await testUtils.saveScreenshot('xp_tour_dialog_should_be_loaded', this);
             //2. Go to the last step:
             await xpTourDialog.goToInstallStep();
             await xpTourDialog.waitForInstallAppsButtonDisplayed();
@@ -62,27 +62,27 @@ describe('XP tour dialog - install applications and check their statuses', funct
             await xpTourDialog.waitForAppFinishButtonVisible();
         });
 
-    //verifies https://github.com/enonic/app-admin-home/issues/56
-    //Welcome Tour dialog - unknown status of applications in the last step
+    // verifies https://github.com/enonic/app-admin-home/issues/56
+    // Welcome Tour dialog - unknown status of applications in the last step
     it('GIVEN XP tour dialog is opened WHEN last step has been opened THEN expected status of apps should be displayed AND applications should be present in Launcher Panel',
         async function () {
             const loginPage = new LoginPage();
             const xpTourDialog = new XpTourDialog();
             await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);
             await loginPage.doLogin();
-            //1. 'XP tour' dialog must be loaded automatically, tourDisabled = false:
+            // 1. 'XP tour' dialog must be loaded automatically, tourDisabled = false:
             await xpTourDialog.waitForDialogLoaded();
-            //2. Go to the step 2
+            // 2. Go to the step 2
             await xpTourDialog.clickOnNextButton();
-            //3. Go to the last step
+            // 3. Go to the last step
             await xpTourDialog.clickOnNextButton();
             await testUtils.saveScreenshot('xp_tour_issue_56', this);
-            //4. 'Installed' status should be displayed for each application:
+            // 4. 'Installed' status should be displayed for each application:
             let status = await xpTourDialog.waitForApplicationsStatus(APP_CONTENT_STUDIO);
-            assert.equal(status, INSTALLED_STATUS, "Installed status should appear for Content Studio");
+            assert.equal(status, INSTALLED_STATUS, "Installed status should appear for 'Content Studio'");
             status = await xpTourDialog.waitForApplicationsStatus('Data Toolbox');
-            assert.equal(status, INSTALLED_STATUS, "Installed status should appear for Data Toolbox");
-            //5. Verify that three new links get visible in Launcher Panel:
+            assert.equal(status, INSTALLED_STATUS, "Installed status should appear for 'Data Toolbox'");
+            // 5. Verify that three new links get visible in Launcher Panel:
             await xpTourDialog.waitForAppPresentInLauncherPanel(APP_CONTENT_STUDIO);
             await xpTourDialog.waitForAppPresentInLauncherPanel('Data toolbox');
         });
