@@ -3,7 +3,7 @@ const appConst = require('../libs/app_const');
 
 const XPATH = {
     container: "//div[contains(@id,'WidgetPanel') ]",
-    widgetShortcutsHeader: "//widget[contains(@id,'widget-shortcuts')]//h5[contains(@class,'widget-shortcuts-header')]",
+    widgetShortcutsHeader: "//widget[contains(@id,'widget-shortcuts')]//h5[contains(@class,'widget-header')]",
     youtubeWidget: "//div[descendant::widget[contains(@id,'widget-youtube')]]",
     xpTourDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='XP Tour']]",
     aboutDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='About']]",
@@ -17,6 +17,10 @@ class ShortcutsWidget extends Page {
 
     get shortcutsHeader() {
         return XPATH.container + XPATH.widgetShortcutsHeader;
+    }
+
+    get statsHeader() {
+        return XPATH.container + XPATH.widgetStatsHeader;
     }
 
     get youtubeWidget() {
@@ -53,7 +57,7 @@ class ShortcutsWidget extends Page {
             await this.clickOnElement(this.xpTourItem);
             return await this.pause(1000);
         } catch (err) {
-            let screenshot = appConst.generateRandomName("err_xp_tour");
+            let screenshot = appConst.generateRandomName('err_xp_tour');
             await this.saveScreenshot(screenshot);
             throw new Error("Shortcuts Widget error during clicking on Xp tour widget item, screenshot:" + screenshot + "  " + err);
         }
@@ -65,7 +69,7 @@ class ShortcutsWidget extends Page {
             await this.clickOnElement(this.aboutItem);
             return await this.pause(1000);
         } catch (err) {
-            let screenshot = appConst.generateRandomName("err_about");
+            let screenshot = appConst.generateRandomName('err_about');
             await this.saveScreenshot(screenshot);
             throw new Error("Shortcuts Widget error during clicking on About widget item, screenshot:" + screenshot + "  " + err);
         }
@@ -75,7 +79,7 @@ class ShortcutsWidget extends Page {
         try {
             return await this.waitForElementDisplayed(XPATH.container, appConst.mediumTimeout);
         } catch (err) {
-            let screenshot = appConst.generateRandomName("err_sh_widget");
+            let screenshot = appConst.generateRandomName('err_sh_widget');
             await this.saveScreenshot(screenshot);
             throw new Error("Shortcuts Widget is not loaded, screenshot:" + screenshot + "  " + err);
         }
@@ -105,19 +109,17 @@ class ShortcutsWidget extends Page {
         return this.waitForElementDisplayed(this.aboutItem, appConst.mediumTimeout);
     }
 
-    getWidgetShortcutHeader() {
-        return this.getText(this.shortcutsHeader);
-    }
-
-    async waitForYoutubeWidgetDisplayed() {
+    async getWidgetShortcutHeader() {
         try {
-            return this.waitForElementDisplayed(this.youtubeWidget, appConst.mediumTimeout);
+            await this.waitForElementDisplayed(this.statsHeader, appConst.mediumTimeout);
+            return this.getText(this.shortcutsHeader);
         } catch (err) {
-            let screenshot = appConst.generateRandomName("err_youtube");
+            let screenshot = appConst.generateRandomName('err_sh_widget');
             await this.saveScreenshot(screenshot);
-            throw new Error("Youtube Widget is not loaded, screenshot:" + screenshot + "  " + err);
+            throw new Error('Widget shortcut header: screenshot ' + screenshot + ' ' + err);
         }
     }
+
 }
 
 module.exports = ShortcutsWidget;

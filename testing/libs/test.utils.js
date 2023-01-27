@@ -11,7 +11,7 @@ const path = require('path');
 module.exports = {
 
     getBrowser() {
-        if (typeof browser !== "undefined") {
+        if (typeof browser !== 'undefined') {
             return browser;
         } else {
             return webDriverHelper.browser;

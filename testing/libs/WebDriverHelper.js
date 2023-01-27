@@ -11,9 +11,9 @@ WebDriverHelper.prototype.getBrowser = function () {
 };
 
 const makeChromeOptions = (headless, width) => ({
-    "args": [
-        ...(headless ? ["--headless", "--disable-gpu", "--no-sandbox"] : []),
-        "--lang=en",
+    'args': [
+        ...(headless ? ['--headless', '--disable-gpu', '--no-sandbox'] : []),
+        '--lang=en',
         '--disable-extensions',
         `window-size=${width},1100`
     ]
