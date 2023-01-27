@@ -19,10 +19,6 @@ class ShortcutsWidget extends Page {
         return XPATH.container + XPATH.widgetShortcutsHeader;
     }
 
-    get statsHeader() {
-        return XPATH.container + XPATH.widgetStatsHeader;
-    }
-
     get youtubeWidget() {
         return XPATH.container + XPATH.youtubeWidget;
     }
@@ -111,7 +107,7 @@ class ShortcutsWidget extends Page {
 
     async getWidgetShortcutHeader() {
         try {
-            await this.waitForElementDisplayed(this.statsHeader, appConst.mediumTimeout);
+            await this.waitForElementDisplayed(this.shortcutsHeader, appConst.mediumTimeout);
             return this.getText(this.shortcutsHeader);
         } catch (err) {
             let screenshot = appConst.generateRandomName('err_sh_widget');
