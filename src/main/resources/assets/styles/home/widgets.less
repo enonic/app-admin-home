@@ -7,7 +7,8 @@
 
   .widget-panel {
     width: 100%;
-    height: calc(100vh - 44px);
+    height: calc(100vh - 54px);
+    padding-top: 10px;
     z-index: 1;
     position: relative;
     display: grid;
@@ -46,15 +47,23 @@
           transition: opacity 2s;
           opacity: 1;
         }
+
+        &.width-auto {
+          width: fit-content;
+        }
+
+        &.height-auto {
+          height: fit-content;
+        }
       }
 
       &.width-auto {
-        width: fit-content;
+        width: 25%;
       }
 
       &.height- {
         &auto {
-          height: fit-content;
+          height: 25%;
         }
 
         &small,
@@ -171,8 +180,6 @@
 
 @media screen and (min-width: 1025px) {
   #home-main-container {
-    padding-left: 20px;
-    padding-right: 20px;
 
     .widget-panel {
       grid-template-columns: repeat(4, minmax(25%, auto));
