@@ -6,17 +6,24 @@
   right: 0;
   background-color: rgb(255 255 255 / 10%);
 
-  .appbar-tab-menu {
-    display: flex;
-    width: 100%;
-    padding-right: @app-header-height;
-    margin-left: 35px;
-  }
-
   .app-icon-mixin();
 
-  .app-icon {
-    padding: 0 10px;
+  .home-button {
+    .icon-dashboard();
+    .icon-large();
+    color: @admin-white;
+
+    &::before {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: @app-header-height;
+      color: @admin-white;
+    }
+
+    .app-icon {
+      display: none;
+    }
   }
 
   &._0-240,

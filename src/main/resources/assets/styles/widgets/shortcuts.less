@@ -16,7 +16,7 @@
 
   .widget-shortcuts-item {
     text-align: center;
-    min-width: 75px;
+    min-width: 25%;
     margin: 15px 8px;
     cursor: pointer;
     font-size: 13px;
@@ -26,6 +26,7 @@
     img {
       width: 28px;
       height: 28px;
+      filter: drop-shadow(0 0 1px hsl(0, 0%, 0%));
     }
 
     a {
@@ -35,6 +36,7 @@
       div {
         color: @admin-font-gray;
         font-weight: 600;
+        text-shadow: 0 0 1px @admin-black, 0 0 1px @admin-black, 0 0 1px @admin-black, 0 0 1px @admin-black;
       }
     }
 
@@ -43,11 +45,5 @@
         opacity: 0.7;
       }
     }
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .widget-shortcuts-container {
-    justify-content: space-evenly;
   }
 }
