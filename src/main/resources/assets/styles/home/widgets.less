@@ -77,6 +77,14 @@
         }
       }
 
+      &.style-custom {
+        .widget-contents {
+          .widget-header {
+            text-shadow: 0 0 1px @admin-black, 0 0 1px @admin-black, 0 0 1px @admin-black, 0 0 1px @admin-black;
+          }
+        }
+      }
+
       &:not(.style-custom) {
         opacity: 0.9;
         box-sizing: border-box;
@@ -160,7 +168,6 @@
       grid-template-columns: repeat(4, minmax(25%, auto));
 
       .widget-placeholder {
-        padding: 20px;
         margin: 20px;
 
         &.width- {

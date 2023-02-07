@@ -1,7 +1,7 @@
 <widget xmlns="urn:enonic:xp:model:1.0">
-  <display-name>Useful links</display-name>
+  <display-name>Useful Links</display-name>
   <interfaces>
-    <interface>home.dashboard</interface>
+    <interface>admin.dashboard</interface>
   </interfaces>
   <config>
     <property name="width" value="small"/>
