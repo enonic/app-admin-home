@@ -10,7 +10,7 @@ const ShortcutsWidget = require('../page_objects/shortcuts.widget');
 describe('Home Page, Shortcut widget specification - check widget items and open About dialog(licensing button)', function () {
     this.timeout(appConst.TIMEOUT_SUITE);
     webDriverHelper.setupBrowser();
-    const WIDGET_SHORTCUTS_HEADER = 'Useful links';
+    const WIDGET_SHORTCUTS_HEADER = 'Useful Links';
 
     it('WHEN Home Page is loaded THEN expected buttons should be present in toolbar',
         async function () {

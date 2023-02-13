@@ -26,7 +26,7 @@ class LoginPage extends Page {
     async typePassword() {
         let passwordInput = await this.findElement(this.passwordInput);
         await passwordInput.waitForDisplayed({timeout: 1000});
-        await passwordInput.addValue("password");
+        await passwordInput.addValue('password');
     }
 
     waitForPageLoaded(ms) {
