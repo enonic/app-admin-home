@@ -18,7 +18,7 @@ describe('Home Page, Shortcut widget specification - check widget items and open
             let shortcutsWidget = new ShortcutsWidget();
             await homePage.waitForLoaded();
             let actualHeader = await shortcutsWidget.getWidgetShortcutHeader();
-            assert.equal(actualHeader, WIDGET_SHORTCUTS_HEADER, "'Useful links' header should be displayed");
+            assert.equal(actualHeader, WIDGET_SHORTCUTS_HEADER, "'Useful Links' header should be displayed");
 
             // XP tour button should be displayed in the widget
             await shortcutsWidget.waitForXpTourItemDisplayed();
