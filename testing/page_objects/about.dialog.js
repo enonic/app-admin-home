@@ -33,7 +33,7 @@ class AboutDialog extends Page {
         } catch (err) {
             let screenshot = appConst.generateRandomName('err_about_dlg_load');
             await this.saveScreenshot(screenshot);
-            throw new Error("About dialog is not loaded in 3 seconds! screenshot: " + screenshot + "  " + err);
+            throw new Error('About dialog is not loaded in 3 seconds! screenshot: ' + screenshot + "  " + err);
         }
     }
 
@@ -55,7 +55,7 @@ class AboutDialog extends Page {
         } catch (err) {
             let screenshot = appConst.generateRandomName('err_about_dlg');
             await this.saveScreenshot(screenshot);
-            throw new Error("About dialog should be closed! screenshot: " + screenshot + " " + err);
+            throw new Error('About dialog should be closed! screenshot: ' + screenshot + " " + err);
         }
     }
 

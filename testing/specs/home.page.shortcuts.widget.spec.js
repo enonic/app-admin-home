@@ -10,7 +10,7 @@ const ShortcutsWidget = require('../page_objects/shortcuts.widget');
 describe('Home Page, Shortcut widget specification - check widget items and open About dialog(licensing button)', function () {
     this.timeout(appConst.TIMEOUT_SUITE);
     webDriverHelper.setupBrowser();
-    const WIDGET_SHORTCUTS_HEADER = 'Useful links';
+    const WIDGET_SHORTCUTS_HEADER = 'Useful Links';
 
     it('WHEN Home Page is loaded THEN expected buttons should be present in toolbar',
         async function () {
@@ -18,7 +18,7 @@ describe('Home Page, Shortcut widget specification - check widget items and open
             let shortcutsWidget = new ShortcutsWidget();
             await homePage.waitForLoaded();
             let actualHeader = await shortcutsWidget.getWidgetShortcutHeader();
-            assert.equal(actualHeader, WIDGET_SHORTCUTS_HEADER, "'Useful links' header should be displayed");
+            assert.equal(actualHeader, WIDGET_SHORTCUTS_HEADER, "'Useful Links' header should be displayed");
 
             // XP tour button should be displayed in the widget
             await shortcutsWidget.waitForXpTourItemDisplayed();

@@ -73,7 +73,7 @@ class XpTourDialog extends Page {
         } catch (err) {
             let screenshot = appConst.generateRandomName('err_xp_tour_dialog_load');
             await this.saveScreenshot(screenshot);
-            throw new Error("XP tour dialog was not loaded, screenshot: " + screenshot + "  " + err);
+            throw new Error('XP tour dialog was not loaded, screenshot: ' + screenshot + '  ' + err);
         }
     }
 
@@ -93,7 +93,7 @@ class XpTourDialog extends Page {
         } catch (err) {
             let screenshot = appConst.generateRandomName('err_install_apps');
             await this.saveScreenshot(screenshot);
-            throw new Error("Install Apps button is not visible, screenshot " + screenshot + " " + err)
+            throw new Error('Install Apps button is not visible, screenshot ' + screenshot + " " + err)
         }
     }
 
@@ -121,7 +121,7 @@ class XpTourDialog extends Page {
         } catch (err) {
             let screenshot = appConst.generateRandomName('err_app_in_panel');
             await this.saveScreenshot(screenshot);
-            throw new Error("Application is not present in Launcher Panel: " + screenshot + " " + err);
+            throw new Error('Application is not present in Launcher Panel: ' + screenshot + " " + err);
         }
     }
 
@@ -152,9 +152,9 @@ class XpTourDialog extends Page {
             let statusSelector = xpath.container +
                                  `//div[contains(@id,'enonic') and descendant::div[contains(@class,'demo-app-title') and contains(.,'${appName}')]]`;
             await this.getBrowser().waitUntil(async () => {
-                let result = await this.getAttribute(statusSelector, "class");
-                return result.includes("installed");
-            }, {timeout: appConst.INSTALL_APP_TIMEOUT, timeoutMsg: "Application should be installed"});
+                let result = await this.getAttribute(statusSelector, 'class');
+                return result.includes('installed');
+            }, {timeout: appConst.INSTALL_APP_TIMEOUT, timeoutMsg: 'Application should be installed'});
         } catch (err) {
             await this.saveScreenshot(appConst.generateRandomName('err_app_status'));
             throw new Error("'XP Tour dialog' - error when getting app status: " + err);
