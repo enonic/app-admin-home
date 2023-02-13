@@ -9,7 +9,7 @@
   "devDependencies": {
     "assert": "^2.0.0",
     "mocha": "^10.2.0",
-    "selenium-standalone": "^8.2.5",
+    "selenium-standalone": "^8.3.0",
     "webdriverio": "^8.3.3",
     "glob": "^8.1.0",
     "chai": "^4.3.7",
