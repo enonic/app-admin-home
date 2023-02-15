@@ -22,8 +22,8 @@ class DashboardWidgetConfig extends WidgetConfig {
     private header: boolean;
 
     fromJson(json: { [key: string]: string }): DashboardWidgetConfig {
-        this.width = <WidgetSize>WidgetSize[json.width?.toUpperCase()] || WidgetSize.AUTO;
-        this.height = <WidgetSize>WidgetSize[json.height?.toUpperCase()] || WidgetSize.AUTO;
+        this.width = <WidgetSize>WidgetSize[json.width?.toUpperCase()] || WidgetSize.MEDIUM;
+        this.height = <WidgetSize>WidgetSize[json.height?.toUpperCase()] || WidgetSize.MEDIUM;
         this.style = <WidgetStyle>WidgetStyle[json.style?.toUpperCase()] || WidgetStyle.AUTO;
         this.order = Number.isNaN(json.order) ? Number.MAX_VALUE : parseInt(json.order);
         this.header = json.header !== 'false';
