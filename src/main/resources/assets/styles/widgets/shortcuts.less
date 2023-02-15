@@ -2,47 +2,51 @@
 @import "dialog-about";
 @import "dialog-tour";
 
-#widget-shortcuts .widget-header {
-  color: @admin-white;
-}
+#widget-shortcuts {
+  display: inline-table;
 
-.widget-shortcuts-container {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: start;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 360px;
+  .widget-header {
+    color: @admin-white;
+  }
 
-  .widget-shortcuts-item {
-    text-align: center;
-    min-width: 25%;
-    margin: 15px 8px;
-    cursor: pointer;
-    font-size: 13px;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  .widget-shortcuts-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 360px;
 
-    img {
-      width: 28px;
-      height: 28px;
-      filter: drop-shadow(0 0 1px hsl(0, 0%, 0%));
-    }
+    .widget-shortcuts-item {
+      text-align: center;
+      min-width: 25%;
+      margin: 15px 8px;
+      cursor: pointer;
+      font-size: 13px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
 
-    a {
-      color: @admin-font-gray;
-      text-decoration: none;
-
-      div {
-        color: @admin-font-gray;
-        font-weight: 600;
-        text-shadow: 0 0 1px @admin-black, 0 0 1px @admin-black, 0 0 1px @admin-black, 0 0 1px @admin-black;
+      img {
+        width: 28px;
+        height: 28px;
+        filter: drop-shadow(0 0 1px hsl(0, 0%, 0%));
       }
-    }
 
-    &:hover {
       a {
-        opacity: 0.7;
+        color: @admin-font-gray;
+        text-decoration: none;
+
+        div {
+          color: @admin-font-gray;
+          font-weight: 600;
+          text-shadow: 0 0 1px @admin-black, 0 0 1px @admin-black, 0 0 1px @admin-black, 0 0 1px @admin-black;
+        }
+      }
+
+      &:hover {
+        a {
+          opacity: 0.7;
+        }
       }
     }
   }
