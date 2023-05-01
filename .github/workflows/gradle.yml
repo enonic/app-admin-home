@@ -80,7 +80,7 @@ jobs:
           path: |
             testing/build/mochawesome-report
 
-      - uses: codecov/codecov-action@v3.1.1
+      - uses: codecov/codecov-action@v3.1.3
 
       - name: Publish
         if: needs.publish_vars.outputs.publish == 'true'
