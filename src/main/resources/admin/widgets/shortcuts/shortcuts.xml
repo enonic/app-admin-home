@@ -1,5 +1,5 @@
 <widget xmlns="urn:enonic:xp:model:1.0">
-  <display-name>Useful Links</display-name>
+  <display-name i18n="home.dashboard.widget.shortcuts.displayName">Useful Links</display-name>
   <interfaces>
     <interface>admin.dashboard</interface>
   </interfaces>
