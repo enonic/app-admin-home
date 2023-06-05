@@ -20,7 +20,7 @@ const getAboutDialogContent = (): Element => {
             <div class="xp-about-dialog-version-block">
                 <span class="xp-about-dialog-version">${CONFIG.getString('xpVersion')}</span>&nbsp;&nbsp;
                 <a href="https://developer.enonic.com/docs/xp/stable/release" target="_blank">
-                    ${i18n('home.dashboard.about.dialog.whatsnew')}
+                    ${i18n('home.dashboard.about.dialog.whatsnew')}?
                 </a>
             </div>
             <div class="xp-about-dialog-text">

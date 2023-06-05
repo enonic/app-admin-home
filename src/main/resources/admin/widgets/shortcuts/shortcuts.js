@@ -18,7 +18,7 @@ function handleGet() {
             src: infoIconUrl,
             cls: 'widget-shortcuts-xp-about',
             caption: i18n.localize({
-                key: 'home.dashboard.about',
+                key: 'home.dashboard.widget.shortcuts.about',
                 bundles: ['i18n/phrases'],
                 locale: locales
             }),
@@ -46,7 +46,7 @@ function handleGet() {
             src: marketIconUrl,
             cls: '',
             caption: i18n.localize({
-                key: 'home.dashboard.market',
+                key: 'home.dashboard.widget.shortcuts.market',
                 bundles: ['i18n/phrases'],
                 locale: locales
             }),
@@ -60,7 +60,7 @@ function handleGet() {
             src: busIconUrl,
             cls: 'xp-tour',
             caption: i18n.localize({
-                key: 'home.dashboard.tour',
+                key: 'home.dashboard.widget.shortcuts.tour',
                 bundles: ['i18n/phrases'],
                 locale: locales
             }),
