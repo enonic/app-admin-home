@@ -150,7 +150,7 @@ export class WidgetPanel
         const loadMask: LoadMask = new LoadMask(widgetContainer);
         loadMask.show();
 
-        this.fetchAndRenderWidget(widget, widgetContainer).finally(() => loadMask.hide());
+        void this.fetchAndRenderWidget(widget, widgetContainer).finally(() => loadMask.hide());
     }
 
     private createWidgetPlaceholder(widget: DashboardWidget): LibAdminElement {
