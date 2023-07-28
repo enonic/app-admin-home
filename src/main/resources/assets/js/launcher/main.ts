@@ -16,9 +16,7 @@ const isHomeApp: boolean = document.location.href.endsWith(toolBasePath) || docu
 
 const currentScript = document.currentScript;
 
-interface JSONObject {
-    [key: string]: string;
-}
+type JSONObject = Record<string, string>;
 
 let i18nStore: Map<string, string>;
 
@@ -28,7 +26,7 @@ class Launcher {
     private launcherPanel: HTMLElement;
     private launcherButton: HTMLElement;
     private launcherMainContainer: HTMLElement;
-    private focusableElements: Array<HTMLElement>;
+    private focusableElements: HTMLElement[];
 
     private closeLauncher: KeyBinding = new KeyBinding('esc')
         .setGlobal(true)
@@ -290,7 +288,7 @@ class Launcher {
         void this.fetchLauncherContents()
             .then((launcherEl: HTMLElement) => {
                 this.launcherPanel.appendChild(launcherEl);
-                this.launcherMainContainer = <HTMLElement>this.launcherPanel.firstChild;
+                this.launcherMainContainer = this.launcherPanel.firstChild as HTMLElement;
                 if (isHomeApp) {
                     this.launcherMainContainer.classList.add('home');
                 }
@@ -304,8 +302,8 @@ class Launcher {
                     const appTiles = this.launcherPanel
                         .querySelector('.launcher-app-container')
                         .querySelectorAll('a');
-                    for (let i = 0; i < appTiles.length; i++) {
-                        appTiles[i].addEventListener('click', () => this.closeLauncherPanel(true));
+                    for (const appTile of Array.from(appTiles)) {
+                        appTile.addEventListener('click', () => this.closeLauncherPanel(true));
                     }
                 }
                 this.highlightActiveApp();
@@ -319,7 +317,7 @@ class Launcher {
             return;
         }
         const isClickOutside =
-            !this.launcherPanel.contains(<Node>e.target) && !this.launcherButton.contains(<Node>e.target);
+            !this.launcherPanel.contains(e.target as Node) && !this.launcherButton.contains(e.target as Node);
         if (
             isClickOutside &&
             !this.launcherMainContainer.getAttribute('hidden') &&
@@ -372,29 +370,28 @@ class Launcher {
         const appTiles = container
             .querySelector('.launcher-app-container')
             .querySelectorAll('a');
-        for (let i = 0; i < appTiles.length; i++) {
+        for (const appTile of Array.from(appTiles)) {
             // eslint-disable-next-line no-loop-func
-            appTiles[i].addEventListener('click', e => {
-                if (isHomeApp && (<Element>e.currentTarget).getAttribute('data-id') === 'home') {
+            appTile.addEventListener('click', e => {
+                if (isHomeApp && (e.currentTarget as Element).getAttribute('data-id') === 'home') {
                     e.preventDefault();
                     return;
                 }
 
                 if (longpress) {
                     e.preventDefault();
-                    // tslint:disable-next-line:no-invalid-this
-                    document.location.href = (<Element>e.currentTarget).getAttribute('href');
+                                       document.location.href = (e.currentTarget as Element).getAttribute('href');
                 } else {
                     e.preventDefault();
-                    Launcher.openWindow(toolWindows, <HTMLAnchorElement>e.currentTarget);
+                    Launcher.openWindow(toolWindows, e.currentTarget as HTMLAnchorElement);
                 }
             });
             // eslint-disable-next-line no-loop-func
-            appTiles[i].addEventListener('mousedown', () => {
+            appTile.addEventListener('mousedown', () => {
                 startTime = new Date().getTime();
             });
             // eslint-disable-next-line no-loop-func
-            appTiles[i].addEventListener('mouseup', () => {
+            appTile.addEventListener('mouseup', () => {
                 endTime = new Date().getTime();
                 longpress = endTime - startTime >= 500;
             });
@@ -432,10 +429,10 @@ class Launcher {
 
     private highlightActiveApp = (): void => {
         const appRows = this.launcherPanel.querySelectorAll('.app-row');
-        for (let i = 0; i < appRows.length; i++) {
-            if ((appRows[i].id === 'home' && isHomeApp) ||
-                document.location.href.includes(`/${appRows[i].id}/`)) {
-                appRows[i].classList.add('active');
+        for (const appRow of Array.from(appRows)) {
+            if ((appRow.id === 'home' && isHomeApp) ||
+                document.location.href.includes(`/${appRow.id}/`)) {
+                appRow.classList.add('active');
             }
         }
     };
@@ -512,7 +509,7 @@ class Launcher {
         }
     };
 
-    private getApps(): Array<HTMLElement> {
+    private getApps(): HTMLElement[] {
         return Array.from(this.getLauncherMainContainer().querySelectorAll('.app-row'));
     }
 
@@ -558,7 +555,7 @@ class Launcher {
         this.unselectCurrentApp();
         const app = this.getAppByIndex(index);
         setTimeout(() => {
-            (<HTMLElement> app.parentNode).focus();
+            (app.parentNode as HTMLElement).focus();
             app.classList.add('selected');
         }, 1);
     };

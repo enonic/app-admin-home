@@ -21,10 +21,10 @@ class DashboardWidgetConfig extends WidgetConfig {
     private order: number;
     private header: boolean;
 
-    fromJson(json: { [key: string]: string }): DashboardWidgetConfig {
-        this.width = <WidgetSize>WidgetSize[json.width?.toUpperCase()] || WidgetSize.MEDIUM;
-        this.height = <WidgetSize>WidgetSize[json.height?.toUpperCase()] || WidgetSize.MEDIUM;
-        this.style = <WidgetStyle>WidgetStyle[json.style?.toUpperCase()] || WidgetStyle.AUTO;
+    fromJson(json: Record<string, string>): DashboardWidgetConfig {
+        this.width = WidgetSize[json.width?.toUpperCase()] as WidgetSize || WidgetSize.MEDIUM;
+        this.height = WidgetSize[json.height?.toUpperCase()] as WidgetSize || WidgetSize.MEDIUM;
+        this.style = WidgetStyle[json.style?.toUpperCase()] as WidgetStyle || WidgetStyle.AUTO;
         this.order = Number.isNaN(json.order) ? Number.MAX_VALUE : parseInt(json.order);
         this.header = json.header !== 'false';
 
@@ -73,7 +73,7 @@ export class DashboardWidget extends Widget {
     protected readonly config: DashboardWidgetConfig;
 
     static fromJson(json: WidgetDescriptorJson): DashboardWidget {
-        return <DashboardWidget>new DashboardWidgetBuilder().fromJson(json).build();
+        return new DashboardWidgetBuilder().fromJson(json).build() as DashboardWidget;
     }
 
     public getConfig(): DashboardWidgetConfig {
@@ -97,7 +97,7 @@ export class DashboardWidget extends Widget {
     }
 
     hasCustomStyling(): boolean {
-        return this.config.getStyle() !== WidgetStyle.AUTO;
+        return this.config.getStyle() !== WidgetStyle.AUTO.toString();
     }
 
     hasHeader(): boolean {

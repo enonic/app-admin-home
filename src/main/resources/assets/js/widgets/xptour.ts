@@ -317,7 +317,7 @@ function getDemoAppsHtml() {
 }
 
 function fetchDemoAppsFromMarket(): Q.Promise<MarketApplication[]> {
-    const appPromises: Q.Promise<any>[] = [
+    const appPromises: (Q.Promise<Application[] | MarketApplicationResponse>)[] = [
         new ListApplicationsRequest().sendAndParse(),
         new ListMarketApplicationsRequest()
             .setUrl(CONFIG.getString('marketUrl'))
@@ -333,18 +333,18 @@ function fetchDemoAppsFromMarket(): Q.Promise<MarketApplication[]> {
         .spread(function (installedApplications: Application[], marketApplications: MarketApplicationResponse) {
             const apps = marketApplications.getApplications();
             apps.forEach((marketDemoApp: MarketApplication) => {
-                for (let i = 0; i < installedApplications.length; i++) {
+                for (const installedApplication of installedApplications) {
                     if (
                         marketDemoApp
                             .getAppKey()
                             .equals(
-                                installedApplications[i].getApplicationKey(),
+                                installedApplication.getApplicationKey(),
                             )
                     ) {
                         if (
                             MarketHelper.installedAppCanBeUpdated(
                                 marketDemoApp,
-                                installedApplications[i],
+                                installedApplication,
                             )
                         ) {
                             marketDemoApp.setStatus(

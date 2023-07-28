@@ -13,7 +13,7 @@ const getElement = (selector: string): Promise<Element> => {
         return Promise.resolve(searchedElement);
     }
 
-    const promise: Promise<Element> = new Promise((resolve) => {
+    const promise = new Promise<Element>((resolve) => {
         const intervalId = setInterval(() => {
             const searchedElement: Element = document.querySelector(selector);
 
