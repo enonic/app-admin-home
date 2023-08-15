@@ -53,8 +53,7 @@ class ShortcutsWidget extends Page {
             await this.clickOnElement(this.xpTourItem);
             return await this.pause(1000);
         } catch (err) {
-            let screenshot = appConst.generateRandomName('err_xp_tour');
-            await this.saveScreenshot(screenshot);
+            let screenshot = await this.saveScreenshotUniqueName('err_xp_tour');
             throw new Error('Shortcuts Widget error during clicking on Xp tour widget item, screenshot:' + screenshot + "  " + err);
         }
     }
@@ -65,9 +64,8 @@ class ShortcutsWidget extends Page {
             await this.clickOnElement(this.aboutItem);
             return await this.pause(1000);
         } catch (err) {
-            let screenshot = appConst.generateRandomName('err_about');
-            await this.saveScreenshot(screenshot);
-            throw new Error('Shortcuts Widget error during clicking on About widget item, screenshot:' + screenshot + "  " + err);
+            let screenshot = await this.saveScreenshotUniqueName('err_about_btn');
+            throw new Error('Shortcuts Widget, error during clicking on About widget item, screenshot:' + screenshot + "  " + err);
         }
     }
 
@@ -75,8 +73,7 @@ class ShortcutsWidget extends Page {
         try {
             return await this.waitForElementDisplayed(XPATH.container, appConst.mediumTimeout);
         } catch (err) {
-            let screenshot = appConst.generateRandomName('err_sh_widget');
-            await this.saveScreenshot(screenshot);
+            let screenshot = await this.saveScreenshotUniqueName('err_widget_load');
             throw new Error('Shortcuts Widget is not loaded, screenshot:' + screenshot + '  ' + err);
         }
     }
@@ -110,12 +107,10 @@ class ShortcutsWidget extends Page {
             await this.waitForElementDisplayed(this.shortcutsHeader, appConst.mediumTimeout);
             return this.getText(this.shortcutsHeader);
         } catch (err) {
-            let screenshot = appConst.generateRandomName('err_sh_widget');
-            await this.saveScreenshot(screenshot);
+            let screenshot = await this.saveScreenshotUniqueName('err_sh_widget');
             throw new Error('Widget shortcut header: screenshot ' + screenshot + ' ' + err);
         }
     }
-
 }
 
 module.exports = ShortcutsWidget;

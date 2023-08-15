@@ -59,7 +59,7 @@ jobs:
       - name: Run Base Selenium Tests
         id: selenium
         if: github.event.head_commit.message != 'Updated to next SNAPSHOT version'
-        run: ./gradlew :testing:testAdminHomeApp
+        run: ./gradlew :testing:w_testAdminHomeChrome
 
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
@@ -78,7 +78,7 @@ jobs:
         with:
           name: ui-test-report
           path: |
-            testing/build/mochawesome-report
+            testing/build/reports
 
       - uses: codecov/codecov-action@v3.1.4
 
