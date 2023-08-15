@@ -71,8 +71,7 @@ class XpTourDialog extends Page {
             await this.waitForElementDisplayed(xpath.container, appConst.longTimeout);
             return await this.pause(1000);
         } catch (err) {
-            let screenshot = appConst.generateRandomName('err_xp_tour_dialog_load');
-            await this.saveScreenshot(screenshot);
+            let screenshot = await this.saveScreenshotUniqueName('err_xp_tour_dialog_load');
             throw new Error('XP tour dialog was not loaded, screenshot: ' + screenshot + '  ' + err);
         }
     }
@@ -91,8 +90,7 @@ class XpTourDialog extends Page {
             await installButton.waitForDisplayed({timeout: appConst.longTimeout});
             return await this.pause(1000);
         } catch (err) {
-            let screenshot = appConst.generateRandomName('err_install_apps');
-            await this.saveScreenshot(screenshot);
+            let screenshot = await this.saveScreenshotUniqueName('err_install_apps');
             throw new Error('Install Apps button is not visible, screenshot ' + screenshot + " " + err)
         }
     }
@@ -119,8 +117,7 @@ class XpTourDialog extends Page {
             let selector = xpath.applicationInLauncherPanel(name);
             return await this.waitForElementDisplayed(selector, appConst.shortTimeout);
         } catch (err) {
-            let screenshot = appConst.generateRandomName('err_app_in_panel');
-            await this.saveScreenshot(screenshot);
+            let screenshot = await this.saveScreenshotUniqueName('err_app_in_panel');
             throw new Error('Application is not present in Launcher Panel: ' + screenshot + " " + err);
         }
     }
@@ -129,8 +126,8 @@ class XpTourDialog extends Page {
         try {
             return await this.waitForElementDisplayed(this.finishButton, appConst.mediumTimeout);
         } catch (err) {
-            await this.saveScreenshot('err_finish_button_launcher_panel');
-            throw new Error("'Finish' button is not visible in the dialog: " + err);
+            let screenshot = await this.saveScreenshotUniqueName('err_finish_button');
+            throw new Error("'Finish' button is not visible in the dialog, screenshot: " + screenshot + ' ' + err);
         }
     }
 
@@ -141,8 +138,7 @@ class XpTourDialog extends Page {
             await element.waitForDisplayed({timeout: appConst.INSTALL_APP_TIMEOUT});
             return await element.getText();
         } catch (err) {
-            let screenshot = appConst.generateRandomName('err_app_status');
-            await this.saveScreenshot(screenshot);
+            let screenshot = await this.saveScreenshotUniqueName('err_app_status');
             throw new Error("'XP Tour dialog' - error when getting app status, screenshot: " + screenshot + "   " + err);
         }
     }
@@ -156,8 +152,8 @@ class XpTourDialog extends Page {
                 return result.includes('installed');
             }, {timeout: appConst.INSTALL_APP_TIMEOUT, timeoutMsg: 'Application should be installed'});
         } catch (err) {
-            await this.saveScreenshot(appConst.generateRandomName('err_app_status'));
-            throw new Error("'XP Tour dialog' - error when getting app status: " + err);
+            let screenshot = await this.saveScreenshotUniqueName('err_app_inst');
+            throw new Error("'XP Tour dialog' - error when getting app status: screenshot" + screenshot + '  ' + err);
         }
     }
 

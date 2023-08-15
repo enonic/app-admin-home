@@ -42,9 +42,9 @@ WebDriverHelper.prototype.setupBrowser = function setupBrowser() {
         let options = {
             logLevel: "error",
             automationProtocol: "webdriver",
-            path: "/wd/hub",
             capabilities: {
                 browserName: browser_name,
+                browserVersion: '115.0.5790.170',
                 platformName:platform_name,
                 'goog:chromeOptions': makeChromeOptions(isHeadless, width)
             }

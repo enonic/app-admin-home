@@ -9,7 +9,9 @@ const XpTourDialog = require('../page_objects/xp.tour.dialog');
 describe('XP tour dialog - install applications and check their statuses', function () {
 
     this.timeout(appConst.TIMEOUT_SUITE);
-    webDriverHelper.setupBrowser();
+    if (typeof browser === 'undefined') {
+        webDriverHelper.setupBrowser();
+    }
     const INSTALLED_STATUS = 'Installed';
     const APP_CONTENT_STUDIO = 'Content Studio';
     const APP_GUILLOTINE = 'Guillotine App';
@@ -21,15 +23,15 @@ describe('XP tour dialog - install applications and check their statuses', funct
             const xpTourDialog = new XpTourDialog();
             await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);
             await loginPage.doLogin();
-            //1.'XP tour' dialog must be loaded automatically, tourDisabled = false:
+            // 1.'XP tour' dialog must be loaded automatically, tourDisabled = false:
             await xpTourDialog.waitForDialogLoaded();
-            //2. Go to the step 2:
+            // 2. Go to the step 2:
             await xpTourDialog.clickOnNextButton();
-            //3.  Go to the last step:
+            // 3.  Go to the last step:
             await xpTourDialog.clickOnNextButton();
             await xpTourDialog.waitForInstallAppsButtonDisplayed();
             await testUtils.saveScreenshot('xp_tour_last_step', this);
-            //4. 3 applications to install should be present in the dialog
+            // 4. 3 applications to install should be present in the dialog
             let result = await xpTourDialog.getNamesOfAvailableApplications();
             assert.isTrue(result.includes(APP_GUILLOTINE.toUpperCase()), 'Guillotine app should be available');
             assert.isTrue(result.includes(APP_CONTENT_STUDIO.toUpperCase()), 'Content Studio app should be available');
@@ -37,28 +39,28 @@ describe('XP tour dialog - install applications and check their statuses', funct
             assert.equal(result.length, 3, 'Three applications should be available for installing');
         });
 
-    //Verifies Incorrect styling inside XP Tour #614
+    // Verifies: Incorrect styling inside XP Tour #614
     it("GIVEN Last step is opened WHEN 'Install Apps' button has been pressed THEN three application should be installed",
         async function () {
             const loginPage = new LoginPage();
             const xpTourDialog = new XpTourDialog();
             await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);
             await loginPage.doLogin();
-            //1.'XP tour' dialog must be loaded automatically, tourDisabled = false:
+            // 1.'XP tour' dialog must be loaded automatically, tourDisabled = false:
             await xpTourDialog.waitForDialogLoaded();
             await testUtils.saveScreenshot('xp_tour_dialog_should_be_loaded', this);
-            //2. Go to the last step:
+            // 2. Go to the last step:
             await xpTourDialog.goToInstallStep();
             await xpTourDialog.waitForInstallAppsButtonDisplayed();
-            //3. Click on 'Install Apps' button:
+            // 3. Click on 'Install Apps' button:
             await xpTourDialog.clickOnInstallAppsButton();
             await xpTourDialog.pause(4000);
             await testUtils.saveScreenshot('xp_tour_apps_installed', this);
-            //4. Verify the styles- three applications should be displayed as installed:
+            // 4. Verify the styles- three applications should be displayed as installed:
             await xpTourDialog.waitForApplicationInstalled(APP_GUILLOTINE);
             await xpTourDialog.waitForApplicationInstalled(APP_DATA_TOOLBOX);
             await xpTourDialog.waitForApplicationInstalled(APP_CONTENT_STUDIO);
-            //5. Verify that 'Finish' button is visible now:
+            // 5. Verify that 'Finish' button is visible now:
             await xpTourDialog.waitForAppFinishButtonVisible();
         });
 

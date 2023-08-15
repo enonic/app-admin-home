@@ -5,7 +5,6 @@ const appConst = require("./app_const");
 const webDriverHelper = require("./WebDriverHelper");
 const LoginPage = require('../page_objects/login.page');
 const XpTourDialog = require('../page_objects/xp.tour.dialog');
-const addContext = require('mochawesome/addContext');
 const fs = require('fs');
 const path = require('path');
 module.exports = {
@@ -27,11 +26,11 @@ module.exports = {
         await xpTourDialog.clickOnCancelButtonTop();
         return await loginPage.pause(700);
     },
-    doDeleteCookie: function () {
-        return webDriverHelper.browser.getCookies().then(result => {
+    doDeleteCookie() {
+        return this.getBrowser().getCookies().then(result => {
             console.log(result);
         }).then(() => {
-            return webDriverHelper.browser.deleteCookies();
+            return this.getBrowser().deleteCookies();
         }).then(() => {
             return console.log('cookie is being deleted...');
         });
@@ -40,17 +39,12 @@ module.exports = {
         let tabs = await this.getBrowser().getWindowHandles();
         return await this.getBrowser().switchToWindow(tabs[tabs.length - 1]);
     },
-    saveScreenshot: function (name, that) {
-
-        let screenshotsDir = path.join(__dirname, '/../build/mochawesome-report/screenshots/');
+    saveScreenshot(name, that) {
+        let screenshotsDir = path.join(__dirname, '/../build/reports/screenshots/');
         if (!fs.existsSync(screenshotsDir)) {
-            fs.mkdirSync(screenshotsDir, { recursive: true });
+            fs.mkdirSync(screenshotsDir, {recursive: true});
         }
-        return webDriverHelper.browser.saveScreenshot(screenshotsDir + name + '.png').then(() => {
-            if (that) {
-                addContext(that, 'screenshots/' + name + '.png');
-            }
-
+        return this.getBrowser().saveScreenshot(screenshotsDir + name + '.png').then(() => {
             return console.log('screenshot saved ' + name);
         }).catch(err => {
             return console.log('screenshot was not saved ' + screenshotsDir + 'utils  ' + err);

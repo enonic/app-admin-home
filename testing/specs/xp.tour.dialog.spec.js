@@ -9,7 +9,9 @@ const XpTourDialog = require('../page_objects/xp.tour.dialog');
 describe('XP tour dialog specification', function () {
 
     this.timeout(appConst.TIMEOUT_SUITE);
-    webDriverHelper.setupBrowser();
+    if (typeof browser === 'undefined') {
+        webDriverHelper.setupBrowser();
+    }
 
     it('WHEN XP tour button has been clicked in the shortcut widget THEN XP tour dialog should appear', async function () {
         const loginPage = new LoginPage();
