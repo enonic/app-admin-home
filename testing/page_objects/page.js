@@ -1,6 +1,7 @@
 const webDriverHelper = require('../libs/WebDriverHelper');
 const fs = require('fs');
 const path = require('path');
+const appConst = require("../libs/app_const");
 
 class Page {
 
