@@ -1,20 +1,20 @@
 apply plugin: 'com.github.node-gradle.node'
 
 node {
-    version = '18.13.0'
+    version = '18.17.1'
     download = true
 }
 
-task npmInstallForce( type: NpmTask ) {
+tasks.register('npmInstallForce', NpmTask) {
     description = 'Update all project node dependencies'
     args = ['install', '--force']
 }
 
-task cleanNode( type: Delete ) {
+tasks.register('cleanNode', Delete) {
     delete 'node_modules'
 }
 
-task copyDevResources {
+tasks.register('copyDevResources') {
     doLast {
         copy {
             from configurations.devResources.files.collect { zipTree( it ) }
@@ -24,4 +24,4 @@ task copyDevResources {
     }
 }
 
-npmInstall.dependsOn copyDevResources
+npmInstall.dependsOn( 'copyDevResources' )

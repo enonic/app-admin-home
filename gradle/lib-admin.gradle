@@ -1,3 +1,5 @@
+import org.codehaus.groovy.runtime.MethodClosure
+
 def isLibAdminUiIncluded()
 {
     return new File( "$rootDir/../lib-admin-ui" ).exists()
@@ -21,7 +23,7 @@ def applyResourcesTaskDependencies()
 
     if ( hasTask( 'copyDevResources' ) )
     {
-        copyDevResources.dependsOn libAdminDevJarTask
+        copyDevResources.dependsOn( 'libAdminDevJarTask' )
     }
 
     build.dependsOn += libAdminBuildTask
@@ -48,17 +50,17 @@ if ( hasLibAdminUi() )
 }
 
 ext {
-    hasLibAdminUi = this.&hasLibAdminUi
+    hasLibAdminUi = this.&hasLibAdminUi as MethodClosure
 }
 
 afterEvaluate {
     if ( hasTask( 'clean' ) )
     {
-        task flush( type: Delete ) {
+        tasks.register('flush', Delete) {
             description = 'Clean the project from built sources and dependencies'
             delete '.xp'
         }
-        clean.dependsOn flush
+        clean.dependsOn( 'flush' )
     }
 }
 

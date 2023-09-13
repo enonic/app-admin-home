@@ -1,12 +1,10 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'com.enonic.defaults' version '2.0.1'
-    id 'com.enonic.xp.app' version '3.2.0'
-    id "com.github.node-gradle.node" version '3.4.0'
+    id 'com.enonic.defaults' version '2.1.2'
+    id 'com.enonic.xp.app' version '3.4.0'
+    id "com.github.node-gradle.node" version '7.0.0'
 }
-
-apply from: "$rootDir/gradle/defaults.gradle"
 
 def xpVersion=version
 
@@ -26,6 +24,7 @@ configurations {
     }
 }
 
+apply from: "$projectDir/gradle/defaults.gradle"
 apply from: "$projectDir/gradle/env.gradle"
 apply from: "$projectDir/gradle/node.gradle"
 apply from: "$projectDir/gradle/lib-admin.gradle"
@@ -48,14 +47,17 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.9.1"
 }
 
-task lint( type: NpmTask, group: "verification", dependsOn: npmInstall ) {
+tasks.register('lint', NpmTask ) {
+    group "verification"
+    dependsOn( 'npmInstall' )
     args = ['run', 'lint']
     outputs.upToDateWhen { false }
 }
 
 check.dependsOn lint
 
-task webpack( type: NpmTask, dependsOn: npmInstall ) {
+tasks.register('webpack', NpmTask) {
+    dependsOn( 'npmInstall' )
     environment = ['NODE_ENV': nodeEnvironment()]
     description = 'Build UI resources (ts, css, etc).'
     args = ['run', 'build']
@@ -87,8 +89,7 @@ jar {
 
     outputs.dir "${buildDir}/resources/main"
 
-    dependsOn += test
-    dependsOn += webpack
+    dependsOn( 'webpack', 'test', 'javadoc' )
 }
 
 test {
