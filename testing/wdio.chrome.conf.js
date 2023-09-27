@@ -1,5 +1,9 @@
-const path = require('path')
-const { TimelineService } = require('wdio-timeline-reporter/timeline-service');
+const path = require('path');
+let PropertiesReader = require('properties-reader');
+const {TimelineService} = require('wdio-timeline-reporter/timeline-service');
+const file = path.join(__dirname, '/browser.properties');
+const properties = PropertiesReader(file);
+const browser_version = properties.get('browser.version');
 exports.config = {
 
     specs: [
@@ -10,7 +14,7 @@ exports.config = {
 
     capabilities: [{
         browserName: 'chrome',
-        browserVersion: '115.0.5790.170',
+        browserVersion: browser_version,
         'goog:chromeOptions': {
             "args": [
                 "--headless", "--disable-gpu", "--no-sandbox",
@@ -47,8 +51,7 @@ exports.config = {
     // Set directory to store all logs into
     outputDir: "./build/reports/logs/",
 
-    reporters: ['spec','concise',
-        ['timeline', { outputDir: './build/reports/timeline' }]
+    reporters: ['concise', ['timeline', { outputDir: './build/reports/timeline' }]
     ],
 
     // Hook that gets executed before the suite starts
