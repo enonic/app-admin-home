@@ -23,7 +23,7 @@ def applyResourcesTaskDependencies()
 
     if ( hasTask( 'copyDevResources' ) )
     {
-        copyDevResources.dependsOn( 'libAdminDevJarTask' )
+        copyDevResources.dependsOn( libAdminDevJarTask )
     }
 
     build.dependsOn += libAdminBuildTask
