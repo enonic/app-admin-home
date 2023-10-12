@@ -1,4 +1,4 @@
-import * as $ from 'jquery';
+// import * as jQuery from 'jquery';
 import {KeyBinding} from '@enonic/lib-admin-ui/ui/KeyBinding';
 import {KeyBindings} from '@enonic/lib-admin-ui/ui/KeyBindings';
 import {AppHelper} from '@enonic/lib-admin-ui/util/AppHelper';
@@ -322,7 +322,7 @@ class Launcher {
             isClickOutside &&
             !this.launcherMainContainer.getAttribute('hidden') &&
             !Launcher.isModalDialogActiveOnHomePage(e.target) &&
-            !Launcher.isDashboardIcon($(e.target))
+            !Launcher.isDashboardIcon(jQuery(e.target))
         ) {
             this.closeLauncherPanel();
         }
@@ -336,7 +336,7 @@ class Launcher {
         return (
             isHomeApp &&
             (document.body.classList.contains('modal-dialog') ||
-             $(element).closest('.xp-admin-common-modal-dialog').length > 0)
+             jQuery(element).closest('.xp-admin-common-modal-dialog').length > 0)
         );
     };
 

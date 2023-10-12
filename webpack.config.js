@@ -12,9 +12,9 @@ const isProd = process.env.NODE_ENV === 'production';
 module.exports = {
     context: path.join(__dirname, '/src/main/resources/assets'),
     entry: {
-        'js/home/bundle': './js/home/main.ts',
-        'js/launcher/bundle': './js/launcher/main.ts',
-        'js/widgets/shortcuts': './js/widgets/shortcuts.ts',
+        // 'js/home/bundle': './js/home/main.ts',
+        // 'js/launcher/bundle': './js/launcher/main.ts',
+        // 'js/widgets/shortcuts': './js/widgets/shortcuts.ts',
         'styles/home': './styles/home.less',
         'styles/launcher': './styles/launcher.less',
         'styles/widgets/shortcuts': './styles/widgets/shortcuts.less',
