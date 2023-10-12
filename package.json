@@ -12,7 +12,9 @@
     "build:js": "webpack --color --stats-error-details",
     "build:typecheck": "tsc --pretty --skipLibCheck --noEmit",
     "lint": "eslint **/*.ts --quiet --cache",
-    "fix": "eslint --fix **/*.ts --cache"
+    "fix": "eslint --fix **/*.ts --cache",
+    "postupgrade:gradle-wrapper": "enonic project clean",
+    "upgrade:gradle-wrapper": "enonic project gradle wrapper --gradle-version latest"
   },
   "dependencies": {
     "@enonic/lib-admin-ui": "file:./.xp/dev/lib-admin-ui",
