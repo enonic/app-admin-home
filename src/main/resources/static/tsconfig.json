@@ -34,7 +34,7 @@
         "target": "es5", // lib-admin-ui uses an old version of slickgrid that doesn't support fat arrow
 
         "types": [
-            "jquery",
+            // "jquery",
             "q"
           ],
     },

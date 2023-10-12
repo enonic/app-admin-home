@@ -7,7 +7,7 @@ import {assetUrl, serviceUrl} from '/lib/xp/portal';
 // @ts-expect-error No types yet
 import {render} from '/lib/mustache';
 // @ts-expect-error Cannot find module '/lib/router' or its corresponding type declarations.ts(2307)
-// import Router from '/lib/router';
+import Router from '/lib/router';
 import {immutableGetter, getAdminUrl} from '/lib/app-main/urlHelper';
 import {
 	FILEPATH_MANIFEST_NODE_MODULES,
@@ -19,11 +19,7 @@ const VIEW = resolve('./home.html');
 const TOOL_NAME = 'home';
 
 // @ts-expect-error A function with a name starting with an uppercase letter should only be used as a constructor
-// const router = Router();
-
-// router.all(`/${GETTER_ROOT}/{path:.+}`, (r: Request) => {
-// 	return immutableGetter(r);
-// });
+const router = Router();
 
 function getMarketUrl() {
     const marketConfigBean = __.newBean<{
@@ -55,16 +51,17 @@ frame-src \'self'\ https://*.youtube.com`;
 }
 
 
-export function get(request: Request): Response {
-    log.info('request:%s', JSON.stringify(request, null, 4));
+function get(_request: Request): Response {
+    // log.info('request:%s', JSON.stringify(request, null, 4));
+
     const response = {
         contentType: 'text/html',
         body: render(VIEW, {
             appMainBundleUrl: getAdminUrl({
-                path: 'home/bundle.js'
+                path: 'home/main.js'
             }, TOOL_NAME),
             appLauncherBundleUrl: getAdminUrl({
-                path: 'launcher/bundle.js'
+                path: 'launcher/main.js'
             }, TOOL_NAME),
             assetsUri: assetUrl({path: ''}),
             jqueryUrl: getAdminUrl({
@@ -75,7 +72,7 @@ export function get(request: Request): Response {
                 manifestPath: FILEPATH_MANIFEST_NODE_MODULES,
                 path: 'jquery-ui-dist/jquery-ui.min.js',
             }, TOOL_NAME),
-            launcherPath: getLauncherPath(),
+            // launcherPath: getLauncherPath(),
             theme: 'dark',
             configServiceUrl: serviceUrl({service: 'config'})
         })
@@ -86,6 +83,13 @@ export function get(request: Request): Response {
     return response;
 };
 
-// router.get('/?', (_r: Request) => get());
+router.get('/?', (r: Request) => get(r));
 
-// export const all = (r: Request) => router.dispatch(r);
+// Adding these lines makes XP respond with 404
+router.all(`/${GETTER_ROOT}/{path:.+}`, (r: Request) => {
+    // log.info('static request:%s', JSON.stringify(r, null, 4));
+    return immutableGetter(r);
+});
+
+
+export const all = (r: Request) => router.dispatch(r);
