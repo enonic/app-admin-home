@@ -1,4 +1,4 @@
-import type {Request, Response} from '/types';
+import type {Request, Response} from '/types/';
 
 // @ts-expect-error TS2307: Cannot find module '/lib/enonic/static' or its corresponding type declarations.
 import {buildGetter} from '/lib/enonic/static';
@@ -42,6 +42,7 @@ export const getAdminUrl = ({
 	manifestPath = FILEPATH_MANIFEST_CJS,
 	path,
 }: UrlPostfixParams, tool: string) => {
+    // log.info('getAdminUrl manifestPath:%s path:%s', manifestPath, path);
 	const urlPrefix = getToolUrl(app.name, tool);
 
 	return getImmutableUrl({
