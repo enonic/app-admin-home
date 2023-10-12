@@ -1,23 +1,29 @@
-const i18n = require('/lib/xp/i18n');
-const admin = require('/lib/xp/admin');
-const portal = require('/lib/xp/portal');
-const mustache = require('/lib/mustache');
+import type {Response} from '/types/Response.d';
 
-function handleGet() {
+
+// @ts-expect-error No types yet
+import {render} from '/lib/mustache';
+import {getLocales} from '/lib/xp/admin';
+import {assetUrl, serviceUrl} from '/lib/xp/portal';
+import {localize} from '/lib/xp/i18n';
+
+
+
+export function get(): Response {
     const iconsPath = 'icons/';
-    const busIconUrl = portal.assetUrl({ path: `${iconsPath}bus.svg` });
-    const infoIconUrl = portal.assetUrl({ path: `${iconsPath}info-with-circle.svg` });
-    const devIconUrl = portal.assetUrl({ path: `${iconsPath}developer.svg` });
-    const forumIconUrl = portal.assetUrl({ path: `${iconsPath}discuss.svg` });
-    const marketIconUrl = portal.assetUrl({ path: `${iconsPath}market.svg` });
-    const slackIconUrl = portal.assetUrl({ path: `${iconsPath}slack.svg` });
+    const busIconUrl = assetUrl({ path: `${iconsPath}bus.svg` });
+    const infoIconUrl = assetUrl({ path: `${iconsPath}info-with-circle.svg` });
+    const devIconUrl = assetUrl({ path: `${iconsPath}developer.svg` });
+    const forumIconUrl = assetUrl({ path: `${iconsPath}discuss.svg` });
+    const marketIconUrl = assetUrl({ path: `${iconsPath}market.svg` });
+    const slackIconUrl = assetUrl({ path: `${iconsPath}slack.svg` });
 
-    const locales = admin.getLocales();
+    const locales = getLocales();
     const dashboardIcons = [
         {
             src: infoIconUrl,
             cls: 'widget-shortcuts-xp-about',
-            caption: i18n.localize({
+            caption: localize({
                 key: 'home.dashboard.widget.shortcuts.about',
                 bundles: ['i18n/phrases'],
                 locale: locales
@@ -45,7 +51,7 @@ function handleGet() {
         {
             src: marketIconUrl,
             cls: '',
-            caption: i18n.localize({
+            caption: localize({
                 key: 'home.dashboard.widget.shortcuts.market',
                 bundles: ['i18n/phrases'],
                 locale: locales
@@ -59,7 +65,7 @@ function handleGet() {
         dashboardIcons.splice(0, 0, {
             src: busIconUrl,
             cls: 'xp-tour',
-            caption: i18n.localize({
+            caption: localize({
                 key: 'home.dashboard.widget.shortcuts.tour',
                 bundles: ['i18n/phrases'],
                 locale: locales
@@ -71,19 +77,17 @@ function handleGet() {
     const view = resolve('./shortcuts.html');
     const params = {
         dashboardIcons: dashboardIcons,
-        configServiceUrl: portal.serviceUrl({service: 'config'}),
-        stylesUri: portal.assetUrl({
+        configServiceUrl: serviceUrl({service: 'config'}),
+        stylesUri: assetUrl({
             path: 'styles/widgets/shortcuts.css'
         }),
-        jsUri: portal.assetUrl({
+        jsUri: assetUrl({
             path: 'js/widgets/shortcuts.js'
         }),
     };
 
     return {
         contentType: 'text/html',
-        body: mustache.render(view, params)
+        body: render(view, params)
     };
 }
-
-exports.get = handleGet;
