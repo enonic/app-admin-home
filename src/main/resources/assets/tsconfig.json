@@ -1,0 +1,47 @@
+{ // https://www.typescriptlang.org/tsconfig
+    "compilerOptions": {
+        "baseUrl": ".",
+        "declaration": false,
+        "esModuleInterop": true, // Needed for the 'q' npm module
+        "forceConsistentCasingInFileNames": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "lib": [
+            "DOM",
+            // lib-admin-ui uses an old version of slickgrid that doesn't support fat arrow
+            "es5",
+
+            // Even though target is currently es5 for slickgrid using 'Array.find' should work.
+            "ES2015.Core", // https://github.com/Microsoft/TypeScript/blob/main/src/lib/es2015.core.d.ts
+
+            // Even though target is currently es5 for slickgrid using 'async' should work.
+            "ES2015.Promise" // https://github.com/microsoft/TypeScript/blob/main/src/lib/es2015.promise.d.ts
+
+            // "ES2020",
+        ],
+        "paths": {},
+        "rootDir": ".",
+        "skipLibCheck": true,
+
+        // WARNING: Whether or not we want sourcemaps depends upon process.env.NODE_ENV,
+        // so this is set in tsup/static.ts
+        // "inlineSourceMap": false,
+        // "inlineSources": false,
+        // "sourceMap": true,
+
+        // WARNING: This causes sourcemaps to fail! Must be set in tsup/static.ts instead
+        // "target": "ES2020", // Modern browsers
+        "target": "es5", // lib-admin-ui uses an old version of slickgrid that doesn't support fat arrow
+
+        "types": [
+            // "jquery",
+            "q"
+          ],
+    },
+    "exclude": [
+        "./**/*.d.ts"
+    ],
+    "include": [
+        "./**/*.ts"
+    ],
+}

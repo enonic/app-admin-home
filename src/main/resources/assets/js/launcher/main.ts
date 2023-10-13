@@ -558,7 +558,7 @@ class Launcher {
         this.unselectCurrentApp();
         const app = this.getAppByIndex(index);
         setTimeout(() => {
-            (app.parentNode as HTMLElement).focus();
+            app.parentElement.focus();
             app.classList.add('selected');
         }, 1);
     };

@@ -1,15 +1,17 @@
 import type { Options } from '.';
 
 import esbuildPluginExternalGlobal from 'esbuild-plugin-external-global';
-
+import {
+    DIR_DST_ASSETS,
+    DIR_SRC_ASSETS
+} from './constants';
 
 export default function buildAssetConfig(): Options {
     return {
         bundle: true,
         dts: false, // d.ts files are use useless at runtime
         entry: {
-            'js/app-users-bundle': 'src/main/resources/assets/js/main.ts',
-            'js/crypto-worker': 'src/main/resources/assets/js/worker/RSAKeysWorker.ts',
+            'js/launcher/bundle': `${DIR_SRC_ASSETS}/js/launcher/main.ts`,
         },
         esbuildOptions(options, context) {
             options.banner = {
@@ -27,13 +29,10 @@ export default function buildAssetConfig(): Options {
         minify: process.env.NODE_ENV !== 'development',
         noExternal: [ // Same as dependencies in package.json
             /@enonic\/lib-admin-ui/,
-            'hasher',
-            'jquery', // This will bundle jQuery into the bundle
-            'nanoid',
-            'owasp-password-strength-test',
+            'jquery', // This will bundle jQuery into the bundle, unless you use the esbuildPluginExternalGlobal
             'q'
         ],
-        outDir: 'build/resources/main/assets',
+        outDir: DIR_DST_ASSETS,
         platform: 'browser',
         silent: ['QUIET', 'WARN'].includes(process.env.LOG_LEVEL_FROM_GRADLE||''),
         sourcemap: process.env.NODE_ENV === 'development',
