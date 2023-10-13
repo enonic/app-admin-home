@@ -4,12 +4,9 @@ import type { Options } from '.';
 import CopyWithHashPlugin from '@enonic/esbuild-plugin-copy-with-hash';
 import TsupPluginManifest from '@enonic/tsup-plugin-manifest';
 import {
-    DIR_DST,
+    DIR_DST_STATIC,
     DIR_SRC_STATIC
 } from './constants';
-
-
-const DIR_DST_STATIC = `${DIR_DST}/static`;
 
 
 export default function buildStaticConfig(): Options {
@@ -19,7 +16,7 @@ export default function buildStaticConfig(): Options {
         // entry,
         entry: {
             'home/bundle': `${DIR_SRC_STATIC}/home/main.ts`,
-            'launcher/bundle': `${DIR_SRC_STATIC}/launcher/main.ts`,
+            // 'launcher/bundle': `${DIR_SRC_STATIC}/launcher/main.ts`,
             'widgets/shortcuts': `${DIR_SRC_STATIC}/widgets/shortcuts.ts`,
         },
         esbuildOptions(options, context) {
@@ -57,12 +54,9 @@ export default function buildStaticConfig(): Options {
 
         noExternal: [ // Same as dependencies in package.json
             /@enonic\/lib-admin-ui.*/,
-            'hasher',
-            'nanoid',
-            'owasp-password-strength-test',
             'q'
         ],
-        outDir: 'build/resources/main/static',
+        outDir: DIR_DST_STATIC,
         platform: 'browser',
         silent: ['QUIET', 'WARN'].includes(process.env.LOG_LEVEL_FROM_GRADLE||''),
         splitting: false,

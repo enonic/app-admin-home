@@ -60,9 +60,10 @@ function get(_request: Request): Response {
             appMainBundleUrl: getAdminUrl({
                 path: 'home/main.js'
             }, TOOL_NAME),
-            appLauncherBundleUrl: getAdminUrl({
-                path: 'launcher/main.js'
-            }, TOOL_NAME),
+            appLauncherBundleUrl: getLauncherPath(),
+            // appLauncherBundleUrl: getAdminUrl({
+            //     path: 'launcher/main.js'
+            // }, TOOL_NAME),
             assetsUri: assetUrl({path: ''}),
             jqueryUrl: getAdminUrl({
                 manifestPath: FILEPATH_MANIFEST_NODE_MODULES,
@@ -72,7 +73,6 @@ function get(_request: Request): Response {
                 manifestPath: FILEPATH_MANIFEST_NODE_MODULES,
                 path: 'jquery-ui-dist/jquery-ui.min.js',
             }, TOOL_NAME),
-            // launcherPath: getLauncherPath(),
             theme: 'dark',
             configServiceUrl: serviceUrl({service: 'config'})
         })

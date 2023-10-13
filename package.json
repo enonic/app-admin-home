@@ -9,7 +9,8 @@
   },
   "scripts": {
     "build": "concurrently -c auto -g --timings npm:build:main:*",
-    "build:main:assets": "webpack --color --stats-error-details",
+    "build:main:assets": "tsup -d build/resources/main/assets",
+    "build:main:css": "webpack --color --stats-error-details",
     "build:main:server": "tsup -d build/resources/main",
     "build:main:static": "tsup -d build/resources/main/static",
     "check:types:server": "tsc --pretty --noEmit -p src/main/resources/tsconfig.json",
