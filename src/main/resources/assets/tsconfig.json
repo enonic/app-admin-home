@@ -15,7 +15,10 @@
             "ES2015.Core", // https://github.com/Microsoft/TypeScript/blob/main/src/lib/es2015.core.d.ts
 
             // Even though target is currently es5 for slickgrid using 'async' should work.
-            "ES2015.Promise" // https://github.com/microsoft/TypeScript/blob/main/src/lib/es2015.promise.d.ts
+            "ES2015.Promise", // https://github.com/microsoft/TypeScript/blob/main/src/lib/es2015.promise.d.ts
+
+            // Even though target is currently es5 for slickgrid using 'Map' should work.
+            "ES2015.Collection" // Map
 
             // "ES2020",
         ],

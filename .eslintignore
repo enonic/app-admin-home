@@ -2,6 +2,7 @@ node_modules/
 build/
 dist/
 out/
+tsup/
 .xp/
 **/*.js
 **/*.d.ts

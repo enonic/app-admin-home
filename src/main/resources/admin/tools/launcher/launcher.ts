@@ -7,17 +7,9 @@ import {getUser} from '/lib/xp/auth';
 import {getHomeToolUrl, getInstallation, getLocales, getToolUrl} from '/lib/xp/admin';
 import {assetUrl, logoutUrl as getLogoutUrl} from '/lib/xp/portal';
 import {localize} from '/lib/xp/i18n';
-// @ts-expect-error Cannot find module '/lib/router' or its corresponding type declarations.ts(2307)
-// import Router from '/lib/router';
-// import {immutableGetter, getAdminUrl} from '/lib/app-main/urlHelper';
-// import {
-// 	FILEPATH_MANIFEST_NODE_MODULES,
-// 	GETTER_ROOT,
-// } from '/constants';
 
 
 const VIEW = resolve('./launcher.html');
-// const TOOL_NAME = 'launcher';
 
 
 const adminToolsBean = __.newBean<{
@@ -71,18 +63,7 @@ export function get(): Response {
     const params = {
         xpVersion: app.version,
         appId: 'launcher',
-        // appLauncherBundleUrl: getAdminUrl({
-        //     path: 'launcher/bundle.js'
-        // }, TOOL_NAME),
         adminTools: adminTools,
-        // jqueryUrl: getAdminUrl({
-        //     manifestPath: FILEPATH_MANIFEST_NODE_MODULES,
-        //     path: 'jquery/dist/jquery.min.js',
-        // }, TOOL_NAME),
-        // jqueryUiUrl: getAdminUrl({
-        //     manifestPath: FILEPATH_MANIFEST_NODE_MODULES,
-        //     path: 'jquery-ui-dist/jquery-ui.min.js',
-        // }, TOOL_NAME),
         userIconUrl: userIconUrl,
         user: user,
         logoutUrl: logoutUrl,
