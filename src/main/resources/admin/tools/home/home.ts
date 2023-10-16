@@ -18,7 +18,6 @@ import {
 const VIEW = resolve('./home.html');
 const TOOL_NAME = 'home';
 
-// @ts-expect-error A function with a name starting with an uppercase letter should only be used as a constructor
 const router = Router();
 
 function getMarketUrl() {
