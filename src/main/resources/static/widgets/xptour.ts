@@ -126,7 +126,7 @@ function initNavigation() {
                 nextStepActionButton.setEnabled(false);
                 isInstallingDemoAppsNow = true;
 
-                void Q.all(loadDemoApps()).spread(() => {
+                void Q.all(loadDemoApps()).spread(() => { // This actually comes all the way from lib-admin-ui HttpRequest.sendAndParse which currently is a Q.Promise :(
                     if (currentStep === tourSteps.length) {
                         // if still on install apps page of xp tour
                         nextStepActionButton.setLabel(
@@ -318,7 +318,7 @@ function getDemoAppsHtml() {
 
 function fetchDemoAppsFromMarket(): Q.Promise<MarketApplication[]> {
     const appPromises: (Q.Promise<Application[] | MarketApplicationResponse>)[] = [
-        new ListApplicationsRequest().sendAndParse(),
+        new ListApplicationsRequest().sendAndParse(), // This actually comes all the way from lib-admin-ui HttpRequest.sendAndParse which currently is a Q.Promise :(
         new ListMarketApplicationsRequest()
             .setUrl(CONFIG.getString('marketUrl'))
             .setStart(0)
@@ -364,7 +364,7 @@ function fetchDemoAppsFromMarket(): Q.Promise<MarketApplication[]> {
         });
 }
 
-function loadDemoApps(): Q.Promise<void>[] {
+function loadDemoApps(): Q.Promise<void>[] { // This actually comes all the way from lib-admin-ui HttpRequest.sendAndParse which currently is a Q.Promise :(
     enableApplicationServerEventsListener();
 
     const loadingAppsPromises: Q.Promise<void>[] = [];
@@ -392,7 +392,7 @@ function enableApplicationServerEventsListener() {
     serverEventsListener.start();
 }
 
-function loadApp(marketDemoApp: MarketApplication) {
+function loadApp(marketDemoApp: MarketApplication): Q.Promise<void> { // This actually comes all the way from lib-admin-ui HttpRequest.sendAndParse which currently is a Q.Promise :(
     const url: string = marketDemoApp.getLatestVersionDownloadUrl();
     const demoAppContainer: HTMLElement = document.getElementById(marketDemoApp.getName());
 

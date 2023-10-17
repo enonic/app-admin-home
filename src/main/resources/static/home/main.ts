@@ -11,39 +11,33 @@ import {Element} from '@enonic/lib-admin-ui/dom/Element';
 import {ImgEl} from '@enonic/lib-admin-ui/dom/ImgEl';
 import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
 import {WidgetPanel} from './WidgetPanel';
-import * as Q from 'q';
 
 const containerId = 'home-main-container';
 
-const loadDOM = (): Q.Promise<void> => {
-    const DOMLoaded: Q.Deferred<void> = Q.defer<void>();
-    document.addEventListener('DOMContentLoaded', () => DOMLoaded.resolve());
-    return DOMLoaded.promise;
-};
+const loadDOM = () => new Promise<void>((resolve) => document.addEventListener('DOMContentLoaded', () => resolve()));
 
-const showBackgroundImage = (): Q.Promise<void> => {
+const showBackgroundImage = () => {
     const containerEl = document.getElementById(containerId);
     if (!containerEl) {
         throw new Error('Main container not found!');
     }
 
-    const deferred: Q.Deferred<void> = Q.defer<void>();
-    const container: Element = Element.fromHtmlElement(containerEl);
-    const divEl = new DivEl('lazy-image empty');
-    divEl.setId('background-image');
-    const imgEl = new ImgEl(CONFIG.getString('backgroundUri'), 'lazy-image empty');
+    return new Promise<void>((resolve) => {
+        const container = Element.fromHtmlElement(containerEl);
+        const divEl = new DivEl('lazy-image empty');
+        divEl.setId('background-image');
+        const imgEl = new ImgEl(CONFIG.getString('backgroundUri'), 'lazy-image empty');
 
-    container.appendChildren(divEl, imgEl);
+        container.appendChildren(divEl, imgEl);
 
-    imgEl.onLoaded(() => {
-        divEl.getEl().setAttribute('style', `background-image: url('${imgEl.getSrc()}')`);
-        imgEl.remove();
-        divEl.removeClass('empty');
-        deferred.resolve();
+        imgEl.onLoaded(() => {
+            divEl.getEl().setAttribute('style', `background-image: url('${imgEl.getSrc()}')`);
+            imgEl.remove();
+            divEl.removeClass('empty');
+            resolve();
+        });
+        container.appendChild(imgEl);
     });
-    container.appendChild(imgEl);
-
-    return deferred.promise;
 };
 
 const initConfig = async (configServiceUrl) => {
