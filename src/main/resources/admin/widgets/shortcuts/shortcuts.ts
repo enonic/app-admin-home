@@ -6,7 +6,7 @@ import {render} from '/lib/mustache';
 import {getLocales} from '/lib/xp/admin';
 import {assetUrl, serviceUrl} from '/lib/xp/portal';
 import {localize} from '/lib/xp/i18n';
-
+import {getAdminUrl} from '/lib/app-main/urlHelper';
 
 
 export function get(): Response {
@@ -81,9 +81,9 @@ export function get(): Response {
         stylesUri: assetUrl({
             path: 'styles/widgets/shortcuts.css'
         }),
-        jsUri: assetUrl({
-            path: 'js/widgets/shortcuts.js'
-        }),
+        jsUri: getAdminUrl({
+            path: 'widgets/shortcuts.js'
+        }, 'home'),
     };
 
     return {
