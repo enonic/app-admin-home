@@ -3,6 +3,7 @@ import type { Options } from '.';
 
 import CopyWithHashPlugin from '@enonic/esbuild-plugin-copy-with-hash';
 import TsupPluginManifest from '@enonic/tsup-plugin-manifest';
+import esbuildPluginExternalGlobal from 'esbuild-plugin-external-global';
 import {
     DIR_DST_STATIC,
     DIR_SRC_STATIC
@@ -23,6 +24,9 @@ export default function buildStaticConfig(): Options {
             options.keepNames = true;
         },
         esbuildPlugins: [
+            esbuildPluginExternalGlobal.externalGlobalPlugin({
+                'jquery': 'window.$',
+            }),
             CopyWithHashPlugin({
                 context: 'node_modules',
                 manifest: `node_modules-manifest.json`,
