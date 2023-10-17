@@ -23,6 +23,9 @@
             // Even though target is currently es5 for slickgrid using 'Array.prototype.includes' should work.
             "ES2016.Array.Include", // Array.prototype.includes
 
+            // Even though target is currently es5 for slickgrid using 'Object.entries' should work.
+            "ES2017.Object", // Object.entries, Object.values
+
             // Even though target is currently es5 for slickgrid using 'Promise.finally' should work.
             "ES2018.Promise", // Promise.finally
 
@@ -44,7 +47,6 @@
 
         "types": [
             // "jquery",
-            "q"
           ],
     },
     "exclude": [
