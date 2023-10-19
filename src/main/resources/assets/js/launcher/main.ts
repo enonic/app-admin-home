@@ -1,4 +1,3 @@
-import * as $ from 'jquery';
 import {KeyBinding} from '@enonic/lib-admin-ui/ui/KeyBinding';
 import {KeyBindings} from '@enonic/lib-admin-ui/ui/KeyBindings';
 import {AppHelper} from '@enonic/lib-admin-ui/util/AppHelper';
@@ -321,22 +320,26 @@ class Launcher {
         if (
             isClickOutside &&
             !this.launcherMainContainer.getAttribute('hidden') &&
-            !Launcher.isModalDialogActiveOnHomePage(e.target) &&
-            !Launcher.isDashboardIcon($(e.target))
+            !Launcher.isModalDialogActiveOnHomePage(e.target as Element) &&
+            !Launcher.isDashboardIcon(e.target as Element)
         ) {
             this.closeLauncherPanel();
         }
     };
 
-    private static isDashboardIcon = (element: JQuery<EventTarget>) =>
-        element.closest('.dashboard-item').length > 0 &&
-        element.parent().attr('href') !== '#';
+    private static elementExists = (element: Element) => typeof(element) != 'undefined' && element != null;
 
-    private static isModalDialogActiveOnHomePage = (element: EventTarget): boolean => {
+    private static isDashboardIcon = (element: Element) =>
+        Launcher.elementExists(element.closest('.dashboard-item')) &&
+        element.parentElement.getAttribute('href') !== '#';
+
+    private static isModalDialogActiveOnHomePage = (element: Element): boolean => {
         return (
             isHomeApp &&
-            (document.body.classList.contains('modal-dialog') ||
-             $(element).closest('.xp-admin-common-modal-dialog').length > 0)
+            (
+                document.body.classList.contains('modal-dialog')
+                || Launcher.elementExists(element.closest('.xp-admin-common-modal-dialog'))
+            )
         );
     };
 
@@ -555,7 +558,7 @@ class Launcher {
         this.unselectCurrentApp();
         const app = this.getAppByIndex(index);
         setTimeout(() => {
-            (app.parentNode as HTMLElement).focus();
+            app.parentElement.focus();
             app.classList.add('selected');
         }, 1);
     };

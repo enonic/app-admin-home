@@ -22,10 +22,10 @@
   "exclude": [
     "build/**/*",
     "out/**/*",
-    "node_modules/*"
+    "node_modules/*",
+    "src/**/*"
   ],
   "include": [
-    "src/**/*",
     "../lib-admin-ui/src/main/resources/assets/admin/common/js/_**/*.ts",
     ".xp/dev/lib-admin-ui/**/*.ts"
   ]

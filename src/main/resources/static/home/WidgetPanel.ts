@@ -103,7 +103,7 @@ export class WidgetPanel
     }
 
     private fetchWidgets(): Q.Promise<DashboardWidget[]> {
-        return new GetDashboardWidgetsRequest().fetchWidgets();
+        return new GetDashboardWidgetsRequest().fetchWidgets(); // This comes as Q.Promise from lib-admin-ui
     }
 
     private updateWidgets(applicationKey: string): void {
@@ -186,7 +186,7 @@ export class WidgetPanel
             });
     }
 
-    private renderWidget(widget: DashboardWidget, widgetContainer: LibAdminElement, html: string): Q.Promise<void> {
+    private renderWidget(widget: DashboardWidget, widgetContainer: LibAdminElement, html: string): Promise<void> {
         const sanitisedWidgetEl: LibAdminElement = this.getSanitisedWidget(widget, html);
 
         return this.injectWidgetAssets(sanitisedWidgetEl)
@@ -198,7 +198,6 @@ export class WidgetPanel
                 widgetContainer
                     .appendChild(sanitisedWidgetEl.addClass('widget-contents'))
                     .addClass('loaded');
-                return Q.resolve();
             });
     }
 
@@ -233,33 +232,38 @@ export class WidgetPanel
         return result;
     }
 
-    private injectWidgetAssets(widgetEl: LibAdminElement): Q.Promise<void[]>  {
-        const promises: Q.Promise<void>[] = [];
+    private injectWidgetAssets(widgetEl: LibAdminElement) {
+        const promises: Promise<void>[] = [];
         promises.push(...this.injectElements(widgetEl, 'link'));
         promises.push(...this.injectElements(widgetEl, 'script'));
-        return Q.all(promises);
+        return Promise.all(promises);
     }
 
-    private injectElements(widgetEl: LibAdminElement, tag: string): Q.Promise<void>[] {
+    private injectElements(widgetEl: LibAdminElement, tag: string): Promise<void>[] {
         const elements: HTMLCollectionOf<Element> = widgetEl.getHTMLElement().getElementsByTagName(tag);
         const elementsToRemove: Element[] = [];
-        const promises: Q.Promise<void>[] = [];
+        const promises: Promise<void>[] = [];
 
         for (let i = 0; i < elements.length; i++) {
-            const deferred: Q.Deferred<void> = Q.defer<void>();
-            promises.push(deferred.promise);
             const el: Element = elements.item(i);
             elementsToRemove.push(el);
 
-            const newElement: HTMLElement = document.createElement(tag);
-            newElement.onload = () => deferred.resolve();
-            newElement.onerror = () => deferred.resolve();
-
+            // Get the attributes before the element is removed
+            const attributes: Record<string,string> = {};
             el.getAttributeNames().forEach((attr: string) => {
-                newElement.setAttribute(attr, el.getAttribute(attr));
+                attributes[attr] = el.getAttribute(attr);
             });
 
-            document.head.appendChild(newElement);
+            const promise = new Promise<void>((resolve) => {
+                const newElement: HTMLElement = document.createElement(tag);
+                newElement.onload = () => resolve();
+                newElement.onerror = () => resolve();
+                for (const [key, value] of Object.entries(attributes)) {
+                    newElement.setAttribute(key, value);
+                }
+                document.head.appendChild(newElement);
+            });
+            promises.push(promise);
         }
 
         elementsToRemove.forEach((el: Element) => el.remove());
