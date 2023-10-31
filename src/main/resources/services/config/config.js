@@ -9,12 +9,17 @@ function getMarketUrl() {
 }
 
 function handleGet() {
+    let baseUri = admin.getBaseUri();
+    if (baseUri.endsWith('/')) {
+        baseUri = baseUri.substring(0, baseUri.length - 1);
+    }
+
     return {
         status: 200,
         contentType: 'application/json',
         body: {
             appId: app.name,
-            adminUrl: admin.getBaseUri(),
+            adminUrl: baseUri,
             assetsUri: portal.assetUrl({
                 path: ''
             }),

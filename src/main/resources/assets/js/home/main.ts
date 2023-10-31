@@ -62,7 +62,7 @@ const setupWebSocketListener = () => {
 const startLostConnectionDetector = () => {
     ConnectionDetector.get()
         .setAuthenticated(true)
-        .setSessionExpireRedirectUrl(`${CONFIG.getString('adminUrl')}/tool`)
+        .setSessionExpireRedirectUrl(`${CONFIG.getString('adminUrl')}`)
         .setNotificationMessage(i18n('notify.connection.loss'))
         .startPolling(true);
 };
