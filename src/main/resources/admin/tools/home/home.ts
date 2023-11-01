@@ -8,7 +8,7 @@ import {assetUrl, serviceUrl} from '/lib/xp/portal';
 import {render} from '/lib/mustache';
 // @ts-expect-error Cannot find module '/lib/router' or its corresponding type declarations.ts(2307)
 import Router from '/lib/router';
-import {immutableGetter, getAdminUrl} from '/lib/app-main/urlHelper';
+import {immutableGetter, getAdminUrl, getAdminNodeModuleUrl} from '/lib/app-main/urlHelper';
 import {
 	FILEPATH_MANIFEST_NODE_MODULES,
 	GETTER_ROOT,
@@ -64,14 +64,10 @@ function get(_request: Request): Response {
             //     path: 'launcher/main.js'
             // }, TOOL_NAME),
             assetsUri: assetUrl({path: ''}),
-            jqueryUrl: getAdminUrl({
-                manifestPath: FILEPATH_MANIFEST_NODE_MODULES,
-                path: 'jquery/dist/jquery.min.js',
-            }, TOOL_NAME),
-            jqueryUiUrl: getAdminUrl({
-                manifestPath: FILEPATH_MANIFEST_NODE_MODULES,
-                path: 'jquery-ui-dist/jquery-ui.min.js',
-            }, TOOL_NAME),
+            jqueryUrl: getAdminNodeModuleUrl('jquery/dist/jquery.min.js', TOOL_NAME),
+            jqueryUiUrl: getAdminNodeModuleUrl('jquery-ui-dist/jquery-ui.min.js', TOOL_NAME),
+            legacySlickgridUrl: getAdminNodeModuleUrl('@enonic/legacy-slickgrid/index.js', TOOL_NAME),
+            // qUrl: getAdminNodeModuleUrl('q/q.js', TOOL_NAME),
             theme: 'dark',
             configServiceUrl: serviceUrl({service: 'config'})
         })

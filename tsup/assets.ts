@@ -1,6 +1,6 @@
 import type { Options } from '.';
 
-import esbuildPluginExternalGlobal from 'esbuild-plugin-external-global';
+import { globalExternals, globalExternalsWithRegExp } from "@fal-works/esbuild-plugin-global-externals";
 import {
     DIR_DST_ASSETS,
     DIR_SRC_ASSETS
@@ -19,9 +19,16 @@ export default function buildAssetConfig(): Options {
             };
         },
         esbuildPlugins: [
-            esbuildPluginExternalGlobal.externalGlobalPlugin({
-                'jquery': 'window.$'
-            })
+            globalExternalsWithRegExp({
+                modulePathFilter: /^@enonic\/legacy-slickgrid.*$/,
+                getModuleInfo(modulePath) {
+                    return 'Slick';
+                }
+            }),
+            globalExternals({
+                'jquery': '$',
+                // 'q': 'globalThis.Q' // There are errors when trying to use Q as a Global
+            }),
         ],
         format: [
             'cjs'
@@ -29,6 +36,8 @@ export default function buildAssetConfig(): Options {
         minify: process.env.NODE_ENV !== 'development',
         noExternal: [ // Same as dependencies in package.json
             /@enonic\/lib-admin-ui/,
+            // It seems these need to be listed here for global plugins to work
+            /@enonic\/legacy-slickgrid.*/,
             'jquery', // This will bundle jQuery into the bundle, unless you use the esbuildPluginExternalGlobal
             'q'
         ],
@@ -36,6 +45,6 @@ export default function buildAssetConfig(): Options {
         platform: 'browser',
         silent: ['QUIET', 'WARN'].includes(process.env.LOG_LEVEL_FROM_GRADLE||''),
         sourcemap: process.env.NODE_ENV === 'development',
-        tsconfig: 'src/main/resources/assets/tsconfig.json',
+        tsconfig: `${DIR_SRC_ASSETS}/tsconfig.json`,
     };
 }

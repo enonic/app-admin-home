@@ -1,4 +1,5 @@
-import * as Q from 'q';
+// import * as Q from 'q'; // This is the way when building with webpack?
+import Q from 'q'; // This is the way when building with esbuild
 import {Element} from '@enonic/lib-admin-ui/dom/Element';
 import {MarketApplication, MarketAppStatus, MarketAppStatusFormatter} from '@enonic/lib-admin-ui/application/MarketApplication';
 import {Body} from '@enonic/lib-admin-ui/dom/Body';

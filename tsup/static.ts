@@ -3,7 +3,8 @@ import type { Options } from '.';
 
 import CopyWithHashPlugin from '@enonic/esbuild-plugin-copy-with-hash';
 import TsupPluginManifest from '@enonic/tsup-plugin-manifest';
-import esbuildPluginExternalGlobal from 'esbuild-plugin-external-global';
+import { globalExternals, globalExternalsWithRegExp } from "@fal-works/esbuild-plugin-global-externals";
+// import GlobalsPlugin from 'esbuild-plugin-globals';
 import {
     DIR_DST_STATIC,
     DIR_SRC_STATIC
@@ -14,7 +15,6 @@ export default function buildStaticConfig(): Options {
     return {
         bundle: true,
         dts: false,
-        // entry,
         entry: {
             'home/bundle': `${DIR_SRC_STATIC}/home/main.ts`,
             // 'launcher/bundle': `${DIR_SRC_STATIC}/launcher/main.ts`,
@@ -24,15 +24,24 @@ export default function buildStaticConfig(): Options {
             options.keepNames = true;
         },
         esbuildPlugins: [
-            esbuildPluginExternalGlobal.externalGlobalPlugin({
-                'jquery': 'window.$',
+            globalExternalsWithRegExp({
+                modulePathFilter: /^@enonic\/legacy-slickgrid.*$/,
+                getModuleInfo(modulePath) {
+                    return 'Slick';
+                }
+            }),
+            globalExternals({
+                jquery: '$',
+                // q: 'globalThis.Q',  // There are errors when trying to use Q as a Global
             }),
             CopyWithHashPlugin({
                 context: 'node_modules',
                 manifest: `node_modules-manifest.json`,
                 patterns: [
+                    '@enonic/legacy-slickgrid/index.js',
                     'jquery/dist/*.*',
                     'jquery-ui-dist/*.*',
+                    // 'q/*.js',
                 ]
             }),
             TsupPluginManifest({
@@ -49,7 +58,8 @@ export default function buildStaticConfig(): Options {
                     return newEntries;
                 }
             }),
-        ],
+        ], // plugins
+
         format: [
             'cjs'
         ],
@@ -58,7 +68,10 @@ export default function buildStaticConfig(): Options {
 
         noExternal: [ // Same as dependencies in package.json
             /@enonic\/lib-admin-ui.*/,
-            'q'
+            // It seems these need to be listed here for global plugins to work
+            /@enonic\/legacy-slickgrid.*/,
+            'jquery',
+            'q',
         ],
         outDir: DIR_DST_STATIC,
         platform: 'browser',
@@ -69,6 +82,6 @@ export default function buildStaticConfig(): Options {
         // INFO: Sourcemaps works when target is set here, rather than in tsconfig.json
         target: 'es2020',
 
-        tsconfig: 'src/main/resources/static/tsconfig.json',
-    };
+        tsconfig: `${DIR_SRC_STATIC}/tsconfig.json`
+    } as Options;
 }

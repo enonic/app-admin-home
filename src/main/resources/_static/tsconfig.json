@@ -32,7 +32,7 @@
             // "ES2020",
         ],
         "paths": {},
-        "rootDir": ".",
+        "rootDir": "..",
         "skipLibCheck": true,
 
         // WARNING: Whether or not we want sourcemaps depends upon process.env.NODE_ENV,

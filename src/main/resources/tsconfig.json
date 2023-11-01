@@ -31,7 +31,7 @@
     "exclude": [
         "./**/*.d.ts",
         "./assets/**/*",
-        "./static/**/*",
+        "./_static/**/*",
     ],
     "include": [
         "./**/*.ts"

@@ -12,11 +12,11 @@
     "build:main:assets": "tsup -d build/resources/main/assets",
     "build:main:css": "webpack --color --stats-error-details",
     "build:main:server": "tsup -d build/resources/main",
-    "build:main:static": "tsup -d build/resources/main/static",
+    "build:main:static": "tsup -d build/resources/main/_static",
     "check:types": "concurrently -c auto -g --timings npm:check:types:*",
     "check:types:assets": "tsc --pretty --noEmit -p src/main/resources/assets/tsconfig.json",
     "check:types:server": "tsc --pretty --noEmit -p src/main/resources/tsconfig.json",
-    "check:types:static": "tsc --pretty --noEmit -p src/main/resources/static/tsconfig.json",
+    "check:types:static": "tsc --pretty --noEmit -p src/main/resources/_static/tsconfig.json",
     "clean": "del build",
     "lint": "eslint **/*.ts --quiet --cache",
     "fix": "eslint --fix **/*.ts --cache",
@@ -37,8 +37,10 @@
     "@enonic-types/lib-portal": "^7.13.2",
     "@enonic/esbuild-plugin-copy-with-hash": "^0.0.1",
     "@enonic/eslint-config": "^1.2.0",
-    "@swc/core": "^1.3.93",
+    "@enonic/legacy-slickgrid": "^0.0.1",
     "@enonic/tsup-plugin-manifest": "^0.0.1",
+    "@fal-works/esbuild-plugin-global-externals": "^2.1.2",
+    "@swc/core": "^1.3.93",
     "@types/jquery": "^3.5.22",
     "@types/q": "^1.5.6",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
@@ -52,7 +54,7 @@
     "cssnano": "^6.0.1",
     "del-cli": "^5.1.0",
     "enonic-admin-artifacts": "^1.8.5",
-    "esbuild-plugin-external-global": "^1.0.1",
+    "esbuild-plugin-globals": "^0.2.0",
     "eslint": "^8.51.0",
     "glob": "^10.3.4",
     "image-minimizer-webpack-plugin": "^3.8.3",
@@ -74,7 +76,7 @@
     "extends browserslist-config-enonic"
   ],
   "engines": {
-      "node": ">= 18.17.1",
-      "npm": ">= 9.6.7"
+    "node": ">= 18.17.1",
+    "npm": ">= 9.6.7"
   }
 }

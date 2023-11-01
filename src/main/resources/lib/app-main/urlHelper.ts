@@ -52,6 +52,11 @@ export const getAdminUrl = ({
 	});
 };
 
+export const getAdminNodeModuleUrl = (path: string, tool: string) => getAdminUrl({
+    manifestPath: FILEPATH_MANIFEST_NODE_MODULES,
+    path,
+}, tool);
+
 export const immutableGetter = buildGetter({
 	etag: false, // default is true in production and false in development
 	getCleanPath: (request: Request) => {

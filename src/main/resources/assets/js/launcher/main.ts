@@ -245,7 +245,7 @@ class Launcher {
 
     private launcherButtonHasFocus = (): boolean => document.activeElement === this.launcherButton;
 
-    private fetchLauncherContents = (): Promise<ChildNode> => {
+    private fetchLauncherContents = async (): Promise<ChildNode> => {
         return fetch(launcherUrl)
             .then(response => response.text())
             .then((html: string) => {

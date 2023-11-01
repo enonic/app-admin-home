@@ -3,6 +3,7 @@ import type { Options } from './tsup';
 import { defineConfig } from 'tsup';
 import {
     DIR_DST,
+    DIR_DST_STATIC,
     DIR_DST_TEST
 } from './tsup/constants';
 
@@ -17,7 +18,7 @@ export default defineConfig((options: Options) => {
     if (options.d === 'build/resources/main/assets') {
         return import('./tsup/assets').then(m => m.default());
 	}
-    if (options.d === 'build/resources/main/static') {
+    if (options.d === DIR_DST_STATIC) {
         return import('./tsup/static').then(m => m.default());
     }
     throw new Error(`Unconfigured directory:${options.d}!`)

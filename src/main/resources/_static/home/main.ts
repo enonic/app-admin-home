@@ -1,3 +1,5 @@
+import '../../assets/js/launcher/main';
+
 import {Body} from '@enonic/lib-admin-ui/dom/Body';
 import {Application} from '@enonic/lib-admin-ui/app/Application';
 import {Path} from '@enonic/lib-admin-ui/rest/Path';
