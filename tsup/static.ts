@@ -3,8 +3,9 @@ import type { Options } from '.';
 
 import CopyWithHashPlugin from '@enonic/esbuild-plugin-copy-with-hash';
 import TsupPluginManifest from '@enonic/tsup-plugin-manifest';
-import { globalExternals, globalExternalsWithRegExp } from "@fal-works/esbuild-plugin-global-externals";
-// import GlobalsPlugin from 'esbuild-plugin-globals';
+// import { globalExternals, globalExternalsWithRegExp } from "@fal-works/esbuild-plugin-global-externals"; // Creates a local $2 :(
+import GlobalsPlugin from 'esbuild-plugin-globals';
+// import esbuildPluginExternalGlobal from 'esbuild-plugin-external-global'; // Doesn't support regex patterns :(
 import {
     DIR_DST_STATIC,
     DIR_SRC_STATIC
@@ -24,15 +25,11 @@ export default function buildStaticConfig(): Options {
             options.keepNames = true;
         },
         esbuildPlugins: [
-            globalExternalsWithRegExp({
-                modulePathFilter: /^@enonic\/legacy-slickgrid.*$/,
-                getModuleInfo(modulePath) {
+            GlobalsPlugin({
+                '@enonic/legacy-slickgrid.*'(modulename) {
                     return 'Slick';
-                }
-            }),
-            globalExternals({
-                jquery: '$',
-                // q: 'globalThis.Q',  // There are errors when trying to use Q as a Global
+                },
+                'jquery': '$',
             }),
             CopyWithHashPlugin({
                 context: 'node_modules',
@@ -65,6 +62,7 @@ export default function buildStaticConfig(): Options {
         ],
 
         minify: false,
+        // minify: process.env.NODE_ENV !== 'development',
 
         noExternal: [ // Same as dependencies in package.json
             /@enonic\/lib-admin-ui.*/,
@@ -77,6 +75,9 @@ export default function buildStaticConfig(): Options {
         platform: 'browser',
         silent: ['QUIET', 'WARN'].includes(process.env.LOG_LEVEL_FROM_GRADLE||''),
         splitting: false,
+
+        // sourcemap: 'inline', // Needed for CopyWithHashPlugin to also copy .map files
+        // sourcemap: true, // Needed for CopyWithHashPlugin to also copy .map files
         sourcemap: process.env.NODE_ENV === 'development',
 
         // INFO: Sourcemaps works when target is set here, rather than in tsconfig.json

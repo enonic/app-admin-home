@@ -1,6 +1,9 @@
 import type { Options } from '.';
 
-import { globalExternals, globalExternalsWithRegExp } from "@fal-works/esbuild-plugin-global-externals";
+// import { globalExternals, globalExternalsWithRegExp } from "@fal-works/esbuild-plugin-global-externals"; // Creates a local $2 :(
+    import GlobalsPlugin from 'esbuild-plugin-globals';
+    // import esbuildPluginExternalGlobal from 'esbuild-plugin-external-global'; // Doesn't support regex patterns :(
+
 import {
     DIR_DST_ASSETS,
     DIR_SRC_ASSETS
@@ -19,15 +22,11 @@ export default function buildAssetConfig(): Options {
             };
         },
         esbuildPlugins: [
-            globalExternalsWithRegExp({
-                modulePathFilter: /^@enonic\/legacy-slickgrid.*$/,
-                getModuleInfo(modulePath) {
+            GlobalsPlugin({
+                '@enonic/legacy-slickgrid.*'(modulename) {
                     return 'Slick';
-                }
-            }),
-            globalExternals({
+                },
                 'jquery': '$',
-                // 'q': 'globalThis.Q' // There are errors when trying to use Q as a Global
             }),
         ],
         format: [
