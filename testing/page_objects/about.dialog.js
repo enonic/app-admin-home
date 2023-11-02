@@ -31,8 +31,7 @@ class AboutDialog extends Page {
         try {
             return await this.waitForElementDisplayed(XPATH.container, appConst.mediumTimeout);
         } catch (err) {
-            let screenshot = appConst.generateRandomName('err_about_dlg_load');
-            await this.saveScreenshot(screenshot);
+            let screenshot = await this.saveScreenshotUniqueName('err_about_dlg_load');
             throw new Error('About dialog is not loaded in 3 seconds! screenshot: ' + screenshot + "  " + err);
         }
     }
@@ -53,8 +52,7 @@ class AboutDialog extends Page {
         try {
             return await this.waitForElementNotDisplayed(XPATH.container, appConst.shortTimeout);
         } catch (err) {
-            let screenshot = appConst.generateRandomName('err_about_dlg');
-            await this.saveScreenshot(screenshot);
+            let screenshot = await this.saveScreenshotUniqueName('err_about_dlg_close');
             throw new Error('About dialog should be closed! screenshot: ' + screenshot + " " + err);
         }
     }

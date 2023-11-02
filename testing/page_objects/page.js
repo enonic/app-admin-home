@@ -1,10 +1,20 @@
 const webDriverHelper = require('../libs/WebDriverHelper');
 const fs = require('fs');
 const path = require('path');
+const appConst = require("../libs/app_const");
 
 class Page {
+
     constructor() {
-        this.browser = webDriverHelper.browser;
+        if (typeof browser !== 'undefined') {
+            this.browser = browser;
+        } else {
+            this.browser = webDriverHelper.browser;
+        }
+    }
+
+    getBrowser() {
+        return this.browser;
     }
 
     findElement(selector) {
@@ -35,15 +45,20 @@ class Page {
 
     async saveScreenshot(name) {
         try {
-            let screenshotsDir = path.join(__dirname, '/../build/mochawesome-report/screenshots/');
+            let screenshotsDir = path.join(__dirname, '/../build/reports/screenshots/');
             if (!fs.existsSync(screenshotsDir)) {
                 fs.mkdirSync(screenshotsDir, { recursive: true });
             }
-            await this.browser.saveScreenshot(screenshotsDir + name + '.png');
+            await this.getBrowser().saveScreenshot(screenshotsDir + name + '.png');
             console.log('screenshot is saved ' + name);
         } catch (err) {
             console.log('screenshot was not saved ' + err);
         }
+    }
+    async saveScreenshotUniqueName(namePart) {
+        let screenshotName = appConst.generateRandomName(namePart);
+        await this.saveScreenshot(screenshotName);
+        return screenshotName;
     }
 
     async isElementDisplayed(selector) {
