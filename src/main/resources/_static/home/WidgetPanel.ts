@@ -45,7 +45,8 @@ export class WidgetPanel
 
     private addApplicationsListeners(): void {
         ApplicationEvent.on((e: ApplicationEvent) => {
-            const applicationKey: string = e.getApplicationKey().toString();
+            const applicationKeyInstance = e.getApplicationKey();
+            const applicationKey: string | null = applicationKeyInstance ? applicationKeyInstance.toString() : null;
             if (this.isApplicationDeactivated(e)) {
                 this.handleApplicationDeactivated(applicationKey);
             } else if (this.isApplicationActivated(e)) {
@@ -59,7 +60,7 @@ export class WidgetPanel
         return ApplicationEventType.STOPPED === eventType || ApplicationEventType.UNINSTALLED === eventType;
     }
 
-    private handleApplicationDeactivated(applicationKey: string): void {
+    private handleApplicationDeactivated(applicationKey?: string): void {
         const widgetKeys: string[] = WidgetPanel.widgetCache.get(applicationKey);
         if (widgetKeys) {
             this.removeWidgets(widgetKeys);
@@ -71,7 +72,7 @@ export class WidgetPanel
         return ApplicationEventType.STARTED === e.getEventType();
     }
 
-    private handleApplicationActivated(applicationKey: string): void {
+    private handleApplicationActivated(applicationKey?: string): void {
         if (WidgetPanel.widgetCache.has(applicationKey)) {
             this.updateWidgets(applicationKey);
         } else {
