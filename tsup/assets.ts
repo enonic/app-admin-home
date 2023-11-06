@@ -27,6 +27,7 @@ export default function buildAssetConfig(): Options {
                     return 'Slick';
                 },
                 'jquery': '$',
+                'q': 'Q',
             }),
         ],
         format: [
