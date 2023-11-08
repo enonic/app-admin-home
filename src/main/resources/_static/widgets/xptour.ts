@@ -413,17 +413,13 @@ function loadApp(marketDemoApp: MarketApplication): Q.Promise<void> { // This ac
             ApplicationEvent.un(progressHandler);
             progressBar.remove();
 
-            const appContainer: HTMLElement = tourSteps[tourSteps.length - 1]
-                .findChildById(marketDemoApp.getName(), true)
-                .getHTMLElement();
-
-            const statusContainer: HTMLElement = appContainer.querySelector('.demo-app-status');
+            const statusContainer: HTMLElement = demoAppContainer.querySelector('.demo-app-status');
 
             if (!result.getFailure()) {
-                appContainer.className = 'demo-app installed';
+                demoAppContainer.className = 'demo-app installed';
                 statusContainer.textContent = i18n('status.installed');
             } else {
-                appContainer.className = 'demo-app failure';
+                demoAppContainer.className = 'demo-app failure';
                 statusContainer.textContent = i18n('tour.apps.status.failed');
             }
         }).catch(e => DefaultErrorHandler.handle(e));
