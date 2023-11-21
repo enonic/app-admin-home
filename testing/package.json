@@ -8,12 +8,12 @@
   },
   "devDependencies": {
     "assert": "^2.1.0",
-    "webdriverio": "8.23.1",
+    "webdriverio": "8.23.3",
     "chai": "^4.3.10",
     "properties-reader": "^2.3.0",
     "@wdio/mocha-framework": "^8.23.1",
-    "@wdio/cli": "^8.23.2",
-    "@wdio/local-runner": "^8.22.1",
+    "@wdio/cli": "^8.23.3",
+    "@wdio/local-runner": "^8.23.3",
     "@wdio/concise-reporter": "^8.23.1",
     "wdio-timeline-reporter": "^5.1.4"
   },
