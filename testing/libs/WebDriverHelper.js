@@ -10,12 +10,12 @@ WebDriverHelper.prototype.getBrowser = function () {
     return this.browser;
 };
 
-const makeChromeOptions = (headless, width) => ({
-    'args': [
-        ...(headless ? ['--headless', '--disable-gpu', '--no-sandbox'] : []),
-        '--lang=en',
+const makeChromeOptions = (headless, width, height) => ({
+    "args": [
+        ...(headless ? ["--headless", "--disable-gpu", "--no-sandbox"] : []),
+        "--lang=en",
         '--disable-extensions',
-        `window-size=${width},1100`
+        `--window-size=${width},${height}`
     ]
 });
 
@@ -23,8 +23,10 @@ const makeChromeOptions = (headless, width) => ({
  * Sets up a before and after mocha hook
  * that initialize and terminate the webdriverio session.
  */
-WebDriverHelper.prototype.setupBrowser = function setupBrowser() {
+WebDriverHelper.prototype.setupBrowser = function setupBrowser(w, h) {
     let _this = this;
+    let ww = w;
+    let hh = h;
     before(async function () {
         let PropertiesReader = require('properties-reader');
         let path = require('path');
@@ -32,10 +34,11 @@ WebDriverHelper.prototype.setupBrowser = function setupBrowser() {
         let file = path.join(__dirname, '/../browser.properties');
         let properties = PropertiesReader(file);
         let browser_name = properties.get('browser.name');
-        let platform_name = properties.get('platform');
+        let browser_version = properties.get('browser.version');
         let baseUrl = properties.get('base.url');
         let isHeadless = properties.get('is.headless');
-        let width = properties.get('browser.width');
+        let width = ww === undefined ? properties.get('browser.width') : w;
+        let height = hh === undefined ? properties.get('browser.height') : h;
         console.log('is Headless ##################### ' + isHeadless);
         console.log('browser name ##################### ' + browser_name);
         console.log('browser width ##################### ' + width);
@@ -44,9 +47,8 @@ WebDriverHelper.prototype.setupBrowser = function setupBrowser() {
             automationProtocol: "webdriver",
             capabilities: {
                 browserName: browser_name,
-                browserVersion: '115.0.5790.170',
-                platformName:platform_name,
-                'goog:chromeOptions': makeChromeOptions(isHeadless, width)
+                browserVersion: browser_version,
+                'goog:chromeOptions': makeChromeOptions(isHeadless, width, height)
             }
         };
         _this.browser = await webdriverio.remote(options);
