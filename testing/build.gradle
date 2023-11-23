@@ -78,9 +78,19 @@ task stopServer {
     }
 }
 
+task cleanup(type: Delete) {
+    delete './build/reports/allure'
+}
+
+task generateReportAndStopServer( type: NpmTask ) {
+    args = ['run-script', 'allure-report']
+    finalizedBy cleanup
+    finalizedBy stopServer
+}
+
 task w_testAdminHomeChrome( type: NpmTask, dependsOn: [npmInstall, unpackDistro, copyConfig, deployApp, startServer] ) {
     args = ['run-script', 'test_admin_home:wdio_chrome']
-    finalizedBy stopServer
+    finalizedBy generateReportAndStopServer
 }
 
 task w_testAdminHomeChromeLocal( type: NpmTask, dependsOn: [npmInstall] ) {
