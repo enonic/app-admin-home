@@ -50,7 +50,7 @@ const initAboutDialog = () => {
 };
 
 const initTourDialog = () => {
-    if (CONFIG.getString('tourEnabled')) {
+    if (CONFIG.isTrue('tourEnabled')) {
         void init().then(function (tourDialog: ModalDialogWithConfirmation) {
             const enonicXPTourCookie = CookieHelper.getCookie(
                 'enonic_xp_tour',
