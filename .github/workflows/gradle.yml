@@ -89,34 +89,33 @@ jobs:
                key: ${{ runner.os }}-gradle-2-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
                restore-keys: |
                    ${{ runner.os }}-gradle-2-
-         - run: |
-               set -ex
+          - run: |
+                set -ex
 
-         - uses: actions/download-artifact@v3
-           with:
-               name: app-main
-               path: build/libs/app-main.jar
+          - uses: actions/download-artifact@v3
+            with:
+                name: app-main
+                path: build/libs/app-main.jar
 
-         - name: Run Selenium Tests
-           run: ./gradlew :testing:${{ matrix.suite }}
+          - name: Run Selenium Tests
+            run: ./gradlew :testing:${{ matrix.suite }}
 
-         - name: Slack Notification
-           uses: rtCamp/action-slack-notify@v2
-           if: failure()
-           env:
-              SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-              SLACK_CHANNEL: notif-build-tests
-              SLACK_USERNAME: GitHub Actions
-              SLACK_TITLE: GitHub Action Failure in Admin Home app
-              SLACK_MESSAGE: ${{job.container.id}}
-              SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-              SLACK_COLOR: ${{ job.status }}
+          - name: Slack Notification
+            uses: rtCamp/action-slack-notify@v2
+            if: failure()
+            env:
+               SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+               SLACK_CHANNEL: notif-build-tests
+               SLACK_USERNAME: GitHub Actions
+               SLACK_TITLE: GitHub Action Failure in Admin Home app
+               SLACK_MESSAGE: ${{job.container.id}}
+               SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+               SLACK_COLOR: ${{ job.status }}
 
-         -   uses: actions/upload-artifact@v3
-             if: always() && steps.selenium.conclusion != 'skipped'
-             with:
-                 name: 'ui-test-report-${{ matrix.suite }}'
-                 path: |
-                     testing/build/reports
+          -   uses: actions/upload-artifact@v3
+              if: always() && steps.selenium.conclusion != 'skipped'
+              with:
+                  name: 'ui-test-report-${{ matrix.suite }}'
+                  path: |
+                      testing/build/reports
 
-  
