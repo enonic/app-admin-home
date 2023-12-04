@@ -21,7 +21,7 @@ ext {
     unpackDir = "$buildDir/install"
     distroDir = "$unpackDir/enonic-xp-generic-$version"
     deployDir = "$distroDir/home/deploy"
-    testDataDir = "$projectDir/test-data/common-config"
+    testDataDir = "$projectDir/test-data"
     xpHome = "$distroDir/home"
     configDir = "$xpHome/config"
     xpServer = new ServerInstance()
@@ -42,12 +42,19 @@ task unpackDistro( type: Copy ) {
 }
 
 task copyConfig( type: Copy ) {
-    println testDataDir
-    from testDataDir
+    println "$testDataDir${File.separator}cummon-config"
+    from "$testDataDir${File.separator}cummon-config"
     include '**.*.cfg'
     include '*.properties'
     into file( configDir )
     mustRunAfter unpackDistro
+}
+
+task copyDisabledConfig( type: Copy ) {
+    println "$testDataDir${File.separator}disabled-config"
+    from "$testDataDir${File.separator}disabled-config"
+    include '**.*.cfg'
+    into file( configDir )
 }
 
 task deployApp( type: DefaultTask ) {
@@ -93,6 +100,14 @@ task w_testAdminHomeChrome( type: NpmTask, dependsOn: [npmInstall, unpackDistro,
     finalizedBy generateReportAndStopServer
 }
 
+task w_testTourDisabledChrome( type: NpmTask, dependsOn: [npmInstall, unpackDistro, copyDisabledConfig, deployApp, startServer] ) {
+    args = ['run-script', 'test_tour_disabled:wdio_chrome']
+    finalizedBy generateReportAndStopServer
+}
+task w_testTourDisabledChromeLocal( type: NpmTask, dependsOn: [npmInstall] ) {
+    args = ['run-script', 'test_tour_disabled:wdio_chrome']
+    finalizedBy generateReportAndStopServer
+}
 task w_testAdminHomeChromeLocal( type: NpmTask, dependsOn: [npmInstall] ) {
     args = ['run-script', 'test_admin_home:wdio_chrome']
 }

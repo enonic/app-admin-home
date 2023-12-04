@@ -16,15 +16,17 @@ module.exports = {
             return webDriverHelper.browser;
         }
     },
-    async doLoginAndCloseXpTourDialog() {
+    async doLogin(){
         let loginPage = new LoginPage();
-        let xpTourDialog = new XpTourDialog();
         await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);
         await loginPage.doLogin();
         await loginPage.pause(1000);
+    },
+    async doLoginAndCloseXpTourDialog() {
+        let xpTourDialog = new XpTourDialog();
+        await this.doLogin();
         await xpTourDialog.waitForDialogLoaded();
         await xpTourDialog.clickOnCancelButtonTop();
-        return await loginPage.pause(700);
     },
     doDeleteCookie() {
         return this.getBrowser().getCookies().then(result => {
@@ -32,7 +34,7 @@ module.exports = {
         }).then(() => {
             return this.getBrowser().deleteCookies();
         }).then(() => {
-            return console.log('cookie is being deleted...');
+            return console.log('cookie is being deleting...');
         });
     },
     async doSwitchToNextTab() {
