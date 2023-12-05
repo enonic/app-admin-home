@@ -120,6 +120,7 @@ jobs:
                   name: 'ui-test-report-${{ matrix.suite }}'
                   path: |
                       testing/build/reports
+
   dispatch:
     needs: [publish_vars, build]
     strategy:
