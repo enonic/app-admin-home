@@ -44,7 +44,7 @@ class LoginPage extends Page {
         try {
             return await this.waitForElementDisplayed(this.usernameInput, appConst.mediumTimeout);
         } catch (err) {
-            let screenshot = this.saveScreenshotUniqueName('err_login+page');
+            let screenshot = this.saveScreenshotUniqueName('err_login_page');
             throw new Error("Login page - was not loaded, screenshot: " + screenshot + ' ' + err);
         }
     }
