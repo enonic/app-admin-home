@@ -54,6 +54,7 @@ task copyConfig( type: Copy ) {
 task copyDisabledConfig( type: Copy ) {
     from tourDisabledConfig
     include '**.*.cfg'
+    include '*.properties'
     into file( configDir )
     mustRunAfter unpackDistro
 }
