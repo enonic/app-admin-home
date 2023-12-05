@@ -1,5 +1,4 @@
 const Page = require('./page');
-const appConst = require('../libs/app_const');
 
 class LoginPage extends Page {
 
@@ -20,13 +19,13 @@ class LoginPage extends Page {
             let usernameInput = await this.findElement(this.usernameInput);
             return await usernameInput.addValue(userName);
         } catch (err) {
-            let screenshot = this.saveScreenshotUniqueName('err_user_name_input');
+            let screenshot = await this.saveScreenshotUniqueName('err_user_name_input');
             throw new Error("Login page - user name input, screenshot: " + screenshot + ' ' + err);
         }
     }
 
     async clickOnLoginButton() {
-        return this.clickOnElement(this.loginButton);
+        return await this.clickOnElement(this.loginButton);
     }
 
     async typePassword() {
@@ -35,16 +34,16 @@ class LoginPage extends Page {
             await passwordInput.waitForDisplayed({timeout: 1000});
             await passwordInput.addValue('password');
         } catch (err) {
-            let screenshot = this.saveScreenshotUniqueName('err_password_input');
+            let screenshot = await this.saveScreenshotUniqueName('err_password_input');
             throw new Error("Login page - password input, screenshot: " + screenshot + ' ' + err);
         }
     }
 
-    async waitForPageLoaded() {
+    async waitForPageLoaded(ms) {
         try {
-            return await this.waitForElementDisplayed(this.usernameInput, appConst.mediumTimeout);
+            return await this.waitForElementDisplayed(this.usernameInput, ms);
         } catch (err) {
-            let screenshot = this.saveScreenshotUniqueName('err_login_page');
+            let screenshot = await this.saveScreenshotUniqueName('err_login_page');
             throw new Error("Login page - was not loaded, screenshot: " + screenshot + ' ' + err);
         }
     }
