@@ -78,6 +78,7 @@ task startServer( dependsOn: unpackDistro ) {
         xpServer.installDir = file( distroDir )
         xpServer.start()
     }
+    mustRunAfter deployApp
 }
 
 task stopServer {
