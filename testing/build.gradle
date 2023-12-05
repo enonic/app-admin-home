@@ -22,7 +22,7 @@ ext {
     distroDir = "$unpackDir/enonic-xp-generic-$version"
     deployDir = "$distroDir/home/deploy"
     testDataDir = "$projectDir/test-data/common-config"
-    testConfigDisabledTour = "$projectDir/test-data/disabled-config"
+    tourDisabledConfig = "$projectDir/test-data/disabled-config"
     xpHome = "$distroDir/home"
     configDir = "$xpHome/config"
     xpServer = new ServerInstance()
@@ -52,11 +52,10 @@ task copyConfig( type: Copy ) {
 }
 
 task copyDisabledConfig( type: Copy ) {
-    println "$testDataDir${File.separator}disabled-config"
-
-    from testConfigDisabledTour
+    from tourDisabledConfig
     include '**.*.cfg'
     into file( configDir )
+    mustRunAfter unpackDistro
 }
 
 task deployApp( type: DefaultTask ) {
