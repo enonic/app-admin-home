@@ -65,6 +65,24 @@ jobs:
         if: needs.publish_vars.outputs.publish == 'true'
         run: ./gradlew publish -Pcom.enonic.xp.app.production=true -PrepoKey=${{ needs.publish_vars.outputs.repo }} -PrepoUser=${{ secrets.ARTIFACTORY_USERNAME }} -PrepoPassword=${{ secrets.ARTIFACTORY_PASSWORD }}
 
+  dispatch:
+    needs: [ publish_vars, build ]
+    strategy:
+      matrix:
+        repo: [ "enonic/xp-distro" ]
+    runs-on: ubuntu-latest
+    if: needs.publish_vars.outputs.publish == 'true'
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          repository: ${{ matrix.repo }}
+          event-type: app-main
+          client-payload: >
+            {"ref": "${{ github.event.client_payload.ref || github.ref }}"}
+
+
   selenium-test:
       strategy:
           fail-fast: false
@@ -121,19 +139,3 @@ jobs:
                   path: |
                       testing/build/reports
 
-  dispatch:
-    needs: [publish_vars, build]
-    strategy:
-      matrix:
-        repo: [ "enonic/xp-distro" ]
-    runs-on: ubuntu-latest
-    if: needs.publish_vars.outputs.publish == 'true'
-    steps:
-      - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          repository: ${{ matrix.repo }}
-          event-type: app-main
-          client-payload: >
-            {"ref": "${{ github.event.client_payload.ref || github.ref }}"}
