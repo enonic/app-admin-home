@@ -1,4 +1,5 @@
 const Page = require('./page');
+const appConst = require('../libs/app_const');
 
 class LoginPage extends Page {
 
@@ -15,8 +16,13 @@ class LoginPage extends Page {
     }
 
     async typeUserName(userName) {
-        let usernameInput = await this.findElement(this.usernameInput);
-        return await usernameInput.addValue(userName);
+        try {
+            let usernameInput = await this.findElement(this.usernameInput);
+            return await usernameInput.addValue(userName);
+        } catch (err) {
+            let screenshot = this.saveScreenshotUniqueName('err_user_name_input');
+            throw new Error("Login page - user name input, screenshot: " + screenshot + ' ' + err);
+        }
     }
 
     async clickOnLoginButton() {
@@ -24,15 +30,23 @@ class LoginPage extends Page {
     }
 
     async typePassword() {
-        let passwordInput = await this.findElement(this.passwordInput);
-        await passwordInput.waitForDisplayed({timeout: 1000});
-        await passwordInput.addValue('password');
+        try {
+            let passwordInput = await this.findElement(this.passwordInput);
+            await passwordInput.waitForDisplayed({timeout: 1000});
+            await passwordInput.addValue('password');
+        } catch (err) {
+            let screenshot = this.saveScreenshotUniqueName('err_password_input');
+            throw new Error("Login page - password input, screenshot: " + screenshot + ' ' + err);
+        }
     }
 
-    waitForPageLoaded(ms) {
-        return this.browser.$(`//input[contains(@id,'username-input')]`).then(element => {
-            return element.waitForDisplayed({timeout: ms});
-        });
+    async waitForPageLoaded() {
+        try {
+            return await this.waitForElementDisplayed(this.usernameInput, appConst.mediumTimeout);
+        } catch (err) {
+            let screenshot = this.saveScreenshotUniqueName('err_login+page');
+            throw new Error("Login page - was not loaded, screenshot: " + screenshot + ' ' + err);
+        }
     }
 
     getTitle() {
