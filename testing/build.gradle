@@ -53,7 +53,7 @@ task copyConfig( type: Copy ) {
 
 task copyDisabledConfig( type: Copy ) {
     println "$testDataDir${File.separator}disabled-config"
-    println testConfigDisabledTour
+
     from testConfigDisabledTour
     include '**.*.cfg'
     into file( configDir )
@@ -102,7 +102,7 @@ task w_testAdminHomeChrome( type: NpmTask, dependsOn: [npmInstall, unpackDistro,
     finalizedBy generateReportAndStopServer
 }
 
-task w_testTourDisabledChrome( type: NpmTask, dependsOn: [npmInstall, unpackDistro, copyConfig, deployApp, startServer] ) {
+task w_testTourDisabledChrome( type: NpmTask, dependsOn: [npmInstall, unpackDistro, copyDisabledConfig, deployApp, startServer] ) {
     args = ['run-script', 'test_tour_disabled:wdio_chrome']
     finalizedBy generateReportAndStopServer
 }
