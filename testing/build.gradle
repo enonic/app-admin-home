@@ -21,7 +21,8 @@ ext {
     unpackDir = "$buildDir/install"
     distroDir = "$unpackDir/enonic-xp-generic-$version"
     deployDir = "$distroDir/home/deploy"
-    testDataDir = "$projectDir/test-data"
+    testDataDir = "$projectDir/test-data/common-config"
+    testDataDir2 = "$projectDir/test-data/disabled-config"
     xpHome = "$distroDir/home"
     configDir = "$xpHome/config"
     xpServer = new ServerInstance()
@@ -43,7 +44,7 @@ task unpackDistro( type: Copy ) {
 
 task copyConfig( type: Copy ) {
     println "$testDataDir${File.separator}common-config"
-    from "$testDataDir${File.separator}common-config"
+    from testDataDir
     include '**.*.cfg'
     include '*.properties'
     into file( configDir )
@@ -52,7 +53,7 @@ task copyConfig( type: Copy ) {
 
 task copyDisabledConfig( type: Copy ) {
     println "$testDataDir${File.separator}disabled-config"
-    from "$testDataDir${File.separator}disabled-config"
+    from testDataDir2
     include '**.*.cfg'
     into file( configDir )
 }
