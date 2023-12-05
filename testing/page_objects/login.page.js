@@ -15,24 +15,37 @@ class LoginPage extends Page {
     }
 
     async typeUserName(userName) {
-        let usernameInput = await this.findElement(this.usernameInput);
-        return await usernameInput.addValue(userName);
+        try {
+            let usernameInput = await this.findElement(this.usernameInput);
+            return await usernameInput.addValue(userName);
+        } catch (err) {
+            let screenshot = await this.saveScreenshotUniqueName('err_user_name_input');
+            throw new Error("Login page - user name input, screenshot: " + screenshot + ' ' + err);
+        }
     }
 
     async clickOnLoginButton() {
-        return this.clickOnElement(this.loginButton);
+        return await this.clickOnElement(this.loginButton);
     }
 
     async typePassword() {
-        let passwordInput = await this.findElement(this.passwordInput);
-        await passwordInput.waitForDisplayed({timeout: 1000});
-        await passwordInput.addValue('password');
+        try {
+            let passwordInput = await this.findElement(this.passwordInput);
+            await passwordInput.waitForDisplayed({timeout: 1000});
+            await passwordInput.addValue('password');
+        } catch (err) {
+            let screenshot = await this.saveScreenshotUniqueName('err_password_input');
+            throw new Error("Login page - password input, screenshot: " + screenshot + ' ' + err);
+        }
     }
 
-    waitForPageLoaded(ms) {
-        return this.browser.$(`//input[contains(@id,'username-input')]`).then(element => {
-            return element.waitForDisplayed({timeout: ms});
-        });
+    async waitForPageLoaded(ms) {
+        try {
+            return await this.waitForElementDisplayed(this.usernameInput, ms);
+        } catch (err) {
+            let screenshot = await this.saveScreenshotUniqueName('err_login_page');
+            throw new Error("Login page - was not loaded, screenshot: " + screenshot + ' ' + err);
+        }
     }
 
     getTitle() {

@@ -5,6 +5,7 @@
   "license": "ISC",
   "scripts": {
     "test_admin_home:wdio_chrome": "npx wdio ./wdio.chrome.conf.js",
+    "test_tour_disabled:wdio_chrome": "npx wdio ./wdio.chrome.tour.disabled.conf.js",
     "allure-report": "allure generate ./build/reports/allure --output ./build/reports/allure-report --clean --single-file"
   },
   "devDependencies": {

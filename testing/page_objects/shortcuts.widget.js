@@ -98,6 +98,10 @@ class ShortcutsWidget extends Page {
         return this.waitForElementDisplayed(this.xpTourItem, appConst.mediumTimeout);
     }
 
+    waitForXpTourItemNotDisplayed() {
+        return this.waitForElementNotDisplayed(this.xpTourItem, appConst.mediumTimeout);
+    }
+
     waitForAboutItemDisplayed() {
         return this.waitForElementDisplayed(this.aboutItem, appConst.mediumTimeout);
     }

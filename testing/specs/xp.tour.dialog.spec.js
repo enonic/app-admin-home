@@ -13,7 +13,7 @@ describe('XP tour dialog specification', function () {
         webDriverHelper.setupBrowser();
     }
 
-    it('WHEN XP tour button has been clicked in the shortcut widget THEN XP tour dialog should appear', async function () {
+    it('WHEN XP tour button has been clicked in the shortcut widget THEN XP tour dialog should appear', async () => {
         const loginPage = new LoginPage();
         const xpTourDialog = new XpTourDialog();
         await loginPage.waitForPageLoaded(appConst.mediumTimeout);
@@ -34,7 +34,7 @@ describe('XP tour dialog specification', function () {
         assert.equal(title, 'Welcome Tour - Step 1 of 3', 'expected Dialog-title should be displayed');
     });
 
-    it("GIVEN XP tour dialog is opened WHEN 'Skip Tour button has been pressed THEN dialog should be closed", async function () {
+    it("GIVEN XP tour dialog is opened WHEN 'Skip Tour button has been pressed THEN dialog should be closed", async () => {
         const loginPage = new LoginPage();
         const xpTourDialog = new XpTourDialog();
         await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);
@@ -48,7 +48,7 @@ describe('XP tour dialog specification', function () {
         await xpTourDialog.waitForDialogClosed();
     });
 
-    it("GIVEN XP tour dialog is opened WHEN 'Esc' key has been pressed THEN dialog should be closed", async function () {
+    it("GIVEN XP tour dialog is opened WHEN 'Esc' key has been pressed THEN dialog should be closed", async () => {
         const loginPage = new LoginPage();
         const xpTourDialog = new XpTourDialog();
         await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);

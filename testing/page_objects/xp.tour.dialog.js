@@ -62,8 +62,9 @@ class XpTourDialog extends Page {
         return this.clickOnElement(this.skipTourButton);
     }
 
-    clickOnCancelButtonTop() {
-        return this.clickOnElement(this.cancelButtonTop);
+    async clickOnCancelButtonTop() {
+         await this.clickOnElement(this.cancelButtonTop);
+         await this.pause(500);
     }
 
     async waitForDialogLoaded() {
@@ -86,9 +87,8 @@ class XpTourDialog extends Page {
 
     async waitForInstallAppsButtonDisplayed() {
         try {
-            let installButton = await this.findElement(this.installAppsButton);
-            await installButton.waitForDisplayed({timeout: appConst.longTimeout});
-            return await this.pause(1000);
+            await this.waitForElementDisplayed(this.installAppsButton, appConst.mediumTimeout);
+            return await this.pause(500);
         } catch (err) {
             let screenshot = await this.saveScreenshotUniqueName('err_install_apps');
             throw new Error('Install Apps button is not visible, screenshot ' + screenshot + " " + err)
