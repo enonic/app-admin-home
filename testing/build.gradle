@@ -53,7 +53,7 @@ task copyConfig( type: Copy ) {
 
 task copyDisabledConfig( type: Copy ) {
     println "$testDataDir${File.separator}disabled-config"
-    from testDataDir2
+    from testDataDir
     include '**.*.cfg'
     into file( configDir )
 }
