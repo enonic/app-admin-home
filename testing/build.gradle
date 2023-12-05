@@ -42,8 +42,8 @@ task unpackDistro( type: Copy ) {
 }
 
 task copyConfig( type: Copy ) {
-    println "$testDataDir${File.separator}cummon-config"
-    from "$testDataDir${File.separator}cummon-config"
+    println "$testDataDir${File.separator}common-config"
+    from "$testDataDir${File.separator}common-config"
     include '**.*.cfg'
     include '*.properties'
     into file( configDir )
