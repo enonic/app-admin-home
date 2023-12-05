@@ -22,7 +22,7 @@ ext {
     distroDir = "$unpackDir/enonic-xp-generic-$version"
     deployDir = "$distroDir/home/deploy"
     testDataDir = "$projectDir/test-data/common-config"
-    testDataDir2 = "$projectDir/test-data/disabled-config"
+    testConfigDisabledTour = "$projectDir/test-data/disabled-config"
     xpHome = "$distroDir/home"
     configDir = "$xpHome/config"
     xpServer = new ServerInstance()
@@ -53,7 +53,8 @@ task copyConfig( type: Copy ) {
 
 task copyDisabledConfig( type: Copy ) {
     println "$testDataDir${File.separator}disabled-config"
-    from testDataDir
+    println testConfigDisabledTour
+    from testConfigDisabledTour
     include '**.*.cfg'
     into file( configDir )
 }
@@ -101,7 +102,7 @@ task w_testAdminHomeChrome( type: NpmTask, dependsOn: [npmInstall, unpackDistro,
     finalizedBy generateReportAndStopServer
 }
 
-task w_testTourDisabledChrome( type: NpmTask, dependsOn: [npmInstall, unpackDistro, copyDisabledConfig, deployApp, startServer] ) {
+task w_testTourDisabledChrome( type: NpmTask, dependsOn: [npmInstall, unpackDistro, copyConfig, deployApp, startServer] ) {
     args = ['run-script', 'test_tour_disabled:wdio_chrome']
     finalizedBy generateReportAndStopServer
 }
