@@ -96,12 +96,15 @@ class XpTourDialog extends Page {
     }
 
     async getNamesOfAvailableApplications() {
-        let strings = [];
+        let results = [];
         let elements = await this.findElements(`//div[@class='demo-apps']//div[@class='demo-app-title']`);
-        elements.forEach(el => {
-            strings.push(el.getText());
-        });
-        return Promise.all(strings);
+        if (elements.length === 0) {
+            return [];
+        }
+        for (const item of elements) {
+            results.push(await item.getText());
+        }
+        return results;
     }
 
     //navigates to the last step (Install apps)
