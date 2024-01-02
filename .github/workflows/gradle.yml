@@ -52,14 +52,14 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build -Pcom.enonic.xp.app.production=true
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: app-main
           path: build/libs/app-main.jar
       - run: |
           set -ex
 
-      - uses: codecov/codecov-action@v3.1.4
+      - uses: codecov/codecov-action@v3
 
       - name: Publish
         if: needs.publish_vars.outputs.publish == 'true'
@@ -132,7 +132,7 @@ jobs:
                SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
                SLACK_COLOR: ${{ job.status }}
 
-          -   uses: actions/upload-artifact@v3
+          -   uses: actions/upload-artifact@v4
               if: always() && steps.selenium.conclusion != 'skipped'
               with:
                   name: 'ui-test-report-${{ matrix.suite }}'
