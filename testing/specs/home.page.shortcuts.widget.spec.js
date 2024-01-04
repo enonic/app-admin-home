@@ -1,5 +1,4 @@
-const chai = require('chai');
-const assert = chai.assert;
+const assert = require('node:assert');
 const webDriverHelper = require('../libs/WebDriverHelper');
 const appConst = require('../libs/app_const');
 const testUtils = require('../libs/test.utils');
@@ -81,7 +80,7 @@ describe('Home Page, Shortcut widget specification - check widget items and open
             await testUtils.saveScreenshot('license_info_expanded', this);
             await aboutDialog.waitForLicenseBodyDisplayed();
             let text = await aboutDialog.getLicenseText();
-            assert.isTrue(text.includes('Licenses used by Enonic XP (full license texts'));
+            assert.ok(text.includes('Licenses used by Enonic XP (full license texts'));
         });
 
     it("GIVEN License info is expanded WHEN Licensing button has been clicked THEN license-info gets not visible",

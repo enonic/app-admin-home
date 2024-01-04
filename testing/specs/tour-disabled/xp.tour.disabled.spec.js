@@ -1,8 +1,7 @@
 /**
  * Created on 04.12.2023.
  */
-const chai = require('chai');
-const assert = chai.assert;
+const assert = require('node:assert');
 const webDriverHelper = require('../../libs/WebDriverHelper');
 const appConst = require('../../libs/app_const');
 const testUtils = require('../../libs/test.utils');
@@ -25,7 +24,7 @@ describe("XP tour dialog - tests for 'tourDisabled' = true", function () {
             await homePage.waitForLoaded();
             // 1.'XP tour' dialog should not be loaded, tourDisabled = true:
             let isDisplayed = await xpTourDialog.isDisplayed();
-            assert.isFalse(isDisplayed, "'XP tour' dialog should not be loaded");
+            assert.ok(isDisplayed === false, "'XP tour' dialog should not be loaded");
         });
 
     it("WHEN Home Page is loaded THEN  'XP tour' button  should not  be present in toolbar",
@@ -44,7 +43,6 @@ describe("XP tour dialog - tests for 'tourDisabled' = true", function () {
             await shortcutsWidget.waitForMarketItemDisplayed();
             await shortcutsWidget.waitForSlackItemDisplayed();
         });
-
 
     beforeEach(async () => {
         await testUtils.doDeleteCookie();
