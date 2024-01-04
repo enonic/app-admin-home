@@ -1,5 +1,4 @@
-const chai = require('chai');
-const assert = chai.assert;
+const assert = require('node:assert');
 const webDriverHelper = require('../libs/WebDriverHelper');
 const LoginPage = require('../page_objects/login.page');
 const appConst = require('../libs/app_const');
@@ -33,9 +32,9 @@ describe('XP tour dialog - install applications and check their statuses', funct
             await testUtils.saveScreenshot('xp_tour_last_step', this);
             // 4. 3 applications to install should be present in the dialog
             let result = await xpTourDialog.getNamesOfAvailableApplications();
-            assert.isTrue(result.includes(APP_GUILLOTINE.toUpperCase()), 'Guillotine app should be available');
-            assert.isTrue(result.includes(APP_CONTENT_STUDIO.toUpperCase()), 'Content Studio app should be available');
-            assert.isTrue(result.includes(APP_DATA_TOOLBOX.toUpperCase()), 'Data Toolbox app should be available');
+            assert.ok(result.includes(APP_GUILLOTINE.toUpperCase()), 'Guillotine app should be available');
+            assert.ok(result.includes(APP_CONTENT_STUDIO.toUpperCase()), 'Content Studio app should be available');
+            assert.ok(result.includes(APP_DATA_TOOLBOX.toUpperCase()), 'Data Toolbox app should be available');
             assert.equal(result.length, 3, 'Three applications should be available for installing');
         });
 

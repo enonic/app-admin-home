@@ -1,5 +1,4 @@
-const chai = require('chai');
-const assert = chai.assert;
+const assert = require('node:assert');
 const webDriverHelper = require('../libs/WebDriverHelper');
 const LoginPage = require('../page_objects/login.page');
 const appConst = require('../libs/app_const');
@@ -22,13 +21,13 @@ describe('XP tour dialog specification', function () {
         // 'XP tour' dialog must be loaded automatically, tourDisabled = false:
         await xpTourDialog.waitForDialogLoaded();
         let result = await xpTourDialog.isSkipTourButtonDisplayed();
-        assert.isTrue(result, "Skip tour' button should be present");
+        assert.ok(result, "Skip tour' button should be present");
 
         result = await xpTourDialog.isCancelButtonTopDisplayed();
-        assert.isTrue(result, 'Cancel button should be present');
+        assert.ok(result, 'Cancel button should be present');
 
         result = await xpTourDialog.isNextButtonDisplayed();
-        assert.isTrue(result, "'Next' button should be displayed");
+        assert.ok(result, "'Next' button should be displayed");
 
         let title = await xpTourDialog.getTitle();
         assert.equal(title, 'Welcome Tour - Step 1 of 3', 'expected Dialog-title should be displayed');
