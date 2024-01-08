@@ -3,11 +3,6 @@
 const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
 
-function getMarketUrl() {
-    const marketConfigBean = __.newBean('com.enonic.xp.app.main.GetMarketConfigBean');
-    return __.toNativeObject(marketConfigBean.getMarketUrl());
-}
-
 function handleGet() {
     let baseUri = admin.getBaseUri();
     if (baseUri.endsWith('/')) {
@@ -27,9 +22,7 @@ function handleGet() {
                 path: 'images/background.jpg'
             }),
             xpVersion: admin.getVersion(),
-            i18nUrl: portal.serviceUrl({service: 'i18n'}),
-            tourEnabled: !(app.config['tourDisabled'] === 'true' || false),
-            marketUrl: getMarketUrl()
+            i18nUrl: portal.serviceUrl({service: 'i18n'})
         }
     };
 }

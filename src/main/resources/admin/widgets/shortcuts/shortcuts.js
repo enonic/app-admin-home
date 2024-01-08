@@ -5,7 +5,6 @@ const mustache = require('/lib/mustache');
 
 function handleGet() {
     const iconsPath = 'icons/';
-    const busIconUrl = portal.assetUrl({ path: `${iconsPath}bus.svg` });
     const infoIconUrl = portal.assetUrl({ path: `${iconsPath}info-with-circle.svg` });
     const devIconUrl = portal.assetUrl({ path: `${iconsPath}developer.svg` });
     const forumIconUrl = portal.assetUrl({ path: `${iconsPath}discuss.svg` });
@@ -53,20 +52,6 @@ function handleGet() {
             link: 'https://market.enonic.com/'
         }
     ];
-
-    const tourEnabled = !(app.config.tourDisabled === 'true' || false);
-    if (tourEnabled) {
-        dashboardIcons.splice(0, 0, {
-            src: busIconUrl,
-            cls: 'xp-tour',
-            caption: i18n.localize({
-                key: 'home.dashboard.widget.shortcuts.tour',
-                bundles: ['i18n/phrases'],
-                locale: locales
-            }),
-            link: '#'
-        });
-    }
 
     const view = resolve('./shortcuts.html');
     const params = {
