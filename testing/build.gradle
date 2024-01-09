@@ -1,4 +1,5 @@
 import com.enonic.uitest.server.ServerInstance
+import org.codehaus.groovy.runtime.GStringImpl
 
 plugins {
     id 'java'
@@ -18,31 +19,31 @@ configurations {
 }
 
 ext {
-    unpackDir = "$buildDir/install"
-    distroDir = "$unpackDir/enonic-xp-generic-$version"
-    deployDir = "$distroDir/home/deploy"
-    testDataDir = "$projectDir/test-data/common-config"
-    xpHome = "$distroDir/home"
-    configDir = "$xpHome/config"
+    unpackDir = "$buildDir/install" as GStringImpl
+    distroDir = "$unpackDir/enonic-xp-generic-$version" as GStringImpl
+    deployDir = "$distroDir/home/deploy" as GStringImpl
+    testDataDir = "$projectDir/test-data/common-config" as GStringImpl
+    xpHome = "$distroDir/home" as GStringImpl
+    configDir = "$xpHome/config" as GStringImpl
     xpServer = new ServerInstance()
     appName = "app-main"
-    appFile = "$distroDir/system/40/${appName}-${version}.jar"
-    appUrl = project.hasProperty('appUrl') ? appUrl : "file:///$projectDir/../build/libs/${appName}.jar"
+    appFile = "$distroDir/system/40/${appName}-${version}.jar" as GStringImpl
+    appUrl = project.hasProperty('appUrl') ? appUrl : "file:///$projectDir/../build/libs/${appName}.jar" as GStringImpl
 }
 
 dependencies {
     distro "com.enonic.xp:enonic-xp-generic:$version@zip"
 }
 
-task unpackDistro( type: Copy ) {
+tasks.register( 'unpackDistro', Copy ) {
     from {
         configurations.distro.collect { zipTree( it ) }
     }
     into file( unpackDir )
 }
 
-task copyConfig( type: Copy ) {
-    println testDataDir
+tasks.register( 'copyConfig', Copy ) {
+    println "$testDataDir${File.separator}common-config"
     from testDataDir
     include '**.*.cfg'
     include '*.properties'
@@ -50,37 +51,51 @@ task copyConfig( type: Copy ) {
     mustRunAfter unpackDistro
 }
 
-task deployApp( type: DefaultTask ) {
+
+tasks.register( 'deployApp', DefaultTask ) {
     outputs.files( appFile )
     outputs.upToDateWhen { false }
     doLast {
-        def f = new File( appFile )
+        def f = new File(appFile as String)
         println "Deleting  ${appFile}. Exists ${f.exists()}"
 
         f.delete()
 
         println "Copying from ${appUrl} to ${appFile}"
-        new URL( appUrl ).withInputStream { i -> f.withOutputStream { it << i } }
+        new URL(appUrl as String).withInputStream { i -> f.withOutputStream { it << i } }
     }
     mustRunAfter unpackDistro
 }
 
-task startServer( dependsOn: unpackDistro ) {
+tasks.register( 'startServer' ) {
+    dependsOn ( unpackDistro )
     doLast {
         xpServer.installDir = file( distroDir )
         xpServer.start()
     }
+    mustRunAfter deployApp
 }
 
-task stopServer {
+tasks.register( 'stopServer' ) {
     doLast {
         xpServer.stop()
     }
 }
 
+tasks.register( 'cleanup', Delete ) {
+    delete './build/reports/allure'
+}
+
+tasks.register( 'generateReportAndStopServer', NpmTask ) {
+    args = ['run-script', 'allure-report']
+    finalizedBy cleanup
+    finalizedBy stopServer
+}
+
 tasks.register( 'w_testAdminHomeChrome', NpmTask ) {
     dependsOn ( npmInstall, unpackDistro, copyConfig, deployApp, startServer )
     args = ['run-script', 'test_admin_home:wdio_chrome']
+    finalizedBy generateReportAndStopServer
 }
 
 tasks.register( 'w_testAdminHomeChromeLocal', NpmTask ) {

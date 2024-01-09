@@ -15,9 +15,8 @@ module.exports = {
             return webDriverHelper.browser;
         }
     },
-    async doLoginAndCloseXpTourDialog() {
+    async doLogin(){
         let loginPage = new LoginPage();
-        let xpTourDialog = new XpTourDialog();
         await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);
         await loginPage.doLogin();
         await loginPage.pause(1000);
@@ -28,7 +27,7 @@ module.exports = {
         }).then(() => {
             return this.getBrowser().deleteCookies();
         }).then(() => {
-            return console.log('cookie is being deleted...');
+            return console.log('cookie is being deleting...');
         });
     },
     async doSwitchToNextTab() {

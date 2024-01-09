@@ -1,164 +1,141 @@
 name: Gradle Build
 
 on:
-  push:
-  repository_dispatch:
-    types: [ lib-admin-ui, xp ]
+    push:
+    repository_dispatch:
+        types: [ lib-admin-ui, xp ]
 
 concurrency: build-${{ github.event.client_payload.ref || github.ref }}
 
 jobs:
-  publish_vars:
-    runs-on: ubuntu-latest
+    publish_vars:
+        runs-on: ubuntu-latest
 
-    outputs:
-      publish: ${{ steps.publish_vars.outputs.release != 'true' && (env.ACTUAL_GITHUB_REF == 'refs/heads/master' || startsWith(env.ACTUAL_GITHUB_REF, 'refs/heads/7.')) }}
-      repo: ${{ steps.publish_vars.outputs.repo }}
+        outputs:
+            publish: ${{ steps.publish_vars.outputs.release != 'true' && (env.ACTUAL_GITHUB_REF == 'refs/heads/master' || startsWith(env.ACTUAL_GITHUB_REF, 'refs/heads/7.')) }}
+            repo: ${{ steps.publish_vars.outputs.repo }}
 
-    steps:
-      - name: Extract actual github.ref
-        run: echo "ACTUAL_GITHUB_REF=${ACTUAL_REF}" >> $GITHUB_ENV
-        env:
-          ACTUAL_REF: ${{ github.event.client_payload.ref || github.ref }}
+        steps:
+            - name: Extract actual github.ref
+              run: echo "ACTUAL_GITHUB_REF=${ACTUAL_REF}" >> $GITHUB_ENV
+              env:
+                  ACTUAL_REF: ${{ github.event.client_payload.ref || github.ref }}
 
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.client_payload.ref || github.ref }}
-
-      - name: Get publishing variables
-        id: publish_vars
-        uses: enonic/release-tools/publish-vars@master
-        env:
-          PROPERTIES_PATH: './gradle.properties'
-
-  build:
-    runs-on: ubuntu-latest
-
-    needs: publish_vars
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.client_payload.ref || github.ref }}
-
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Build with Gradle
-        run: ./gradlew build -Pcom.enonic.xp.app.production=true
-      - uses: actions/upload-artifact@v3
-        with:
-          name: app-main
-          path: build/libs/app-main.jar
-      - run: |
-          set -ex
-      - name: Run Selenium Tests
-        id: selenium
-        if: github.event.head_commit.message != 'Updated to next SNAPSHOT version'
-        run: ./gradlew :testing:w_testAdminHomeChrome
-
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
-        if: failure()
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_CHANNEL: notif-build-tests
-          SLACK_USERNAME: GitHub Actions
-          SLACK_TITLE: GitHub Action Failure in Admin Home app
-          SLACK_MESSAGE: ${{job.container.id}}
-          SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-          SLACK_COLOR: ${{ job.status }}
-
-      - uses: actions/upload-artifact@v3
-        if: always() && steps.selenium.conclusion != 'skipped'
-        with:
-          name: ui-test-report
-          path: |
-            testing/build/reports
-
-      - uses: codecov/codecov-action@v3.1.4
-
-      - name: Publish
-        if: needs.publish_vars.outputs.publish == 'true'
-        run: ./gradlew publish -Pcom.enonic.xp.app.production=true -PrepoKey=${{ needs.publish_vars.outputs.repo }} -PrepoUser=${{ secrets.ARTIFACTORY_USERNAME }} -PrepoPassword=${{ secrets.ARTIFACTORY_PASSWORD }}
-
-  dispatch:
-    needs: [publish_vars, build]
-    strategy:
-      matrix:
-        repo: ["enonic/xp-distro" ]
-    runs-on: ubuntu-latest
-    if: needs.publish_vars.outputs.publish == 'true'
-    steps:
-      - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          repository: ${{ matrix.repo }}
-          event-type: app-main
-          client-payload: >
-            {"ref": "${{ github.event.client_payload.ref || github.ref }}"}
-
-
-  selenium-test:
-      strategy:
-          fail-fast: false
-          matrix:
-              suite: [ w_testAdminHomeChrome ]
-      runs-on: ubuntu-latest
-      needs: build
-      steps:
-          -   uses: actions/checkout@v4
+            - uses: actions/checkout@v4
               with:
-                ref: ${{ github.event.client_payload.ref || github.ref }}
+                  ref: ${{ github.event.client_payload.ref || github.ref }}
 
-          -   name: Set up JDK 11
-              uses: actions/setup-java@v4
+            - name: Get publishing variables
+              id: publish_vars
+              uses: enonic/release-tools/publish-vars@master
+              env:
+                  PROPERTIES_PATH: './gradle.properties'
+
+    build:
+        runs-on: ubuntu-latest
+
+        needs: publish_vars
+
+        steps:
+            - uses: actions/checkout@v4
               with:
-                  java-version: 11
-                  distribution: 'temurin'
+                  ref: ${{ github.event.client_payload.ref || github.ref }}
 
-          - uses: actions/cache@v3
-            with:
-               path: |
-                   ~/.gradle/caches
-                   ~/.gradle/wrapper
-               key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-               restore-keys: |
-                 ${{ runner.os }}-gradle-
-          - run: |
-                set -ex
-
-          - uses: actions/download-artifact@v4
-            with:
-                name: app-main
-                path: build/libs/
-
-          - name: Run Selenium Tests
-            run: ./gradlew :testing:${{ matrix.suite }}
-
-          - name: Slack Notification
-            uses: rtCamp/action-slack-notify@v2
-            if: failure()
-            env:
-               SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-               SLACK_CHANNEL: notif-build-tests
-               SLACK_USERNAME: GitHub Actions
-               SLACK_TITLE: GitHub Action Failure in Admin Home app
-               SLACK_MESSAGE: ${{job.container.id}}
-               SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-               SLACK_COLOR: ${{ job.status }}
-
-          -   uses: actions/upload-artifact@v4
-              if: always() && steps.selenium.conclusion != 'skipped'
+            - uses: actions/cache@v3
               with:
-                  name: 'ui-test-report-${{ matrix.suite }}'
                   path: |
-                      testing/build/reports
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                  restore-keys: |
+                      ${{ runner.os }}-gradle-
+
+            - name: Build with Gradle
+              run: ./gradlew build -Pcom.enonic.xp.app.production=true
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: app-main
+                  path: build/libs/app-main.jar
+            - run: |
+                  set -ex
+
+            - uses: codecov/codecov-action@v3
+
+            - name: Publish
+              if: needs.publish_vars.outputs.publish == 'true'
+              run: ./gradlew publish -Pcom.enonic.xp.app.production=true -PrepoKey=${{ needs.publish_vars.outputs.repo }} -PrepoUser=${{ secrets.ARTIFACTORY_USERNAME }} -PrepoPassword=${{ secrets.ARTIFACTORY_PASSWORD }}
+
+    dispatch:
+        needs: [ publish_vars, build ]
+        strategy:
+            matrix:
+                repo: [ "enonic/xp-distro" ]
+        runs-on: ubuntu-latest
+        if: needs.publish_vars.outputs.publish == 'true'
+        steps:
+            - name: Repository Dispatch
+              uses: peter-evans/repository-dispatch@v2
+              with:
+                  token: ${{ secrets.REPO_ACCESS_TOKEN }}
+                  repository: ${{ matrix.repo }}
+                  event-type: app-main
+                  client-payload: >
+                      {"ref": "${{ github.event.client_payload.ref || github.ref }}"}
+
+
+    selenium-test:
+        strategy:
+            fail-fast: false
+            matrix:
+                suite: [ w_testAdminHomeChrome ]
+        runs-on: ubuntu-latest
+        needs: build
+        steps:
+            -   uses: actions/checkout@v4
+                with:
+                    ref: ${{ github.event.client_payload.ref || github.ref }}
+
+            -   name: Set up JDK 11
+                uses: actions/setup-java@v4
+                with:
+                    java-version: 11
+                    distribution: 'temurin'
+
+            - uses: actions/cache@v3
+              with:
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                  restore-keys: |
+                      ${{ runner.os }}-gradle-
+            - run: |
+                  set -ex
+
+            - uses: actions/download-artifact@v4
+              with:
+                  name: app-main
+                  path: build/libs/
+
+            - name: Run Selenium Tests
+              run: ./gradlew :testing:${{ matrix.suite }}
+
+            - name: Slack Notification
+              uses: rtCamp/action-slack-notify@v2
+              if: failure()
+              env:
+                  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+                  SLACK_CHANNEL: notif-build-tests
+                  SLACK_USERNAME: GitHub Actions
+                  SLACK_TITLE: GitHub Action Failure in Admin Home app
+                  SLACK_MESSAGE: ${{job.container.id}}
+                  SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+                  SLACK_COLOR: ${{ job.status }}
+
+            -   uses: actions/upload-artifact@v4
+                if: always() && steps.selenium.conclusion != 'skipped'
+                with:
+                    name: 'ui-test-report-${{ matrix.suite }}'
+                    path: |
+                        testing/build/reports
 
