@@ -4,7 +4,6 @@
 const appConst = require("./app_const");
 const webDriverHelper = require("./WebDriverHelper");
 const LoginPage = require('../page_objects/login.page');
-const XpTourDialog = require('../page_objects/xp.tour.dialog');
 const fs = require('fs');
 const path = require('path');
 module.exports = {
@@ -22,9 +21,6 @@ module.exports = {
         await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);
         await loginPage.doLogin();
         await loginPage.pause(1000);
-        await xpTourDialog.waitForDialogLoaded();
-        await xpTourDialog.clickOnCancelButtonTop();
-        return await loginPage.pause(700);
     },
     doDeleteCookie() {
         return this.getBrowser().getCookies().then(result => {

@@ -78,12 +78,13 @@ task stopServer {
     }
 }
 
-task w_testAdminHomeChrome( type: NpmTask, dependsOn: [npmInstall, unpackDistro, copyConfig, deployApp, startServer] ) {
+tasks.register( 'w_testAdminHomeChrome', NpmTask ) {
+    dependsOn ( npmInstall, unpackDistro, copyConfig, deployApp, startServer )
     args = ['run-script', 'test_admin_home:wdio_chrome']
-    finalizedBy stopServer
 }
 
-task w_testAdminHomeChromeLocal( type: NpmTask, dependsOn: [npmInstall] ) {
+tasks.register( 'w_testAdminHomeChromeLocal', NpmTask ) {
+    dependsOn ( npmInstall )
     args = ['run-script', 'test_admin_home:wdio_chrome']
 }
 
