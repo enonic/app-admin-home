@@ -5,7 +5,6 @@ const XPATH = {
     container: "//div[contains(@id,'WidgetPanel')]",
     widgetShortcutsHeader: "//widget[contains(@id,'widget-shortcuts')]//h5[contains(@class,'widget-header')]",
     youtubeWidget: "//div[descendant::widget[contains(@id,'widget-youtube')]]",
-    xpTourDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='XP Tour']]",
     aboutDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='About']]",
     developerDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='Developer']]",
     discussDivItem: "//div[contains(@class,'shortcuts-item') and descendant::div[text()='Discuss']]",
@@ -21,10 +20,6 @@ class ShortcutsWidget extends Page {
 
     get youtubeWidget() {
         return XPATH.container + XPATH.youtubeWidget;
-    }
-
-    get xpTourItem() {
-        return XPATH.container + XPATH.xpTourDivItem;
     }
 
     get aboutItem() {
@@ -45,17 +40,6 @@ class ShortcutsWidget extends Page {
 
     get discussItem() {
         return XPATH.container + XPATH.discussDivItem;
-    }
-
-    async clickOnXpTourButton() {
-        try {
-            await this.waitForXpTourItemDisplayed();
-            await this.clickOnElement(this.xpTourItem);
-            return await this.pause(1000);
-        } catch (err) {
-            let screenshot = await this.saveScreenshotUniqueName('err_xp_tour');
-            throw new Error('Shortcuts Widget error during clicking on Xp tour widget item, screenshot:' + screenshot + "  " + err);
-        }
     }
 
     async clickOnAboutButton() {
@@ -92,14 +76,6 @@ class ShortcutsWidget extends Page {
 
     waitForSlackItemDisplayed() {
         return this.waitForElementDisplayed(this.slackItem, appConst.mediumTimeout);
-    }
-
-    waitForXpTourItemDisplayed() {
-        return this.waitForElementDisplayed(this.xpTourItem, appConst.mediumTimeout);
-    }
-
-    waitForXpTourItemNotDisplayed() {
-        return this.waitForElementNotDisplayed(this.xpTourItem, appConst.mediumTimeout);
     }
 
     waitForAboutItemDisplayed() {

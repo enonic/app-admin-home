@@ -87,7 +87,7 @@ jobs:
       strategy:
           fail-fast: false
           matrix:
-              suite: [ w_testAdminHomeChrome,w_testTourDisabledChrome ]
+              suite: [ w_testAdminHomeChrome ]
       runs-on: ubuntu-latest
       needs: build
       steps:
