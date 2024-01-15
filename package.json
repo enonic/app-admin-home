@@ -41,7 +41,7 @@
     "postcss-loader": "^7.3.3",
     "postcss-normalize": "^10.0.1",
     "sharp": "^0.33.2",
-    "source-map-loader": "^4.0.2",
+    "source-map-loader": "^5.0.0",
     "swc-loader": "^0.2.3",
     "terser-webpack-plugin": "^5.3.9",
     "typescript": "^5.2.2",
