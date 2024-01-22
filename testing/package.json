@@ -8,7 +8,7 @@
     "allure-report": "allure generate ./build/reports/allure --output ./build/reports/allure-report --clean --single-file"
   },
   "devDependencies": {
-    "webdriverio": "8.27.2",
+    "webdriverio": "8.28.8",
     "properties-reader": "^2.3.0",
     "@wdio/mocha-framework": "^8.28.8",
     "@wdio/cli": "^8.28.8",
