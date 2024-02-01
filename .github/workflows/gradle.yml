@@ -41,7 +41,7 @@ jobs:
         with:
           ref: ${{ github.event.client_payload.ref || github.ref }}
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
@@ -101,7 +101,7 @@ jobs:
                   java-version: 11
                   distribution: 'temurin'
 
-          - uses: actions/cache@v3
+          - uses: actions/cache@v4
             with:
                path: |
                    ~/.gradle/caches
