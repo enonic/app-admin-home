@@ -41,14 +41,13 @@ jobs:
         with:
           ref: ${{ github.event.client_payload.ref || github.ref }}
 
-      - uses: actions/cache@v4
+      - uses: actions/setup-java@v4
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+            distribution: temurin
+            java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Build with Gradle
         run: ./gradlew build -Pcom.enonic.xp.app.production=true
@@ -60,6 +59,8 @@ jobs:
           set -ex
 
       - uses: codecov/codecov-action@v4
+        with:
+            token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Publish
         if: needs.publish_vars.outputs.publish == 'true'
@@ -95,20 +96,14 @@ jobs:
               with:
                 ref: ${{ github.event.client_payload.ref || github.ref }}
 
-          -   name: Set up JDK 11
-              uses: actions/setup-java@v4
-              with:
-                  java-version: 11
-                  distribution: 'temurin'
-
-          - uses: actions/cache@v4
+          - uses: actions/setup-java@v4
             with:
-               path: |
-                   ~/.gradle/caches
-                   ~/.gradle/wrapper
-               key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-               restore-keys: |
-                 ${{ runner.os }}-gradle-
+                distribution: temurin
+                java-version: 17
+
+          - name: Setup Gradle
+            uses: gradle/actions/setup-gradle@v3
+
           - run: |
                 set -ex
 
