@@ -43,8 +43,8 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-            distribution: temurin
-            java-version: 17
+          distribution: temurin
+          java-version: 17
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -60,7 +60,7 @@ jobs:
       - uses: codecov/codecov-action@v4
         continue-on-error: true
         with:
-            token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   dispatch:
     needs: [ publish_vars, build ]
