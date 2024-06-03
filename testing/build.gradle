@@ -1,5 +1,4 @@
-import com.enonic.uitest.server.ServerInstance
-import org.codehaus.groovy.runtime.GStringImpl
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
 plugins {
     id 'java'
@@ -18,18 +17,15 @@ configurations {
     distro
 }
 
-ext {
-    unpackDir = "$buildDir/install" as GStringImpl
-    distroDir = "$unpackDir/enonic-xp-generic-$version" as GStringImpl
-    deployDir = "$distroDir/home/deploy" as GStringImpl
-    testDataDir = "$projectDir/test-data/common-config" as GStringImpl
-    xpHome = "$distroDir/home" as GStringImpl
-    configDir = "$xpHome/config" as GStringImpl
-    xpServer = new ServerInstance()
-    appName = "app-main"
-    appFile = "$distroDir/system/40/${appName}-${version}.jar" as GStringImpl
-    appUrl = project.hasProperty('appUrl') ? appUrl : "file:///$projectDir/../build/libs/${appName}.jar" as GStringImpl
-}
+def unpackDir = layout.buildDirectory.dir("install").get()
+def distroDir = unpackDir.dir("enonic-xp-generic-$version")
+def testDataDir = "$projectDir/test-data/common-config"
+
+def xpHome = distroDir.dir( "home" )
+def configDir = xpHome.dir( "config" )
+def appName = "app-main"
+def appFile = "$distroDir/system/40/${appName}-${version}.jar"
+def appUrl = project.hasProperty( 'appUrl' ) ? appUrl : "file:///$projectDir/../build/libs/${appName}.jar"
 
 dependencies {
     distro "com.enonic.xp:enonic-xp-generic:$version@zip"
@@ -39,7 +35,7 @@ tasks.register( 'unpackDistro', Copy ) {
     from {
         configurations.distro.collect { zipTree( it ) }
     }
-    into file( unpackDir )
+    into unpackDir
 }
 
 tasks.register( 'copyConfig', Copy ) {
@@ -67,18 +63,36 @@ tasks.register( 'deployApp', DefaultTask ) {
     mustRunAfter unpackDistro
 }
 
+def process
 tasks.register( 'startServer' ) {
-    dependsOn ( unpackDistro )
+    dependsOn unpackDistro
     doLast {
-        xpServer.installDir = file( distroDir )
-        xpServer.start()
+        def pb
+        if (DefaultNativePlatform.getCurrentOperatingSystem().windows) {
+            pb = new ProcessBuilder('cmd', '/c', "${distroDir}\\bin\\server.bat")
+        }
+        else {
+            pb = new ProcessBuilder("${distroDir}/bin/server.sh")
+        }
+        Map<String, String> env = pb.environment()
+        env.put("XP_HOME", "${xpHome}".toString())
+
+        def logsPath = layout.buildDirectory.dir("reports/logs").get()
+        mkdir logsPath.asFile
+        pb.redirectOutput(logsPath.file("xp.log").asFile)
+        pb.redirectErrorStream(true)
+        process = pb.start()
+        sleep(60 * 1000)
     }
-    mustRunAfter deployApp
 }
 
 tasks.register( 'stopServer' ) {
     doLast {
-        xpServer.stop()
+        if (DefaultNativePlatform.getCurrentOperatingSystem().windows) {
+            Runtime.getRuntime().exec("taskkill /F /T /PID " + process.pid());
+        } else {
+            process.destroy()
+        }
     }
 }
 
