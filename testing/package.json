@@ -11,7 +11,7 @@
     "webdriverio": "8.40.2",
     "properties-reader": "^2.3.0",
     "@wdio/mocha-framework": "^9.0.4",
-    "@wdio/cli": "^8.40.2",
+    "@wdio/cli": "^9.0.4",
     "@wdio/local-runner": "^9.0.4",
     "@wdio/concise-reporter": "^9.0.4",
     "allure-commandline": "^2.30.0",
