@@ -4,4 +4,10 @@
     <principal>role:system.admin</principal>
     <principal>role:system.admin.login</principal>
   </allow>
+  <apis>
+    <api>launcher</api>
+    <api>config</api>
+    <api>i18n</api>
+    <api>widget:</api>
+  </apis>
 </tool>

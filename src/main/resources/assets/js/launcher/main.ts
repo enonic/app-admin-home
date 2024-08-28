@@ -5,14 +5,9 @@ import {AppHelper} from '@enonic/lib-admin-ui/util/AppHelper';
 import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/application/ApplicationEvent';
 import {ThemeManager} from './ThemeManager';
 import {i18nFetch} from '@enonic/lib-admin-ui/util/MessagesInitializer';
+import {UriHelper} from '@enonic/lib-admin-ui/util/UriHelper';
 
-const toolKey = 'tool';
 const homeAppToolKey = 'com.enonic.xp.app.main';
-const pathName = window.location.pathname;
-const toolBasePath = pathName.slice(0, pathName.indexOf(`/${toolKey}`)) + `/${toolKey}`;
-const launcherUrl = `${toolBasePath}/${homeAppToolKey}/launcher`;
-const i18nServiceUrl = `${toolBasePath}/_/service/${homeAppToolKey}/i18n`;
-const isHomeApp: boolean = document.location.href.endsWith(toolBasePath) || document.location.href.endsWith(`${toolBasePath}/`);
 
 const currentScript = document.currentScript;
 
@@ -235,6 +230,14 @@ class Launcher {
         return `theme-${ThemeManager.getTheme(this.config['theme'])}`;
     };
 
+    private getLauncherUrl(): string {
+        return UriHelper.joinPath(this.config['toolBaseUrl'], `/_/${homeAppToolKey}/launcher`);
+    }
+
+    private isHomeApp(): boolean {
+        return this.config['appName'] === 'com.enonic.xp.app.main';
+    }
+
     private isPanelExpanded = (): boolean => this.launcherPanel.classList.contains('visible');
 
     private togglePanelState = (): void => this.isPanelExpanded() ? this.closeLauncherPanel() : this.openLauncherPanel();
@@ -247,7 +250,7 @@ class Launcher {
     private launcherButtonHasFocus = (): boolean => document.activeElement === this.launcherButton;
 
     private fetchLauncherContents = (): Promise<ChildNode> => {
-        return fetch(launcherUrl)
+        return fetch(this.getLauncherUrl())
             .then(response => response.text())
             .then((html: string) => {
                 const div = document.createElement('div');
@@ -289,14 +292,14 @@ class Launcher {
             .then((launcherEl: HTMLElement) => {
                 this.launcherPanel.appendChild(launcherEl);
                 this.launcherMainContainer = this.launcherPanel.firstChild as HTMLElement;
-                if (isHomeApp) {
+                if (this.isHomeApp()) {
                     this.launcherMainContainer.classList.add('home');
                 }
 
                 this.executeOnDOMInit();
 
                 document.body.appendChild(this.launcherPanel);
-                Launcher.addLongClickHandler(this.launcherPanel);
+                Launcher.addLongClickHandler(this.launcherPanel, this.isHomeApp());
 
                 if (this.config['autoOpenLauncher'] !== 'true') {
                     const appTiles = this.launcherPanel
@@ -321,7 +324,7 @@ class Launcher {
         if (
             isClickOutside &&
             !this.launcherMainContainer.getAttribute('hidden') &&
-            !Launcher.isModalDialogActiveOnHomePage(e.target) &&
+            !Launcher.isModalDialogActiveOnHomePage(e.target, this.isHomeApp()) &&
             !Launcher.isDashboardIcon($(e.target))
         ) {
             this.closeLauncherPanel();
@@ -332,7 +335,7 @@ class Launcher {
         element.closest('.dashboard-item').length > 0 &&
         element.parent().attr('href') !== '#';
 
-    private static isModalDialogActiveOnHomePage = (element: EventTarget): boolean => {
+    private static isModalDialogActiveOnHomePage = (element: EventTarget, isHomeApp: boolean): boolean => {
         return (
             isHomeApp &&
             (document.body.classList.contains('modal-dialog') ||
@@ -361,7 +364,7 @@ class Launcher {
         windowArr[windowId] = window.open(anchorEl.href, windowId);
     };
 
-    private static addLongClickHandler = (container: HTMLElement): void => {
+    private static addLongClickHandler = (container: HTMLElement, isHomeApp: boolean): void => {
         let longpress = false;
         let startTime;
         let endTime;
@@ -373,7 +376,7 @@ class Launcher {
         for (const appTile of Array.from(appTiles)) {
             // eslint-disable-next-line no-loop-func
             appTile.addEventListener('click', e => {
-                if (isHomeApp && (e.currentTarget as Element).getAttribute('data-id') === 'home') {
+                if (isHomeApp && (e.currentTarget as Element).getAttribute('data-id') === 'com.enonic.xp.app.main') {
                     e.preventDefault();
                     return;
                 }
@@ -430,8 +433,7 @@ class Launcher {
     private highlightActiveApp = (): void => {
         const appRows = this.launcherPanel.querySelectorAll('.app-row');
         for (const appRow of Array.from(appRows)) {
-            if ((appRow.id === 'home' && isHomeApp) ||
-                document.location.href.includes(`/${appRow.id}/`)) {
+            if (appRow.id === this.config['appName']) {
                 appRow.classList.add('active');
             }
         }
@@ -585,19 +587,27 @@ const getConfigAttribute = (attribute: string): string => {
     return currentScript?.getAttribute(`data-config-${attribute}`);
 };
 
+const required = (value, msg): string => {
+    if (value === undefined || value === null) {
+        throw msg;
+    }
+    return value;
+};
+
 const getConfig = (): JSONObject => {
     return {
         theme: getConfigAttribute('theme') || 'light',
         autoOpenLauncher: getConfigAttribute('auto-open'),
         container: getConfigAttribute('container'),
         customCls: getConfigAttribute('custom-class'),
+        toolBaseUrl: required(getConfigAttribute('tool-base-url'), '"data-config-tool-base-url" is not defined'),
+        appName: required(getConfigAttribute('app-name'), '"data-config-app-name" is not defined'),
     };
 };
 
 const init = async (): Promise<void> => {
     const config: JSONObject = getConfig();
-
-    i18nStore = await i18nFetch(i18nServiceUrl);
+    i18nStore = await i18nFetch(UriHelper.joinPath(config['toolBaseUrl'], `/_/${homeAppToolKey}/i18n`));
     new Launcher(config);
 };
 

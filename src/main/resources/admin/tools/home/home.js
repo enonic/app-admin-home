@@ -1,3 +1,5 @@
+/*global app, require*/
+
 const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
 const mustache = require('/lib/mustache');
@@ -28,7 +30,13 @@ const generateParams = () => {
         assetsUri: portal.assetUrl({path: ''}),
         launcherPath: admin.getLauncherPath(),
         theme: 'dark',
-        configServiceUrl: portal.serviceUrl({service: 'config'})
+        configServiceUrl: portal.url({
+            path: `/admin/${app.name}/home/_/${app.name}/config`
+        }),
+        toolBaseUrl: portal.url({
+            path: `/admin/${app.name}/home`,
+        }),
+        appName: app.name,
     };
 }
 
