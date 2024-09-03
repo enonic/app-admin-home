@@ -587,9 +587,10 @@ const getConfigAttribute = (attribute: string): string => {
     return currentScript?.getAttribute(`data-config-${attribute}`);
 };
 
-const required = (value, msg): string => {
+const getRequiredAttribute = (attribute: string): string => {
+    const value = getConfigAttribute(attribute);
     if (value === undefined || value === null) {
-        throw msg;
+        throw `"${attribute}" is not defined`;
     }
     return value;
 };
@@ -600,8 +601,8 @@ const getConfig = (): JSONObject => {
         autoOpenLauncher: getConfigAttribute('auto-open'),
         container: getConfigAttribute('container'),
         customCls: getConfigAttribute('custom-class'),
-        toolBaseUrl: required(getConfigAttribute('tool-base-url'), '"data-config-tool-base-url" is not defined'),
-        appName: required(getConfigAttribute('app-name'), '"data-config-app-name" is not defined'),
+        toolBaseUrl: getRequiredAttribute('tool-base-url'),
+        appName: getRequiredAttribute('app-name'),
     };
 };
 
