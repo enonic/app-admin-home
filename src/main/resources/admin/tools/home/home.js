@@ -26,16 +26,13 @@ frame-src \'self'\ https://*.youtube.com`;
 }
 
 const generateParams = () => {
+    const toolBaseUrl = admin.getToolUrl(app.name, 'home');
     return {
         assetsUri: portal.assetUrl({path: ''}),
         launcherPath: admin.getLauncherPath(),
         theme: 'dark',
-        configServiceUrl: portal.url({
-            path: `/admin/${app.name}/home/_/${app.name}/config`
-        }),
-        toolBaseUrl: portal.url({
-            path: `/admin/${app.name}/home`,
-        }),
+        configServiceUrl: `${toolBaseUrl}/_/${app.name}/config`,
+        toolBaseUrl: toolBaseUrl,
         appName: app.name,
     };
 }

@@ -19,9 +19,7 @@ function handleGet() {
                 path: 'images/background.jpg'
             }),
             xpVersion: admin.getVersion(),
-            i18nUrl: portal.url({
-                path: `/admin/${app.name}/home/_/${app.name}/i18n`
-            }),
+            i18nUrl: `${admin.getToolUrl(app.name, 'home')}/_/${app.name}/i18n`,
         }
     };
 }
