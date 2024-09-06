@@ -1,3 +1,5 @@
+/*global app, resolve*/
+
 var auth = require('/lib/xp/auth');
 var mustache = require('/lib/mustache');
 var portal = require('/lib/xp/portal');
@@ -56,7 +58,8 @@ exports.get = function() {
             description: localise(
                 'launcher.tools.home.description',
                 locales
-            )
+            ),
+            appId: app.name,
         },
         installation: admin.getInstallation() || 'Tools',
         logOutLink: localise('launcher.link.logout', locales),

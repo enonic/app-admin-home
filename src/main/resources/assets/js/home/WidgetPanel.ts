@@ -8,6 +8,7 @@ import {LoadMask} from '@enonic/lib-admin-ui/ui/mask/LoadMask';
 import * as Q from 'q';
 import {DashboardWidget} from './resource/widget/DashboardWidget';
 import {GetDashboardWidgetsRequest} from './resource/widget/GetDashboardWidgetsRequest';
+import {UriHelper} from '@enonic/lib-admin-ui/util/UriHelper';
 
 export class WidgetPanel
     extends DivEl {
@@ -90,12 +91,7 @@ export class WidgetPanel
     }
 
     private static getUrlPrefix(): string {
-        let baseUrl: string = document.location.href;
-        if (!baseUrl.endsWith('/')) {
-            baseUrl += '/';
-        }
-
-        return baseUrl;
+        return UriHelper.getAdminUri('/com.enonic.xp.app.main/home');
     }
 
     private sortByOrder(widget1: DashboardWidget, widget2: DashboardWidget): number {
@@ -178,7 +174,7 @@ export class WidgetPanel
     }
 
     private fetchAndRenderWidget(widget: DashboardWidget, widgetContainer: LibAdminElement): Promise<void> {
-        return fetch(WidgetPanel.widgetUrlPrefix + widget.getUrl())
+        return fetch(`${WidgetPanel.widgetUrlPrefix}/${widget.getUrl()}`)
             .then(response => response.text())
             .then((html: string) => {
                 WidgetPanel.cacheWidgetKey(widget);

@@ -1,3 +1,5 @@
+/*global app, require*/
+
 const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
 const mustache = require('/lib/mustache');
@@ -24,11 +26,14 @@ frame-src \'self'\ https://*.youtube.com`;
 }
 
 const generateParams = () => {
+    const toolBaseUrl = admin.getToolUrl(app.name, 'home');
     return {
         assetsUri: portal.assetUrl({path: ''}),
         launcherPath: admin.getLauncherPath(),
         theme: 'dark',
-        configServiceUrl: portal.serviceUrl({service: 'config'})
+        configServiceUrl: `${toolBaseUrl}/_/${app.name}/config`,
+        toolBaseUrl: toolBaseUrl,
+        appName: app.name,
     };
 }
 
