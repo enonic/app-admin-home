@@ -10,7 +10,7 @@
   "devDependencies": {
     "webdriverio": "9.0.9",
     "properties-reader": "^2.3.0",
-    "@wdio/mocha-framework": "^9.0.6",
+    "@wdio/mocha-framework": "^9.0.8",
     "@wdio/cli": "^9.0.7",
     "@wdio/local-runner": "^9.0.7",
     "@wdio/concise-reporter": "^9.0.4",
