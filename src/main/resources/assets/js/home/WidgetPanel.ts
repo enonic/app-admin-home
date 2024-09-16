@@ -209,7 +209,7 @@ export class WidgetPanel
         );
 
         if ('WIDGET' !== widgetEl.getHTMLElement().nodeName) {
-            throw new Exception(`${widget.getWidgetDescriptorKey().toString()} is missing <widget> root element`);
+            throw Error(`${widget.getWidgetDescriptorKey().toString()} is missing <widget> root element`);
         }
 
         return widgetEl;

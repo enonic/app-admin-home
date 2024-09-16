@@ -590,7 +590,7 @@ const getConfigAttribute = (attribute: string): string => {
 const getRequiredAttribute = (attribute: string): string => {
     const value = getConfigAttribute(attribute);
     if (value === undefined || value === null) {
-        throw `"${attribute}" is not defined`;
+        throw Error(`"${attribute}" is not defined`);
     }
     return value;
 };
