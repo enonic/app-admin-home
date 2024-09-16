@@ -116,7 +116,7 @@ function startApplication() {
 
 void (async () => {
     if (!document.currentScript) {
-        throw 'Legacy browsers are not supported';
+        throw Error('Legacy browsers are not supported');
     }
 
     const configServiceUrl: string = document.currentScript.getAttribute('data-config-service-url');
