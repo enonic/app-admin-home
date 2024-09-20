@@ -4,10 +4,6 @@ import {KeyBindings} from '@enonic/lib-admin-ui/ui/KeyBindings';
 import {AppHelper} from '@enonic/lib-admin-ui/util/AppHelper';
 import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/application/ApplicationEvent';
 import {ThemeManager} from './ThemeManager';
-import {i18nFetch} from '@enonic/lib-admin-ui/util/MessagesInitializer';
-import {UriHelper} from '@enonic/lib-admin-ui/util/UriHelper';
-
-const homeAppToolKey = 'com.enonic.xp.app.main';
 
 const currentScript = document.currentScript;
 
@@ -134,7 +130,6 @@ class Launcher {
         this.config = config;
 
         setTimeout(() => {
-            this.appendLauncherButton();
             this.appendLauncherPanel();
             this.addApplicationsListeners();
         }, 200);
@@ -205,11 +200,11 @@ class Launcher {
 
         button.addEventListener('click', this.togglePanelState);
         button.addEventListener('keydown', (e: KeyboardEvent) => {
-            if(e.key === 'Tab' && !e.shiftKey){
+            if (e.key === 'Tab' && !e.shiftKey) {
                 e.preventDefault();
                 this.selectApp(0);
                 return false;
-             }
+            }
         });
 
         const containerSelector: string = this.config['container'];
@@ -230,10 +225,6 @@ class Launcher {
         return `theme-${ThemeManager.getTheme(this.config['theme'])}`;
     };
 
-    private getLauncherUrl(): string {
-        return UriHelper.joinPath(this.config['toolBaseUrl'], `/_/${homeAppToolKey}:launcher`);
-    }
-
     private isHomeApp(): boolean {
         return this.config['appName'] === 'com.enonic.xp.app.main';
     }
@@ -250,7 +241,7 @@ class Launcher {
     private launcherButtonHasFocus = (): boolean => document.activeElement === this.launcherButton;
 
     private fetchLauncherContents = (): Promise<ChildNode> => {
-        return fetch(this.getLauncherUrl())
+        return fetch(this.config['launcherApiUrl'])
             .then(response => response.text())
             .then((html: string) => {
                 const div = document.createElement('div');
@@ -295,6 +286,11 @@ class Launcher {
                 if (this.isHomeApp()) {
                     this.launcherMainContainer.classList.add('home');
                 }
+
+                const launcherJsonConfig: JSONObject = getLauncherJsonConfig(this.launcherMainContainer);
+                initI18NStore(launcherJsonConfig);
+
+                this.appendLauncherButton();
 
                 this.executeOnDOMInit();
 
@@ -595,21 +591,39 @@ const getRequiredAttribute = (attribute: string): string => {
     return value;
 };
 
-const getConfig = (): JSONObject => {
+const getLauncherScriptConfig = (): JSONObject => {
     return {
         theme: getConfigAttribute('theme') || 'light',
         autoOpenLauncher: getConfigAttribute('auto-open'),
         container: getConfigAttribute('container'),
         customCls: getConfigAttribute('custom-class'),
-        toolBaseUrl: getRequiredAttribute('tool-base-url'),
         appName: getRequiredAttribute('app-name'),
+        launcherApiUrl: getRequiredAttribute('launcher-api-url'),
     };
 };
 
-const init = async (): Promise<void> => {
-    const config: JSONObject = getConfig();
-    i18nStore = await i18nFetch(UriHelper.joinPath(config['toolBaseUrl'], `/_/${homeAppToolKey}:i18n`));
-    new Launcher(config);
+const getLauncherJsonConfig = (launcherMainContainerEl: HTMLElement): JSONObject => {
+    const scriptTagElement: HTMLScriptElement = launcherMainContainerEl.getElementsByTagName('script')[0];
+    if (!scriptTagElement || scriptTagElement.getAttribute('id') !== 'launcher-config-json') {
+        throw Error('Could not find launcher config');
+    }
+    return JSON.parse(scriptTagElement.innerText);
+};
+
+const initI18NStore = (config: JSONObject): void => {
+    const phrases: JSONObject = JSON.parse(config['phrases']);
+
+    i18nStore = new Map<string, string>();
+    for (let key in phrases) {
+        if (phrases.hasOwnProperty(key)) {
+            i18nStore.set(key, phrases[key]);
+        }
+    }
+};
+
+const init = (): void => {
+    const launcherConfig: JSONObject = getLauncherScriptConfig();
+    new Launcher(launcherConfig);
 };
 
 window.addEventListener('load', () => void init());
