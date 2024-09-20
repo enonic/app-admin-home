@@ -6,7 +6,6 @@
   </allow>
   <apis>
     <api>launcher</api>
-    <api>config</api>
     <api>i18n</api>
     <api>admin:widget</api>
   </apis>
