@@ -25,7 +25,7 @@ function localise(key, locales) {
     });
 }
 
-exports.get = function() {
+exports.get = function(req) {
     var locales = admin.getLocales();
 
     var adminTools = getAdminTools();
