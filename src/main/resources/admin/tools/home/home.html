@@ -35,10 +35,11 @@
     <!-- Styles -->
     <link rel="stylesheet" type="text/css" href="{{assetsUri}}/styles/home.css">
 
-    <script type="text/javascript" src="{{assetsUri}}/js/home/bundle.js" data-config-service-url="{{configServiceUrl}}"></script>
+    <script type="text/javascript" src="{{assetsUri}}/js/home/bundle.js"></script>
     <!-- Append the launcher -->
     <script type="text/javascript" src="{{launcherPath}}" data-config-theme="{{theme}}" data-config-auto-open="true"
-            data-config-tool-base-url="{{toolBaseUrl}}" data-config-app-name="{{appName}}" async></script>
+            data-config-launcher-api-url="{{launcherApiUrl}}" data-config-app-name="{{appName}}" async></script>
+    <script type="application/json" id="home-tool-config-json">{{{homeToolConfigAsJson}}}</script>
 </head>
 <body>
     <div class="home-main-container" id="home-main-container"/>

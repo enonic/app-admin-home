@@ -12,6 +12,7 @@ import {ImgEl} from '@enonic/lib-admin-ui/dom/ImgEl';
 import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
 import {WidgetPanel} from './WidgetPanel';
 import * as Q from 'q';
+import {resolveHomeToolConfig} from '../ConfigResolver';
 
 const containerId = 'home-main-container';
 
@@ -46,8 +47,8 @@ const showBackgroundImage = (): Q.Promise<void> => {
     return deferred.promise;
 };
 
-const initConfig = async (configServiceUrl) => {
-    await CONFIG.init(configServiceUrl);
+const initConfig = async () => {
+    CONFIG.setConfig(resolveHomeToolConfig());
     await i18nInit(CONFIG.getString('i18nUrl'));
 };
 
@@ -119,9 +120,8 @@ void (async () => {
         throw Error('Legacy browsers are not supported');
     }
 
-    const configServiceUrl: string = document.currentScript.getAttribute('data-config-service-url');
     await loadDOM();
-    await initConfig(configServiceUrl);
+    await initConfig();
     await showBackgroundImage();
     startApplication();
 })();

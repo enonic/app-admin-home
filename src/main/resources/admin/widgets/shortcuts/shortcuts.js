@@ -56,10 +56,6 @@ function handleGet() {
     const view = resolve('./shortcuts.html');
     const params = {
         dashboardIcons: dashboardIcons,
-        configServiceUrl: portal.apiUrl({
-            application: app.name,
-            api: 'config',
-        }),
         stylesUri: portal.assetUrl({
             path: 'styles/widgets/shortcuts.css'
         }),

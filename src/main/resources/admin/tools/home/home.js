@@ -3,6 +3,7 @@
 const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
 const mustache = require('/lib/mustache');
+const configLib = require('/lib/config');
 
 const addCSPHeaderToResponse = (response) => {
     const enableSecurityPolicy = app.config['contentSecurityPolicy.enabled'] !== 'false';
@@ -31,12 +32,13 @@ const generateParams = () => {
         assetsUri: portal.assetUrl({path: ''}),
         launcherPath: admin.getLauncherPath(),
         theme: 'dark',
-        configServiceUrl: portal.apiUrl({
-            application: app.name,
-            api: 'config',
-        }),
         toolBaseUrl: toolBaseUrl,
         appName: app.name,
+        homeToolConfigAsJson: JSON.stringify(configLib.getConfig(), null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1"),
+        launcherApiUrl: portal.apiUrl({
+            application: app.name,
+            api: 'launcher',
+        }),
     };
 }
 

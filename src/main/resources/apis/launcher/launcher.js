@@ -65,7 +65,10 @@ exports.get = function() {
         logOutLink: localise('launcher.link.logout', locales),
         assetsUri: portal.assetUrl({
             path: ''
-        })
+        }),
+        launcherConfigJson: JSON.stringify({
+            phrases: JSON.stringify(i18n.getPhrases(locales, ['i18n/phrases'])),
+        }),
     };
 
     return {
