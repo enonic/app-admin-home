@@ -13,6 +13,25 @@ let i18nStore: Map<string, string>;
 
 const i18n = (key: string): string => i18nStore.has(key) ? i18nStore.get(key) : `#${key}#`;
 
+const getLauncherJsonConfig = (launcherMainContainerEl: HTMLElement): JSONObject => {
+    const scriptTagElement: HTMLScriptElement = launcherMainContainerEl.getElementsByTagName('script')[0];
+    if (!scriptTagElement || scriptTagElement.getAttribute('id') !== 'launcher-config-json') {
+        throw Error('Could not find launcher config');
+    }
+    return JSON.parse(scriptTagElement.innerText) as JSONObject;
+};
+
+const initI18NStore = (config: JSONObject): void => {
+    const phrases: JSONObject = JSON.parse(config['phrases']) as JSONObject;
+
+    i18nStore = new Map<string, string>();
+    for (const key in phrases) {
+        if (Object.prototype.hasOwnProperty.call(phrases, key)) {
+            i18nStore.set(key, phrases[key]);
+        }
+    }
+};
+
 class Launcher {
     private launcherPanel: HTMLElement;
     private launcherButton: HTMLElement;
@@ -600,25 +619,6 @@ const getLauncherScriptConfig = (): JSONObject => {
         appName: getRequiredAttribute('app-name'),
         launcherApiUrl: getRequiredAttribute('launcher-api-url'),
     };
-};
-
-const getLauncherJsonConfig = (launcherMainContainerEl: HTMLElement): JSONObject => {
-    const scriptTagElement: HTMLScriptElement = launcherMainContainerEl.getElementsByTagName('script')[0];
-    if (!scriptTagElement || scriptTagElement.getAttribute('id') !== 'launcher-config-json') {
-        throw Error('Could not find launcher config');
-    }
-    return JSON.parse(scriptTagElement.innerText);
-};
-
-const initI18NStore = (config: JSONObject): void => {
-    const phrases: JSONObject = JSON.parse(config['phrases']);
-
-    i18nStore = new Map<string, string>();
-    for (let key in phrases) {
-        if (phrases.hasOwnProperty(key)) {
-            i18nStore.set(key, phrases[key]);
-        }
-    }
 };
 
 const init = (): void => {
