@@ -5,5 +5,5 @@ export const resolveHomeToolConfig = (): JSONObject => {
     if (!appConfigEl) {
         throw Error('Could not find tool config');
     }
-    return JSON.parse(appConfigEl.innerText);
+    return JSON.parse(appConfigEl.innerText) as JSONObject;
 }
