@@ -8,6 +8,6 @@
     <api>launcher</api>
     <api>config</api>
     <api>i18n</api>
-    <api>widget:</api>
+    <api>admin:widget</api>
   </apis>
 </tool>
