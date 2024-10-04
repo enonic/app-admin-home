@@ -3,15 +3,16 @@ import {ResourceRequest as WidgetResourceRequest} from './ResourceRequest';
 export class GetByInterfaceRequest
     extends WidgetResourceRequest {
 
-    private readonly widgetInterfaces: string[];
+    private readonly widgetInterface: string;
 
-    constructor(widgetInterfaces: string[]) {
+    constructor(widgetInterface: string) {
         super();
-        this.widgetInterfaces = widgetInterfaces;
-        this.addRequestPathElements('list', 'byinterfaces');
+        this.widgetInterface = widgetInterface;
     }
 
-    getParams(): string[] {
-        return this.widgetInterfaces;
+    getParams(): object {
+        return {
+            widgetInterface: this.widgetInterface,
+        };
     }
 }

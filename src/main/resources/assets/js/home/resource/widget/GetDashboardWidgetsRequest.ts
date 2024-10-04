@@ -6,7 +6,7 @@ export class GetDashboardWidgetsRequest
     extends GetByInterfaceRequest {
 
     constructor() {
-        super(['admin.dashboard']);
+        super('admin.dashboard');
     }
 
     fetchWidgets(): Q.Promise<DashboardWidget[]> {
