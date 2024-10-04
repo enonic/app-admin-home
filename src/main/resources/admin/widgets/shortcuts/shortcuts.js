@@ -1,15 +1,16 @@
 const i18n = require('/lib/xp/i18n');
 const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
+const assetLib = require('/lib/enonic/asset');
 const mustache = require('/lib/mustache');
 
 function handleGet() {
-    const iconsPath = 'icons/';
-    const infoIconUrl = portal.assetUrl({ path: `${iconsPath}info-with-circle.svg` });
-    const devIconUrl = portal.assetUrl({ path: `${iconsPath}developer.svg` });
-    const forumIconUrl = portal.assetUrl({ path: `${iconsPath}discuss.svg` });
-    const marketIconUrl = portal.assetUrl({ path: `${iconsPath}market.svg` });
-    const slackIconUrl = portal.assetUrl({ path: `${iconsPath}slack.svg` });
+    const iconsPath = 'icons/widgets/';
+    const infoIconUrl = assetLib.assetUrl({ path: `${iconsPath}info-with-circle.svg` });
+    const devIconUrl = assetLib.assetUrl({ path: `${iconsPath}developer.svg` });
+    const forumIconUrl = assetLib.assetUrl({ path: `${iconsPath}discuss.svg` });
+    const marketIconUrl = assetLib.assetUrl({ path: `${iconsPath}market.svg` });
+    const slackIconUrl = assetLib.assetUrl({ path: `${iconsPath}slack.svg` });
 
     const locales = admin.getLocales();
     const dashboardIcons = [
@@ -57,10 +58,10 @@ function handleGet() {
     const params = {
         dashboardIcons: dashboardIcons,
         configServiceUrl: portal.serviceUrl({service: 'config'}),
-        stylesUri: portal.assetUrl({
+        stylesUri: assetLib.assetUrl({
             path: 'styles/widgets/shortcuts.css'
         }),
-        jsUri: portal.assetUrl({
+        jsUri: assetLib.assetUrl({
             path: 'js/widgets/shortcuts.js'
         }),
     };

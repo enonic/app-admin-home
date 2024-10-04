@@ -97,7 +97,7 @@ function getApplication(): Application {
         CONFIG.getString('appId'),
         i18n('home.dashboard'),
         '',
-        `${assetsUri}/icons/icon-white.svg`,
+        `${assetsUri}/icons/widgets/icon-white.svg`,
     );
     application.setPath(Path.fromString('/'));
 

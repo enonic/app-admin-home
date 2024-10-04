@@ -14,7 +14,7 @@ const getAboutDialogContent = (): Element => {
     const html = `
         <div class="xp-about-dialog-content">
             <div class="xp-about-dialog-app-icon">
-                <img src="${CONFIG.getString('assetsUri')}/icons/app-icon.svg">
+                <img src="${CONFIG.getString('assetsUri')}/images/enonic.svg">
             </div>
             <h1>Enonic XP</h1>
             <div class="xp-about-dialog-version-block">

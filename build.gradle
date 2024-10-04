@@ -16,6 +16,9 @@ app {
     systemApp = true
 }
 
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = sourceCompatibility
+
 configurations {
     devResources {
         attributes {
@@ -39,6 +42,7 @@ dependencies {
     include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
     devResources "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
     include "com.enonic.lib:lib-mustache:2.1.0"
+    include "com.enonic.lib:lib-asset:1.0.0-B4"
 
     testImplementation "org.mockito:mockito-core:4.8.0"
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.9.1"
@@ -64,32 +68,14 @@ tasks.register('webpack', NpmTask) {
     inputs.dir '.xp/dev'
     inputs.dir 'src/main'
     inputs.file 'webpack.config.js'
-    outputs.dir "$buildDir/build/resources/main/assets"
 }
 
 jar {
-    exclude 'assets/styles/**/*.less'
-    exclude 'assets/styles/**/*.js'
-    exclude '**/*.d.ts'
+    dependsOn += webpack
+}
 
-    def whitelist = [
-        /.*bundle\.js$/,
-        /.*\/widgets\/.*\.js$/,
-    ] as List
-
-    if (isProd()) {
-        exclude '**/*.map'
-    } else {
-        whitelist.add( /.*\.map$/ )
-    }
-
-    exclude { el ->
-        !el.directory && el.relativePath.contains( 'assets/js' ) && ( !whitelist.any { re -> el.relativePath.toString().matches( re ) } )
-    }
-
-    outputs.dir "${buildDir}/resources/main"
-
-    dependsOn( 'webpack', 'test', 'javadoc' )
+processResources {
+    exclude 'assets/**'  // Excluded because webpack does it
 }
 
 test {
