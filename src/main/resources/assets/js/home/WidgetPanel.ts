@@ -3,17 +3,13 @@ import {DefaultErrorHandler} from '@enonic/lib-admin-ui/DefaultErrorHandler';
 import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
 import {Element as LibAdminElement} from '@enonic/lib-admin-ui/dom/Element';
 import {H5El} from '@enonic/lib-admin-ui/dom/H5El';
-import {Exception} from '@enonic/lib-admin-ui/Exception';
 import {LoadMask} from '@enonic/lib-admin-ui/ui/mask/LoadMask';
 import * as Q from 'q';
 import {DashboardWidget} from './resource/widget/DashboardWidget';
 import {GetDashboardWidgetsRequest} from './resource/widget/GetDashboardWidgetsRequest';
-import {UriHelper} from '@enonic/lib-admin-ui/util/UriHelper';
 
 export class WidgetPanel
     extends DivEl {
-
-    private static widgetUrlPrefix: string;
 
     private static widgetCache: Map<string, string[]> = new Map<string, string[]>();
 
@@ -22,7 +18,6 @@ export class WidgetPanel
     constructor() {
         super('widget-panel');
 
-        WidgetPanel.widgetUrlPrefix = WidgetPanel.getUrlPrefix();
         this.addApplicationsListeners();
     }
 
@@ -88,10 +83,6 @@ export class WidgetPanel
                 widgetElement.remove();
             }
         });
-    }
-
-    private static getUrlPrefix(): string {
-        return UriHelper.getAdminUri('/com.enonic.xp.app.main/home');
     }
 
     private sortByOrder(widget1: DashboardWidget, widget2: DashboardWidget): number {
@@ -174,7 +165,7 @@ export class WidgetPanel
     }
 
     private fetchAndRenderWidget(widget: DashboardWidget, widgetContainer: LibAdminElement): Promise<void> {
-        return fetch(`${WidgetPanel.widgetUrlPrefix}/${widget.getUrl()}`)
+        return fetch(widget.getUrl())
             .then(response => response.text())
             .then((html: string) => {
                 WidgetPanel.cacheWidgetKey(widget);
@@ -229,7 +220,7 @@ export class WidgetPanel
         return result;
     }
 
-    private injectWidgetAssets(widgetEl: LibAdminElement): Q.Promise<void[]>  {
+    private injectWidgetAssets(widgetEl: LibAdminElement): Q.Promise<void[]> {
         const promises: Q.Promise<void>[] = [];
         promises.push(...this.injectElements(widgetEl, 'link'));
         promises.push(...this.injectElements(widgetEl, 'script'));

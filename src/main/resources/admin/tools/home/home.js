@@ -31,7 +31,10 @@ const generateParams = () => {
         assetsUri: portal.assetUrl({path: ''}),
         launcherPath: admin.getLauncherPath(),
         theme: 'dark',
-        configServiceUrl: `${toolBaseUrl}/_/${app.name}/config`,
+        configServiceUrl: portal.apiUrl({
+            application: app.name,
+            api: 'config',
+        }),
         toolBaseUrl: toolBaseUrl,
         appName: app.name,
     };
