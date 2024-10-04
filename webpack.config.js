@@ -4,13 +4,19 @@ const TerserPlugin = require('terser-webpack-plugin');
 const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 const path = require('path');
 const fs = require('fs');
+const CompressionPlugin = require("compression-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const zlib = require("zlib");
 
 const swcConfig = JSON.parse(fs.readFileSync('./.swcrc'));
 
 const isProd = process.env.NODE_ENV === 'production';
 
+let input = path.join(__dirname, '/src/main/resources/assets');
+let output = path.join(__dirname, '/build/resources/main/assets');
+
 module.exports = {
-    context: path.join(__dirname, '/src/main/resources/assets'),
+    context: input,
     entry: {
         'js/home/bundle': './js/home/main.ts',
         'js/launcher/bundle': './js/launcher/main.ts',
@@ -21,7 +27,7 @@ module.exports = {
         'styles/widgets/youtube': './styles/widgets/youtube.less',
     },
     output: {
-        path: path.join(__dirname, '/build/resources/main/assets'),
+        path: output,
         filename: './[name].js',
         assetModuleFilename: './[file]'
     },
@@ -98,6 +104,23 @@ module.exports = {
                     keep_fnames: true
                 }
             }),
+            new ImageMinimizerPlugin({
+                generator: [
+                    {
+                        filter: (source, sourcePath) => sourcePath.match(/images\/background\.jpg$/),
+                        type: "asset",
+                        implementation: ImageMinimizerPlugin.sharpGenerate,
+                        options: {
+                            encodeOptions: {
+                                webp: {
+                                    effort: isProd ? 6 : 0,
+                                    preset: 'photo',
+                                },
+                            },
+                        },
+                    },
+                ],
+            }),
         ]
     },
     plugins: [
@@ -109,6 +132,31 @@ module.exports = {
             exclude: /a\.js|node_modules/,
             failOnError: true
         }),
+        new CopyWebpackPlugin({
+            patterns: [
+                {from: path.join(input, 'icons/favicons'), to: path.join(output, 'icons/favicons')},
+                {from: path.join(input, 'icons'), to: path.join(output, 'icons')},
+                {from: path.join(input, 'images'), to: path.join(output, 'images')},
+            ],
+        }),
+        ...(isProd ?  [
+                new CompressionPlugin({
+                    test: /\.(js|css|svg|ttf|json|ico)$/,
+                    algorithm: "gzip",
+                    minRatio: Number.MAX_SAFE_INTEGER,
+                }),
+                new CompressionPlugin({
+                    test: /\.(js|css|svg|ttf|json|ico)$/,
+                    algorithm: "brotliCompress",
+                    compressionOptions: {
+                        params: {
+                            [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+                        },
+                    },
+                    minRatio: Number.MAX_SAFE_INTEGER,
+                }),
+            ] : []
+        ),
     ],
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : 'source-map',
