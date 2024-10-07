@@ -22,6 +22,10 @@ const getConfig = () => {
             application: app.name,
             api: 'launcher',
         }),
+        widgetApiUrl: portal.apiUrl({
+            application: 'admin',
+            api: 'widget',
+        }),
     };
 }
 
