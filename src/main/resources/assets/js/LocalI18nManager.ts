@@ -16,11 +16,15 @@ export class LocalI18nManager {
         }
     };
 
-    public i18n(key: string, ...args: any[]): string {
+    public i18n(key: string, ...args: unknown[]): string {
         const message = this.i18nStore.has(key) ? this.i18nStore.get(key) : `#${key}#`;
-
-        return message.replace(/{(\d+)}/g, function (_substring: string, ...replaceArgs: any[]) {
-            return args[replaceArgs[0]];
+        return message.replace(/{(\d+)}/g, function (_substring: string, replaceArg: string): string {
+            const index = parseInt(replaceArg, 10);
+            if (Number.isNaN(index) || index < 0 || index >= args.length) {
+                return _substring;
+            }
+            const replacement = args[index];
+            return typeof replacement === 'string' ? replacement : String(replacement);
         }).trim();
     }
 
