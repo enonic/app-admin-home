@@ -3,7 +3,7 @@ import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 import {createAboutDialog} from './aboutdialog';
 import {ModalDialogWithConfirmation} from '@enonic/lib-admin-ui/ui/dialog/ModalDialogWithConfirmation';
 import {DefaultErrorHandler} from '@enonic/lib-admin-ui/DefaultErrorHandler';
-import {resolveHomeToolConfig} from '../ConfigResolver';
+import {resolveScriptConfig} from '../ConfigResolver';
 
 const getElement = (selector: string): Promise<Element> => {
     const searchedElement: Element = document.querySelector(selector);
@@ -50,7 +50,8 @@ const initAboutDialog = () => {
 
 (() => {
     try {
-        CONFIG.setConfig(resolveHomeToolConfig());
+        const configScriptId = document.currentScript.getAttribute('data-config-script-id');
+        CONFIG.setConfig(resolveScriptConfig(configScriptId));
         initAboutDialog();
     } catch (e) {
         DefaultErrorHandler.handle(e);

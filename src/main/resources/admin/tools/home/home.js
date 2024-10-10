@@ -32,7 +32,7 @@ const generateParams = () => {
         launcherPath: admin.getLauncherPath(),
         theme: 'dark',
         appName: app.name,
-        homeToolConfigAsJson: JSON.stringify(configLib.getConfig(), null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1"),
+        configAsJson: JSON.stringify(configLib.getConfig(), null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1"),
         launcherApiUrl: portal.apiUrl({
             application: app.name,
             api: 'launcher',

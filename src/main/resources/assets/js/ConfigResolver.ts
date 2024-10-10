@@ -1,9 +1,9 @@
 import {JSONObject} from '@enonic/lib-admin-ui/types';
 
-export const resolveHomeToolConfig = (): JSONObject => {
-    const appConfigEl = document.getElementById('home-tool-config-json');
+export const resolveScriptConfig = (configScriptId: string): JSONObject => {
+    const appConfigEl: HTMLElement = document.getElementById(configScriptId);
     if (!appConfigEl) {
-        throw Error('Could not find tool config');
+        throw Error('Could not find config script');
     }
     return JSON.parse(appConfigEl.innerText) as JSONObject;
 }
