@@ -12,7 +12,7 @@ import {ImgEl} from '@enonic/lib-admin-ui/dom/ImgEl';
 import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
 import {WidgetPanel} from './WidgetPanel';
 import * as Q from 'q';
-import {resolveHomeToolConfig} from '../ConfigResolver';
+import {resolveScriptConfig} from '../ConfigResolver';
 
 const containerId = 'home-main-container';
 
@@ -48,7 +48,7 @@ const showBackgroundImage = (): Q.Promise<void> => {
 };
 
 const initConfig = async () => {
-    CONFIG.setConfig(resolveHomeToolConfig());
+    CONFIG.setConfig(resolveScriptConfig('home-tool-config-json'));
     await i18nInit(CONFIG.getString('i18nUrl'));
 };
 

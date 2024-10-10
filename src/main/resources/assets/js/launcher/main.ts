@@ -4,14 +4,13 @@ import {KeyBindings} from '@enonic/lib-admin-ui/ui/KeyBindings';
 import {AppHelper} from '@enonic/lib-admin-ui/util/AppHelper';
 import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/application/ApplicationEvent';
 import {ThemeManager} from './ThemeManager';
+import {LocalI18nManager} from '../LocalI18nManager';
 
 const currentScript = document.currentScript;
 
 type JSONObject = Record<string, string>;
 
-let i18nStore: Map<string, string>;
-
-const i18n = (key: string): string => i18nStore.has(key) ? i18nStore.get(key) : `#${key}#`;
+let i18nManager: LocalI18nManager;
 
 const getLauncherJsonConfig = (launcherMainContainerEl: HTMLElement): JSONObject => {
     const scriptTagElement: HTMLScriptElement = launcherMainContainerEl.getElementsByTagName('script')[0];
@@ -19,17 +18,6 @@ const getLauncherJsonConfig = (launcherMainContainerEl: HTMLElement): JSONObject
         throw Error('Could not find launcher config');
     }
     return JSON.parse(scriptTagElement.innerText) as JSONObject;
-};
-
-const initI18NStore = (config: JSONObject): void => {
-    const phrases: JSONObject = JSON.parse(config['phrases']) as JSONObject;
-
-    i18nStore = new Map<string, string>();
-    for (const key in phrases) {
-        if (Object.prototype.hasOwnProperty.call(phrases, key)) {
-            i18nStore.set(key, phrases[key]);
-        }
-    }
 };
 
 class Launcher {
@@ -204,7 +192,7 @@ class Launcher {
 
     public appendLauncherButton = (): void => {
         const button = document.createElement('button');
-        button.setAttribute('title', i18n('launcher.tooltip.openMenu'));
+        button.setAttribute('title', i18nManager.i18n('launcher.tooltip.openMenu'));
         button.setAttribute('class', `launcher-button ${this.getThemeClass()}`);
         button.setAttribute('style', 'display: none;');
 
@@ -307,7 +295,7 @@ class Launcher {
                 }
 
                 const launcherJsonConfig: JSONObject = getLauncherJsonConfig(this.launcherMainContainer);
-                initI18NStore(launcherJsonConfig);
+                i18nManager = new LocalI18nManager(launcherJsonConfig['phrases']);
 
                 this.appendLauncherButton();
 
@@ -420,7 +408,7 @@ class Launcher {
         this.listenToKeyboardEvents();
         this.toggleButton();
         this.launcherPanel.classList.add('visible');
-        this.launcherButton.setAttribute('title', i18n('launcher.tooltip.closeMenu'));
+        this.launcherButton.setAttribute('title', i18nManager.i18n('launcher.tooltip.closeMenu'));
         this.launcherButton.focus();
         document.addEventListener('click', this.onLauncherClick);
     };
@@ -430,7 +418,7 @@ class Launcher {
         this.unlistenToKeyboardEvents();
         this.launcherPanel.classList.remove('visible');
         this.toggleButton();
-        this.launcherButton.setAttribute('title', i18n('launcher.tooltip.openMenu'));
+        this.launcherButton.setAttribute('title', i18nManager.i18n('launcher.tooltip.openMenu'));
         this.unselectCurrentApp();
     };
 
