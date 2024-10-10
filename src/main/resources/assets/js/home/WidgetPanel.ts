@@ -246,6 +246,11 @@ export class WidgetPanel
                 newElement.setAttribute(attr, el.getAttribute(attr));
             });
 
+            if (tag === 'script' && el.getAttribute('type') === 'application/json') {
+                newElement.innerText = (el as HTMLScriptElement).innerText;
+                deferred.resolve();
+            }
+
             document.head.appendChild(newElement);
         }
 

@@ -2,6 +2,7 @@ const i18n = require('/lib/xp/i18n');
 const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
 const mustache = require('/lib/mustache');
+const configLib = require('/lib/config');
 
 function handleGet() {
     const iconsPath = 'icons/';
@@ -56,16 +57,14 @@ function handleGet() {
     const view = resolve('./shortcuts.html');
     const params = {
         dashboardIcons: dashboardIcons,
-        configServiceUrl: portal.apiUrl({
-            application: app.name,
-            api: 'config',
-        }),
         stylesUri: portal.assetUrl({
             path: 'styles/widgets/shortcuts.css'
         }),
         jsUri: portal.assetUrl({
             path: 'js/widgets/shortcuts.js'
         }),
+        configScriptId: configLib.generateConfigScriptId(),
+        widgetConfigAsJson: JSON.stringify(configLib.getConfig(), null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1"),
     };
 
     return {
