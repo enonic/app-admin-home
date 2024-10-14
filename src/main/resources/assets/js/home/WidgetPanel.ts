@@ -170,7 +170,8 @@ export class WidgetPanel
             .then((html: string) => {
                 WidgetPanel.cacheWidgetKey(widget);
                 return this.renderWidget(widget, widgetContainer, html);
-            });
+            })
+            .catch(() => console.error(`Failed to fetch widget ${widget.getDisplayName()}`));
     }
 
     private renderWidget(widget: DashboardWidget, widgetContainer: LibAdminElement, html: string): Q.Promise<void> {
