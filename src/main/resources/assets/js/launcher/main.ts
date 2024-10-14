@@ -231,7 +231,7 @@ class Launcher {
     };
 
     private getLauncherUrl(): string {
-        return UriHelper.joinPath(this.config['toolBaseUrl'], `/_/${homeAppToolKey}/launcher`);
+        return UriHelper.joinPath(this.config['toolBaseUrl'], `/_/${homeAppToolKey}:launcher`);
     }
 
     private isHomeApp(): boolean {
@@ -608,7 +608,7 @@ const getConfig = (): JSONObject => {
 
 const init = async (): Promise<void> => {
     const config: JSONObject = getConfig();
-    i18nStore = await i18nFetch(UriHelper.joinPath(config['toolBaseUrl'], `/_/${homeAppToolKey}/i18n`));
+    i18nStore = await i18nFetch(UriHelper.joinPath(config['toolBaseUrl'], `/_/${homeAppToolKey}:i18n`));
     new Launcher(config);
 };
 
