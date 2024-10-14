@@ -3,6 +3,7 @@ import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 import {createAboutDialog} from './aboutdialog';
 import {ModalDialogWithConfirmation} from '@enonic/lib-admin-ui/ui/dialog/ModalDialogWithConfirmation';
 import {DefaultErrorHandler} from '@enonic/lib-admin-ui/DefaultErrorHandler';
+import {resolveScriptConfig} from '../ConfigResolver';
 
 const getElement = (selector: string): Promise<Element> => {
     const searchedElement: Element = document.querySelector(selector);
@@ -48,9 +49,11 @@ const initAboutDialog = () => {
 };
 
 (() => {
-    const configServiceUrl: string = document.currentScript.getAttribute('data-config-service-url');
-
-    CONFIG.init(configServiceUrl).then(() => {
+    try {
+        const configScriptId = document.currentScript.getAttribute('data-config-script-id');
+        CONFIG.setConfig(resolveScriptConfig(configScriptId));
         initAboutDialog();
-    }).catch(DefaultErrorHandler.handle);
+    } catch (e) {
+        DefaultErrorHandler.handle(e);
+    }
 })();
