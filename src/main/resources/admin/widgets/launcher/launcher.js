@@ -1,17 +1,17 @@
 /*global app, resolve*/
 
-var auth = require('/lib/xp/auth');
-var mustache = require('/lib/mustache');
-var portal = require('/lib/xp/portal');
-var i18n = require('/lib/xp/i18n');
-var admin = require('/lib/xp/admin');
+const auth = require('/lib/xp/auth');
+const mustache = require('/lib/mustache');
+const portal = require('/lib/xp/portal');
+const i18n = require('/lib/xp/i18n');
+const admin = require('/lib/xp/admin');
 
-var adminToolsBean = __.newBean(
+const adminToolsBean = __.newBean(
     'com.enonic.xp.app.main.GetAdminToolsScriptBean'
 );
 
 function getAdminTools() {
-    var result = __.toNativeObject(adminToolsBean.execute());
+    const result = __.toNativeObject(adminToolsBean.execute());
     return result.sort(function(tool1, tool2) {
         return tool1.displayName > tool2.displayName ? 1 : -1;
     });
@@ -26,28 +26,40 @@ function localise(key, locales) {
 }
 
 exports.get = function(req) {
-    var locales = admin.getLocales();
+    const locales = admin.getLocales();
+    const phrases = {
+        linkLogout: localise('launcher.link.logout', locales),
+        tooltipOpenMenu: localise('launcher.tooltip.openMenu', locales),
+        tooltipCloseMenu: localise('launcher.tooltip.closeMenu', locales),
+    };
 
-    var adminTools = getAdminTools();
-    for (var i = 0; i < adminTools.length; i++) {
+    const config = {
+        appName: req.params['appName'],
+        autoOpen: req.params['autoOpen'] === 'true' || false,
+        launcherUrl: req.url,
+        phrases,
+        theme: req.params['theme'] || ''
+    }
+
+    const adminTools = getAdminTools();
+    for (let i = 0; i < adminTools.length; i++) {
         adminTools[i].appId = adminTools[i].key.application;
         adminTools[i].uri = admin.getToolUrl(
             adminTools[i].key.application,
             adminTools[i].key.name
         );
+        adminTools[i].cls = adminTools[i].appId === config.appName ? 'active' : '';
     }
 
-    var userIconUrl = portal.assetUrl({ path: 'icons/user.svg' });
-    var logoutUrl = portal.logoutUrl({
+    const userIconUrl = portal.assetUrl({ path: 'icons/user.svg' });
+    const logoutUrl = portal.logoutUrl({
         redirect: admin.getHomeToolUrl({ type: 'absolute' })
     });
 
-    var user = auth.getUser();
+    const user = auth.getUser();
 
-    var view = resolve('./launcher.html');
-    var params = {
-        xpVersion: app.version,
-        appId: 'launcher',
+    const view = resolve('./launcher.html');
+    const params = {
         adminTools: adminTools,
         userIconUrl: userIconUrl,
         user: user,
@@ -59,16 +71,18 @@ exports.get = function(req) {
                 'launcher.tools.home.description',
                 locales
             ),
-            appId: app.name,
+            linkCls: app.name === config.appName ? ' non-interactive' : '',
+            rowCls: app.name === config.appName ? ' active' : '',
         },
         installation: admin.getInstallation() || 'Tools',
-        logOutLink: localise('launcher.link.logout', locales),
-        assetsUri: portal.assetUrl({
-            path: ''
+        stylesUrl: portal.assetUrl({
+            path: 'styles/launcher.css'
         }),
-        launcherConfigJson: JSON.stringify({
-            phrases: JSON.stringify(i18n.getPhrases(locales, ['i18n/phrases'])),
+        jsUrl: portal.assetUrl({
+            path: 'js/launcher/bundle.js'
         }),
+        phrases,
+        configAsJson: JSON.stringify(config, null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1"),
     };
 
     return {

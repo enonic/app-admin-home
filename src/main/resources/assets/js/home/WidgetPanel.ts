@@ -7,6 +7,7 @@ import {LoadMask} from '@enonic/lib-admin-ui/ui/mask/LoadMask';
 import * as Q from 'q';
 import {DashboardWidget} from './resource/widget/DashboardWidget';
 import {GetDashboardWidgetsRequest} from './resource/widget/GetDashboardWidgetsRequest';
+import {WidgetElement, WidgetHelper} from '@enonic/lib-admin-ui/widget/WidgetHelper';
 
 export class WidgetPanel
     extends DivEl {
@@ -175,88 +176,16 @@ export class WidgetPanel
     }
 
     private renderWidget(widget: DashboardWidget, widgetContainer: LibAdminElement, html: string): Q.Promise<void> {
-        const sanitisedWidgetEl: LibAdminElement = this.getSanitisedWidget(widget, html);
-
-        return this.injectWidgetAssets(sanitisedWidgetEl)
-            .then(() => {
+         return WidgetHelper.createFromHtmlAndAppend(html, widgetContainer)
+            .then(({el}: WidgetElement) => {
                 if (widget.hasHeader()) {
-                    sanitisedWidgetEl.insertChild(new H5El('widget-header').setHtml(widget.getDisplayName()), 0);
+                    el.insertChild(new H5El('widget-header').setHtml(widget.getDisplayName()), 0);
                 }
 
-                widgetContainer
-                    .appendChild(sanitisedWidgetEl.addClass('widget-contents'))
-                    .addClass('loaded');
+                el.addClass('widget-contents');
+                widgetContainer.addClass('loaded');
+
                 return Q.resolve();
             });
-    }
-
-    private getSanitisedWidget(widget: DashboardWidget, widgetHtml: string): LibAdminElement {
-        const widgetEl: LibAdminElement = LibAdminElement.fromCustomarilySanitizedString(
-            widgetHtml,
-            true,
-            {
-                addTags: this.getAllowedWidgetTags(widget),
-                addAttributes: ['target'],  // allow opening links in a new window
-            },
-        );
-
-        if ('WIDGET' !== widgetEl.getHTMLElement().nodeName) {
-            throw Error(`${widget.getWidgetDescriptorKey().toString()} is missing <widget> root element`);
-        }
-
-        return widgetEl;
-    }
-
-    private getAllowedWidgetTags(widget: DashboardWidget): string[] {
-        const result: string[] = [
-            'widget',
-            'link', // allow widget assets
-            'script',
-        ];
-
-        if (widget.getWidgetDescriptorKey().getName() === 'youtube') {
-            result.push('iframe');
-        }
-
-        return result;
-    }
-
-    private injectWidgetAssets(widgetEl: LibAdminElement): Q.Promise<void[]> {
-        const promises: Q.Promise<void>[] = [];
-        promises.push(...this.injectElements(widgetEl, 'link'));
-        promises.push(...this.injectElements(widgetEl, 'script'));
-        return Q.all(promises);
-    }
-
-    private injectElements(widgetEl: LibAdminElement, tag: string): Q.Promise<void>[] {
-        const elements: HTMLCollectionOf<Element> = widgetEl.getHTMLElement().getElementsByTagName(tag);
-        const elementsToRemove: Element[] = [];
-        const promises: Q.Promise<void>[] = [];
-
-        for (let i = 0; i < elements.length; i++) {
-            const deferred: Q.Deferred<void> = Q.defer<void>();
-            promises.push(deferred.promise);
-            const el: Element = elements.item(i);
-            elementsToRemove.push(el);
-
-            const newElement: HTMLElement = document.createElement(tag);
-            newElement.onload = () => deferred.resolve();
-            newElement.onerror = () => deferred.resolve();
-
-            el.getAttributeNames().forEach((attr: string) => {
-                newElement.setAttribute(attr, el.getAttribute(attr));
-            });
-
-            if (tag === 'script' && el.getAttribute('type') === 'application/json') {
-                newElement.innerText = (el as HTMLScriptElement).innerText;
-                deferred.resolve();
-            }
-
-            document.head.appendChild(newElement);
-        }
-
-        elementsToRemove.forEach((el: Element) => el.remove());
-
-        return promises;
     }
 }

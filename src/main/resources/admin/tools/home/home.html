@@ -35,13 +35,10 @@
     <!-- Styles -->
     <link rel="stylesheet" type="text/css" href="{{assetsUri}}/styles/home.css">
 
-    <script type="text/javascript" src="{{assetsUri}}/js/home/bundle.js"></script>
-    <!-- Append the launcher -->
-    <script type="text/javascript" src="{{launcherPath}}" data-config-theme="{{theme}}" data-config-auto-open="true"
-            data-config-launcher-api-url="{{launcherApiUrl}}" data-config-app-name="{{appName}}" async></script>
-    <script type="application/json" id="home-tool-config-json">{{{configAsJson}}}</script>
+    <script type="text/javascript" src="{{assetsUri}}/js/home/bundle.js" data-config-script-id="{{configScriptId}}"></script>
+    <script type="application/json" id="{{configScriptId}}">{{{configAsJson}}}</script>
 </head>
 <body>
-    <div class="home-main-container" id="home-main-container"/>
+    <div class="home-main-container" id="home-main-container"></div>
 </body>
 </html>

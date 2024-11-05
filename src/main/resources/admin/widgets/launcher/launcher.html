@@ -1,47 +1,53 @@
 <widget id="widget-launcher">
-    <div class="launcher-main-container">
-        <link rel="stylesheet" type="text/css" href="{{assetsUri}}/styles/launcher.css">
-        <script type="application/json" id="launcher-config-json">{{{launcherConfigJson}}}</script>
-
-        <div class="launcher-title">
-            <span class="container-title">{{installation}}</span>
-        </div>
-
-        <div class="launcher-app-container">
-            <div class="scrollable-content">
-                <a href="{{homeTool.url}}" target="_blank" data-id="{{homeTool.appId}}">
-                    <div class="app-row" id="{{homeTool.appId}}">
-                        <div class="app-icon icon-dashboard"></div>
-                        <div class="app-info">
-                            <p class="app-name">{{homeTool.caption}}</p>
-
-                            <p class="app-description">{{homeTool.description}}</p>
-                        </div>
-                    </div>
-                </a>
-                {{#adminTools}}
-                <a href="{{uri}}" target="_blank" data-id="{{appId}}">
-                    <div class="app-row" id="{{appId}}">
-                        <div class="app-icon">{{#icon}}{{{icon}}}{{/icon}}</div>
-                        <div class="app-info">
-                            <p class="app-name">{{displayName}}</p>
-
-                            <p class="app-description">{{#description}}{{description}}{{/description}}</p>
-                        </div>
-                    </div>
-                </a>
-                {{/adminTools}}
+    <link rel="stylesheet" type="text/css" href="{{stylesUrl}}">
+    <script type="text/javascript" src="{{jsUrl}}"></script>
+    <script type="application/json" id="launcher-config-json">{{{configAsJson}}}</script>
+    <button id="launcher-button" class="launcher-button" style="display: none;" title="{{phrases.tooltipOpenMenu}}">
+        <span class="span-x">X</span>
+        <span class="span-p">P</span>
+    </button>
+    <div id="launcher-panel" class="launcher-panel" tabindex="0" style="display: none;">
+        <div id="launcher-main-container" class="launcher-main-container">
+            <div class="launcher-title">
+                <span class="container-title">{{installation}}</span>
             </div>
 
-        </div>
+            <div class="launcher-app-container">
+                <div class="scrollable-content">
+                    <a href="{{homeTool.url}}" target="_blank" class="{{homeTool.linkCls}}">
+                        <div class="app-row{{homeTool.rowCls}}">
+                            <div class="app-icon icon-dashboard"></div>
+                            <div class="app-info">
+                                <p class="app-name">{{homeTool.caption}}</p>
 
-        <div class="launcher-user">
-            <div class="user-logout">
-                <a href="{{logoutUrl}}">{{logOutLink}}</a>
+                                <p class="app-description">{{homeTool.description}}</p>
+                            </div>
+                        </div>
+                    </a>
+                    {{#adminTools}}
+                    <a href="{{uri}}" target="_blank" data-id="{{appId}}">
+                        <div class="app-row {{cls}}" id="{{appId}}">
+                            <div class="app-icon">{{#icon}}{{{icon}}}{{/icon}}</div>
+                            <div class="app-info">
+                                <p class="app-name">{{displayName}}</p>
+
+                                <p class="app-description">{{#description}}{{description}}{{/description}}</p>
+                            </div>
+                        </div>
+                    </a>
+                    {{/adminTools}}
+                </div>
+
             </div>
-            <div class="user-info">
-                <img src="{{userIconUrl}}">
-                <p>{{user.displayName}}</p>
+
+            <div class="launcher-user">
+                <div class="user-logout">
+                    <a href="{{logoutUrl}}">{{phrases.linkLogout}}</a>
+                </div>
+                <div class="user-info">
+                    <img src="{{userIconUrl}}">
+                    <p>{{user.displayName}}</p>
+                </div>
             </div>
         </div>
     </div>

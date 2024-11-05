@@ -1,6 +1,5 @@
 /*global app, require*/
 
-const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
 const mustache = require('/lib/mustache');
 const configLib = require('/lib/config');
@@ -29,14 +28,8 @@ frame-src \'self'\ https://*.youtube.com`;
 const generateParams = () => {
     return {
         assetsUri: portal.assetUrl({path: ''}),
-        launcherPath: admin.getLauncherPath(),
-        theme: 'dark',
-        appName: app.name,
-        configAsJson: JSON.stringify(configLib.getConfig(), null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1"),
-        launcherApiUrl: portal.apiUrl({
-            application: app.name,
-            api: 'launcher',
-        }),
+        configScriptId: configLib.configScriptId,
+        configAsJson: JSON.stringify(configLib.getConfig(), null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1")
     };
 }
 

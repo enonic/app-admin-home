@@ -65,4 +65,15 @@ body {
   font-family: @admin-font-family;
   font-size: @admin-font-size;
   background-color: @admin-black;
+
+  button.launcher-button {
+    &:focus-visible,
+    &:focus {
+      outline-style: solid;
+    }
+
+    &:not(.toggled) {
+      outline-color: @admin-white;
+    }
+  }
 }

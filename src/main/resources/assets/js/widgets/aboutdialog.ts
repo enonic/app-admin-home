@@ -5,12 +5,10 @@ import {AEl} from '@enonic/lib-admin-ui/dom/AEl';
 import {Button} from '@enonic/lib-admin-ui/ui/button/Button';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 import {KeyHelper} from '@enonic/lib-admin-ui/ui/KeyHelper';
-import {LocalI18nManager} from '../LocalI18nManager';
+import {i18n} from '@enonic/lib-admin-ui/util/Messages';
 
 const noticeUrl = 'https://raw.githubusercontent.com/enonic/xp/master/NOTICE.txt';
 const licenseUrl = 'https://raw.githubusercontent.com/enonic/xp/master/LICENSE.txt';
-
-let i18nManager: LocalI18nManager;
 
 const getAboutDialogContent = (): Element => {
     const html = `
@@ -22,11 +20,11 @@ const getAboutDialogContent = (): Element => {
             <div class="xp-about-dialog-version-block">
                 <span class="xp-about-dialog-version">${CONFIG.getString('xpVersion')}</span>&nbsp;&nbsp;
                 <a href="https://developer.enonic.com/docs/xp/stable/release" target="_blank">
-                    ${i18nManager.i18n('home.dashboard.about.dialog.whatsnew')}?
+                    ${i18n('home.dashboard.about.dialog.whatsnew')}?
                 </a>
             </div>
             <div class="xp-about-dialog-text">
-                ${i18nManager.i18n(
+                ${i18n(
         'home.dashboard.about.dialog.text',
         '<span style="color: red;">♥</span>',
     )}
@@ -46,9 +44,7 @@ const getAboutDialogContent = (): Element => {
 const fetchLicenses = (): Promise<string> => {
     return fetch(noticeUrl)
         .then((response: Response) => response.text())
-        .catch(() => {
-            return i18nManager.i18n('home.dashboard.about.dialog.license.error');
-        });
+        .catch(() => i18n('home.dashboard.about.dialog.license.error'));
 };
 
 const toggleLicenseInfo = (outerContainer: Element, licenseInfoContainer: DivEl): void => {
@@ -71,14 +67,14 @@ const createLicenseInfoContainer = (): void => {
         return;
     }
 
-    const button = new Button(i18nManager.i18n('home.dashboard.about.dialog.licensing'));
+    const button = new Button(i18n('home.dashboard.about.dialog.licensing'));
     const linkEl = new AEl();
     linkEl.setUrl(licenseUrl);
     linkEl.getEl().setText('Gnu Public License v3 (GPL3)');
     linkEl.getEl().setAttribute('target', '_blank');
 
     const licenseInfoHeader = new DivEl('xp-license-info-header');
-    licenseInfoHeader.setHtml(i18nManager.i18n('home.dashboard.about.dialog.license.title'));
+    licenseInfoHeader.setHtml(i18n('home.dashboard.about.dialog.license.title'));
     licenseInfoHeader.appendChild(linkEl);
 
     const licenseInfoContainer = new DivEl('xp-license-info-body');
@@ -89,8 +85,6 @@ const createLicenseInfoContainer = (): void => {
 };
 
 export const createAboutDialog = (): ModalDialogWithConfirmation => {
-    i18nManager = new LocalI18nManager(CONFIG.getString('phrases'));
-
     const aboutDialog: ModalDialogWithConfirmation = new ModalDialogWithConfirmation({skipTabbable: true});
 
     aboutDialog.onKeyDown((event: KeyboardEvent) => {

@@ -4,8 +4,7 @@ import {Path} from '@enonic/lib-admin-ui/rest/Path';
 import {AppBar} from '@enonic/lib-admin-ui/app/bar/AppBar';
 import {ServerEventsListener} from '@enonic/lib-admin-ui/event/ServerEventsListener';
 import {ConnectionDetector} from '@enonic/lib-admin-ui/system/ConnectionDetector';
-import {i18nInit} from '@enonic/lib-admin-ui/util/MessagesInitializer';
-import {i18n} from '@enonic/lib-admin-ui/util/Messages';
+import {i18n, Messages} from '@enonic/lib-admin-ui/util/Messages';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 import {Element} from '@enonic/lib-admin-ui/dom/Element';
 import {ImgEl} from '@enonic/lib-admin-ui/dom/ImgEl';
@@ -13,6 +12,7 @@ import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
 import {WidgetPanel} from './WidgetPanel';
 import * as Q from 'q';
 import {resolveScriptConfig} from '../ConfigResolver';
+import {WidgetHelper} from '@enonic/lib-admin-ui/widget/WidgetHelper';
 
 const containerId = 'home-main-container';
 
@@ -47,9 +47,9 @@ const showBackgroundImage = (): Q.Promise<void> => {
     return deferred.promise;
 };
 
-const initConfig = async () => {
-    CONFIG.setConfig(resolveScriptConfig('home-tool-config-json'));
-    await i18nInit(CONFIG.getString('i18nUrl'));
+const initConfig = (configScriptId: string) => {
+    CONFIG.setConfig(resolveScriptConfig(configScriptId));
+    Messages.addMessages(JSON.parse(CONFIG.getString('phrases')) as object);
 };
 
 const setupWebSocketListener = () => {
@@ -92,7 +92,7 @@ const appendDashboardWidgets = () => {
     widgetPanel.appendWidgets();
 };
 
-function getApplication(): Application {
+const getApplication = (): Application => {
     const assetsUri: string = CONFIG.getString('assetsUri');
     const application = new Application(
         CONFIG.getString('appId'),
@@ -105,13 +105,24 @@ function getApplication(): Application {
     return application;
 }
 
-function startApplication() {
+const appendLauncher = () => {
+    const launcherUrl = CONFIG.getString('launcherUrl');
+    fetch(launcherUrl)
+        .then(response => response.text())
+        .then((html: string) => WidgetHelper.createFromHtmlAndAppend(html))
+        .catch((e: Error) => {
+            throw new Error(`Failed to fetch the Launcher page at ${launcherUrl}: ${e.toString()}`);
+        });
+}
+
+const startApplication = () => {
     const appBar = new AppBar(getApplication());
     Body.get().appendChild(appBar);
 
     setupWebSocketListener();
     startLostConnectionDetector();
     addListenersToDashboardItems();
+    appendLauncher();
     appendDashboardWidgets();
 }
 
@@ -119,9 +130,10 @@ void (async () => {
     if (!document.currentScript) {
         throw Error('Legacy browsers are not supported');
     }
+    const configScriptId = document.currentScript.getAttribute('data-config-script-id');
 
     await loadDOM();
-    await initConfig();
+    initConfig(configScriptId);
     await showBackgroundImage();
     startApplication();
 })();

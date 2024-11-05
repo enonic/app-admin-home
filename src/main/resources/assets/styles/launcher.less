@@ -7,28 +7,31 @@
 @panel-inner-width: 280px;
 @panel-indent: 20px;
 
-.launcher-button {
+button.launcher-button {
   font-family: 'Open Sans Bold', sans-serif;
   display: flex !important;
   justify-content: center;
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.3s, visibility 0.3s;
-  height: @app-header-height;
-  width: @app-header-height;
+  height: @app-header-height - 2px;
+  width: @app-header-height - 2px;
   font-size: 20px;
   font-weight: bold;
   position: absolute;
   border: none;
-  right: 0;
-  top: 0;
+  right: 1px;
+  top: 1px;
   padding: 0;
   background-color: transparent;
   cursor: pointer;
   z-index: @z-index-launcher-button;
-  outline-width: 2px;
-  outline-offset: -2px;
-  -moz-outline-radius: 3px;
+
+  &:focus,
+  &:focus-visible {
+    outline: -webkit-focus-ring-color auto 1px;
+    outline-offset: 0;
+  }
 
   &.theme-dark {
     color: @admin-white;
@@ -54,12 +57,13 @@
     color: lighten(@admin-red, 10%);
 
     &:hover {
-      color: @admin-red;
+      color: @admin-white;
     }
-  }
 
-  &:focus {
-    outline-style: solid;
+    &:focus,
+    &:focus-visible {
+      outline-color: @admin-white;
+    }
   }
 
   &.visible {
@@ -69,7 +73,7 @@
   }
 
   span {
-    line-height: @app-header-height;
+    line-height: @app-header-height - 4px;
   }
 
   &::-moz-focus-inner {
@@ -89,10 +93,6 @@
   right: 0;
   left: 0;
   bottom: 0;
-
-  &.app-home {
-    opacity: 0;
-  }
 }
 
 .launcher-main-container {
@@ -173,7 +173,7 @@
       &.active {
         border-left: 5px solid @admin-red;
         width: 100%;
-        padding-left: 18px;
+        padding-left: 17px;
       }
 
       .app-info {
@@ -223,8 +223,8 @@
       color: @admin-white;
       text-decoration: none;
 
-      .app-row#home.active {
-        cursor: default;
+      &.non-interactive {
+        pointer-events: none;
       }
 
       &:focus {

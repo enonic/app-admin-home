@@ -15,25 +15,21 @@ const getConfig = () => {
             path: 'images/background.jpg'
         }),
         xpVersion: admin.getVersion(),
-        i18nUrl: portal.apiUrl({
+        launcherUrl: admin.widgetUrl({
             application: app.name,
-            api: 'i18n',
-        }),
-        launcherApiUrl: portal.apiUrl({
-            application: app.name,
-            api: 'launcher',
+            widget: 'launcher',
+            params: {
+                autoOpen: true,
+                appName: app.name,
+            },
         }),
         widgetApiUrl: portal.apiUrl({
             application: 'admin',
-            api: 'widget',
+            api: 'widget'
         }),
         phrases: JSON.stringify(i18n.getPhrases(admin.getLocales(), ['i18n/phrases']), null, 4),
     };
 }
 
-const generateConfigScriptId = () => {
-    return Math.random().toString(36).substring(2, 15);
-}
-
 exports.getConfig = getConfig;
-exports.generateConfigScriptId = generateConfigScriptId;
+exports.configScriptId = 'home-tool-config-json';
