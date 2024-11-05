@@ -57,14 +57,13 @@ function handleGet() {
     const view = resolve('./shortcuts.html');
     const params = {
         dashboardIcons: dashboardIcons,
-        stylesUri: portal.assetUrl({
+        stylesUrl: portal.assetUrl({
             path: 'styles/widgets/shortcuts.css'
         }),
-        jsUri: portal.assetUrl({
+        jsUrl: portal.assetUrl({
             path: 'js/widgets/shortcuts.js'
         }),
-        configScriptId: configLib.generateConfigScriptId(),
-        widgetConfigAsJson: JSON.stringify(configLib.getConfig(), null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1"),
+        configScriptId: configLib.configScriptId
     };
 
     return {

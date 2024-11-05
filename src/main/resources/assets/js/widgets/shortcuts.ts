@@ -49,9 +49,13 @@ const initAboutDialog = () => {
 };
 
 (() => {
+    if (!document.currentScript) {
+        throw Error('Legacy browsers are not supported');
+    }
     try {
         const configScriptId = document.currentScript.getAttribute('data-config-script-id');
         CONFIG.setConfig(resolveScriptConfig(configScriptId));
+
         initAboutDialog();
     } catch (e) {
         DefaultErrorHandler.handle(e);

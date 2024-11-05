@@ -4,20 +4,26 @@ import {KeyBindings} from '@enonic/lib-admin-ui/ui/KeyBindings';
 import {AppHelper} from '@enonic/lib-admin-ui/util/AppHelper';
 import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/application/ApplicationEvent';
 import {ThemeManager} from './ThemeManager';
-import {LocalI18nManager} from '../LocalI18nManager';
-
-const currentScript = document.currentScript;
+import {WidgetHelper} from '@enonic/lib-admin-ui/widget/WidgetHelper';
+import {Element as LibAdminElement} from '@enonic/lib-admin-ui/dom/Element';
 
 type JSONObject = Record<string, string>;
 
-let i18nManager: LocalI18nManager;
+interface LauncherConfig {
+    appName: string;
+    autoOpen: boolean;
+    launcherUrl: string;
+    phrases: JSONObject;
+    customCls?: string;
+    theme?: string;
+}
 
-const getLauncherJsonConfig = (launcherMainContainerEl: HTMLElement): JSONObject => {
-    const scriptTagElement: HTMLScriptElement = launcherMainContainerEl.getElementsByTagName('script')[0];
-    if (!scriptTagElement || scriptTagElement.getAttribute('id') !== 'launcher-config-json') {
+const getLauncherJsonConfig = (): LauncherConfig => {
+    const scriptTagElement: HTMLElement = document.getElementById('launcher-config-json');
+    if (!scriptTagElement || scriptTagElement.tagName.toLowerCase() !== 'script') {
         throw Error('Could not find launcher config');
     }
-    return JSON.parse(scriptTagElement.innerText) as JSONObject;
+    return JSON.parse(scriptTagElement.innerText) as LauncherConfig;
 };
 
 class Launcher {
@@ -43,7 +49,7 @@ class Launcher {
     private nextApp: KeyBinding = new KeyBinding('down')
         .setGlobal(true)
         .setCallback((e: Event) => {
-            if (!this.isPanelExpanded() || !this.isAppOnFocus()) {
+            if (!this.isPanelExpanded()) {
                 return false;
             }
             this.initKeyboardNavigation();
@@ -54,7 +60,7 @@ class Launcher {
     private prevApp: KeyBinding = new KeyBinding('up')
         .setGlobal(true)
         .setCallback((e: Event) => {
-            if (!this.isPanelExpanded() || !this.isAppOnFocus()) {
+            if (!this.isPanelExpanded()) {
                 return false;
             }
             this.initKeyboardNavigation();
@@ -95,7 +101,7 @@ class Launcher {
 
             const desiredIndexIsLessThanMinIndex = this.getSelectedAppIndex() - 1 < 0;
 
-            if(desiredIndexIsLessThanMinIndex) {
+            if (desiredIndexIsLessThanMinIndex) {
                 this.unselectCurrentApp();
                 return true;
             }
@@ -131,15 +137,18 @@ class Launcher {
         this.runApp,
     ];
 
-    readonly config: JSONObject;
+    readonly config: LauncherConfig;
 
-    constructor(config: JSONObject) {
+    constructor(config: LauncherConfig) {
         this.config = config;
 
-        setTimeout(() => {
-            this.appendLauncherPanel();
-            this.addApplicationsListeners();
-        }, 200);
+        this.initLauncherButton();
+        this.initLauncherPanel();
+        this.addApplicationsListeners();
+
+        if (this.config.autoOpen) {
+            this.openLauncherPanel();
+        }
     }
 
     private addAppItemsListeners = (): void => {
@@ -148,9 +157,9 @@ class Launcher {
                 this.selectApp(index);
             });
 
-            if(index === 0){
+            if (index === 0){
                 app.parentNode.addEventListener('keydown', (e: KeyboardEvent) => {
-                    if(e.key === 'Tab' && e.shiftKey){
+                    if (e.key === 'Tab' && e.shiftKey){
                         setTimeout(() => this.launcherButton.focus(), 100);
                     }
                 });
@@ -170,7 +179,7 @@ class Launcher {
         const focusable = Array.from(document.querySelectorAll<HTMLElement>(tags.join(', '))) ;
 
         this.focusableElements = focusable.filter((el: HTMLInputElement) => {
-                if(el.disabled || (el.getAttribute('tabindex') && parseInt(el.getAttribute('tabindex')) < 0)) {
+                if (el.disabled || (el.getAttribute('tabindex') && parseInt(el.getAttribute('tabindex')) < 0)) {
                     return false;
                 }
                 return true;
@@ -190,50 +199,16 @@ class Launcher {
             : null;
     }
 
-    public appendLauncherButton = (): void => {
-        const button = document.createElement('button');
-        button.setAttribute('title', i18nManager.i18n('launcher.tooltip.openMenu'));
-        button.setAttribute('class', `launcher-button ${this.getThemeClass()}`);
-        button.setAttribute('style', 'display: none;');
-
-        const spanX = document.createElement('span');
-        spanX.setAttribute('class', 'span-x');
-        spanX.innerHTML = 'X';
-        const spanP = document.createElement('span');
-        spanP.setAttribute('class', 'span-p');
-        spanP.innerHTML = 'P';
-        button.appendChild(spanX);
-        button.appendChild(spanP);
-
-        button.addEventListener('click', this.togglePanelState);
-        button.addEventListener('keydown', (e: KeyboardEvent) => {
-            if (e.key === 'Tab' && !e.shiftKey) {
-                e.preventDefault();
-                this.selectApp(0);
-                return false;
-            }
-        });
-
-        const containerSelector: string = this.config['container'];
-        const container = containerSelector ? document.querySelector(containerSelector) : document.body;
-        if (container) {
-            container.appendChild(button);
-        }
-        button.classList.add('visible');
-
-        this.launcherButton = button;
-    };
-
     private getThemeClass = (): string => {
-        if (this.config['custom-class']) {
-            return `theme-custom ${this.config['custom-class']}`;
+        if (this.config.customCls) {
+            return `theme-custom ${this.config.customCls}`;
         }
 
-        return `theme-${ThemeManager.getTheme(this.config['theme'])}`;
+        return `theme-${ThemeManager.getTheme(this.config.theme)}`;
     };
 
     private isHomeApp(): boolean {
-        return this.config['appName'] === 'com.enonic.xp.app.main';
+        return this.config.appName === 'com.enonic.xp.app.main';
     }
 
     private isPanelExpanded = (): boolean => this.launcherPanel.classList.contains('visible');
@@ -247,75 +222,50 @@ class Launcher {
 
     private launcherButtonHasFocus = (): boolean => document.activeElement === this.launcherButton;
 
-    private fetchLauncherContents = (): Promise<ChildNode> => {
-        return fetch(this.config['launcherApiUrl'])
+    private fetchLauncherContents = (): Promise<LibAdminElement> => {
+        return fetch(this.config.launcherUrl)
             .then(response => response.text())
-            .then((html: string) => {
-                const div = document.createElement('div');
-                div.innerHTML = html;
-                return div.firstChild;
-            })
+            .then((html: string) => WidgetHelper.createFromHtml(html))
             .catch((e: Error) => {
                 throw new Error(`Failed to fetch page: ${e.toString()}`);
             });
     };
 
-    private executeOnDOMInit = (): void => {
-        const handler = () => {
-            if (this.config['autoOpenLauncher'] === 'true') {
-                this.openLauncherPanel();
+    private initLauncherPanel = (): void => {
+        this.launcherPanel = document.getElementById('launcher-panel');
+        this.launcherMainContainer = document.getElementById('launcher-main-container');
+
+        this.launcherPanel.classList.add(`${this.getThemeClass()}`.trim());
+        Launcher.addLongClickHandler(this.launcherPanel, this.isHomeApp());
+
+        if (!this.config.autoOpen) {
+            const appTiles = this.launcherPanel
+                .querySelector('.launcher-app-container')
+                .querySelectorAll('a');
+            for (const appTile of Array.from(appTiles)) {
+                appTile.addEventListener('click', () => this.closeLauncherPanel());
             }
-        };
+        }
 
-        const observer = new MutationObserver((mutations_list) => {
-            mutations_list.forEach((mutation) => {
-                mutation.addedNodes.forEach((added_node) => {
-                    if (added_node == this.launcherPanel) {
-                        setTimeout(() => handler(), 500);
-                        observer.disconnect();
-                    }
-                });
-            });
+        this.addAppItemsListeners();
+        this.setFocusableElements();
+    }
+
+    private initLauncherButton = (): void => {
+        const button = document.getElementById('launcher-button');
+
+        button.addEventListener('click', this.togglePanelState);
+        button.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.key === 'Tab' && !e.shiftKey) {
+                e.preventDefault();
+                this.selectApp(0);
+                return false;
+            }
         });
-        observer.observe(document.body, {subtree: false, childList: true});
-    };
 
-    private appendLauncherPanel = (): void => {
-        this.launcherPanel = document.createElement('div');
-        this.launcherPanel.setAttribute('class', `launcher-panel ${this.getThemeClass()}`);
-        this.launcherPanel.setAttribute('tabindex', '0');
-        this.launcherPanel.setAttribute('style', 'display: none;');
+        button.classList.add('visible', `${this.getThemeClass()}`);
 
-        void this.fetchLauncherContents()
-            .then((launcherEl: HTMLElement) => {
-                this.launcherPanel.appendChild(launcherEl);
-                this.launcherMainContainer = this.launcherPanel.firstChild as HTMLElement;
-                if (this.isHomeApp()) {
-                    this.launcherMainContainer.classList.add('home');
-                }
-
-                const launcherJsonConfig: JSONObject = getLauncherJsonConfig(this.launcherMainContainer);
-                i18nManager = new LocalI18nManager(launcherJsonConfig['phrases']);
-
-                this.appendLauncherButton();
-
-                this.executeOnDOMInit();
-
-                document.body.appendChild(this.launcherPanel);
-                Launcher.addLongClickHandler(this.launcherPanel, this.isHomeApp());
-
-                if (this.config['autoOpenLauncher'] !== 'true') {
-                    const appTiles = this.launcherPanel
-                        .querySelector('.launcher-app-container')
-                        .querySelectorAll('a');
-                    for (const appTile of Array.from(appTiles)) {
-                        appTile.addEventListener('click', () => this.closeLauncherPanel(true));
-                    }
-                }
-                this.highlightActiveApp();
-                this.addAppItemsListeners();
-                this.setFocusableElements();
-            });
+        this.launcherButton = button;
     };
 
     private onLauncherClick = (e: MouseEvent): void => {
@@ -379,16 +329,10 @@ class Launcher {
         for (const appTile of Array.from(appTiles)) {
             // eslint-disable-next-line no-loop-func
             appTile.addEventListener('click', e => {
-                if (isHomeApp && (e.currentTarget as Element).getAttribute('data-id') === 'com.enonic.xp.app.main') {
-                    e.preventDefault();
-                    return;
-                }
-
+                e.preventDefault();
                 if (longpress) {
-                    e.preventDefault();
-                                       document.location.href = (e.currentTarget as Element).getAttribute('href');
+                    document.location.href = (e.currentTarget as Element).getAttribute('href');
                 } else {
-                    e.preventDefault();
                     Launcher.openWindow(toolWindows, e.currentTarget as HTMLAnchorElement);
                 }
             });
@@ -408,17 +352,16 @@ class Launcher {
         this.listenToKeyboardEvents();
         this.toggleButton();
         this.launcherPanel.classList.add('visible');
-        this.launcherButton.setAttribute('title', i18nManager.i18n('launcher.tooltip.closeMenu'));
-        this.launcherButton.focus();
+        this.launcherButton.setAttribute('title', this.config.phrases['tooltipCloseMenu']);
         document.addEventListener('click', this.onLauncherClick);
     };
 
-    private closeLauncherPanel = (skipTransition?: boolean): void => {
+    private closeLauncherPanel = (): void => {
         document.removeEventListener('click', this.onLauncherClick);
         this.unlistenToKeyboardEvents();
         this.launcherPanel.classList.remove('visible');
         this.toggleButton();
-        this.launcherButton.setAttribute('title', i18nManager.i18n('launcher.tooltip.openMenu'));
+        this.launcherButton.setAttribute('title', this.config.phrases['tooltipOpenMenu']);
         this.unselectCurrentApp();
     };
 
@@ -430,15 +373,6 @@ class Launcher {
         const selectedApp = this.getSelectedApp();
         if (selectedApp) {
             selectedApp.classList.remove('selected');
-        }
-    };
-
-    private highlightActiveApp = (): void => {
-        const appRows = this.launcherPanel.querySelectorAll('.app-row');
-        for (const appRow of Array.from(appRows)) {
-            if (appRow.id === this.config['appName']) {
-                appRow.classList.add('active');
-            }
         }
     };
 
@@ -460,17 +394,16 @@ class Launcher {
         return AppHelper.debounce(
             () =>
                 this.fetchLauncherContents()
-                    .then((launcherEl: HTMLElement) => {
+                    .then((launcherEl: LibAdminElement) => {
                         const oldLauncherContent = this.launcherPanel.querySelector(
                             '.scrollable-content',
                         );
 
-                        const newLauncherContent = launcherEl.querySelector(
+                        const newLauncherContent = launcherEl.getHTMLElement().querySelector(
                             '.scrollable-content',
                         );
                         const parent = oldLauncherContent.parentNode;
                         parent.replaceChild(newLauncherContent, oldLauncherContent);
-                        this.highlightActiveApp();
                         this.addAppItemsListeners();
                         this.setFocusableElements();
                     })
@@ -586,32 +519,9 @@ class Launcher {
     private getLauncherMainContainer = (): HTMLElement => this.launcherMainContainer || document.querySelector('.launcher-main-container');
 }
 
-const getConfigAttribute = (attribute: string): string => {
-    return currentScript?.getAttribute(`data-config-${attribute}`);
-};
-
-const getRequiredAttribute = (attribute: string): string => {
-    const value = getConfigAttribute(attribute);
-    if (value === undefined || value === null) {
-        throw Error(`"${attribute}" is not defined`);
-    }
-    return value;
-};
-
-const getLauncherScriptConfig = (): JSONObject => {
-    return {
-        theme: getConfigAttribute('theme') || 'light',
-        autoOpenLauncher: getConfigAttribute('auto-open'),
-        container: getConfigAttribute('container'),
-        customCls: getConfigAttribute('custom-class'),
-        appName: getRequiredAttribute('app-name'),
-        launcherApiUrl: getRequiredAttribute('launcher-api-url'),
-    };
-};
-
 const init = (): void => {
-    const launcherConfig: JSONObject = getLauncherScriptConfig();
+    const launcherConfig: LauncherConfig = getLauncherJsonConfig();
     new Launcher(launcherConfig);
 };
 
-window.addEventListener('load', () => void init());
+init();
