@@ -56,14 +56,14 @@ const setupWebSocketListener = () => {
     const dummyApp: Application = new Application('home', 'home', 'home', '');
     dummyApp.setWindow(window);
 
-    const serverEventsListener: ServerEventsListener = new ServerEventsListener([dummyApp]);
+    const serverEventsListener: ServerEventsListener = new ServerEventsListener([dummyApp], CONFIG.getString('eventApiUrl'));
     serverEventsListener.start();
 };
 
 const startLostConnectionDetector = () => {
-    ConnectionDetector.get()
+    ConnectionDetector.get(CONFIG.getString('statusApiUrl'))
         .setAuthenticated(true)
-        .setSessionExpireRedirectUrl(`${CONFIG.getString('adminUrl')}`)
+        .setSessionExpireRedirectUrl(CONFIG.getString('adminUrl'))
         .setNotificationMessage(i18n('notify.connection.loss'))
         .startPolling(true);
 };

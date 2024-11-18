@@ -27,6 +27,14 @@ const getConfig = () => {
             application: 'admin',
             api: 'widget'
         }),
+        statusApiUrl: portal.apiUrl({
+            application: 'admin',
+            api: 'status',
+        }),
+        eventApiUrl: portal.apiUrl({
+            application: 'admin',
+            api: 'event',
+        }),
         phrases: JSON.stringify(i18n.getPhrases(admin.getLocales(), ['i18n/phrases']), null, 4),
     };
 }
