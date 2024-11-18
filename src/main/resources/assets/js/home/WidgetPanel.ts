@@ -118,7 +118,7 @@ export class WidgetPanel
         }
 
         widgetContainer.render()
-            .then(() => this.addWidget(widget, widgetContainer))
+            .then(() => this.fetchAndRenderWidget(widget, widgetContainer))
             .catch(DefaultErrorHandler.handle);
     }
 
@@ -132,13 +132,6 @@ export class WidgetPanel
         widgetContainer.replaceWith(newWidgetContainer);
 
         this.appendWidget(widget, newWidgetContainer);
-    }
-
-    private addWidget(widget: DashboardWidget, widgetContainer: LibAdminElement): void {
-        const loadMask: LoadMask = new LoadMask(widgetContainer);
-        loadMask.show();
-
-        void this.fetchAndRenderWidget(widget, widgetContainer).finally(() => loadMask.hide());
     }
 
     private createWidgetPlaceholder(widget: DashboardWidget): LibAdminElement {
@@ -166,13 +159,29 @@ export class WidgetPanel
     }
 
     private fetchAndRenderWidget(widget: DashboardWidget, widgetContainer: LibAdminElement): Promise<void> {
+        let loading = true;
+        let loadMask: LoadMask;
+        setTimeout(() => {
+            if (loading) {
+                loadMask = new LoadMask(widgetContainer);
+                loadMask.show();
+            }
+        }, 300);
         return fetch(widget.getUrl())
-            .then(response => response.text())
+            .then(response => {
+                loading = false;
+                return response.text();
+            })
             .then((html: string) => {
                 WidgetPanel.cacheWidgetKey(widget);
                 return this.renderWidget(widget, widgetContainer, html);
             })
-            .catch(() => console.error(`Failed to fetch widget ${widget.getDisplayName()}`));
+            .catch(() => console.error(`Failed to fetch widget ${widget.getDisplayName()}`))
+            .finally(() => {
+                if (loadMask) {
+                    loadMask.hide();
+                }
+            });
     }
 
     private renderWidget(widget: DashboardWidget, widgetContainer: LibAdminElement, html: string): Q.Promise<void> {

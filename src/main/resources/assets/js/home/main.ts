@@ -12,7 +12,7 @@ import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
 import {WidgetPanel} from './WidgetPanel';
 import * as Q from 'q';
 import {resolveScriptConfig} from '../ConfigResolver';
-import {WidgetHelper} from '@enonic/lib-admin-ui/widget/WidgetHelper';
+import {LauncherHelper} from '@enonic/lib-admin-ui/util/LauncherHelper';
 
 const containerId = 'home-main-container';
 
@@ -105,16 +105,6 @@ const getApplication = (): Application => {
     return application;
 }
 
-const appendLauncher = () => {
-    const launcherUrl = CONFIG.getString('launcherUrl');
-    fetch(launcherUrl)
-        .then(response => response.text())
-        .then((html: string) => WidgetHelper.createFromHtmlAndAppend(html))
-        .catch((e: Error) => {
-            throw new Error(`Failed to fetch the Launcher page at ${launcherUrl}: ${e.toString()}`);
-        });
-}
-
 const startApplication = () => {
     const appBar = new AppBar(getApplication());
     Body.get().appendChild(appBar);
@@ -122,7 +112,7 @@ const startApplication = () => {
     setupWebSocketListener();
     startLostConnectionDetector();
     addListenersToDashboardItems();
-    appendLauncher();
+    LauncherHelper.appendLauncherPanel();
     appendDashboardWidgets();
 }
 
