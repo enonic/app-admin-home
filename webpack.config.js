@@ -63,36 +63,6 @@ module.exports = {
                     {loader: 'less-loader', options: {sourceMap: !isProd}},
                 ]
             },
-            {
-                test: /background.jpg$/,
-                type: "asset",
-                use: [
-                    {
-                        loader: ImageMinimizerPlugin.loader,
-                        options: {
-                            minimizer: {
-                                implementation: ImageMinimizerPlugin.sharpMinify,
-                                options: {
-                                    encodeOptions: {
-                                        jpeg: {
-                                            quality: 38,
-                                            progressive: true,
-                                            compressionLevel: 9,
-                                            adaptiveFiltering: true,
-                                            effort: 10,
-                                            mozjpeg: true,
-                                            quantisationTable: 8,
-                                        },
-                                        webp: {
-                                            quality: 10,
-                                        }
-                                    },
-                                },
-                            },
-                        },
-                    }
-                ]
-            }
         ]
     },
     optimization: {

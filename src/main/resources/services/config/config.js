@@ -23,7 +23,9 @@ function handleGet() {
                 path: 'images/background.webp'
             }),
             xpVersion: admin.getVersion(),
-            i18nUrl: portal.serviceUrl({service: 'i18n'})
+            i18nUrl: portal.serviceUrl({service: 'i18n'}),
+            statusApiUrl: `${baseUri}/rest/status`,
+            eventApiUrl: `${baseUri}/event`,
         }
     };
 }
