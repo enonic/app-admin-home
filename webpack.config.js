@@ -7,6 +7,7 @@ const fs = require('fs');
 const CompressionPlugin = require("compression-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const zlib = require("zlib");
+const ProvidePlugin = require('webpack/lib/ProvidePlugin');
 
 const swcConfig = JSON.parse(fs.readFileSync('./.swcrc'));
 
@@ -94,6 +95,11 @@ module.exports = {
         ]
     },
     plugins: [
+        new ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery'
+        }),
         new MiniCssExtractPlugin({
             filename: '[name].css',
             chunkFilename: './styles/[id].css'
