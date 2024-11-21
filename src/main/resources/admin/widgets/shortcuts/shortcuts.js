@@ -1,16 +1,16 @@
 const i18n = require('/lib/xp/i18n');
 const admin = require('/lib/xp/admin');
-const portal = require('/lib/xp/portal');
 const mustache = require('/lib/mustache');
 const configLib = require('/lib/config');
+const assetLib = require('/lib/enonic/asset');
 
 function handleGet() {
-    const iconsPath = 'icons/';
-    const infoIconUrl = portal.assetUrl({ path: `${iconsPath}info-with-circle.svg` });
-    const devIconUrl = portal.assetUrl({ path: `${iconsPath}developer.svg` });
-    const forumIconUrl = portal.assetUrl({ path: `${iconsPath}discuss.svg` });
-    const marketIconUrl = portal.assetUrl({ path: `${iconsPath}market.svg` });
-    const slackIconUrl = portal.assetUrl({ path: `${iconsPath}slack.svg` });
+    const iconsPath = 'icons/widgets/';
+    const infoIconUrl = assetLib.assetUrl({ path: `${iconsPath}info-with-circle.svg` });
+    const devIconUrl = assetLib.assetUrl({ path: `${iconsPath}developer.svg` });
+    const forumIconUrl = assetLib.assetUrl({ path: `${iconsPath}discuss.svg` });
+    const marketIconUrl = assetLib.assetUrl({ path: `${iconsPath}market.svg` });
+    const slackIconUrl = assetLib.assetUrl({ path: `${iconsPath}slack.svg` });
 
     const locales = admin.getLocales();
     const dashboardIcons = [
@@ -57,10 +57,10 @@ function handleGet() {
     const view = resolve('./shortcuts.html');
     const params = {
         dashboardIcons: dashboardIcons,
-        stylesUrl: portal.assetUrl({
+        stylesUrl: assetLib.assetUrl({
             path: 'styles/widgets/shortcuts.css'
         }),
-        jsUrl: portal.assetUrl({
+        jsUrl: assetLib.assetUrl({
             path: 'js/widgets/shortcuts.js'
         }),
         configScriptId: configLib.configScriptId

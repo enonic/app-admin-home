@@ -5,6 +5,7 @@ const mustache = require('/lib/mustache');
 const portal = require('/lib/xp/portal');
 const i18n = require('/lib/xp/i18n');
 const admin = require('/lib/xp/admin');
+const assetLib = require('/lib/enonic/asset');
 
 const adminToolsBean = __.newBean(
     'com.enonic.xp.app.main.GetAdminToolsScriptBean'
@@ -51,7 +52,7 @@ exports.get = function(req) {
         adminTools[i].cls = adminTools[i].appId === config.appName ? 'active' : '';
     }
 
-    const userIconUrl = portal.assetUrl({ path: 'icons/user.svg' });
+    const userIconUrl = assetLib.assetUrl({ path: 'icons/widgets/user.svg' });
     const logoutUrl = portal.logoutUrl({
         redirect: admin.getHomeToolUrl({ type: 'absolute' })
     });
@@ -75,10 +76,10 @@ exports.get = function(req) {
             rowCls: app.name === config.appName ? ' active' : '',
         },
         installation: admin.getInstallation() || 'Tools',
-        stylesUrl: portal.assetUrl({
+        stylesUrl: assetLib.assetUrl({
             path: 'styles/launcher.css'
         }),
-        jsUrl: portal.assetUrl({
+        jsUrl: assetLib.assetUrl({
             path: 'js/launcher/bundle.js'
         }),
         phrases,

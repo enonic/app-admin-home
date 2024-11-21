@@ -3,6 +3,7 @@
 const portal = require('/lib/xp/portal');
 const mustache = require('/lib/mustache');
 const configLib = require('/lib/config');
+const assetLib = require('/lib/enonic/asset');
 
 const addCSPHeaderToResponse = (response) => {
     const enableSecurityPolicy = app.config['contentSecurityPolicy.enabled'] !== 'false';
@@ -27,7 +28,7 @@ frame-src \'self'\ https://*.youtube.com`;
 
 const generateParams = () => {
     return {
-        assetsUri: portal.assetUrl({path: ''}),
+        assetsUri: assetLib.assetUrl({path: ''}),
         configScriptId: configLib.configScriptId,
         configAsJson: JSON.stringify(configLib.getConfig(), null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1")
     };
