@@ -1,5 +1,6 @@
 const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
+const assetLib = require('/lib/enonic/asset');
 const mustache = require('/lib/mustache');
 
 const addCSPHeaderToResponse = (response) => {
@@ -25,7 +26,7 @@ frame-src \'self'\ https://*.youtube.com`;
 
 const generateParams = () => {
     return {
-        assetsUri: portal.assetUrl({path: ''}),
+        assetsUri: assetLib.assetUrl({path: ''}),
         launcherPath: admin.getLauncherPath(),
         theme: 'dark',
         configServiceUrl: portal.serviceUrl({service: 'config'})

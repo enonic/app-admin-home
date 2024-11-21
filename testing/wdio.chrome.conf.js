@@ -3,6 +3,8 @@ let PropertiesReader = require('properties-reader');
 const file = path.join(__dirname, '/browser.properties');
 const properties = PropertiesReader(file);
 const browser_version = properties.get('browser.version');
+const baseURL = properties.get('base.url');
+
 exports.config = {
 
     specs: [
@@ -14,6 +16,7 @@ exports.config = {
     capabilities: [{
         browserName: 'chrome',
         browserVersion: browser_version,
+        "wdio:enforceWebDriverClassic": true,
         'goog:chromeOptions': {
             "args": [
                 "--headless", "--disable-gpu", "--no-sandbox",
@@ -28,7 +31,7 @@ exports.config = {
     // Enables colors for log output.
     coloredLogs: true,
 
-    baseUrl: 'http://localhost:8080/admin/tool',
+    baseUrl: baseURL,
     //
     // Default timeout for all waitForXXX commands.
     waitforTimeout: 3000,

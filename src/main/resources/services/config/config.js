@@ -2,6 +2,7 @@
 
 const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
+const assetLib = require('/lib/enonic/asset');
 
 function handleGet() {
     let baseUri = admin.getBaseUri();
@@ -15,14 +16,16 @@ function handleGet() {
         body: {
             appId: app.name,
             adminUrl: baseUri,
-            assetsUri: portal.assetUrl({
+            assetsUri: assetLib.assetUrl({
                 path: ''
             }),
-            backgroundUri: portal.assetUrl({
-                path: 'images/background.jpg'
+            backgroundUri: assetLib.assetUrl({
+                path: 'images/background.webp'
             }),
             xpVersion: admin.getVersion(),
-            i18nUrl: portal.serviceUrl({service: 'i18n'})
+            i18nUrl: portal.serviceUrl({service: 'i18n'}),
+            statusApiUrl: `${baseUri}/rest/status`,
+            eventApiUrl: `${baseUri}/event`,
         }
     };
 }

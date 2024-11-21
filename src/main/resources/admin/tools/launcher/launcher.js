@@ -1,6 +1,7 @@
 var auth = require('/lib/xp/auth');
 var mustache = require('/lib/mustache');
 var portal = require('/lib/xp/portal');
+const assetLib = require('/lib/enonic/asset');
 var i18n = require('/lib/xp/i18n');
 var admin = require('/lib/xp/admin');
 
@@ -35,7 +36,7 @@ exports.get = function() {
         );
     }
 
-    var userIconUrl = portal.assetUrl({ path: 'icons/user.svg' });
+    var userIconUrl = assetLib.assetUrl({ path: 'icons/widgets/user.svg' });
     var logoutUrl = portal.logoutUrl({
         redirect: admin.getHomeToolUrl({ type: 'absolute' })
     });
@@ -60,7 +61,7 @@ exports.get = function() {
         },
         installation: admin.getInstallation() || 'Tools',
         logOutLink: localise('launcher.link.logout', locales),
-        assetsUri: portal.assetUrl({
+        assetsUri: assetLib.assetUrl({
             path: ''
         })
     };
