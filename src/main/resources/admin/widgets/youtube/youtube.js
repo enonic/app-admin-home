@@ -1,4 +1,4 @@
-const portal = require('/lib/xp/portal');
+const assetLib = require('/lib/enonic/asset');
 const mustache = require('/lib/mustache');
 
 const getVideoUrls = () => {
@@ -24,7 +24,7 @@ const handleGet = () => {
 
     const params = {
         videoUrls: videoUrls,
-        stylesUri: portal.assetUrl({
+        stylesUri: assetLib.assetUrl({
             path: 'styles/widgets/youtube.css'
         }),
     };

@@ -3,16 +3,17 @@
 const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
 const i18n = require('/lib/xp/i18n');
+const assetLib = require('/lib/enonic/asset');
 
 const getConfig = () => {
     return {
         appId: app.name,
         adminUrl: admin.getBaseUri(),
-        assetsUri: portal.assetUrl({
+        assetsUri: assetLib.assetUrl({
             path: ''
         }),
-        backgroundUri: portal.assetUrl({
-            path: 'images/background.jpg'
+        backgroundUri: assetLib.assetUrl({
+            path: 'images/background.webp'
         }),
         xpVersion: admin.getVersion(),
         launcherUrl: admin.widgetUrl({
