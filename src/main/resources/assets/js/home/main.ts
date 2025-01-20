@@ -21,13 +21,12 @@ const loadDOM = (): Q.Promise<void> => {
     return DOMLoaded.promise;
 };
 
-const showBackgroundImage = (): Q.Promise<void> => {
+const showBackgroundImage = () => {
     const containerEl = document.getElementById(containerId);
     if (!containerEl) {
         throw new Error('Main container not found!');
     }
 
-    const deferred: Q.Deferred<void> = Q.defer<void>();
     const container: Element = Element.fromHtmlElement(containerEl);
     const divEl = new DivEl('lazy-image empty');
     divEl.setId('background-image');
@@ -39,11 +38,8 @@ const showBackgroundImage = (): Q.Promise<void> => {
         divEl.getEl().setAttribute('style', `background-image: url('${imgEl.getSrc()}')`);
         imgEl.remove();
         divEl.removeClass('empty');
-        deferred.resolve();
     });
     container.appendChild(imgEl);
-
-    return deferred.promise;
 };
 
 const initConfig = async (configServiceUrl) => {
@@ -122,6 +118,6 @@ void (async () => {
     const configServiceUrl: string = document.currentScript.getAttribute('data-config-service-url');
     await loadDOM();
     await initConfig(configServiceUrl);
-    await showBackgroundImage();
+    showBackgroundImage();
     startApplication();
 })();
