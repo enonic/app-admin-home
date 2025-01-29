@@ -32,6 +32,9 @@ module.exports = [
 
             // '@typescript-eslint/member-ordering': ['error'],
             '@typescript-eslint/member-ordering': ['off'],
+            '@typescript-eslint/no-use-before-define': 'off',
+            '@typescript-eslint/no-unsafe-member-access': 'off',
+            '@typescript-eslint/no-unsafe-call': 'off',
         },
     },
     {
