@@ -14,6 +14,40 @@ enum WidgetStyle {
     CUSTOM = 'custom'
 }
 
+export class DashboardWidget extends Widget<DashboardWidgetBuilder, DashboardWidgetConfig> {
+    protected createConfig(): DashboardWidgetConfig {
+        return new DashboardWidgetConfig();
+    }
+
+    static fromJson(json: WidgetDescriptorJson): DashboardWidget {
+        return new DashboardWidgetBuilder().fromJson(json).build();
+    }
+
+    getHeight(): string {
+        return this.getConfig().getHeight();
+    }
+
+    getWidth(): string {
+        return this.getConfig().getWidth();
+    }
+
+    getStyle(): string {
+        return this.getConfig().getStyle();
+    }
+
+    getOrder(): number {
+        return this.getConfig().getOrder();
+    }
+
+    hasCustomStyling(): boolean {
+        return this.getConfig().getStyle() !== WidgetStyle.AUTO.toString();
+    }
+
+    hasHeader(): boolean {
+        return this.getConfig().hasHeader();
+    }
+}
+
 class DashboardWidgetConfig extends WidgetConfig {
     private width: WidgetSize;
     private height: WidgetSize;
@@ -52,55 +86,19 @@ class DashboardWidgetConfig extends WidgetConfig {
     }
 }
 
-class DashboardWidgetBuilder extends WidgetBuilder {
-    config: DashboardWidgetConfig;
-
-    fromJson(json: WidgetDescriptorJson): WidgetBuilder {
-        const builder = super.fromJson(json);
-
-        builder.config = new DashboardWidgetConfig().fromJson(json.config);
+class DashboardWidgetBuilder extends WidgetBuilder<DashboardWidgetConfig> {
+    fromJson(json: WidgetDescriptorJson): DashboardWidgetBuilder {
+        super.fromJson(json);
 
         return this;
     }
 
-    /* eslint-disable @typescript-eslint/no-use-before-define */
+    protected createConfig(json: Record<string, string>): DashboardWidgetConfig {
+        return new DashboardWidgetConfig().fromJson(json);
+    }
+
     build(): DashboardWidget {
         return new DashboardWidget(this);
     }
 }
 
-export class DashboardWidget extends Widget {
-    protected readonly config: DashboardWidgetConfig;
-
-    static fromJson(json: WidgetDescriptorJson): DashboardWidget {
-        return new DashboardWidgetBuilder().fromJson(json).build() as DashboardWidget;
-    }
-
-    public getConfig(): DashboardWidgetConfig {
-        return this.config;
-    }
-
-    getHeight(): string {
-        return this.config.getHeight();
-    }
-
-    getWidth(): string {
-        return this.config.getWidth();
-    }
-
-    getStyle(): string {
-        return this.config.getStyle();
-    }
-
-    getOrder(): number {
-        return this.config.getOrder();
-    }
-
-    hasCustomStyling(): boolean {
-        return this.config.getStyle() !== WidgetStyle.AUTO.toString();
-    }
-
-    hasHeader(): boolean {
-        return this.config.hasHeader();
-    }
-}
