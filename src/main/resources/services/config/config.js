@@ -15,7 +15,7 @@ function handleGet() {
         contentType: 'application/json',
         body: {
             appId: app.name,
-            adminUrl: baseUri,
+            adminUrl: admin.getBaseUri(),
             assetsUri: assetLib.assetUrl({
                 path: ''
             }),
