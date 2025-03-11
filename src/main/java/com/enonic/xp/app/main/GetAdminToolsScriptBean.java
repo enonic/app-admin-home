@@ -1,6 +1,8 @@
 package com.enonic.xp.app.main;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import com.enonic.xp.admin.tool.AdminToolDescriptor;
@@ -19,12 +21,12 @@ public final class GetAdminToolsScriptBean
 
     private LocaleService localeService;
 
-    public List<MapSerializable> execute()
+    public List<MapSerializable> execute(String[] locales)
     {
         final PrincipalKeys principals = ContextAccessor.current().
             getAuthInfo().
             getPrincipals();
-        final StringTranslator stringTranslator = new StringTranslator( this.localeService );
+        final StringTranslator stringTranslator = new StringTranslator( this.localeService, Arrays.stream( locales).map( Locale::of ).toList() );
 
         return adminToolDescriptorService.getAllowedAdminToolDescriptors( principals ).
             stream().
