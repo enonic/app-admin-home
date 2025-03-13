@@ -167,7 +167,7 @@ export class WidgetPanel
                 loadMask.show();
             }
         }, 300);
-        return fetch(widget.getUrl())
+        return fetch(widget.getFullUrl())
             .then(response => {
                 loading = false;
                 return response.text();
