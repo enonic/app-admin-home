@@ -8,6 +8,7 @@ import * as Q from 'q';
 import {DashboardWidget} from './resource/widget/DashboardWidget';
 import {GetDashboardWidgetsRequest} from './resource/widget/GetDashboardWidgetsRequest';
 import {WidgetElement, WidgetHelper} from '@enonic/lib-admin-ui/widget/WidgetHelper';
+import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 
 export class WidgetPanel
     extends DivEl {
@@ -167,7 +168,7 @@ export class WidgetPanel
                 loadMask.show();
             }
         }, 300);
-        return fetch(widget.getUrl())
+        return fetch(`${CONFIG.getString('widgetApiUrl')}/${widget.getUrl()}`)
             .then(response => {
                 loading = false;
                 return response.text();
