@@ -11,13 +11,6 @@ const adminToolsBean = __.newBean(
     'com.enonic.xp.app.main.GetAdminToolsScriptBean'
 );
 
-function getAdminTools() {
-    const result = __.toNativeObject(adminToolsBean.execute());
-    return result.sort(function(tool1, tool2) {
-        return tool1.displayName > tool2.displayName ? 1 : -1;
-    });
-}
-
 function localise(key, locales) {
     return i18n.localize({
         key: key,
@@ -27,7 +20,7 @@ function localise(key, locales) {
 }
 
 exports.get = function(req) {
-    const locales = admin.getLocales();
+    const locales = req.locales;
     const phrases = {
         linkLogout: localise('launcher.link.logout', locales),
         tooltipOpenMenu: localise('launcher.tooltip.openMenu', locales),
@@ -42,7 +35,8 @@ exports.get = function(req) {
         theme: req.params['theme'] || ''
     }
 
-    const adminTools = getAdminTools();
+    const adminTools = __.toNativeObject(adminToolsBean.execute(locales) );
+
     for (let i = 0; i < adminTools.length; i++) {
         adminTools[i].appId = adminTools[i].key.application;
         adminTools[i].uri = admin.getToolUrl(

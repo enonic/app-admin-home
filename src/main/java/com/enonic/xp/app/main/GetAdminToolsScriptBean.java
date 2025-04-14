@@ -1,6 +1,8 @@
 package com.enonic.xp.app.main;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import com.enonic.xp.admin.tool.AdminToolDescriptor;
@@ -19,16 +21,17 @@ public final class GetAdminToolsScriptBean
 
     private LocaleService localeService;
 
-    public List<MapSerializable> execute()
+    public List<MapSerializable> execute( final List<String> locales )
     {
         final PrincipalKeys principals = ContextAccessor.current().
             getAuthInfo().
             getPrincipals();
-        final StringTranslator stringTranslator = new StringTranslator( this.localeService );
+        final StringTranslator stringTranslator = new StringTranslator( this.localeService, locales.stream().map( Locale::forLanguageTag ).toList() );
 
         return adminToolDescriptorService.getAllowedAdminToolDescriptors( principals ).
             stream().
             filter( AdminToolDescriptor::isAppLauncherApplication ).
+                sorted(Comparator.comparing(AdminToolDescriptor::getDisplayName)).
             map( adminToolDescriptor -> new AdminToolMapper( adminToolDescriptor,
                                                              adminToolDescriptorService.getIconByKey( adminToolDescriptor.getKey() ),
                                                              stringTranslator ) ).
