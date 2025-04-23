@@ -26,17 +26,17 @@ frame-src \'self'\ https://*.youtube.com`;
     }
 }
 
-const generateParams = () => {
+const generateParams = (req) => {
     return {
         assetsUri: assetLib.assetUrl({path: ''}),
         configScriptId: configLib.configScriptId,
-        configAsJson: JSON.stringify(configLib.getConfig(), null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1")
+        configAsJson: JSON.stringify(configLib.getConfig(req), null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1")
     };
 }
 
-exports.get = () => {
+exports.get = (req) => {
     const view = resolve('./home.html');
-    const params = generateParams();
+    const params = generateParams(req);
 
     const response = {
         contentType: 'text/html',

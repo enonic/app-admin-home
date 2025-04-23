@@ -5,10 +5,10 @@ const portal = require('/lib/xp/portal');
 const i18n = require('/lib/xp/i18n');
 const assetLib = require('/lib/enonic/asset');
 
-const getConfig = () => {
+const getConfig = (req) => {
     return {
         appId: app.name,
-        adminUrl: admin.getBaseUri(),
+        adminUrl: admin.getHomeToolUrl(),
         assetsUri: assetLib.assetUrl({
             path: ''
         }),
@@ -36,7 +36,7 @@ const getConfig = () => {
             application: 'admin',
             api: 'event',
         }),
-        phrases: JSON.stringify(i18n.getPhrases(admin.getLocales(), ['i18n/phrases']), null, 4),
+        phrases: JSON.stringify(i18n.getPhrases(req.locales, ['i18n/phrases']), null, 4),
     };
 }
 
