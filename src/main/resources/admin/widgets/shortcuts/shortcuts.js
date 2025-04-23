@@ -4,7 +4,7 @@ const mustache = require('/lib/mustache');
 const configLib = require('/lib/config');
 const assetLib = require('/lib/enonic/asset');
 
-function handleGet() {
+function handleGet(req) {
     const iconsPath = 'icons/widgets/';
     const infoIconUrl = assetLib.assetUrl({ path: `${iconsPath}info-with-circle.svg` });
     const devIconUrl = assetLib.assetUrl({ path: `${iconsPath}developer.svg` });
@@ -12,7 +12,7 @@ function handleGet() {
     const marketIconUrl = assetLib.assetUrl({ path: `${iconsPath}market.svg` });
     const slackIconUrl = assetLib.assetUrl({ path: `${iconsPath}slack.svg` });
 
-    const locales = admin.getLocales();
+    const locales = req.locales;
     const dashboardIcons = [
         {
             src: infoIconUrl,
