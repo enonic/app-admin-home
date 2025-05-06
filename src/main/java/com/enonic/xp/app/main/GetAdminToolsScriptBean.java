@@ -30,7 +30,6 @@ public final class GetAdminToolsScriptBean
 
         return adminToolDescriptorService.getAllowedAdminToolDescriptors( principals ).
             stream().
-            filter( AdminToolDescriptor::isAppLauncherApplication ).
                 sorted(Comparator.comparing(AdminToolDescriptor::getDisplayName)).
             map( adminToolDescriptor -> new AdminToolMapper( adminToolDescriptor,
                                                              adminToolDescriptorService.getIconByKey( adminToolDescriptor.getKey() ),
