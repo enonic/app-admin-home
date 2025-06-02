@@ -9,4 +9,7 @@
     <api>admin:status</api>
     <api>admin:event</api>
   </apis>
+  <interfaces>
+    <interface>admin.dashboard</interface>
+  </interfaces>
 </tool>
