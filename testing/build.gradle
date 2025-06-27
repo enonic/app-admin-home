@@ -28,12 +28,12 @@ def appFile = "$distroDir/system/40/${appName}-${version}.jar"
 def appUrl = project.hasProperty( 'appUrl' ) ? appUrl : "file:///$projectDir/../build/libs/${appName}.jar"
 
 dependencies {
-    distro "com.enonic.xp:enonic-xp-generic:$version@zip"
+    distro "com.enonic.xp:enonic-xp-generic:$version@tgz"
 }
 
 tasks.register( 'unpackDistro', Copy ) {
     from {
-        configurations.distro.collect { zipTree( it ) }
+        configurations.distro.collect { tarTree( it ) }
     }
     into unpackDir
 }
