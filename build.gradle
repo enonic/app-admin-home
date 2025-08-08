@@ -86,9 +86,12 @@ tasks.register('webpack', NpmTask) {
     outputs.dir "$buildDir/build/resources/main/assets"
 }
 
+jar {
+    dependsOn 'webpack'
+}
+
 processResources {
     exclude 'assets/**'  // Excluded because webpack does it
-    dependsOn 'webpack'
 }
 
 test {
