@@ -46,7 +46,8 @@ apply from: "$projectDir/gradle/node.gradle"
 apply from: "$projectDir/gradle/lib-admin.gradle"
 
 dependencies {
-    compileOnly "com.enonic.xp:admin-api:${xpVersion}"
+    implementation "com.enonic.xp:admin-api:${xpVersion}"
+    implementation "com.enonic.xp:script-api:${xpVersion}"
 
     include "com.enonic.xp:lib-admin:${xpVersion}"
     include "com.enonic.xp:lib-portal:${xpVersion}"
@@ -66,7 +67,7 @@ dependencies {
 }
 
 tasks.register('lint', NpmTask ) {
-    group "verification"
+    group = "verification"
     dependsOn( 'npmInstall' )
     args = ['run', 'lint']
     outputs.upToDateWhen { false }
@@ -85,12 +86,9 @@ tasks.register('webpack', NpmTask) {
     outputs.dir "$buildDir/build/resources/main/assets"
 }
 
-jar {
-    dependsOn += webpack
-}
-
 processResources {
     exclude 'assets/**'  // Excluded because webpack does it
+    dependsOn 'webpack'
 }
 
 test {
