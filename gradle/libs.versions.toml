@@ -1,0 +1,29 @@
+[versions]
+
+junit = "5.13.4"
+mockito = "5.19.0"
+enonicDefaults = "2.1.5"
+enonicXpGradle = "3.6.1"
+nodeGradle = "7.1.0"
+
+# App
+libAsset = "1.0.3"
+libMustache = "2.1.1"
+
+[libraries]
+
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+mockito-bom = { module = "org.mockito:mockito-bom", version.ref = "mockito" }
+mockito-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
+
+# App
+lib-asset = { module = "com.enonic.lib:lib-asset", version.ref = "libAsset" }
+lib-mustache = { module = "com.enonic.lib:lib-mustache", version.ref = "libMustache" }
+
+[plugins]
+enonic-defaults = { id = "com.enonic.defaults", version.ref = "enonicDefaults" }
+enonic-xp-app = { id = "com.enonic.xp.app", version.ref = "enonicXpGradle" }
+enonic-xp-base = { id = "com.enonic.xp.base" }
+node-gradle = { id = "com.github.node-gradle.node", version.ref = "nodeGradle" }

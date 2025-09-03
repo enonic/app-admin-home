@@ -2,15 +2,17 @@ import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
 plugins {
     id 'java'
-    id 'com.enonic.defaults'
-    id 'com.enonic.xp.base'
-    id 'com.github.node-gradle.node'
+    alias( libs.plugins.enonic.defaults )
+    alias( libs.plugins.enonic.xp.base )
+    alias( libs.plugins.node.gradle )
 }
+
 group = 'com.enonic.xp.js_testing'
 
 repositories {
+    mavenLocal()
     mavenCentral()
-    xp.enonicRepo('dev')
+    xp.enonicRepo( 'dev' )
 }
 
 configurations {
@@ -18,20 +20,26 @@ configurations {
 }
 
 def unpackDir = layout.buildDirectory.dir("install").get()
-def distroDir = unpackDir.dir("enonic-xp-generic-$version")
+def distroDir = unpackDir.dir( "enonic-xp-generic-$version" )
 def testDataDir = "$projectDir/test-data/common-config"
 
-def xpHome = distroDir.dir( "home" )
-def configDir = xpHome.dir( "config" )
-def appName = "app-main"
+def xpHome = "$distroDir/home"
+def configDir = "$xpHome/config"
+def appName = 'app-main'
 def appFile = "$distroDir/system/40/${appName}-${version}.jar"
 def appUrl = project.hasProperty( 'appUrl' ) ? appUrl : "file:///$projectDir/../build/libs/${appName}.jar"
 
 dependencies {
-    distro "com.enonic.xp:enonic-xp-generic:$version@tgz"
+    distro "com.enonic.xp:enonic-xp-generic:${version}@tgz"
 }
 
+def process
+
+// Setup tasks
 tasks.register( 'unpackDistro', Copy ) {
+    description = 'Unpacks the XP distribution for testing'
+    group = 'Test Setup'
+
     from {
         configurations.distro.collect { tarTree( it ) }
     }
@@ -39,81 +47,130 @@ tasks.register( 'unpackDistro', Copy ) {
 }
 
 tasks.register( 'copyConfig', Copy ) {
-    println "$testDataDir${File.separator}common-config"
+    description = 'Copy common configuration files'
+    group = 'setup'
+
     from testDataDir
     include '**.*.cfg'
     include '*.properties'
     into file( configDir )
-    mustRunAfter unpackDistro
+    mustRunAfter tasks.named( 'unpackDistro' )
 }
 
-
 tasks.register( 'deployApp', DefaultTask ) {
+    description = 'Deploy the main application'
+    group = 'setup'
+
     outputs.files( appFile )
     outputs.upToDateWhen { false }
     doLast {
-        def f = new File(appFile as String)
+        def f = new File( appFile as String )
         println "Deleting  ${appFile}. Exists ${f.exists()}"
 
         f.delete()
 
         println "Copying from ${appUrl} to ${appFile}"
-        new URL(appUrl as String).withInputStream { i -> f.withOutputStream { it << i } }
+        new URL( appUrl as String ).withInputStream { i -> f.withOutputStream { it << i } }
     }
-    mustRunAfter unpackDistro
+    mustRunAfter tasks.named( 'unpackDistro' )
 }
 
-def process
+// Server management tasks
 tasks.register( 'startServer' ) {
-    dependsOn unpackDistro
+    description = 'Starts the XP server for testing'
+    group = 'Test Execution'
+    dependsOn tasks.named( 'unpackDistro' )
     doLast {
+        sleep( 5000 )
+        logger.lifecycle( 'Starting XP Server at: {}', xpHome )
+        logger.lifecycle( 'Server logs will be written to: build/reports/logs/xp.log' )
         def pb
-        if (DefaultNativePlatform.getCurrentOperatingSystem().windows) {
-            pb = new ProcessBuilder('cmd', '/c', "${distroDir}\\bin\\server.bat")
+        if ( DefaultNativePlatform.getCurrentOperatingSystem().windows ) {
+            pb = new ProcessBuilder( 'cmd', '/c', "${distroDir}\\bin\\server.bat" )
         }
         else {
-            pb = new ProcessBuilder("${distroDir}/bin/server.sh")
+            pb = new ProcessBuilder( "${distroDir}/bin/server.sh" )
         }
         Map<String, String> env = pb.environment()
-        env.put("XP_HOME", "${xpHome}".toString())
+        env.put( 'XP_HOME', "${xpHome}".toString() )
 
-        def logsPath = layout.buildDirectory.dir("reports/logs").get()
+        def logsPath = layout.buildDirectory.dir( 'reports/logs' ).get()
         mkdir logsPath.asFile
-        pb.redirectOutput(logsPath.file("xp.log").asFile)
-        pb.redirectErrorStream(true)
+        pb.redirectOutput( logsPath.file( 'xp.log' ).asFile )
+        pb.redirectErrorStream( true )
         process = pb.start()
-        sleep(60 * 1000)
+        sleep( 60000 )
     }
 }
 
 tasks.register( 'stopServer' ) {
+    description = 'Stops the XP server'
+    group = 'Test Execution'
     doLast {
-        if (DefaultNativePlatform.getCurrentOperatingSystem().windows) {
-            Runtime.getRuntime().exec("taskkill /F /T /PID " + process.pid());
-        } else {
-            process.destroy()
+        if ( !project.hasProperty( 'process' ) ) {
+            logger.warn( 'Server process not found - it might already be stopped' )
+            return
         }
+
+        def os = DefaultNativePlatform.currentOperatingSystem
+        def pid = process.pid()
+
+        if ( os.isWindows() ) {
+            logger.lifecycle( "Stopping server process (PID: ${pid})..." )
+            exec {
+                commandLine 'taskkill', '/F', '/T', '/PID', pid.toString()
+                ignoreExitValue = true // Don't fail if the process is already gone
+            }
+        } else { // For macOS, Linux, and other Unix-like systems
+            logger.lifecycle( "Stopping server process (PID: ${pid})..." )
+            exec {
+                commandLine 'kill', '-9', pid.toString()
+                ignoreExitValue = true // Don't fail if the process is already gone
+            }
+        }
+
+        // Clean up the process property
+        project.ext.process = null
     }
 }
 
 tasks.register( 'cleanup', Delete ) {
+    description = 'Clean up test reports'
+    group = 'verification'
+
     delete './build/reports/allure'
 }
 
-tasks.register( 'generateReportAndStopServer', NpmTask ) {
-    args = ['run-script', 'allure-report']
-    finalizedBy cleanup
-    finalizedBy stopServer
+tasks.register( 'generateReportAndStopServer', PnpmTask ) {
+    description = 'Generates test report and stops server'
+    group = 'Test Reporting'
+    args = ['--color', 'run', 'allure-report']
+    finalizedBy tasks.named( 'cleanup' )
+    finalizedBy tasks.named( 'stopServer' )
 }
 
-tasks.register( 'w_testAdminHomeChrome', NpmTask ) {
-    dependsOn ( npmInstall, unpackDistro, copyConfig, deployApp, startServer )
-    args = ['run-script', 'test_admin_home:wdio_chrome']
-    finalizedBy generateReportAndStopServer
+// Test execution tasks
+tasks.register( 'w_testAdminHomeChrome', PnpmTask ) {
+    description = 'Run application tests in Chrome'
+    group = 'verification'
+
+    dependsOn tasks.named( 'pnpmInstall' )
+    dependsOn tasks.named( 'unpackDistro' )
+    dependsOn tasks.named( 'copyConfig' )
+    dependsOn tasks.named( 'deployApp' )
+    dependsOn tasks.named( 'startServer' )
+    args = ['--color', 'run', 'test_admin_home:wdio_chrome']
+    finalizedBy tasks.named( 'generateReportAndStopServer' )
 }
 
-tasks.register( 'w_testAdminHomeChromeLocal', NpmTask ) {
-    dependsOn ( npmInstall )
-    args = ['run-script', 'test_admin_home:wdio_chrome']
+tasks.register( 'w_testAdminHomeChromeLocal', PnpmTask ) {
+    description = 'Run application tests in Chrome locally'
+    group = 'verification'
+
+    dependsOn tasks.named( 'pnpmInstall' )
+    args = ['--color', 'run', 'test_admin_home:wdio_chrome']
 }
 
+tasks.register( 'yolo' ) {
+    group = 'Other'
+}

@@ -1,20 +1,15 @@
 apply plugin: 'com.github.node-gradle.node'
 
 node {
-    version = '22.16.0'
+    version = '22.18.0'
+    pnpmVersion = '10.14.0'
     download = true
 }
 
-tasks.register('npmInstallForce', NpmTask) {
-    description = 'Update all project node dependencies'
-    args = ['install', '--force']
-}
-
-tasks.register('cleanNode', Delete) {
-    delete 'node_modules'
-}
-
 tasks.register('copyDevResources') {
+    onlyIf {
+        configurations.hasProperty( 'devResources' )
+    }
     doLast {
         copy {
             from configurations.devResources.files.collect { zipTree( it ) }
@@ -24,4 +19,11 @@ tasks.register('copyDevResources') {
     }
 }
 
-npmInstall.dependsOn( 'copyDevResources' )
+// Configure pnpmInstall dependency lazily
+tasks.named( 'pnpmInstall' ).configure {
+    dependsOn rootProject.tasks.named( 'copyDevResources' )
+    //! Temporary fix for CI environment, back to npm-like behavior
+    if ( System.getenv( 'CI' ) == 'true' || project.hasProperty( 'ci' ) ) {
+        pnpmCommand.set( ['install', '--no-frozen-lockfile'] )
+    }
+}

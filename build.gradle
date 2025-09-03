@@ -2,26 +2,35 @@ plugins {
     id 'java'
     id 'jacoco'
     id 'maven-publish'
-    id 'com.enonic.defaults' version '2.1.5'
-    id 'com.enonic.xp.app' version '3.6.1'
-    id "com.github.node-gradle.node" version '7.1.0'
+    alias(libs.plugins.enonic.defaults)
+    alias(libs.plugins.enonic.xp.app)
+    alias(libs.plugins.node.gradle)
 }
 
-def xpVersion=version
+allprojects {
+    pluginManager.withPlugin( 'java' ) {
+        java {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of( 21 )
+            }
 
-app {
-    name = 'com.enonic.xp.app.main'
-    group = 'com.enonic.xp'
-    displayName = 'Enonic XP Home App'
-    systemVersion = "${xpVersion}"
-    systemApp = true
-    devSourcePaths += file( "$rootDir/../lib-admin-ui/src/main/resources" )
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+            sourceCompatibility = JavaVersion.VERSION_21
+            targetCompatibility = sourceCompatibility
+        }
     }
+
+    apply from: "$rootDir/gradle/env.gradle"
+    apply from: "$rootDir/gradle/node.gradle"
+
+    if ( project.name != 'testing' ) {
+        apply from: "$rootDir/gradle/lib-admin.gradle"
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    xp.enonicRepo( 'dev' )
 }
 
 configurations {
@@ -30,81 +39,128 @@ configurations {
             attribute( LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named( LibraryElements, 'dev-resources' ) )
         }
     }
-    all {
-        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-    }
 }
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    xp.enonicRepo('dev')
-}
-
-apply from: "$projectDir/gradle/env.gradle"
-apply from: "$projectDir/gradle/node.gradle"
-apply from: "$projectDir/gradle/lib-admin.gradle"
 
 dependencies {
-    implementation "com.enonic.xp:admin-api:${xpVersion}"
-    implementation "com.enonic.xp:script-api:${xpVersion}"
+    implementation "com.enonic.xp:admin-api:${version}"
+    implementation "com.enonic.xp:script-api:${version}"
 
-    include "com.enonic.xp:lib-admin:${xpVersion}"
-    include "com.enonic.xp:lib-portal:${xpVersion}"
-    include "com.enonic.xp:lib-auth:${xpVersion}"
-    include "com.enonic.xp:lib-i18n:${xpVersion}"
+    include "com.enonic.xp:lib-admin:${version}"
+    include "com.enonic.xp:lib-portal:${version}"
+    include "com.enonic.xp:lib-auth:${version}"
+    include "com.enonic.xp:lib-i18n:${version}"
     include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
     devResources "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
-    include "com.enonic.lib:lib-mustache:2.1.1"
-    include "com.enonic.lib:lib-asset:1.0.3"
+    include libs.lib.mustache
+    include libs.lib.asset
 
-    testImplementation(platform("org.junit:junit-bom:5.13.4"))
-    testImplementation(platform("org.mockito:mockito-bom:5.19.0"))
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.mockito:mockito-junit-jupiter'
-    testImplementation( testFixtures( "com.enonic.xp:jaxrs-impl:${xpVersion}" ) )
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(platform(libs.mockito.bom))
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly libs.junit.launcher
+    testImplementation libs.mockito.jupiter
+    testImplementation( testFixtures( "com.enonic.xp:jaxrs-impl:${version}" ) )
 }
 
-tasks.register('lint', NpmTask ) {
-    group = "verification"
-    dependsOn( 'npmInstall' )
-    args = ['run', 'lint']
-    outputs.upToDateWhen { false }
+app {
+    name = "${group}.${projectName}"
+    displayName = 'Enonic XP Home App'
+    systemVersion = "${version}"
+    systemApp = true
+    devSourcePaths += file( "$rootDir/../lib-admin-ui/src/main/resources" )
 }
 
-check.dependsOn lint
+// Verification tasks
+tasks.register( 'checkTypes', PnpmTask ) {
+    dependsOn tasks.named( 'pnpmInstall' )
+    group = 'verification'
+    args = ['run', 'check:types']
+    outputs.cacheIf { false }
+}
 
-tasks.register('webpack', NpmTask) {
-    dependsOn( 'npmInstall' )
+tasks.register( 'checkLint', PnpmTask ) {
+    dependsOn tasks.named( 'pnpmInstall' )
+    group = 'verification'
+    args = ['run', 'check:lint']
+    outputs.cacheIf { false }
+}
+
+tasks.register( 'pnpmCheck', PnpmTask ) {
+    dependsOn tasks.named( 'pnpmInstall' )
+    group = 'verification'
+    args = ['run', 'check']
+    outputs.cacheIf { false }
+}
+
+// Build tasks
+tasks.register( 'pnpmBuild', PnpmTask ) {
+    dependsOn( 'pnpmInstall' )
     environment = ['NODE_ENV': nodeEnvironment()]
-    description = 'Build UI resources (ts, css, etc).'
-    args = ['run', 'build']
+    description = 'Build UI resources (ts, css, etc) with Vite.'
+    args = ['run', nodeEnvironment() == 'production' ? 'build:prod' : 'build']
     inputs.dir '.xp/dev'
     inputs.dir 'src/main'
-    inputs.file 'webpack.config.js'
-    outputs.dir "$buildDir/build/resources/main/assets"
+    inputs.file 'vite.config.ts'
+    outputs.dir "$buildDir/resources/main/assets"
 }
 
-jar {
-    dependsOn 'webpack'
+tasks.register( 'yolo' ) {
+    description = 'Build without running install, check, or test tasks'
+
+    dependsOn tasks.named( 'deploy' )
+    dependsOn tasks.named( 'checkTypes' )
+
+    nodeSetup.enabled = false
+    npmSetup.enabled = false
+    pnpmSetup.enabled = false
+    pnpmCheck.enabled = false
+    checkLint.enabled = false
+    check.enabled = false
+    test.enabled = false
+    javadoc.enabled = false
 }
 
-processResources {
-    exclude 'assets/**'  // Excluded because webpack does it
+// Task configurations
+tasks.named( 'jar' ).configure {
+    exclude 'assets/**/tsconfig.tsbuildinfo'
+
+    if ( isProd() ) {
+        exclude 'assets/**/*.map'
+    }
+
+    includeEmptyDirs = false
+
+    dependsOn tasks.named( 'pnpmBuild' )
 }
 
-test {
+tasks.named( 'processResources' ).configure {
+    // Don't need source files
+    exclude 'assets/js/**'
+    exclude 'assets/styles/**'
+
+    // Inlined by the Vite into CSS
+    exclude 'assets/fonts/**'
+    exclude 'assets/img/**'
+
+    includeEmptyDirs = false
+}
+
+tasks.named( 'test' ).configure {
     useJUnitPlatform()
     systemProperty 'java.awt.headless', 'true'
     jvmArgs '-XX:TieredStopAtLevel=1'
 }
 
-jacocoTestReport {
+tasks.named( 'jacocoTestReport' ).configure {
     reports {
         xml.required = true
         html.required = true
     }
+    mustRunAfter jar
 }
 
-check.dependsOn jacocoTestReport
+// Lifecycle wiring
+tasks.named( 'check' ).configure {
+    dependsOn tasks.named( 'pnpmCheck' )
+    dependsOn jacocoTestReport
+}
