@@ -1,11 +1,10 @@
-import * as $ from 'jquery';
+import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/application/ApplicationEvent';
+import {Element as LibAdminElement} from '@enonic/lib-admin-ui/dom/Element';
 import {KeyBinding} from '@enonic/lib-admin-ui/ui/KeyBinding';
 import {KeyBindings} from '@enonic/lib-admin-ui/ui/KeyBindings';
 import {AppHelper} from '@enonic/lib-admin-ui/util/AppHelper';
-import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/application/ApplicationEvent';
-import {ThemeManager} from './ThemeManager';
 import {WidgetHelper} from '@enonic/lib-admin-ui/widget/WidgetHelper';
-import {Element as LibAdminElement} from '@enonic/lib-admin-ui/dom/Element';
+import {ThemeManager} from './ThemeManager';
 
 type JSONObject = Record<string, string>;
 
@@ -278,23 +277,37 @@ class Launcher {
             isClickOutside &&
             !this.launcherMainContainer.getAttribute('hidden') &&
             !Launcher.isModalDialogActiveOnHomePage(e.target, this.isHomeApp()) &&
-            !Launcher.isDashboardIcon($(e.target))
+            !Launcher.isDashboardIcon(e.target)
         ) {
             this.closeLauncherPanel();
         }
     };
 
-    private static isDashboardIcon = (element: JQuery<EventTarget>) =>
-        element.closest('.dashboard-item').length > 0 &&
-        element.parent().attr('href') !== '#';
+    private static toElement(target: EventTarget | null): Element | null {
+        if (!target) return null;
+        if (target instanceof Element) return target;
+        if (target instanceof Node) return target.parentElement;
+        return null;
+    }
 
-    private static isModalDialogActiveOnHomePage = (element: EventTarget, isHomeApp: boolean): boolean => {
-        return (
-            isHomeApp &&
-            (document.body.classList.contains('modal-dialog') ||
-             $(element).closest('.xp-admin-common-modal-dialog').length > 0)
-        );
-    };
+    private static isDashboardIcon(target: EventTarget): boolean {
+        const el = Launcher.toElement(target);
+        if (!el) return false;
+
+        const inDashboard = el.closest('.dashboard-item') !== null;
+        const parentHref = el.parentElement?.getAttribute('href');
+        return inDashboard && parentHref !== '#';
+    }
+
+    private static isModalDialogActiveOnHomePage(target: EventTarget, isHomeApp: boolean): boolean {
+        if (!isHomeApp) return false;
+
+        const el = Launcher.toElement(target);
+        const bodyHasModal = document.body.classList.contains('modal-dialog');
+        const insideXpModal = el?.closest('.xp-admin-common-modal-dialog') !== null;
+
+        return bodyHasModal || insideXpModal;
+    }
 
     private static openWindow = (windowArr: Window[], anchorEl: HTMLAnchorElement) => {
         const windowId: string = anchorEl.getAttribute('data-id');
@@ -313,7 +326,7 @@ class Launcher {
             }
         }
 
-        // eslint-disable-next-line no-param-reassign
+
         windowArr[windowId] = window.open(anchorEl.href, windowId);
     };
 
@@ -327,7 +340,7 @@ class Launcher {
             .querySelector('.launcher-app-container')
             .querySelectorAll('a');
         for (const appTile of Array.from(appTiles)) {
-            // eslint-disable-next-line no-loop-func
+
             appTile.addEventListener('click', e => {
                 e.preventDefault();
                 if (longpress) {
@@ -336,11 +349,11 @@ class Launcher {
                     Launcher.openWindow(toolWindows, e.currentTarget as HTMLAnchorElement);
                 }
             });
-            // eslint-disable-next-line no-loop-func
+
             appTile.addEventListener('mousedown', () => {
                 startTime = new Date().getTime();
             });
-            // eslint-disable-next-line no-loop-func
+
             appTile.addEventListener('mouseup', () => {
                 endTime = new Date().getTime();
                 longpress = endTime - startTime >= 500;

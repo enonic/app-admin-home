@@ -1,23 +1,60 @@
-.DS_Store
-build/
-temp/
-target/
-.gradle/
-node_modules/
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
 *.iws
 *.ids
 *.iml
 *.ipr
-.idea
-.sass-cache
-npm-debug.log
-.tscache
-.tab
-.tmp
-generated-java
-classes/
-out/
-.xp/
-.eslintcache
+*~
 
-testing/app-users/allure-results/
+# AI
+.claude/
+.cursor/
+
+# Build files
+dist/
+build/
+buildSrc/
+bin/
+target/
+
+# Development files
+.storybook/
+storybook-static/
+docs/
+*storybook.log
+*.local
+.xp/
+
+# Coverage
+**/spec/coverage
+
+# Build tools
+node_modules/
+.pnpm-store/
+.gradle/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Enonic
+.enonic/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Misc
+.cache/
+.temp/
+.tmp/
+generated-java/
+.tsbuildinfo
+.eslintcache

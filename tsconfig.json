@@ -1,32 +1,24 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
-    "sourceMap": true,
-    "types": [
-      "jquery",
-      "q"
-    ],
-    "lib": [
-      "es2018",
-      "es2017",
-      "es2016",
-      "es2015",
-      "dom"
-    ]
-  },
-  "files": [
-    "./src/main/resources/assets/js/home/main.ts",
-    "./src/main/resources/assets/js/launcher/main.ts"
-  ],
-  "exclude": [
-    "build/**/*",
-    "out/**/*",
-    "node_modules/*"
-  ],
-  "include": [
-    "src/**/*",
-    "../lib-admin-ui/src/main/resources/assets/admin/common/js/_**/*.ts",
-    ".xp/dev/lib-admin-ui/**/*.ts"
-  ]
+    "compilerOptions": {
+        "module": "ES2022",
+        "moduleResolution": "bundler",
+        "target": "ES2023",
+        "lib": ["ES2023", "DOM"],
+        "baseUrl": ".",
+        "outDir": "build/resources/main/assets/js/",
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "useDefineForClassFields": false,
+        "allowJs": false,
+        "noImplicitReturns": false,
+        "noImplicitThis": true,
+        "strictNullChecks": false,
+        "skipLibCheck": true,
+        "incremental": true,
+        "isolatedModules": true,
+        "types": ["q"]
+    },
+    "include": ["src/**/*"],
+    "compileOnSave": false,
+    "buildOnSave": false
 }
