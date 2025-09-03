@@ -1,18 +1,19 @@
-import {Body} from '@enonic/lib-admin-ui/dom/Body';
 import {Application} from '@enonic/lib-admin-ui/app/Application';
-import {Path} from '@enonic/lib-admin-ui/rest/Path';
 import {AppBar} from '@enonic/lib-admin-ui/app/bar/AppBar';
-import {ServerEventsListener} from '@enonic/lib-admin-ui/event/ServerEventsListener';
-import {ConnectionDetector} from '@enonic/lib-admin-ui/system/ConnectionDetector';
-import {i18n, Messages} from '@enonic/lib-admin-ui/util/Messages';
-import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
+import {Body} from '@enonic/lib-admin-ui/dom/Body';
+import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
 import {Element} from '@enonic/lib-admin-ui/dom/Element';
 import {ImgEl} from '@enonic/lib-admin-ui/dom/ImgEl';
-import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
-import {WidgetPanel} from './WidgetPanel';
+import {ServerEventsListener} from '@enonic/lib-admin-ui/event/ServerEventsListener';
+import {Path} from '@enonic/lib-admin-ui/rest/Path';
+import {ConnectionDetector} from '@enonic/lib-admin-ui/system/ConnectionDetector';
+import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
+import {LauncherHelper} from '@enonic/lib-admin-ui/util/LauncherHelper';
+import {i18n, Messages} from '@enonic/lib-admin-ui/util/Messages';
 import * as Q from 'q';
 import {resolveScriptConfig} from '../ConfigResolver';
-import {LauncherHelper} from '@enonic/lib-admin-ui/util/LauncherHelper';
+import {getModuleScript, getRequiredAttribute} from '../util/ModuleScriptHelper';
+import {WidgetPanel} from './WidgetPanel';
 
 const containerId = 'home-main-container';
 
@@ -113,10 +114,9 @@ const startApplication = () => {
 }
 
 void (async () => {
-    if (!document.currentScript) {
-        throw Error('Legacy browsers are not supported');
-    }
-    const configScriptId = document.currentScript.getAttribute('data-config-script-id');
+    const currentScript = getModuleScript('home');
+
+    const configScriptId = getRequiredAttribute(currentScript, 'data-config-script-id');
 
     await loadDOM();
     initConfig(configScriptId);

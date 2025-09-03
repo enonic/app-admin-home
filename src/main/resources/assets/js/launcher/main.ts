@@ -532,9 +532,6 @@ class Launcher {
     private getLauncherMainContainer = (): HTMLElement => this.launcherMainContainer || document.querySelector('.launcher-main-container');
 }
 
-const init = (): void => {
-    const launcherConfig: LauncherConfig = getLauncherJsonConfig();
-    new Launcher(launcherConfig);
-};
-
-init();
+(() => {
+    new Launcher(getLauncherJsonConfig());
+})();

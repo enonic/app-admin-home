@@ -1,0 +1,9 @@
+packages:
+  - .
+  - testing
+  - .xp/dev/*
+
+ignoredBuiltDependencies:
+  - edgedriver
+  - esbuild
+  - geckodriver

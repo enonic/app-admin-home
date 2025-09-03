@@ -1,9 +1,10 @@
-import {Body} from '@enonic/lib-admin-ui/dom/Body';
-import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
-import {createAboutDialog} from './aboutdialog';
-import {ModalDialogWithConfirmation} from '@enonic/lib-admin-ui/ui/dialog/ModalDialogWithConfirmation';
 import {DefaultErrorHandler} from '@enonic/lib-admin-ui/DefaultErrorHandler';
+import {Body} from '@enonic/lib-admin-ui/dom/Body';
+import {ModalDialogWithConfirmation} from '@enonic/lib-admin-ui/ui/dialog/ModalDialogWithConfirmation';
+import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 import {resolveScriptConfig} from '../ConfigResolver';
+import {getModuleScript, getRequiredAttribute} from '../util/ModuleScriptHelper';
+import {createAboutDialog} from './aboutdialog';
 
 const getElement = (selector: string): Promise<Element> => {
     const searchedElement: Element = document.querySelector(selector);
@@ -48,12 +49,11 @@ const initAboutDialog = () => {
     }).catch(DefaultErrorHandler.handle);
 };
 
-(() => {
-    if (!document.currentScript) {
-        throw Error('Legacy browsers are not supported');
-    }
+void (() => {
+    const currentScript = getModuleScript('home');
+
     try {
-        const configScriptId = document.currentScript.getAttribute('data-config-script-id');
+        const configScriptId = getRequiredAttribute(currentScript, 'data-config-script-id');
         CONFIG.setConfig(resolveScriptConfig(configScriptId));
 
         initAboutDialog();
