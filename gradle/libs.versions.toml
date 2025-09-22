@@ -1,7 +1,7 @@
 [versions]
 
 junit = "5.13.4"
-mockito = "5.19.0"
+mockito = "5.20.0"
 enonicDefaults = "2.1.5"
 enonicXpGradle = "3.6.1"
 nodeGradle = "7.1.0"
