@@ -1,8 +1,7 @@
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
 plugins {
-    id 'java'
-    alias( libs.plugins.enonic.defaults )
+    id 'base'
     alias( libs.plugins.enonic.xp.base )
     alias( libs.plugins.node.gradle )
 }
@@ -17,17 +16,14 @@ repositories {
 
 configurations {
     distro
+    apps {
+        transitive = false
+    }
 }
 
-def unpackDir = layout.buildDirectory.dir("install").get()
+def unpackDir = layout.buildDirectory.dir( 'install' ).get()
 def distroDir = unpackDir.dir( "enonic-xp-generic-$version" )
-def testDataDir = "$projectDir/test-data/common-config"
-
-def xpHome = "$distroDir/home"
-def configDir = "$xpHome/config"
-def appName = 'app-main'
-def appFile = "$distroDir/system/40/${appName}-${version}.jar"
-def appUrl = project.hasProperty( 'appUrl' ) ? appUrl : "file:///$projectDir/../build/libs/${appName}.jar"
+def xpHome = distroDir.dir('home')
 
 dependencies {
     distro "com.enonic.xp:enonic-xp-generic:${version}@tgz"
@@ -50,27 +46,40 @@ tasks.register( 'copyConfig', Copy ) {
     description = 'Copy common configuration files'
     group = 'setup'
 
-    from testDataDir
+    from layout.projectDirectory.dir('test-config/common-config')
     include '**.*.cfg'
     include '*.properties'
-    into file( configDir )
+    into xpHome.dir('config')
+    mustRunAfter tasks.named( 'unpackDistro' )
+}
+
+tasks.register( 'downloadApps', Copy ) {
+    description = 'Download test applications'
+    group = 'setup'
+
+    from {
+        configurations.apps
+    }
+    into xpHome.dir( 'deploy' )
     mustRunAfter tasks.named( 'unpackDistro' )
 }
 
 tasks.register( 'deployApp', DefaultTask ) {
     description = 'Deploy the main application'
     group = 'setup'
+    def appName = rootProject.tasks.named("jar", Jar).get().archiveBaseName.get()
+    def appFile = distroDir.file("system/40/${appName}-${version}.jar").asFile
 
     outputs.files( appFile )
     outputs.upToDateWhen { false }
     doLast {
-        def f = new File( appFile as String )
-        println "Deleting  ${appFile}. Exists ${f.exists()}"
+        def appUrl = (findProperty('appUrl') ?: "file:///$rootDir/build/libs/${appName}.jar") as String
 
-        f.delete()
+        println "Deleting ${appFile}. Exists ${appFile.exists()}"
+        appFile.delete()
 
         println "Copying from ${appUrl} to ${appFile}"
-        new URL( appUrl as String ).withInputStream { i -> f.withOutputStream { it << i } }
+        uri( appUrl ).toURL().withInputStream { i -> appFile.withOutputStream { it << i } }
     }
     mustRunAfter tasks.named( 'unpackDistro' )
 }
@@ -81,7 +90,6 @@ tasks.register( 'startServer' ) {
     group = 'Test Execution'
     dependsOn tasks.named( 'unpackDistro' )
     doLast {
-        sleep( 5000 )
         logger.lifecycle( 'Starting XP Server at: {}', xpHome )
         logger.lifecycle( 'Server logs will be written to: build/reports/logs/xp.log' )
         def pb
@@ -99,7 +107,41 @@ tasks.register( 'startServer' ) {
         pb.redirectOutput( logsPath.file( 'xp.log' ).asFile )
         pb.redirectErrorStream( true )
         process = pb.start()
-        sleep( 60000 )
+    }
+}
+
+tasks.register( 'waitForServer') {
+    doLast {
+        long maxWaitMs = 60000
+        long deadline = System.nanoTime() + maxWaitMs * 1_000_000L
+
+        boolean ready = false
+        while (!ready && System.nanoTime() < deadline) {
+            logger.lifecycle("Waiting for server server...")
+
+            try {
+                HttpURLConnection conn = (HttpURLConnection) uri("http://localhost:2609/ready").toURL().openConnection()
+                conn.setConnectTimeout(1000)
+                conn.setReadTimeout(1000)
+                conn.connect()
+                int code = conn.getResponseCode()
+                if (code == 200) {
+                    ready = true
+                    break
+                }
+            } catch (IOException ignored) {
+                // Not up yet; retry
+            }
+            sleep(1000)
+
+        }
+        if (ready) {
+            logger.lifecycle('Server is ready.')
+        } else {
+            throw new GradleException("Server not ready after ${maxWaitMs} ms.")
+        }
+
+        sleep(1000)
     }
 }
 
@@ -138,7 +180,7 @@ tasks.register( 'cleanup', Delete ) {
     description = 'Clean up test reports'
     group = 'verification'
 
-    delete './build/reports/allure'
+    delete layout.buildDirectory.dir('reports/allure')
 }
 
 tasks.register( 'generateReportAndStopServer', PnpmTask ) {
@@ -157,8 +199,10 @@ tasks.register( 'w_testAdminHomeChrome', PnpmTask ) {
     dependsOn tasks.named( 'pnpmInstall' )
     dependsOn tasks.named( 'unpackDistro' )
     dependsOn tasks.named( 'copyConfig' )
+    dependsOn tasks.named( 'downloadApps' )
     dependsOn tasks.named( 'deployApp' )
     dependsOn tasks.named( 'startServer' )
+    dependsOn tasks.named( 'waitForServer' )
     args = ['--color', 'run', 'test_admin_home:wdio_chrome']
     finalizedBy tasks.named( 'generateReportAndStopServer' )
 }
