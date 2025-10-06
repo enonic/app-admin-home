@@ -1,6 +1,6 @@
 [versions]
 
-junit = "5.13.4"
+junit = "6.0.0"
 mockito = "5.20.0"
 enonicDefaults = "2.1.6"
 enonicXpGradle = "3.6.1"
