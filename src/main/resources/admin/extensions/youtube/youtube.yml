@@ -1,0 +1,5 @@
+displayName: "Enonic Webinars"
+interfaces:
+  - "admin.dashboard.disabled"
+config:
+  width: "full"

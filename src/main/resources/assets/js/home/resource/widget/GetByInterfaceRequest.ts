@@ -3,16 +3,16 @@ import {ResourceRequest as WidgetResourceRequest} from './ResourceRequest';
 export class GetByInterfaceRequest
     extends WidgetResourceRequest {
 
-    private readonly widgetInterface: string;
+    private readonly extensionInterface: string;
 
     constructor(widgetInterface: string) {
         super();
-        this.widgetInterface = widgetInterface;
+        this.extensionInterface = widgetInterface;
     }
 
     getParams(): object {
         return {
-            widgetInterface: this.widgetInterface,
+            'interface': this.extensionInterface,
         };
     }
 }
