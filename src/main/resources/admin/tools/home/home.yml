@@ -1,0 +1,9 @@
+allow:
+  - "role:system.admin"
+  - "role:system.admin.login"
+apis:
+  - "admin:extension"
+  - "admin:status"
+  - "admin:event"
+interfaces:
+  - "admin.dashboard"

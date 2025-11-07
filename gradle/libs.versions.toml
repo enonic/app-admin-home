@@ -7,7 +7,7 @@ enonicXpGradle = "4.0.0-A1"
 nodeGradle = "7.1.0"
 
 # App
-libAsset = "1.0.3"
+libAsset = "2.0.0-SNAPSHOT"
 libMustache = "2.1.1"
 
 [libraries]
