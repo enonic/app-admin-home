@@ -1,9 +1,0 @@
-<widget xmlns="urn:enonic:xp:model:1.0">
-  <display-name>Enonic Webinars</display-name>
-  <interfaces>
-    <interface>admin.dashboard.disabled</interface>
-  </interfaces>
-  <config>
-    <property name="width" value="full"/>
-  </config>
-</widget>

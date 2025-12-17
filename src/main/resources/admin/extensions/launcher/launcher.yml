@@ -1,0 +1,8 @@
+displayName:
+  text: "Launcher"
+  i18n: "Launcher"
+allow:
+  - "role:system.admin"
+  - "role:system.admin.login"
+interfaces:
+  - "generic"
