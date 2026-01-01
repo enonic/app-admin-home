@@ -60,7 +60,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew $GRADLE_ARGS
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: app-main
           path: build/libs/app-main.jar
@@ -125,7 +125,7 @@ jobs:
           SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           SLACK_COLOR: ${{ job.status }}
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         if: always() && steps.selenium.conclusion != 'skipped'
         with:
           name: 'ui-test-report-${{ matrix.suite }}'
