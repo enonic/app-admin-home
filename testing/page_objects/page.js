@@ -43,6 +43,24 @@ class Page {
         return await element.getText();
     }
 
+    async handleError(errorMessage, screenshotName, error) {
+        if (Error.prototype.hasOwnProperty('cause')) {
+            throw new Error(`${errorMessage}: ${error.message}  [screenshot]: ${screenshotName} `, {cause: error});
+        }
+        const wrapped = new Error(`${errorMessage}: ${error.message} `);
+        wrapped.cause = error;
+        wrapped.screenshotTaken = error.screenshotTaken;
+        wrapped.screenshotName = error.screenshotName;
+
+        if (!wrapped.screenshotTaken) {
+            wrapped.screenshotName = screenshotName
+            wrapped.screenshotTaken = true;
+            wrapped.message += `[Screenshot]: ${screenshotName}`
+            await this.saveScreenshotUniqueName(wrapped.screenshotName);
+        }
+        throw wrapped;
+    }
+
     async saveScreenshot(name) {
         try {
             let screenshotsDir = path.join(__dirname, '/../build/reports/screenshots/');
