@@ -4,6 +4,7 @@
 const appConst = require("./app_const");
 const webDriverHelper = require("./WebDriverHelper");
 const LoginPage = require('../page_objects/login.page');
+const LauncherPanel = require('../page_objects/launcher.panel')
 const fs = require('fs');
 const path = require('path');
 module.exports = {
@@ -15,11 +16,26 @@ module.exports = {
             return webDriverHelper.browser;
         }
     },
-    async doLogin(){
+    async doLogin() {
         let loginPage = new LoginPage();
         await loginPage.waitForPageLoaded(appConst.DELETE_COOKIE_TIMEOUT);
         await loginPage.doLogin();
         await loginPage.pause(1000);
+    },
+    async doLogout() {
+        const launcherPanel = new LauncherPanel();
+        const loginPage = new LoginPage();
+        try {
+            const isDisplayed = await launcherPanel.isPanelOpened();
+            if (!isDisplayed) {
+                await launcherPanel.clickOnLauncherToggler();
+            }
+            await launcherPanel.clickOnLogoutLink();
+            await loginPage.waitForPageLoaded();
+        } catch (err) {
+            return {success: false, err};
+        }
+
     },
     doDeleteCookie() {
         return this.getBrowser().getCookies().then(result => {

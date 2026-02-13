@@ -102,10 +102,17 @@ describe('Home Page, Shortcut widget specification - check widget items and open
 
     beforeEach(async () => {
         await testUtils.doDeleteCookie();
-        return await testUtils.doLogin();
+        if (typeof browser !== 'undefined') {
+            await testUtils.getBrowser().setWindowSize(appConst.BROWSER_WIDTH, appConst.BROWSER_HEIGHT);
+        }
+        await testUtils.doLogin();
     });
 
-    afterEach(() => testUtils.doDeleteCookie());
+    afterEach(async () => {
+        //TODO uncomment it
+        //await testUtils.doDeleteCookie();
+        await testUtils.doLogout();
+    });
     before(() => {
         return console.log('specification starting: ' + this.title);
     });

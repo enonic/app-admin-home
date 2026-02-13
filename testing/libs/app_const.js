@@ -11,6 +11,9 @@ module.exports = Object.freeze({
     INSTALL_APP_TIMEOUT: 30000,
     TIMEOUT_SUITE: 180000,
     STANDARD_ID_PROVIDER: 'Standard ID Provider',
+    BROWSER_WIDTH: 1950,
+    BROWSER_HEIGHT: 1050,
+
 
     generateRandomName: function (part) {
         return part + Math.round(Math.random() * 1000000);
