@@ -16,16 +16,16 @@ const getConfig = (req) => {
             path: 'images/background.webp'
         }),
         xpVersion: admin.getVersion(),
-        launcherUrl: admin.widgetUrl({
+        launcherUrl: admin.extensionUrl({
             application: app.name,
-            widget: 'launcher',
+            extension: 'launcher',
             params: {
                 autoOpen: true,
                 appName: app.name,
             },
         }),
         widgetApiUrl: portal.apiUrl({
-            api: 'admin:widget'
+            api: 'admin:extension'
         }),
         statusApiUrl: portal.apiUrl({
             api: 'admin:status',
