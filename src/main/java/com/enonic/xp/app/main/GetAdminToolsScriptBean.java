@@ -10,6 +10,7 @@ import com.enonic.xp.admin.tool.AdminToolDescriptorService;
 import com.enonic.xp.app.ApplicationKey;
 import com.enonic.xp.context.ContextAccessor;
 import com.enonic.xp.i18n.LocaleService;
+import com.enonic.xp.i18n.MessageBundle;
 import com.enonic.xp.script.bean.BeanContext;
 import com.enonic.xp.script.bean.ScriptBean;
 import com.enonic.xp.script.serializer.MapSerializable;
@@ -24,21 +25,26 @@ public final class GetAdminToolsScriptBean
 
     private ApplicationKey appMainKey;
 
-    public List<MapSerializable> execute( final List<String> locales )
+    public List<MapSerializable> execute( final List<String> localeTags )
     {
-        final PrincipalKeys principals = ContextAccessor.current().
-            getAuthInfo().
-            getPrincipals();
-        final StringTranslator stringTranslator = new StringTranslator( this.localeService, locales.stream().map( Locale::forLanguageTag ).toList() );
+        final List<Locale> locales = localeTags.stream().map( Locale::forLanguageTag ).toList();
+
+        final PrincipalKeys principals = ContextAccessor.current().getAuthInfo().getPrincipals();
 
         return adminToolDescriptorService.getAllowedAdminToolDescriptors( principals )
             .stream()
-            .filter( d -> !appMainKey.equals( d.getApplicationKey() )  )
+            .filter( d -> !appMainKey.equals( d.getApplicationKey() ) )
             .sorted( Comparator.nullsLast( Comparator.comparing( AdminToolDescriptor::getDisplayName ) ) )
             .map( adminToolDescriptor -> new AdminToolMapper( adminToolDescriptor,
                                                               adminToolDescriptorService.getIconByKey( adminToolDescriptor.getKey() ),
-                                                              stringTranslator ) )
+                                                              getMessageBundle( adminToolDescriptor, locales ) ) )
             .collect( Collectors.toList() );
+    }
+
+    private MessageBundle getMessageBundle( final AdminToolDescriptor adminToolDescriptor, final List<Locale> locales )
+    {
+        final ApplicationKey applicationKey = adminToolDescriptor.getKey().getApplicationKey();
+        return this.localeService.getBundle( applicationKey, this.localeService.getSupportedLocale( locales, applicationKey ) );
     }
 
     @Override
