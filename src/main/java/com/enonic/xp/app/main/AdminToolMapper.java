@@ -32,7 +32,7 @@ final class AdminToolMapper
         gen.value( "displayName",
                    Optional.ofNullable( value.getDisplayNameI18nKey() ).map( messages::localize ).orElseGet( value::getDisplayName ) );
         gen.value( "description",
-                   Optional.ofNullable( value.getDescription() ).map( messages::localize ).orElseGet( value::getDisplayName ) );
+                   Optional.ofNullable( value.getDescription() ).map( messages::localize ).orElseGet( value::getDescription ) );
         gen.value( "icon", icon );
     }
 
