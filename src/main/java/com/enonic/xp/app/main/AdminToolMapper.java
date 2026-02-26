@@ -1,5 +1,6 @@
 package com.enonic.xp.app.main;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import com.enonic.xp.admin.tool.AdminToolDescriptor;
@@ -12,14 +13,11 @@ final class AdminToolMapper
 {
     private final AdminToolDescriptor value;
 
-    private final String icon;
-
     private final MessageBundle messages;
 
-    AdminToolMapper( final AdminToolDescriptor value, final String icon, final MessageBundle messages )
+    AdminToolMapper( final AdminToolDescriptor value, final MessageBundle messages )
     {
         this.value = value;
-        this.icon = icon;
         this.messages = messages;
     }
 
@@ -33,7 +31,7 @@ final class AdminToolMapper
                    Optional.ofNullable( value.getDisplayNameI18nKey() ).map( messages::localize ).orElseGet( value::getDisplayName ) );
         gen.value( "description",
                    Optional.ofNullable( value.getDescription() ).map( messages::localize ).orElseGet( value::getDescription ) );
-        gen.value( "icon", icon );
+        gen.value( "icon", value.getIcon() != null ? new String( value.getIcon().toByteArray(), StandardCharsets.UTF_8 ) : null );
     }
 
 

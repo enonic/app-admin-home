@@ -3,7 +3,7 @@ package com.enonic.xp.app.main;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
 import com.enonic.xp.admin.tool.AdminToolDescriptor;
 import com.enonic.xp.admin.tool.AdminToolDescriptorService;
@@ -25,26 +25,27 @@ public final class GetAdminToolsScriptBean
 
     private ApplicationKey appMainKey;
 
-    public List<MapSerializable> execute( final List<String> localeTags )
+    public List<? extends MapSerializable> execute( final List<String> localeTags )
     {
         final List<Locale> locales = localeTags.stream().map( Locale::forLanguageTag ).toList();
 
         final PrincipalKeys principals = ContextAccessor.current().getAuthInfo().getPrincipals();
 
-        return adminToolDescriptorService.getAllowedAdminToolDescriptors( principals )
+        return adminToolDescriptorService.getAll()
             .stream()
-            .filter( d -> !appMainKey.equals( d.getApplicationKey() ) )
+            .filter( Predicate.not( adminToolDescriptor -> adminToolDescriptor.getKey().getApplicationKey().equals( appMainKey ) ) )
+            .filter( adminToolDescriptor -> adminToolDescriptor.isAccessAllowed( principals ) )
             .sorted( Comparator.nullsLast( Comparator.comparing( AdminToolDescriptor::getDisplayName ) ) )
             .map( adminToolDescriptor -> new AdminToolMapper( adminToolDescriptor,
-                                                              adminToolDescriptorService.getIconByKey( adminToolDescriptor.getKey() ),
-                                                              getMessageBundle( adminToolDescriptor, locales ) ) )
-            .collect( Collectors.toList() );
+                                                              getMessageBundle( adminToolDescriptor.getKey().getApplicationKey(),
+                                                                                locales ) ) )
+            .toList();
+
     }
 
-    private MessageBundle getMessageBundle( final AdminToolDescriptor adminToolDescriptor, final List<Locale> locales )
+    private MessageBundle getMessageBundle( final ApplicationKey appKey, final List<Locale> locales )
     {
-        final ApplicationKey applicationKey = adminToolDescriptor.getKey().getApplicationKey();
-        return this.localeService.getBundle( applicationKey, this.localeService.getSupportedLocale( locales, applicationKey ) );
+        return this.localeService.getBundle( appKey, this.localeService.getSupportedLocale( locales, appKey ) );
     }
 
     @Override
