@@ -13,7 +13,7 @@
     "@wdio/concise-reporter": "^9.24.0",
     "@wdio/local-runner": "^9.24.0",
     "@wdio/mocha-framework": "^9.24.0",
-    "allure-commandline": "^2.36.0",
+    "allure-commandline": "^2.37.0",
     "properties-reader": "^2.3.0",
     "webdriverio": "9.24.0"
   },
