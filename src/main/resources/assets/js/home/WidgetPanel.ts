@@ -7,7 +7,7 @@ import {LoadMask} from '@enonic/lib-admin-ui/ui/mask/LoadMask';
 import * as Q from 'q';
 import {DashboardWidget} from './resource/widget/DashboardWidget';
 import {GetDashboardWidgetsRequest} from './resource/widget/GetDashboardWidgetsRequest';
-import {WidgetElement, WidgetHelper} from '@enonic/lib-admin-ui/widget/WidgetHelper';
+import {DashboardExtension} from './DashboardExtension';
 
 export class WidgetPanel
     extends DivEl {
@@ -184,17 +184,18 @@ export class WidgetPanel
             });
     }
 
-    private renderWidget(widget: DashboardWidget, widgetContainer: LibAdminElement, html: string): Q.Promise<void> {
-         return WidgetHelper.createFromHtmlAndAppend(html, widgetContainer)
-            .then(({el}: WidgetElement) => {
-                if (widget.hasHeader()) {
-                    el.insertChild(new H5El('widget-header').setHtml(widget.getDisplayName()), 0);
-                }
+    private renderWidget(widget: DashboardWidget, widgetContainer: LibAdminElement, html: string): Promise<void> {
+        const widgetContents = new DivEl('widget-contents');
 
-                el.addClass('widget-contents');
-                widgetContainer.addClass('loaded');
+        if (widget.hasHeader()) {
+            widgetContents.appendChild(new H5El('widget-header').setHtml(widget.getDisplayName()));
+        }
 
-                return Q.resolve();
-            });
+        const extension = DashboardExtension.create();
+        widgetContents.getHTMLElement().appendChild(extension);
+        widgetContainer.appendChild(widgetContents);
+        widgetContainer.addClass('loaded');
+
+        return extension.setHtml(html);
     }
 }
