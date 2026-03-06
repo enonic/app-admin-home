@@ -29,7 +29,7 @@
       .widget-contents {
         width: 100%;
         height: 100%;
-        overflow: auto;
+        overflow: visible;
         box-sizing: border-box;
 
         .widget-header {
@@ -37,13 +37,18 @@
           font-size: 14px;
           font-weight: normal;
           letter-spacing: 1px;
+          color: @admin-white;
+        }
+
+        dashboard-extension {
+          display: block;
         }
       }
 
       &.loaded {
         margin: 0;
         opacity: 1;
-        transition: opacity 2s;
+        transition: opacity 1s;
 
         &.width-auto {
           width: fit-content;
