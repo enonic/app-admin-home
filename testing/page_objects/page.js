@@ -28,6 +28,7 @@ class Page {
     keys(value) {
         return this.browser.keys(value);
     }
+
     pause(ms) {
         return this.browser.pause(ms);
     }
@@ -65,7 +66,7 @@ class Page {
         try {
             let screenshotsDir = path.join(__dirname, '/../build/reports/screenshots/');
             if (!fs.existsSync(screenshotsDir)) {
-                fs.mkdirSync(screenshotsDir, { recursive: true });
+                fs.mkdirSync(screenshotsDir, {recursive: true});
             }
             await this.getBrowser().saveScreenshot(screenshotsDir + name + '.png');
             console.log('screenshot is saved ' + name);
@@ -73,6 +74,7 @@ class Page {
             console.log('screenshot was not saved ' + err);
         }
     }
+
     async saveScreenshotUniqueName(namePart) {
         let screenshotName = appConst.generateRandomName(namePart);
         await this.saveScreenshot(screenshotName);
@@ -84,12 +86,12 @@ class Page {
         return element.isDisplayed();
     }
 
-    async waitForElementNotDisplayed(selector, ms) {
+    async waitForElementNotDisplayed(selector, ms = appConst.mediumTimeout) {
         let element = await this.findElement(selector);
         return element.waitForDisplayed({timeout: ms, reverse: true});
     }
 
-    async waitForElementDisplayed(selector, ms) {
+    async waitForElementDisplayed(selector, ms = appConst.mediumTimeout) {
         let element = await this.findElement(selector);
         return element.waitForDisplayed({timeout: ms});
     }
@@ -98,12 +100,19 @@ class Page {
         await this.keys('Escape');
         return await this.pause(500);
     }
+
     getBrowser() {
         return this.browser;
     }
+
     async getAttribute(selector, attributeName) {
         let element = await this.findElement(selector);
         return await element.getAttribute(attributeName);
+    }
+
+    async getShadowElement(hostSelector, innerSelector) {
+        const host = await this.getBrowser().$(hostSelector)
+        return await host.shadow$(innerSelector);
     }
 }
 

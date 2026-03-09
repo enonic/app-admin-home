@@ -5,45 +5,55 @@
   box-sizing: border-box;
   overflow: auto;
 
-  .widget-panel {
+  .dashboard-extension-panel {
     width: 100%;
     height: calc(100vh - 54px);
     padding-top: 10px;
     z-index: 1;
     position: relative;
     display: grid;
-    grid-template-columns: minmax(100%, auto);
-    grid-template-rows: repeat(2, minmax(50%, auto));
+    grid-template-columns: minmax(100%, 1fr);
+    grid-template-rows: repeat(2, minmax(50%, 1fr));
     grid-auto-flow: dense;
+    gap: 20px;
 
-    .widget-placeholder {
+    .extension-placeholder {
       width: auto;
       height: auto;
       display: flex;
       flex-direction: column;
       grid-column: span 1;
       padding: 10px;
-      margin: 10px;
       opacity: 0;
+      overflow: hidden;
 
-      .widget-contents {
+      .extension-container {
         width: 100%;
         height: 100%;
-        overflow: auto;
+        overflow: visible;
         box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
 
-        .widget-header {
+        .extension-header {
           margin: 0 0 0.75em 0;
           font-size: 14px;
           font-weight: normal;
           letter-spacing: 1px;
+          color: @admin-white;
+          margin-bottom: 0;
+        }
+
+        dashboard-extension {
+          display: block;
+          flex: 1;
+          min-height: 0;
         }
       }
 
       &.loaded {
-        margin: 0;
         opacity: 1;
-        transition: opacity 2s;
+        transition: opacity 1s;
 
         &.width-auto {
           width: fit-content;
@@ -75,10 +85,9 @@
       }
 
       &.style-custom {
-        .widget-contents {
-          .widget-header {
+        .extension-container {
+          .extension-header {
             text-shadow: 0 0 1px @admin-black, 0 0 1px @admin-black, 0 0 1px @admin-black, 0 0 1px @admin-black;
-            margin-block-start: 0.67em;
             margin-block-end: 0;
           }
         }
@@ -88,14 +97,14 @@
         opacity: 0.9;
         box-sizing: border-box;
 
-        .widget-contents {
+        .extension-container {
           padding: 10px;
           background-color: hsl(0, 0%, 100%);
           border-radius: 4px;
           -webkit-box-shadow: 1px 1px 5px 0 hsl(0deg 0% 0% / 20%), 0 5px 16px 0 hsl(0deg 0% 0% / 5%);
           box-shadow: 1px 1px 5px 0 hsl(0deg 0% 0% / 20%), 0 5px 16px 0 hsl(0deg 0% 0% / 5%);
 
-          .widget-header {
+          .extension-header {
             color: @admin-font-gray2;
           }
         }
@@ -114,10 +123,10 @@
 
 @media screen and (min-width: 481px) {
   #home-main-container {
-    .widget-panel {
-      grid-template-columns: repeat(2, minmax(50%, auto));
+    .dashboard-extension-panel {
+      grid-template-columns: repeat(2, minmax(50%, 1fr));
 
-      .widget-placeholder {
+      .extension-placeholder {
 
         &.width- {
           &small,
@@ -137,10 +146,10 @@
 
 @media screen and (min-width: 769px) {
   #home-main-container {
-    .widget-panel {
-      grid-template-columns: repeat(3, minmax(33%, auto));
+    .dashboard-extension-panel {
+      grid-template-columns: repeat(3, minmax(33%, 1fr));
 
-      .widget-placeholder {
+      .extension-placeholder {
         &.width- {
           &small {
             grid-column: span 1;
@@ -162,13 +171,10 @@
 
 @media screen and (min-width: 1201px) {
   #home-main-container {
+    .dashboard-extension-panel {
+      grid-template-columns: repeat(4, minmax(25%, 1fr));
 
-    .widget-panel {
-      grid-template-columns: repeat(4, minmax(25%, auto));
-
-      .widget-placeholder {
-        margin: 20px;
-
+      .extension-placeholder {
         &.width- {
           &small {
             grid-column: span 1;
@@ -193,10 +199,10 @@
 
 @media screen and (min-height: 481px) {
   #home-main-container {
-    .widget-panel {
-      grid-template-rows: repeat(3, minmax(33%, auto));
+    .dashboard-extension-panel {
+      grid-template-rows: repeat(3, minmax(33%, 1fr));
 
-      .widget-placeholder {
+      .extension-placeholder {
         &.height- {
           &small {
             grid-row: span 1;
@@ -218,10 +224,10 @@
 
 @media screen and (min-height: 769px) {
   #home-main-container {
-    .widget-panel {
-      grid-template-rows: repeat(4, minmax(25%, auto));
+    .dashboard-extension-panel {
+      grid-template-rows: repeat(4, minmax(25%, 1fr));
 
-      .widget-placeholder {
+      .extension-placeholder {
         &.height- {
           &small {
             grid-row: span 1;

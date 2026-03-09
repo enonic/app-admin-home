@@ -3,7 +3,7 @@ import {Element as LibAdminElement} from '@enonic/lib-admin-ui/dom/Element';
 import {KeyBinding} from '@enonic/lib-admin-ui/ui/KeyBinding';
 import {KeyBindings} from '@enonic/lib-admin-ui/ui/KeyBindings';
 import {AppHelper} from '@enonic/lib-admin-ui/util/AppHelper';
-import {WidgetHelper} from '@enonic/lib-admin-ui/widget/WidgetHelper';
+import {ExtensionHelper} from '@enonic/lib-admin-ui/extension/ExtensionHelper';
 import {ThemeManager} from './ThemeManager';
 
 type JSONObject = Record<string, string>;
@@ -224,7 +224,7 @@ class Launcher {
     private fetchLauncherContents = (): Promise<LibAdminElement> => {
         return fetch(this.config.launcherUrl)
             .then(response => response.text())
-            .then((html: string) => WidgetHelper.createFromHtml(html))
+            .then((html: string) => ExtensionHelper.createFromHtml(html))
             .catch((e: Error) => {
                 throw new Error(`Failed to fetch page: ${e.toString()}`);
             });
@@ -303,7 +303,7 @@ class Launcher {
         if (!isHomeApp) return false;
 
         const el = Launcher.toElement(target);
-        const bodyHasModal = document.body.classList.contains('modal-dialog');
+        const bodyHasModal = document.body.classList?.contains('modal-dialog');
         const insideXpModal = el?.closest('.xp-admin-common-modal-dialog') !== null;
 
         return bodyHasModal || insideXpModal;

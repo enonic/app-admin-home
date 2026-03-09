@@ -12,11 +12,10 @@ class HomePage extends Page {
 
     async waitForLoaded() {
         try {
-             await this.waitForElementDisplayed(XPATH.container, appConst.mediumTimeout);
-             await this.pause(1000);
+            await this.waitForElementDisplayed(XPATH.container, appConst.mediumTimeout);
+            await this.pause(1000);
         } catch (err) {
-            let screenshot = appConst.generateRandomName('err_home_page');
-            throw new Error("Home Page should be loaded! screenshot:" + screenshot + ' ' + err);
+            await this.handleError(`Home Page should be loaded`, 'err_home_page_load', err);
         }
     }
 }
