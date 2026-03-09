@@ -1,15 +1,15 @@
 import * as Q from 'q';
 import {GetByInterfaceRequest} from './GetByInterfaceRequest';
-import {DashboardWidget} from './DashboardWidget';
+import {DashboardExtension} from './DashboardExtension';
 
-export class GetDashboardWidgetsRequest
+export class GetDashboardExtensionsRequest
     extends GetByInterfaceRequest {
 
     constructor() {
         super('admin.dashboard');
     }
 
-    fetchWidgets(): Q.Promise<DashboardWidget[]> {
+    fetchExtensions(): Q.Promise<DashboardExtension[]> {
         return this.sendAndParse();
     }
 }

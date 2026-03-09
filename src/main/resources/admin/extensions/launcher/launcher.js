@@ -46,7 +46,7 @@ exports.get = function(req) {
         adminTools[i].cls = adminTools[i].appId === config.appName ? 'active' : '';
     }
 
-    const userIconUrl = assetLib.assetUrl({ path: 'icons/widgets/user.svg' });
+    const userIconUrl = assetLib.assetUrl({ path: 'icons/extensions/user.svg' });
     const logoutUrl = portal.logoutUrl({
         redirect: admin.getHomeToolUrl({ type: 'absolute' })
     });

@@ -1,5 +1,5 @@
-import {Widget, WidgetConfig, WidgetBuilder} from '@enonic/lib-admin-ui/content/Widget';
-import {WidgetDescriptorJson} from '@enonic/lib-admin-ui/content/json/WidgetDescriptorJson';
+import {Extension, ExtensionConfig, ExtensionBuilder} from '@enonic/lib-admin-ui/extension/Extension';
+import {ExtensionDescriptorJson} from '@enonic/lib-admin-ui/extension/ExtensionDescriptorJson';
 
 enum WidgetSize {
     AUTO = 'auto',
@@ -14,13 +14,13 @@ enum WidgetStyle {
     CUSTOM = 'custom'
 }
 
-export class DashboardWidget extends Widget<DashboardWidgetBuilder, DashboardWidgetConfig> {
-    protected createConfig(): DashboardWidgetConfig {
-        return new DashboardWidgetConfig();
+export class DashboardExtension extends Extension<DashboardExtensionBuilder, DashboardExtensionConfig> {
+    protected createConfig(): DashboardExtensionConfig {
+        return new DashboardExtensionConfig();
     }
 
-    static fromJson(json: WidgetDescriptorJson): DashboardWidget {
-        return new DashboardWidgetBuilder().fromJson(json).build();
+    static fromJson(json: ExtensionDescriptorJson): DashboardExtension {
+        return new DashboardExtensionBuilder().fromJson(json).build();
     }
 
     getHeight(): string {
@@ -48,14 +48,14 @@ export class DashboardWidget extends Widget<DashboardWidgetBuilder, DashboardWid
     }
 }
 
-class DashboardWidgetConfig extends WidgetConfig {
+class DashboardExtensionConfig extends ExtensionConfig {
     private width: WidgetSize;
     private height: WidgetSize;
     private style: WidgetStyle;
     private order: number;
     private header: boolean;
 
-    fromJson(json: Record<string, string>): DashboardWidgetConfig {
+    fromJson(json: Record<string, string>): DashboardExtensionConfig {
         this.width = WidgetSize[json.width?.toUpperCase()] as WidgetSize || WidgetSize.MEDIUM;
         this.height = WidgetSize[json.height?.toUpperCase()] as WidgetSize || WidgetSize.MEDIUM;
         this.style = WidgetStyle[json.style?.toUpperCase()] as WidgetStyle || WidgetStyle.AUTO;
@@ -86,19 +86,19 @@ class DashboardWidgetConfig extends WidgetConfig {
     }
 }
 
-class DashboardWidgetBuilder extends WidgetBuilder<DashboardWidgetConfig> {
-    fromJson(json: WidgetDescriptorJson): DashboardWidgetBuilder {
+class DashboardExtensionBuilder extends ExtensionBuilder<DashboardExtensionConfig> {
+    fromJson(json: ExtensionDescriptorJson): DashboardExtensionBuilder {
         super.fromJson(json);
 
         return this;
     }
 
-    protected createConfig(json: Record<string, string>): DashboardWidgetConfig {
-        return new DashboardWidgetConfig().fromJson(json);
+    protected createConfig(json: Record<string, string>): DashboardExtensionConfig {
+        return new DashboardExtensionConfig().fromJson(json);
     }
 
-    build(): DashboardWidget {
-        return new DashboardWidget(this);
+    build(): DashboardExtension {
+        return new DashboardExtension(this);
     }
 }
 

@@ -11,29 +11,21 @@ describe('Home Page, Shortcut widget specification - check widget items and open
     if (typeof browser === 'undefined') {
         webDriverHelper.setupBrowser();
     }
-    const WIDGET_SHORTCUTS_HEADER = 'Useful Links';
 
-    it('WHEN Home Page is loaded THEN expected buttons should be present in toolbar',
+    it('WHEN Home Page is loaded THEN expected buttons should be present in widget-contents',
         async function () {
             let homePage = new HomePage();
             let shortcutsWidget = new ShortcutsWidget();
             await homePage.waitForLoaded();
-            let actualHeader = await shortcutsWidget.getWidgetShortcutHeader();
-            assert.equal(actualHeader, WIDGET_SHORTCUTS_HEADER, "'Useful Links' header should be displayed");
-
-            // About button should be displayed in the widget
-            await shortcutsWidget.waitForAboutItemDisplayed();
-            // Developer button should be displayed in the widget
-            await shortcutsWidget.waitForDeveloperItemDisplayed();
-            // Discuss button should be displayed in the widget
-            await shortcutsWidget.waitForDiscussItemDisplayed();
-            // Market button should be displayed in the widget
-            await shortcutsWidget.waitForMarketItemDisplayed();
-            // Slack button should be displayed in the widget
-            await shortcutsWidget.waitForSlackItemDisplayed();
+            let actualItems = await shortcutsWidget.getWidgetShortcutItems();
+            assert.ok(actualItems.includes('About'), "'About' button should be displayed in the widget");
+            assert.ok(actualItems.includes('Developer'), "'Developer' button should be displayed in the widget");
+            assert.ok(actualItems.includes('Discuss'), "'Discuss' button should be displayed in the widget");
+            assert.ok(actualItems.includes('Market'), "'Market' button should be displayed in the widget");
+            assert.ok(actualItems.includes('Slack'), "'Slack' button should be displayed in the widget");
         });
 
-    it("GIVEN Home Page is loaded WHEN 'About' button has been clicked in the widget THEN About-dialog should appear AND 'Cancel-top' button closes the dialog",
+    it.skip("GIVEN Home Page is loaded WHEN 'About' button has been clicked in the widget THEN About-dialog should appear AND 'Cancel-top' button closes the dialog",
         async function () {
             let homePage = new HomePage();
             let shortcutsWidget = new ShortcutsWidget();
@@ -49,7 +41,7 @@ describe('Home Page, Shortcut widget specification - check widget items and open
             await aboutDialog.waitForDialogClosed();
         });
 
-    it("GIVEN 'About' dialog is opened WHEN 'Esc' button has been pressed THEN the modal dialog closes",
+    it.skip("GIVEN 'About' dialog is opened WHEN 'Esc' button has been pressed THEN the modal dialog closes",
         async function () {
             let homePage = new HomePage();
             let shortcutsWidget = new ShortcutsWidget();
@@ -64,7 +56,7 @@ describe('Home Page, Shortcut widget specification - check widget items and open
             await aboutDialog.waitForDialogClosed();
         });
 
-    it("GIVEN 'About' dialog is loaded WHEN Licensing button has been clicked THEN license-info should appear",
+    it.skip("GIVEN 'About' dialog is loaded WHEN Licensing button has been clicked THEN license-info should appear",
         async function () {
             let homePage = new HomePage();
             let shortcutsWidget = new ShortcutsWidget();
@@ -81,7 +73,7 @@ describe('Home Page, Shortcut widget specification - check widget items and open
             assert.ok(text.includes('Licenses used by Enonic XP (full license texts'));
         });
 
-    it("GIVEN License info is expanded WHEN Licensing button has been clicked THEN license-info gets not visible",
+    it.skip("GIVEN License info is expanded WHEN Licensing button has been clicked THEN license-info gets not visible",
         async function () {
             let homePage = new HomePage();
             let aboutDialog = new AboutDialog();

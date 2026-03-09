@@ -60,5 +60,17 @@ module.exports = {
         }).catch(err => {
             return console.log('screenshot was not saved ' + screenshotsDir + 'utils  ' + err);
         })
+    },
+    async getTextFromShadow(hostSelector, innerSelector) {
+        const host = await this.findElement('dashboard-extension');
+        //await host.waitForExist();
+        const divs = await host.shadow$$('a > div');
+
+        for (const div of divs) {
+            console.log(await div.getText())
+        }
+    },
+    findElement(selector) {
+        return this.getBrowser().$(selector);
     }
 };

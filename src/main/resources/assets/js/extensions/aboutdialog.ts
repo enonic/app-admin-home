@@ -84,8 +84,8 @@ const createLicenseInfoContainer = (): void => {
     outerContainer.appendChildren(button, licenseInfoHeader, licenseInfoContainer);
 };
 
-export const createAboutDialog = (): ModalDialogWithConfirmation => {
-    const aboutDialog: ModalDialogWithConfirmation = new ModalDialogWithConfirmation({skipTabbable: true});
+export const createAboutDialog = (container: HTMLElement): ModalDialogWithConfirmation => {
+    const aboutDialog: ModalDialogWithConfirmation = new ModalDialogWithConfirmation({skipTabbable: true, container: Element.fromHtmlElement(container)});
 
     aboutDialog.onKeyDown((event: KeyboardEvent) => {
         if (KeyHelper.isEscKey(event)) {

@@ -24,7 +24,7 @@ const getConfig = (req) => {
                 appName: app.name,
             },
         }),
-        widgetApiUrl: portal.apiUrl({
+        extensionApiUrl: portal.apiUrl({
             api: 'admin:extension'
         }),
         statusApiUrl: portal.apiUrl({
@@ -33,7 +33,7 @@ const getConfig = (req) => {
         eventApiUrl: portal.apiUrl({
             api: 'admin:event',
         }),
-        phrases: JSON.stringify(i18n.getPhrases(req.locales, ['i18n/phrases']), null, 4),
+        phrases: JSON.stringify(i18n.getPhrases(req.locales, ['i18n/phrases', 'i18n/common']), null, 4),
     };
 }
 

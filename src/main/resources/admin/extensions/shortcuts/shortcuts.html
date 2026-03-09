@@ -1,9 +1,9 @@
-<widget id="widget-shortcuts">
+<div id="extension-shortcuts">
     <script type="module" src="{{jsUrl}}" data-config-script-id="{{configScriptId}}"></script>
     <link rel="stylesheet" href="{{stylesUrl}}" type="text/css" media="all"/>
-    <div class="widget-shortcuts-container">
+    <div class="extension-shortcuts-container">
         {{#dashboardIcons}}
-        <div class="{{cls}} widget-shortcuts-item" tabindex="0">
+        <div class="{{cls}} extension-shortcuts-item" tabindex="0">
             {{#link}}
             <a href="{{link}}" target="_blank" tabindex="-1">
             {{/link}}
@@ -15,4 +15,4 @@
         </div>
         {{/dashboardIcons}}
     </div>
-</widget>
+</div>
