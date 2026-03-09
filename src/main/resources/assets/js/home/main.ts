@@ -13,7 +13,7 @@ import {i18n, Messages} from '@enonic/lib-admin-ui/util/Messages';
 import * as Q from 'q';
 import {resolveScriptConfig} from '../ConfigResolver';
 import {getModuleScript, getRequiredAttribute} from '../util/ModuleScriptHelper';
-import {WidgetPanel} from './WidgetPanel';
+import {DashboardPanel} from './DashboardPanel';
 
 const containerId = 'home-main-container';
 
@@ -77,16 +77,16 @@ const addListenersToDashboardItems = () => {
     });
 };
 
-const appendDashboardWidgets = () => {
-    const widgetContainerEl = document.getElementById(containerId);
-    if (!widgetContainerEl) {
-        throw new Error('Widget container not found!');
+const appendDashboardExtensions = () => {
+    const extensionContainerEl = document.getElementById(containerId);
+    if (!extensionContainerEl) {
+        throw new Error('Extension container not found!');
     }
 
-    const widgetContainer: Element = Element.fromHtmlElement(widgetContainerEl);
-    const widgetPanel: WidgetPanel = new WidgetPanel();
-    widgetContainer.appendChild(widgetPanel);
-    widgetPanel.appendWidgets();
+    const extensionContainer: Element = Element.fromHtmlElement(extensionContainerEl);
+    const extensionPanel: DashboardPanel = new DashboardPanel();
+    extensionContainer.appendChild(extensionPanel);
+    extensionPanel.appendExtensions();
 };
 
 const getApplication = (): Application => {
@@ -95,7 +95,7 @@ const getApplication = (): Application => {
         CONFIG.getString('appId'),
         i18n('home.dashboard'),
         '',
-        `${assetsUri}/icons/widgets/icon-white.svg`,
+        `${assetsUri}/icons/extensions/icon-white.svg`,
     );
     application.setPath(Path.fromString('/'));
 
@@ -110,7 +110,7 @@ const startApplication = () => {
     startLostConnectionDetector();
     addListenersToDashboardItems();
     LauncherHelper.appendLauncherPanel();
-    appendDashboardWidgets();
+    appendDashboardExtensions();
 }
 
 void (async () => {

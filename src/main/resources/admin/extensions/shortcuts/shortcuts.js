@@ -5,7 +5,7 @@ const configLib = require('/lib/config');
 const assetLib = require('/lib/enonic/asset');
 
 function handleGet(req) {
-    const iconsPath = 'icons/widgets/';
+    const iconsPath = 'icons/extensions/';
     const infoIconUrl = assetLib.assetUrl({ path: `${iconsPath}info-with-circle.svg` });
     const devIconUrl = assetLib.assetUrl({ path: `${iconsPath}developer.svg` });
     const forumIconUrl = assetLib.assetUrl({ path: `${iconsPath}discuss.svg` });
@@ -16,7 +16,7 @@ function handleGet(req) {
     const dashboardIcons = [
         {
             src: infoIconUrl,
-            cls: 'widget-shortcuts-xp-about',
+            cls: 'extension-shortcuts-xp-about',
             caption: i18n.localize({
                 key: 'home.dashboard.widget.shortcuts.about',
                 bundles: ['i18n/phrases'],
@@ -58,10 +58,10 @@ function handleGet(req) {
     const params = {
         dashboardIcons: dashboardIcons,
         stylesUrl: assetLib.assetUrl({
-            path: 'styles/widgets/shortcuts.css'
+            path: 'styles/extensions/shortcuts.css'
         }),
         jsUrl: assetLib.assetUrl({
-            path: 'js/widgets/shortcuts.js'
+            path: 'js/extensions/shortcuts.js'
         }),
         configScriptId: configLib.configScriptId
     };

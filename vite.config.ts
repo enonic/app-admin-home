@@ -51,7 +51,7 @@ export default defineConfig(({mode}) => {
           input: {
             'js/home/bundle': path.join(IN_PATH, 'js/home/main.ts'),
             'js/launcher/bundle': path.join(IN_PATH, 'js/launcher/main.ts'),
-            'js/widgets/shortcuts': path.join(IN_PATH, 'js/widgets/shortcuts.ts')
+            'js/extensions/shortcuts': path.join(IN_PATH, 'js/extensions/shortcuts.ts')
           },
           output: {
             format: 'es',
@@ -115,8 +115,8 @@ export default defineConfig(({mode}) => {
           input: {
             'styles/home': path.join(IN_PATH, 'styles/home.less'),
             'styles/launcher': path.join(IN_PATH, 'styles/launcher.less'),
-            'styles/widgets/shortcuts': path.join(IN_PATH, 'styles/widgets/shortcuts.less'),
-            'styles/widgets/youtube': path.join(IN_PATH, 'styles/widgets/youtube.less')
+            'styles/extensions/shortcuts': path.join(IN_PATH, 'styles/extensions/shortcuts.less'),
+            'styles/extensions/youtube': path.join(IN_PATH, 'styles/extensions/youtube.less')
           },
           output: {
             assetFileNames: (assetInfo) => {

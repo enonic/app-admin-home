@@ -1,5 +1,4 @@
 import {DefaultErrorHandler} from '@enonic/lib-admin-ui/DefaultErrorHandler';
-import {Body} from '@enonic/lib-admin-ui/dom/Body';
 import {ModalDialogWithConfirmation} from '@enonic/lib-admin-ui/ui/dialog/ModalDialogWithConfirmation';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 import {resolveScriptConfig} from '../ConfigResolver';
@@ -13,7 +12,7 @@ const getElement = (selector: string): Promise<Element> => {
         return Promise.resolve(searchedElement);
     }
 
-    const promise = new Promise<Element>((resolve) => {
+    return new Promise<Element>((resolve) => {
         const intervalId = setInterval(() => {
             const searchedElement: Element = document.querySelector(selector);
 
@@ -23,8 +22,6 @@ const getElement = (selector: string): Promise<Element> => {
             }
         }, 200);
     });
-
-    return promise;
 };
 
 const initAboutDialog = () => {
@@ -34,14 +31,14 @@ const initAboutDialog = () => {
         e.preventDefault();
 
         if (!aboutDialog) {
-            aboutDialog = createAboutDialog();
+            aboutDialog = createAboutDialog(document.getElementById('extension-shortcuts'));
+            aboutDialog.render();
         }
 
-        Body.get().appendChild(aboutDialog);
-        aboutDialog.open();
+        aboutDialog.whenRendered(() => aboutDialog.open());
     };
 
-    getElement('.widget-shortcuts-xp-about').then((aboutContainer: Element) => {
+    getElement('.extension-shortcuts-xp-about').then((aboutContainer: Element) => {
         aboutContainer.addEventListener('click', execute);
         aboutContainer.addEventListener('keypress', (e: KeyboardEvent) => {
             if (e.key === 'Enter') { execute(e); }
