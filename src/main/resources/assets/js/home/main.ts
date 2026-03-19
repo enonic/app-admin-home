@@ -8,8 +8,9 @@ import {ServerEventsListener} from '@enonic/lib-admin-ui/event/ServerEventsListe
 import {Path} from '@enonic/lib-admin-ui/rest/Path';
 import {ConnectionDetector} from '@enonic/lib-admin-ui/system/ConnectionDetector';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
-import {LauncherHelper} from '@enonic/lib-admin-ui/util/LauncherHelper';
 import {i18n, Messages} from '@enonic/lib-admin-ui/util/Messages';
+import {MenuElement} from '../menu/MenuElement';
+import {Menu, getMenuJsonConfig} from '../menu/main';
 import * as Q from 'q';
 import {resolveScriptConfig} from '../ConfigResolver';
 import {getModuleScript, getRequiredAttribute} from '../util/ModuleScriptHelper';
@@ -77,6 +78,29 @@ const addListenersToDashboardItems = () => {
     });
 };
 
+const appendMenuPanel = () => {
+    const menuUrl = CONFIG.getString('menuUrl');
+    if (!menuUrl) {
+        throw new Error('Menu URL is not defined');
+    }
+    const menuElement = MenuElement.create();
+    document.body.appendChild(menuElement);
+    fetch(menuUrl)
+        .then(response => response.text())
+        .then((html: string) => menuElement.setHtml(html))
+        .then(() => {
+            const shadowRoot = menuElement.shadowRoot;
+            const configEl = shadowRoot.getElementById('menu-config-json');
+            if (configEl && !configEl.hasAttribute('data-menu-initialized')) {
+                const config = getMenuJsonConfig(shadowRoot);
+                new Menu(config, shadowRoot);
+            }
+        })
+        .catch((e: Error) => {
+            throw new Error(`Failed to fetch the Menu extension panel at ${menuUrl}: ${e.toString()}`);
+        });
+};
+
 const appendDashboardExtensions = () => {
     const extensionContainerEl = document.getElementById(containerId);
     if (!extensionContainerEl) {
@@ -109,7 +133,7 @@ const startApplication = () => {
     setupWebSocketListener();
     startLostConnectionDetector();
     addListenersToDashboardItems();
-    LauncherHelper.appendLauncherPanel();
+    appendMenuPanel();
     appendDashboardExtensions();
 }
 

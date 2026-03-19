@@ -1,0 +1,355 @@
+@import "~enonic-admin-artifacts";
+@import 'font';
+@import "icons";
+
+@app-header-height: 44px;
+@panel-outer-width: 320px;
+@panel-inner-width: 280px;
+@panel-indent: 20px;
+
+button.menu-button {
+  font-family: 'Open Sans Bold', sans-serif;
+  display: flex !important;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s, visibility 0.3s;
+  height: @app-header-height - 2px;
+  width: @app-header-height - 2px;
+  font-size: 20px;
+  font-weight: bold;
+  position: absolute;
+  border: none;
+  right: 1px;
+  top: 1px;
+  padding: 0;
+  background-color: transparent;
+  cursor: pointer;
+  z-index: @z-index-launcher-button;
+
+  &:focus,
+  &:focus-visible {
+    outline: -webkit-focus-ring-color auto 1px;
+    outline-offset: 0;
+  }
+
+  &.theme-dark {
+    color: @admin-white;
+
+    &:hover {
+      color: @admin-bg-light-gray;
+    }
+
+    &.visible:not(.toggled) {
+      text-shadow: 1px 1px 4px @admin-bg-dark-gray;
+    }
+  }
+
+  &.theme-light {
+    color: @admin-font-gray3;
+
+    &:hover {
+      color: @admin-black;
+    }
+  }
+
+  &.toggled {
+    color: lighten(@admin-red, 10%);
+
+    &:hover {
+      color: @admin-white;
+    }
+
+    &:focus,
+    &:focus-visible {
+      outline-color: @admin-white;
+    }
+  }
+
+  &.visible {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+
+  span {
+    line-height: @app-header-height - 2px;
+  }
+
+  &::-moz-focus-inner {
+    border: 0;
+  }
+}
+
+.body-mask.menu {
+  .reset(true);
+
+  opacity: 0.5;
+  background-color: @admin-white;
+  display: none;
+  z-index: @z-index-mask;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+.menu-main-container {
+  height: 100%;
+  font-family: @admin-font-family;
+
+  .menu-app-container .app-row.selected {
+    .app-row-selected();
+  }
+
+  &:not(.keyboard-navigation) {
+    .menu-app-container .app-row:hover {
+      .app-row-selected();
+    }
+  }
+
+  & > * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  & > div {
+    padding-left: @panel-indent;
+  }
+
+  .menu-title {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    height: @app-header-height;
+    background-color: rgba(0, 0, 0, 1);
+    color: @admin-white;
+
+    .container-title {
+      position: relative;
+      padding-right: 65px;
+      color: @admin-white;
+      font-family: @admin-font-family;
+      font-size: 28px;
+      font-weight: 100;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      .ellipsis();
+
+      &::first-letter {
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  .menu-app-container {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding: @app-header-height 0;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.9);
+
+    .scrollable-content {
+      overflow-x: hidden;
+      overflow-y: auto;
+      height: 100%;
+      padding-right: 17px;
+      width: 100%;
+    }
+
+    .app-row {
+      padding: 10px 0 10px 22px;
+      display: table;
+
+      & > * {
+        display: table-cell;
+      }
+
+      &.active {
+        border-left: 5px solid @admin-red;
+        width: 100%;
+        padding-left: 17px;
+      }
+
+      .app-info {
+        padding-left: 15px;
+        vertical-align: middle;
+
+        .app-name {
+          width: 220px;
+          font-size: 18px;
+        }
+
+        .app-description {
+          width: 220px;
+          font-size: 14px;
+          color: darkgray;
+        }
+
+        .app-name,
+        .app-description {
+          margin: 0;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .app-icon {
+        vertical-align: middle;
+        width: 40px;
+        height: 40px;
+
+        svg {
+          width: inherit !important;
+          height: inherit !important;
+        }
+
+        &.icon-dashboard {
+          font-size: 36px;
+          color: white;
+          padding: 0 2px;
+          box-sizing: border-box;
+        }
+      }
+    }
+
+    a {
+      color: @admin-white;
+      text-decoration: none;
+
+      &.non-interactive {
+        pointer-events: none;
+      }
+
+      &:focus {
+        outline: none;
+      }
+
+      &:hover {
+        .app-row.active {
+          .app-row-selected();
+        }
+      }
+
+      &:not(:hover) .app-row.active:not(.selected) {
+        background-color: hsla(0, 0%, 100%, 0.1);
+      }
+    }
+  }
+
+  .menu-user {
+    position: absolute;
+    bottom: 0;
+    height: @app-header-height;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: @admin-white;
+    font-size: 14px;
+    box-sizing: border-box;
+    padding-top: 11px;
+    padding-right: @panel-indent;
+
+    .user-info {
+      vertical-align: middle;
+      padding-right: 15px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
+      > * {
+        vertical-align: middle;
+      }
+    }
+
+    .user-logout {
+      float: right;
+      vertical-align: middle;
+
+      a {
+        color: @admin-white;
+        text-decoration: none;
+      }
+    }
+
+    img {
+      width: 24px;
+      height: 24px; // For IE
+      margin-right: 10px;
+      float: left;
+    }
+
+    p {
+      margin: 0;
+      padding: 0;
+      vertical-align: middle;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      line-height: 22px;
+    }
+  }
+}
+
+.menu-panel {
+  display: block !important;
+  position: fixed;
+  box-shadow: none;
+  top: 0;
+  right: 0;
+  z-index: @z-index-launcher-panel;
+  width: @panel-outer-width;
+  height: 100%;
+  outline: none;
+  visibility: hidden;
+  transition: visibility 0s .5s;
+
+  .menu-main-container {
+    display: block;
+    outline: none;
+    transition: transform .5s;
+    transform: translate3d(100%, 0, 0);
+
+    > div {
+      width: 100%;
+    }
+  }
+
+  &.visible {
+    visibility: visible;
+    transition: visibility 0s, box-shadow 0s .5s;
+    box-shadow: -2px 0 7px 5px rgba(0, 0, 0, 0.3);
+
+    .menu-main-container {
+      transform: translate3d(0, 0, 0);
+      transition-delay: 0s;
+    }
+  }
+}
+
+body.modal-dialog {
+  .menu-panel,
+  .menu-button {
+    z-index: @z-index-mask - 1;
+  }
+}
+
+body.mobile-statistics-panel {
+  .menu-panel,
+  .menu-button {
+    z-index: auto;
+  }
+}
+
+.app-row-selected() {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.3);
+
+  .app-info .app-description {
+    color: @admin-white;
+  }
+}
