@@ -16,9 +16,9 @@ const getConfig = (req) => {
             path: 'images/background.webp'
         }),
         xpVersion: admin.getVersion(),
-        launcherUrl: admin.extensionUrl({
+        menuUrl: admin.extensionUrl({
             application: app.name,
-            extension: 'launcher',
+            extension: 'menu',
             params: {
                 autoOpen: true,
                 appName: app.name,
