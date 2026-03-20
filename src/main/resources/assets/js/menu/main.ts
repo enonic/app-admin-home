@@ -264,48 +264,6 @@ export class Menu {
         this.menuButton = button;
     };
 
-    private onMenuClick = (e: MouseEvent): void => {
-        if (!this.menuPanel || !this.menuMainContainer) {
-            return;
-        }
-        const isClickOutside =
-            !this.menuPanel.contains(e.target as Node) && !this.menuButton.contains(e.target as Node);
-        if (
-            isClickOutside &&
-            !this.menuMainContainer.getAttribute('hidden') &&
-            !Menu.isModalDialogActiveOnHomePage(e.target, this.isHomeApp()) &&
-            !Menu.isDashboardIcon(e.target)
-        ) {
-            this.closeMenuPanel();
-        }
-    };
-
-    private static toElement(target: EventTarget | null): Element | null {
-        if (!target) return null;
-        if (target instanceof Element) return target;
-        if (target instanceof Node) return target.parentElement;
-        return null;
-    }
-
-    private static isDashboardIcon(target: EventTarget): boolean {
-        const el = Menu.toElement(target);
-        if (!el) return false;
-
-        const inDashboard = el.closest('.dashboard-item') !== null;
-        const parentHref = el.parentElement?.getAttribute('href');
-        return inDashboard && parentHref !== '#';
-    }
-
-    private static isModalDialogActiveOnHomePage(target: EventTarget, isHomeApp: boolean): boolean {
-        if (!isHomeApp) return false;
-
-        const el = Menu.toElement(target);
-        const bodyHasModal = document.body.classList?.contains('modal-dialog');
-        const insideXpModal = el?.closest('.xp-admin-common-modal-dialog') !== null;
-
-        return bodyHasModal || insideXpModal;
-    }
-
     private static openWindow = (windowArr: Window[], anchorEl: HTMLAnchorElement) => {
         const windowId: string = anchorEl.getAttribute('data-id');
         const existingWindow: Window = (windowArr[windowId] as Window);
@@ -363,11 +321,9 @@ export class Menu {
         this.toggleButton();
         this.menuPanel.classList.add('visible');
         this.menuButton.setAttribute('title', this.config.phrases['tooltipCloseMenu']);
-        document.addEventListener('click', this.onMenuClick);
     };
 
     private closeMenuPanel = (): void => {
-        document.removeEventListener('click', this.onMenuClick);
         this.unlistenToKeyboardEvents();
         this.menuPanel.classList.remove('visible');
         this.toggleButton();
