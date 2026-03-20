@@ -5,21 +5,22 @@
 @app-header-height: 44px;
 @panel-indent: 20px;
 
+@menu-button-size: 30px;
+
 button.menu-button {
-  font-family: 'Open Sans Bold', sans-serif;
   display: flex !important;
+  align-items: center;
   justify-content: center;
   visibility: hidden;
   opacity: 0;
-  transition: opacity 0.3s, visibility 0.3s;
-  height: @app-header-height - 2px;
-  width: @app-header-height - 2px;
-  font-size: 20px;
-  font-weight: bold;
-  position: absolute;
+  transition: opacity 0.3s, visibility 0.3s, background-color 0.3s;
+  height: @menu-button-size;
+  width: @menu-button-size;
+  position: fixed;
   border: none;
-  right: 1px;
-  top: 1px;
+  border-radius: 50%;
+  right: 23px;
+  top: 16px;
   padding: 0;
   background-color: transparent;
   cursor: pointer;
@@ -28,15 +29,12 @@ button.menu-button {
   &:focus,
   &:focus-visible {
     outline: -webkit-focus-ring-color auto 1px;
-    outline-offset: 0;
+    outline-offset: 2px;
   }
 
   &.toggled {
-    color: lighten(@admin-red, 10%);
-
-    &:hover {
-      color: @admin-white;
-    }
+    color: @admin-white;
+    background-color: #009BF5;
 
     &:focus,
     &:focus-visible {
@@ -47,11 +45,11 @@ button.menu-button {
   &.visible {
     visibility: visible;
     opacity: 1;
-    transition: opacity 0.3s, visibility 0.3s;
+    transition: opacity 0.3s, visibility 0.3s, background-color 0.3s;
   }
 
-  span {
-    line-height: @app-header-height - 2px;
+  svg {
+    display: block;
   }
 
   &::-moz-focus-inner {
