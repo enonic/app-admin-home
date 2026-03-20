@@ -3,8 +3,6 @@
 @import "icons";
 
 @app-header-height: 44px;
-@panel-outer-width: 320px;
-@panel-inner-width: 280px;
 @panel-indent: 20px;
 
 button.menu-button {
@@ -31,26 +29,6 @@ button.menu-button {
   &:focus-visible {
     outline: -webkit-focus-ring-color auto 1px;
     outline-offset: 0;
-  }
-
-  &.theme-dark {
-    color: @admin-white;
-
-    &:hover {
-      color: @admin-bg-light-gray;
-    }
-
-    &.visible:not(.toggled) {
-      text-shadow: 1px 1px 4px @admin-bg-dark-gray;
-    }
-  }
-
-  &.theme-light {
-    color: @admin-font-gray3;
-
-    &:hover {
-      color: @admin-black;
-    }
   }
 
   &.toggled {
@@ -81,23 +59,11 @@ button.menu-button {
   }
 }
 
-.body-mask.menu {
-  .reset(true);
-
-  opacity: 0.5;
-  background-color: @admin-white;
-  display: none;
-  z-index: @z-index-mask;
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-}
-
 .menu-main-container {
   height: 100%;
   font-family: @admin-font-family;
+  display: flex;
+  flex-direction: column;
 
   .menu-app-container .app-row.selected {
     .app-row-selected();
@@ -114,22 +80,17 @@ button.menu-button {
     -moz-osx-font-smoothing: grayscale;
   }
 
-  & > div {
-    padding-left: @panel-indent;
-  }
-
   .menu-title {
     display: flex;
     align-items: center;
-    position: absolute;
-    top: 0;
     height: @app-header-height;
     background-color: rgba(0, 0, 0, 1);
     color: @admin-white;
+    padding-left: @panel-indent;
+    flex-shrink: 0;
 
     .container-title {
       position: relative;
-      padding-right: 65px;
       color: @admin-white;
       font-family: @admin-font-family;
       font-size: 28px;
@@ -145,21 +106,20 @@ button.menu-button {
   }
 
   .menu-app-container {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
     box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    padding: @app-header-height 0;
+    flex: 1;
     overflow: hidden;
     background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
 
     .scrollable-content {
       overflow-x: hidden;
       overflow-y: auto;
       height: 100%;
-      padding-right: 17px;
+      max-width: 600px;
       width: 100%;
+      padding: 20px 0;
     }
 
     .app-row {
@@ -181,12 +141,10 @@ button.menu-button {
         vertical-align: middle;
 
         .app-name {
-          width: 220px;
           font-size: 18px;
         }
 
         .app-description {
-          width: 220px;
           font-size: 14px;
           color: darkgray;
         }
@@ -244,15 +202,13 @@ button.menu-button {
   }
 
   .menu-user {
-    position: absolute;
-    bottom: 0;
     height: @app-header-height;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.9);
     color: @admin-white;
     font-size: 14px;
     box-sizing: border-box;
-    padding-top: 11px;
-    padding-right: @panel-indent;
+    padding: 11px @panel-indent 0 @panel-indent;
+    flex-shrink: 0;
 
     .user-info {
       vertical-align: middle;
@@ -278,7 +234,7 @@ button.menu-button {
 
     img {
       width: 24px;
-      height: 24px; // For IE
+      height: 24px;
       margin-right: 10px;
       float: left;
     }
@@ -298,36 +254,30 @@ button.menu-button {
 .menu-panel {
   display: block !important;
   position: fixed;
-  box-shadow: none;
   top: 0;
+  left: 0;
   right: 0;
+  bottom: 0;
   z-index: @z-index-launcher-panel;
-  width: @panel-outer-width;
+  width: 100%;
   height: 100%;
   outline: none;
   visibility: hidden;
-  transition: visibility 0s .5s;
+  opacity: 0;
+  transition: opacity .3s, visibility 0s .3s;
 
   .menu-main-container {
-    display: block;
+    display: flex;
+    flex-direction: column;
     outline: none;
-    transition: transform .5s;
-    transform: translate3d(100%, 0, 0);
-
-    > div {
-      width: 100%;
-    }
+    width: 100%;
+    height: 100%;
   }
 
   &.visible {
     visibility: visible;
-    transition: visibility 0s, box-shadow 0s .5s;
-    box-shadow: -2px 0 7px 5px rgba(0, 0, 0, 0.3);
-
-    .menu-main-container {
-      transform: translate3d(0, 0, 0);
-      transition-delay: 0s;
-    }
+    opacity: 1;
+    transition: opacity .3s, visibility 0s;
   }
 }
 
