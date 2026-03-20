@@ -217,7 +217,12 @@ export class Menu {
         this.menuButton.focus();
     };
 
-    private menuButtonHasFocus = (): boolean => document.activeElement === this.menuButton;
+    private menuButtonHasFocus = (): boolean => {
+        if (this.root instanceof ShadowRoot) {
+            return this.root.activeElement === this.menuButton;
+        }
+        return document.activeElement === this.menuButton;
+    };
 
     private fetchMenuContents = (): Promise<LibAdminElement> => {
         return fetch(this.config.menuUrl)
@@ -321,6 +326,8 @@ export class Menu {
         this.toggleButton();
         this.menuPanel.classList.add('visible');
         this.menuButton.setAttribute('title', this.config.phrases['tooltipCloseMenu']);
+        this.menuButton.setAttribute('aria-label', this.config.phrases['tooltipCloseMenu']);
+        this.menuButton.setAttribute('aria-expanded', 'true');
     };
 
     private closeMenuPanel = (): void => {
@@ -328,6 +335,8 @@ export class Menu {
         this.menuPanel.classList.remove('visible');
         this.toggleButton();
         this.menuButton.setAttribute('title', this.config.phrases['tooltipOpenMenu']);
+        this.menuButton.setAttribute('aria-label', this.config.phrases['tooltipOpenMenu']);
+        this.menuButton.setAttribute('aria-expanded', 'false');
         this.unselectCurrentApp();
     };
 
