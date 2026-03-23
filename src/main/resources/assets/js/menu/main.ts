@@ -115,6 +115,9 @@ export class Menu {
         .setGlobal(true)
         .setCallback(e => {
             if (this.isPanelExpanded()) {
+                if (this.isInfoLinkFocused()) {
+                    return true;
+                }
                 e.preventDefault();
                 e.returnValue = false;
 
@@ -155,6 +158,7 @@ export class Menu {
 
         if (this.config.autoOpen) {
             this.openMenuPanel();
+            this.menuButton.focus();
         }
     }
 
@@ -206,10 +210,6 @@ export class Menu {
             : null;
     }
 
-    private isHomeApp(): boolean {
-        return this.config.appName === 'com.enonic.xp.app.main';
-    }
-
     private isPanelExpanded = (): boolean => this.menuPanel.classList.contains('visible');
 
     private togglePanelState = (): void => this.isPanelExpanded() ? this.closeMenuPanel() : this.openMenuPanel();
@@ -240,20 +240,37 @@ export class Menu {
         this.menuMainContainer = this.root.getElementById('menu-main-container');
 
         this.initBackgroundImage();
-        Menu.addLongClickHandler(this.menuPanel, this.isHomeApp());
 
-        if (!this.config.autoOpen) {
-            const appTiles = this.menuPanel
-                .querySelector('.menu-app-container')
-                .querySelectorAll('a');
-            for (const appTile of Array.from(appTiles)) {
-                appTile.addEventListener('click', () => this.closeMenuPanel());
-            }
-        }
-
+        this.initInfoPanelLinks();
         this.addAppItemsListeners();
         this.setFocusableElements();
     }
+
+    private isInfoLinkFocused = (): boolean => {
+        const active = this.root instanceof ShadowRoot ? this.root.activeElement : document.activeElement;
+        return active?.classList.contains('menu-info-link-row') ?? false;
+    };
+
+    private initInfoPanelLinks = (): void => {
+        const links = Array.from(this.menuPanel.querySelectorAll('.menu-info-link-row'));
+        if (links.length === 0) {
+            return;
+        }
+
+        links[0].addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.key === 'Tab' && e.shiftKey) {
+                e.preventDefault();
+                this.menuButton.focus();
+            }
+        });
+
+        links[links.length - 1].addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.key === 'Tab' && !e.shiftKey) {
+                e.preventDefault();
+                this.selectApp(0);
+            }
+        });
+    };
 
     private initBackgroundImage = (): void => {
         const bg = this.menuPanel.querySelector('.menu-background');
@@ -321,67 +338,18 @@ export class Menu {
         button.addEventListener('click', this.togglePanelState);
         button.addEventListener('keydown', (e: KeyboardEvent) => {
             if (e.key === 'Tab' && !e.shiftKey) {
-                e.preventDefault();
-                this.selectApp(0);
-                return false;
+                const firstLink = this.menuPanel.querySelector('.menu-info-link-row');
+                if (firstLink) {
+                    e.preventDefault();
+                    (firstLink as HTMLElement).focus();
+                    return false;
+                }
             }
         });
 
         button.classList.add('visible');
 
         this.menuButton = button;
-    };
-
-    private static openWindow = (windowArr: Window[], anchorEl: HTMLAnchorElement) => {
-        const windowId: string = anchorEl.getAttribute('data-id');
-        const existingWindow: Window = (windowArr[windowId] as Window);
-
-        if (existingWindow && !existingWindow.closed) {
-            try {
-                if (existingWindow.location.href.startsWith(anchorEl.href)) {
-                    existingWindow.focus();
-                    return;
-                }
-            }
-            catch (e) {
-                // Url in the opened tab has changed, and we no longer control it. Close, then reload.
-                existingWindow.close();
-            }
-        }
-
-
-        windowArr[windowId] = window.open(anchorEl.href, windowId);
-    };
-
-    private static addLongClickHandler = (container: HTMLElement, isHomeApp: boolean): void => {
-        let longpress = false;
-        let startTime;
-        let endTime;
-        const toolWindows: Window[] = [];
-
-        const appTiles = container
-            .querySelector('.menu-app-container')
-            .querySelectorAll('a');
-        for (const appTile of Array.from(appTiles)) {
-
-            appTile.addEventListener('click', e => {
-                e.preventDefault();
-                if (longpress) {
-                    document.location.href = (e.currentTarget as Element).getAttribute('href');
-                } else {
-                    Menu.openWindow(toolWindows, e.currentTarget as HTMLAnchorElement);
-                }
-            });
-
-            appTile.addEventListener('mousedown', () => {
-                startTime = new Date().getTime();
-            });
-
-            appTile.addEventListener('mouseup', () => {
-                endTime = new Date().getTime();
-                longpress = endTime - startTime >= 500;
-            });
-        }
     };
 
     private openMenuPanel = (): void => {

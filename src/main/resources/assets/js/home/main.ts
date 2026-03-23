@@ -108,6 +108,10 @@ const showDashboard = () => {
     if (containerEl) {
         containerEl.classList.add('visible');
     }
+    const menuEl = document.querySelector('xp-menu');
+    if (menuEl) {
+        menuEl.classList.add('transparent');
+    }
 };
 
 const startApplication = () => {

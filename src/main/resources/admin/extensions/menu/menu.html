@@ -14,8 +14,20 @@
     <nav id="menu-panel" class="menu-panel" role="navigation" aria-label="{{phrases.tooltipOpenMenu}}" tabindex="0" style="display: none;">
         <div class="menu-background" aria-hidden="true"></div>
         <div id="menu-main-container" class="menu-main-container">
-            <div class="menu-title">
-                <span class="container-title">{{installation}}</span>
+            <div class="menu-info-panel">
+                <div class="menu-info-content">
+                    <h1 class="menu-info-title">{{installation}}</h1>
+                    <p class="menu-info-version">Enonic XP {{xpVersion}}</p>
+                    <nav class="menu-info-links" aria-label="{{usefulLinksTitle}}">
+                        <h2 class="menu-info-links-title">{{usefulLinksTitle}}</h2>
+                        {{#usefulLinks}}
+                        <a href="{{link}}" target="_blank" rel="noopener noreferrer" class="menu-info-link-row">
+                            <img src="{{iconUrl}}" alt="" class="menu-info-link-icon">
+                            <span class="menu-info-link-caption">{{caption}}</span>
+                        </a>
+                        {{/usefulLinks}}
+                    </nav>
+                </div>
             </div>
 
             <div class="menu-app-container">
@@ -31,7 +43,7 @@
                         </div>
                     </a>
                     {{#adminTools}}
-                    <a href="{{uri}}" target="_blank" data-id="{{appId}}">
+                    <a href="{{uri}}" target="_blank">
                         <div class="app-row {{cls}}" id="{{appId}}">
                             <div class="app-icon">{{#icon}}{{{icon}}}{{/icon}}</div>
                             <div class="app-info">

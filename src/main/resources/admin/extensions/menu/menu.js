@@ -47,6 +47,30 @@ exports.get = function(req) {
         adminTools[i].cls = adminTools[i].appId === config.appName ? 'active' : '';
     }
 
+    const iconsPath = 'icons/extensions/';
+    const usefulLinks = [
+        {
+            iconUrl: assetLib.assetUrl({ path: iconsPath + 'developer.svg' }),
+            caption: localise('menu.info.link.developer', locales),
+            link: 'https://developer.enonic.com/'
+        },
+        {
+            iconUrl: assetLib.assetUrl({ path: iconsPath + 'slack.svg' }),
+            caption: localise('menu.info.link.slack', locales),
+            link: 'https://slack.enonic.com/'
+        },
+        {
+            iconUrl: assetLib.assetUrl({ path: iconsPath + 'discuss.svg' }),
+            caption: localise('menu.info.link.forum', locales),
+            link: 'https://discuss.enonic.com/'
+        },
+        {
+            iconUrl: assetLib.assetUrl({ path: iconsPath + 'market.svg' }),
+            caption: localise('menu.info.link.market', locales),
+            link: 'https://market.enonic.com/'
+        }
+    ];
+
     const logoutUrl = portal.logoutUrl({
         redirect: admin.getHomeToolUrl({ type: 'absolute' })
     });
@@ -75,6 +99,9 @@ exports.get = function(req) {
             linkCls: app.name === config.appName ? ' non-interactive' : '',
             rowCls: app.name === config.appName ? ' active' : '',
         },
+        xpVersion: admin.getVersion(),
+        usefulLinksTitle: localise('menu.info.usefulLinks', locales),
+        usefulLinks: usefulLinks,
         installation: admin.getInstallation() || 'Tools',
         stylesUrl: assetLib.assetUrl({
             path: 'styles/menu.css'
