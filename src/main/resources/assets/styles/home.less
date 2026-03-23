@@ -11,14 +11,11 @@
 
 .home-main-container {
   .home-main-container-mixin(1, bottom);
+  opacity: 0;
+  transition: opacity 0.3s;
 
-  #background-image {
-    position: fixed;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    background-position: center;
+  &.visible {
+    opacity: 1;
   }
 }
 

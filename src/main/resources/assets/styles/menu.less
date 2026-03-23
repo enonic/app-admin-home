@@ -169,7 +169,6 @@ button.menu-button {
     display: flex;
     align-items: center;
     height: @app-header-height;
-    background-color: rgba(0, 0, 0, 1);
     color: @admin-white;
     padding-left: @panel-indent;
     flex-shrink: 0;
@@ -194,7 +193,6 @@ button.menu-button {
     box-sizing: border-box;
     flex: 1;
     overflow: hidden;
-    background-color: rgba(0, 0, 0, 0.9);
     display: flex;
     justify-content: center;
 
@@ -303,7 +301,23 @@ button.menu-button {
   opacity: 0;
   transition: opacity .3s, visibility 0s .3s;
 
+  .menu-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: lightgray 50% / cover no-repeat;
+    opacity: 0;
+    transition: opacity 2s;
+
+    &.loaded {
+      opacity: 1;
+    }
+  }
+
   .menu-main-container {
+    position: relative;
     display: flex;
     flex-direction: column;
     outline: none;
@@ -318,21 +332,6 @@ button.menu-button {
   }
 }
 
-body.modal-dialog {
-  .menu-panel,
-  .menu-button,
-  .avatar-container {
-    z-index: @z-index-mask - 1;
-  }
-}
-
-body.mobile-statistics-panel {
-  .menu-panel,
-  .menu-button,
-  .avatar-container {
-    z-index: auto;
-  }
-}
 
 .app-row-selected() {
   width: 100%;

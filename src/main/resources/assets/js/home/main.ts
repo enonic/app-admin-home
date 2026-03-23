@@ -1,9 +1,7 @@
 import {Application} from '@enonic/lib-admin-ui/app/Application';
 import {AppBar} from '@enonic/lib-admin-ui/app/bar/AppBar';
 import {Body} from '@enonic/lib-admin-ui/dom/Body';
-import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
 import {Element} from '@enonic/lib-admin-ui/dom/Element';
-import {ImgEl} from '@enonic/lib-admin-ui/dom/ImgEl';
 import {ServerEventsListener} from '@enonic/lib-admin-ui/event/ServerEventsListener';
 import {Path} from '@enonic/lib-admin-ui/rest/Path';
 import {ConnectionDetector} from '@enonic/lib-admin-ui/system/ConnectionDetector';
@@ -22,27 +20,6 @@ const loadDOM = (): Q.Promise<void> => {
     const DOMLoaded: Q.Deferred<void> = Q.defer<void>();
     document.addEventListener('DOMContentLoaded', () => DOMLoaded.resolve());
     return DOMLoaded.promise;
-};
-
-const showBackgroundImage = () => {
-    const containerEl = document.getElementById(containerId);
-    if (!containerEl) {
-        throw new Error('Main container not found!');
-    }
-
-    const container: Element = Element.fromHtmlElement(containerEl);
-    const divEl = new DivEl('lazy-image empty');
-    divEl.setId('background-image');
-    const imgEl = new ImgEl(CONFIG.getString('backgroundUri'), 'lazy-image empty');
-
-    container.appendChildren(divEl, imgEl);
-
-    imgEl.onLoaded(() => {
-        divEl.getEl().setAttribute('style', `background-image: url('${imgEl.getSrc()}')`);
-        imgEl.remove();
-        divEl.removeClass('empty');
-    });
-    container.appendChild(imgEl);
 };
 
 const initConfig = (configScriptId: string) => {
@@ -126,9 +103,18 @@ const getApplication = (): Application => {
     return application;
 }
 
+const showDashboard = () => {
+    const containerEl = document.getElementById(containerId);
+    if (containerEl) {
+        containerEl.classList.add('visible');
+    }
+};
+
 const startApplication = () => {
     const appBar = new AppBar(getApplication());
     Body.get().appendChild(appBar);
+
+    document.addEventListener('menu-background-ready', showDashboard, {once: true});
 
     setupWebSocketListener();
     startLostConnectionDetector();
@@ -144,6 +130,5 @@ void (async () => {
 
     await loadDOM();
     initConfig(configScriptId);
-    showBackgroundImage();
     startApplication();
 })();

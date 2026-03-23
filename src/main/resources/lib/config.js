@@ -12,9 +12,6 @@ const getConfig = (req) => {
         assetsUri: assetLib.assetUrl({
             path: ''
         }),
-        backgroundUri: assetLib.assetUrl({
-            path: 'images/background.webp'
-        }),
         xpVersion: admin.getVersion(),
         menuUrl: admin.extensionUrl({
             application: app.name,

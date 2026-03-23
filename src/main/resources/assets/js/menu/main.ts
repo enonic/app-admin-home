@@ -13,6 +13,7 @@ interface MenuConfig {
     appName: string;
     autoOpen: boolean;
     menuUrl: string;
+    backgroundUrl: string;
     phrases: JSONObject;
 }
 
@@ -238,6 +239,7 @@ export class Menu {
         this.menuPanel = this.root.getElementById('menu-panel');
         this.menuMainContainer = this.root.getElementById('menu-main-container');
 
+        this.initBackgroundImage();
         Menu.addLongClickHandler(this.menuPanel, this.isHomeApp());
 
         if (!this.config.autoOpen) {
@@ -252,6 +254,22 @@ export class Menu {
         this.addAppItemsListeners();
         this.setFocusableElements();
     }
+
+    private initBackgroundImage = (): void => {
+        const bg = this.menuPanel.querySelector('.menu-background');
+        if (!bg || !this.config.backgroundUrl) {
+            return;
+        }
+        (bg as HTMLElement).style.backgroundImage = `url('${this.config.backgroundUrl}')`;
+        const img = new Image();
+        img.onload = () => {
+            bg.classList.add('loaded');
+            bg.addEventListener('transitionend', () => {
+                document.dispatchEvent(new CustomEvent('menu-background-ready'));
+            }, {once: true});
+        };
+        img.src = this.config.backgroundUrl;
+    };
 
     private avatarButton: HTMLElement;
     private avatarDropdown: HTMLElement;

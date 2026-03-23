@@ -31,6 +31,7 @@ exports.get = function(req) {
         appName: req.params['appName'],
         autoOpen: req.params['autoOpen'] === 'true' || false,
         menuUrl: req.url,
+        backgroundUrl: assetLib.assetUrl({ path: 'images/background.webp' }),
         phrases,
         theme: req.params['theme'] || ''
     }
