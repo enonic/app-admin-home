@@ -46,18 +46,23 @@ exports.get = function(req) {
         adminTools[i].cls = adminTools[i].appId === config.appName ? 'active' : '';
     }
 
-    const userIconUrl = assetLib.assetUrl({ path: 'icons/extensions/user.svg' });
     const logoutUrl = portal.logoutUrl({
         redirect: admin.getHomeToolUrl({ type: 'absolute' })
     });
 
     const user = auth.getUser();
+    const userInitials = (user.displayName || '')
+        .split(/\s+/)
+        .filter(Boolean)
+        .map(function(word) { return word.charAt(0).toUpperCase(); })
+        .join('')
+        .substring(0, 2);
 
     const view = resolve('./menu.html');
     const params = {
         adminTools: adminTools,
-        userIconUrl: userIconUrl,
         user: user,
+        userInitials: userInitials,
         logoutUrl: logoutUrl,
         homeTool: {
             url: admin.getHomeToolUrl(),

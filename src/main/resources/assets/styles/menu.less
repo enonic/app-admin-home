@@ -6,6 +6,93 @@
 @panel-indent: 20px;
 
 @menu-button-size: 30px;
+@avatar-button-size: 30px;
+
+.avatar-container {
+  position: fixed;
+  right: 23px + @menu-button-size + 10px;
+  top: 16px;
+  z-index: @z-index-launcher-button;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s, visibility 0.3s;
+
+  &.visible {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+button.avatar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: @avatar-button-size;
+  width: @avatar-button-size;
+  border: none;
+  border-radius: 50%;
+  background-color: #596771;
+  color: @admin-white;
+  font-family: @admin-font-family;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  box-sizing: border-box;
+  letter-spacing: 0.5px;
+  padding: 0;
+
+  &:hover {
+    background-color: #475761;
+  }
+
+  &:focus,
+  &:focus-visible {
+    outline: -webkit-focus-ring-color auto 1px;
+    outline-offset: 2px;
+  }
+
+  &::-moz-focus-inner {
+    border: 0;
+  }
+}
+
+.avatar-dropdown {
+  display: none;
+  position: absolute;
+  top: @avatar-button-size + 6px;
+  right: 0;
+  min-width: 120px;
+  background-color: @admin-white;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  padding: 4px 0;
+
+  &.expanded {
+    display: block;
+  }
+
+  .avatar-dropdown-item {
+    display: block;
+    padding: 8px 16px;
+    color: @admin-black;
+    font-family: @admin-font-family;
+    font-size: 14px;
+    text-decoration: none;
+    white-space: nowrap;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.06);
+    }
+
+    &:focus {
+      outline: -webkit-focus-ring-color auto 1px;
+      outline-offset: -1px;
+    }
+  }
+}
 
 button.menu-button {
   display: flex !important;
@@ -199,54 +286,6 @@ button.menu-button {
     }
   }
 
-  .menu-user {
-    height: @app-header-height;
-    background-color: rgba(0, 0, 0, 0.9);
-    color: @admin-white;
-    font-size: 14px;
-    box-sizing: border-box;
-    padding: 11px @panel-indent 0 @panel-indent;
-    flex-shrink: 0;
-
-    .user-info {
-      vertical-align: middle;
-      padding-right: 15px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-
-      > * {
-        vertical-align: middle;
-      }
-    }
-
-    .user-logout {
-      float: right;
-      vertical-align: middle;
-
-      a {
-        color: @admin-white;
-        text-decoration: none;
-      }
-    }
-
-    img {
-      width: 24px;
-      height: 24px;
-      margin-right: 10px;
-      float: left;
-    }
-
-    p {
-      margin: 0;
-      padding: 0;
-      vertical-align: middle;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      line-height: 22px;
-    }
-  }
 }
 
 .menu-panel {
@@ -281,14 +320,16 @@ button.menu-button {
 
 body.modal-dialog {
   .menu-panel,
-  .menu-button {
+  .menu-button,
+  .avatar-container {
     z-index: @z-index-mask - 1;
   }
 }
 
 body.mobile-statistics-panel {
   .menu-panel,
-  .menu-button {
+  .menu-button,
+  .avatar-container {
     z-index: auto;
   }
 }

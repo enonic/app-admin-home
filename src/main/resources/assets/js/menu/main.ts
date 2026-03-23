@@ -147,6 +147,7 @@ export class Menu {
             configEl.setAttribute(INITIALIZED_ATTR, '');
         }
 
+        this.initAvatarButton();
         this.initMenuButton();
         this.initMenuPanel();
         this.addApplicationsListeners();
@@ -252,6 +253,50 @@ export class Menu {
         this.setFocusableElements();
     }
 
+    private avatarButton: HTMLElement;
+    private avatarDropdown: HTMLElement;
+    private avatarContainer: HTMLElement;
+
+    private initAvatarButton = (): void => {
+        this.avatarButton = this.root.getElementById('avatar-button');
+        this.avatarDropdown = this.root.getElementById('avatar-dropdown');
+        const container = this.avatarButton?.parentElement;
+
+        if (!this.avatarButton || !this.avatarDropdown || !container) {
+            return;
+        }
+
+        this.avatarContainer = container;
+
+        this.avatarButton.addEventListener('click', (e: Event) => {
+            e.stopPropagation();
+            this.toggleAvatarDropdown();
+        });
+
+        document.addEventListener('click', (e: Event) => {
+            if (!container.contains(e.target as Node)) {
+                this.closeAvatarDropdown();
+            }
+        });
+
+        this.avatarButton.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                this.closeAvatarDropdown();
+                this.avatarButton.focus();
+            }
+        });
+    };
+
+    private toggleAvatarDropdown = (): void => {
+        const expanded = this.avatarDropdown.classList.toggle('expanded');
+        this.avatarButton.setAttribute('aria-expanded', String(expanded));
+    };
+
+    private closeAvatarDropdown = (): void => {
+        this.avatarDropdown.classList.remove('expanded');
+        this.avatarButton.setAttribute('aria-expanded', 'false');
+    };
+
     private initMenuButton = (): void => {
         const button = this.root.getElementById('menu-button');
 
@@ -322,6 +367,7 @@ export class Menu {
     };
 
     private openMenuPanel = (): void => {
+        this.avatarContainer?.classList.add('visible');
         this.listenToKeyboardEvents();
         this.toggleButton();
         this.menuPanel.classList.add('visible');
@@ -331,6 +377,8 @@ export class Menu {
     };
 
     private closeMenuPanel = (): void => {
+        this.closeAvatarDropdown();
+        this.avatarContainer?.classList.remove('visible');
         this.unlistenToKeyboardEvents();
         this.menuPanel.classList.remove('visible');
         this.toggleButton();
