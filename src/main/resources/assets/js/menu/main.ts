@@ -32,20 +32,6 @@ export class Menu {
     private menuMainContainer: HTMLElement;
     private focusableElements: HTMLElement[];
 
-    private closeMenu: KeyBinding = new KeyBinding('esc')
-        .setGlobal(true)
-        .setCallback(e => {
-            if (!this.isPanelExpanded()) {
-                return;
-            }
-            e.preventDefault();
-            e.returnValue = false;
-
-            this.closeMenuPanel();
-
-            return false;
-        });
-
     private nextApp: KeyBinding = new KeyBinding('down')
         .setGlobal(true)
         .setCallback((e: Event) => {
@@ -72,13 +58,18 @@ export class Menu {
     private tabNextApp: KeyBinding = new KeyBinding('tab')
         .setGlobal(true)
         .setCallback((e: Event) => {
-            const desiredIndexIsGreaterThanMaxIndex = this.getSelectedAppIndex() + 1 > this.getApps().length - 1;
-
-            if (!this.isPanelExpanded()
-                || desiredIndexIsGreaterThanMaxIndex
-                || !this.menuPanel.contains(this.getNextFocusableElement())) {
-                this.unselectCurrentApp();
+            if (!this.isPanelExpanded() || !this.isAppOnFocus()) {
                 return true;
+            }
+
+            const selectedIndex = this.getSelectedAppIndex();
+            const isLastApp = selectedIndex >= this.getApps().length - 1;
+
+            if (isLastApp) {
+                this.unselectCurrentApp();
+                e.preventDefault();
+                this.avatarButton.focus();
+                return false;
             }
 
             this.initKeyboardNavigation();
@@ -89,13 +80,7 @@ export class Menu {
     private shiftTabPrevApp: KeyBinding = new KeyBinding('shift+tab')
         .setGlobal(true)
         .setCallback((e: Event) => {
-            if (!this.isPanelExpanded() || !this.menuPanel.contains(document.activeElement)) {
-                this.unselectCurrentApp();
-                return true;
-            }
-
-            if (!this.isAppOnFocus()) {
-                this.selectApp(this.getApps().length - 1);
+            if (!this.isPanelExpanded() || !this.isAppOnFocus()) {
                 return true;
             }
 
@@ -132,7 +117,6 @@ export class Menu {
         });
 
     private menuBindings: KeyBinding[] = [
-        this.closeMenu,
         this.prevApp,
         this.nextApp,
         this.tabNextApp,
@@ -163,18 +147,37 @@ export class Menu {
     }
 
     private addAppItemsListeners = (): void => {
-        this.getApps().forEach((app: HTMLElement, index:number) => {
+        this.getApps().forEach((app: HTMLElement, index: number) => {
             app.addEventListener('mouseenter', () => {
                 this.selectApp(index);
             });
+        });
 
-            if (index === 0){
-                app.parentNode.addEventListener('keydown', (e: KeyboardEvent) => {
-                    if (e.key === 'Tab' && e.shiftKey){
-                        setTimeout(() => this.menuButton.focus(), 100);
-                    }
-                });
+        const dashboardIcon = this.menuPanel.querySelector('.icon-dashboard');
+        const dashboardLink = dashboardIcon?.closest('a.app-tile');
+        if (!(dashboardLink instanceof HTMLAnchorElement)) {
+            return;
+        }
+
+        dashboardLink.addEventListener('click', (e: Event) => {
+            if (e instanceof MouseEvent) {
+                const modifiedClick = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
+                if (modifiedClick) {
+                    return;
+                }
             }
+
+            e.preventDefault();
+            this.closeMenuPanel();
+
+            if (dashboardLink.classList.contains('home-app')) {
+                return;
+            }
+
+            // Keep direct home loads opening the menu; only disable it when coming from embedded Dashboard navigation.
+            const dashboardUrl = new URL(dashboardLink.href, window.location.href);
+            dashboardUrl.searchParams.set('openMenu', 'false');
+            window.top?.location.assign(dashboardUrl.toString());
         });
     };
 
@@ -315,9 +318,23 @@ export class Menu {
         });
 
         this.avatarButton.addEventListener('keydown', (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.toggleAvatarDropdown();
+            } else if (e.key === 'Escape') {
                 this.closeAvatarDropdown();
                 this.avatarButton.focus();
+            } else if (e.key === 'Tab' && !e.shiftKey) {
+                e.preventDefault();
+                this.menuButton.focus();
+            } else if (e.key === 'Tab' && e.shiftKey) {
+                e.preventDefault();
+                const apps = this.getApps();
+                if (apps.length > 0) {
+                    this.selectApp(apps.length - 1);
+                } else {
+                    this.menuButton.focus();
+                }
             }
         });
     };
@@ -326,6 +343,8 @@ export class Menu {
         const expanded = this.avatarDropdown.classList.toggle('expanded');
         this.avatarButton.setAttribute('aria-expanded', String(expanded));
     };
+
+    private isAvatarDropdownExpanded = (): boolean => this.avatarDropdown?.classList.contains('expanded') ?? false;
 
     private closeAvatarDropdown = (): void => {
         this.avatarDropdown.classList.remove('expanded');
@@ -337,13 +356,18 @@ export class Menu {
 
         button.addEventListener('click', this.togglePanelState);
         button.addEventListener('keydown', (e: KeyboardEvent) => {
-            if (e.key === 'Tab' && !e.shiftKey) {
+            if (e.key !== 'Tab' || !this.isPanelExpanded()) {
+                return;
+            }
+            if (!e.shiftKey) {
                 const firstLink = this.menuPanel.querySelector('.menu-info-link-row');
                 if (firstLink) {
                     e.preventDefault();
                     (firstLink as HTMLElement).focus();
-                    return false;
                 }
+            } else {
+                e.preventDefault();
+                this.avatarButton.focus();
             }
         });
 
@@ -404,15 +428,15 @@ export class Menu {
             () =>
                 this.fetchMenuContents()
                     .then((menuEl: LibAdminElement) => {
-                        const oldMenuContent = this.menuPanel.querySelector(
-                            '.scrollable-content',
+                        const oldGrid = this.menuPanel.querySelector(
+                            '.app-grid',
                         );
 
-                        const newMenuContent = menuEl.getHTMLElement().querySelector(
-                            '.scrollable-content',
+                        const newGrid = menuEl.getHTMLElement().querySelector(
+                            '.app-grid',
                         );
-                        const parent = oldMenuContent.parentNode;
-                        parent.replaceChild(newMenuContent, oldMenuContent);
+                        const parent = oldGrid.parentNode;
+                        parent.replaceChild(newGrid, oldGrid);
                         this.addAppItemsListeners();
                         this.setFocusableElements();
                     })
@@ -457,10 +481,10 @@ export class Menu {
     };
 
     private getApps(): HTMLElement[] {
-        return Array.from(this.getMenuMainContainer().querySelectorAll('.app-row'));
+        return Array.from(this.getMenuMainContainer().querySelectorAll('.app-tile'));
     }
 
-    private getSelectedApp = (): HTMLElement => this.menuPanel.querySelector('.app-row.selected');
+    private getSelectedApp = (): HTMLElement => this.menuPanel.querySelector('.app-tile.selected');
 
     private getSelectedAppIndex = (): number => {
         const apps = this.getApps();
@@ -490,7 +514,7 @@ export class Menu {
         if (selectedIndex === -1) {
             nextIndex = 0;
         } else if (selectedIndex === 0) {
-            nextIndex = this.root.querySelectorAll('.app-row').length - 1;
+            nextIndex = this.root.querySelectorAll('.app-tile').length - 1;
         } else {
             nextIndex = selectedIndex - 1;
         }
@@ -502,7 +526,7 @@ export class Menu {
         this.unselectCurrentApp();
         const app = this.getAppByIndex(index);
         setTimeout(() => {
-            (app.parentNode as HTMLElement).focus();
+            (app as HTMLElement).focus();
             app.classList.add('selected');
         }, 1);
     };
@@ -518,10 +542,9 @@ export class Menu {
     };
 
     private startApp = (app: HTMLElement): void => {
-        const anchorEl = app.parentElement;
-        if (anchorEl && anchorEl.tagName === 'A' && anchorEl.click) {
+        if (app.tagName === 'A' && app.click) {
             this.unselectCurrentApp();
-            anchorEl.click();
+            app.click();
         }
     };
 

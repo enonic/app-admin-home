@@ -6,6 +6,15 @@ const i18n = require('/lib/xp/i18n');
 const assetLib = require('/lib/enonic/asset');
 
 const getConfig = (req) => {
+    const openMenu = req.params['openMenu'] !== 'false';
+
+    const menuBaseUrl = admin.extensionUrl({
+        application: app.name,
+        extension: 'menu'
+    });
+    const separator = menuBaseUrl.indexOf('?') >= 0 ? '&' : '?';
+    const menuUrl = `${menuBaseUrl}${separator}appName=${encodeURIComponent(app.name)}&autoOpen=${openMenu}`;
+
     return {
         appId: app.name,
         adminUrl: admin.getHomeToolUrl(),
@@ -13,14 +22,7 @@ const getConfig = (req) => {
             path: ''
         }),
         xpVersion: admin.getVersion(),
-        menuUrl: admin.extensionUrl({
-            application: app.name,
-            extension: 'menu',
-            params: {
-                autoOpen: true,
-                appName: app.name,
-            },
-        }),
+        menuUrl,
         extensionApiUrl: portal.apiUrl({
             api: 'admin:extension'
         }),

@@ -16,6 +16,18 @@ import {DashboardPanel} from './DashboardPanel';
 
 const containerId = 'home-main-container';
 
+const removeOpenMenuParamFromUrl = () => {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has('openMenu')) {
+        return;
+    }
+
+    url.searchParams.delete('openMenu');
+    const query = url.searchParams.toString();
+    const cleanUrl = `${url.pathname}${query ? `?${query}` : ''}${url.hash}`;
+    window.history.replaceState(window.history.state, '', cleanUrl);
+};
+
 const loadDOM = (): Q.Promise<void> => {
     const DOMLoaded: Q.Deferred<void> = Q.defer<void>();
     document.addEventListener('DOMContentLoaded', () => DOMLoaded.resolve());
@@ -70,6 +82,11 @@ const appendMenuPanel = () => {
             const configEl = shadowRoot.getElementById('menu-config-json');
             if (configEl && !configEl.hasAttribute('data-menu-initialized')) {
                 const config = getMenuJsonConfig(shadowRoot);
+                if (config.autoOpen) {
+                    document.addEventListener('menu-background-ready', showDashboard, {once: true});
+                } else {
+                    showDashboard();
+                }
                 new Menu(config, shadowRoot);
             }
         })
@@ -118,8 +135,6 @@ const startApplication = () => {
     const appBar = new AppBar(getApplication());
     Body.get().appendChild(appBar);
 
-    document.addEventListener('menu-background-ready', showDashboard, {once: true});
-
     setupWebSocketListener();
     startLostConnectionDetector();
     addListenersToDashboardItems();
@@ -128,6 +143,8 @@ const startApplication = () => {
 }
 
 void (async () => {
+    removeOpenMenuParamFromUrl();
+
     const currentScript = getModuleScript('home');
 
     const configScriptId = getRequiredAttribute(currentScript, 'data-config-script-id');

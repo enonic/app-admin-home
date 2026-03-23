@@ -1,6 +1,5 @@
 /*global app, require*/
 
-const portal = require('/lib/xp/portal');
 const mustache = require('/lib/mustache');
 const configLib = require('/lib/config');
 const assetLib = require('/lib/enonic/asset');

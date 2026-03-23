@@ -96,8 +96,7 @@ exports.get = function(req) {
                 'launcher.tools.home.description',
                 locales
             ),
-            linkCls: app.name === config.appName ? ' non-interactive' : '',
-            rowCls: app.name === config.appName ? ' active' : '',
+            isHomeApp: app.name === config.appName,
         },
         xpVersion: admin.getVersion(),
         usefulLinksTitle: localise('menu.info.usefulLinks', locales),

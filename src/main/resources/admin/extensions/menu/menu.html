@@ -2,16 +2,10 @@
     <link rel="stylesheet" type="text/css" href="{{stylesUrl}}">
     <script type="module" src="{{jsUrl}}"></script>
     <script type="application/json" id="menu-config-json">{{{configAsJson}}}</script>
-    <div class="avatar-container">
-        <button id="avatar-button" class="avatar-button" type="button" title="{{user.displayName}}" aria-expanded="false" aria-haspopup="true" aria-controls="avatar-dropdown">{{userInitials}}</button>
-        <div id="avatar-dropdown" class="avatar-dropdown" role="menu">
-            <a href="{{logoutUrl}}" class="avatar-dropdown-item" role="menuitem">{{phrases.linkLogout}}</a>
-        </div>
-    </div>
     <button id="menu-button" class="menu-button" style="display: none;" title="{{phrases.tooltipOpenMenu}}" aria-label="{{phrases.tooltipOpenMenu}}" aria-expanded="false" aria-controls="menu-panel">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="14" rx="1"></rect><rect width="7" height="7" x="3" y="14" rx="1"></rect></svg>
     </button>
-    <nav id="menu-panel" class="menu-panel" role="navigation" aria-label="{{phrases.tooltipOpenMenu}}" tabindex="0" style="display: none;">
+    <nav id="menu-panel" class="menu-panel" role="navigation" aria-label="{{phrases.tooltipOpenMenu}}" style="display: none;">
         <div class="menu-background" aria-hidden="true"></div>
         <div id="menu-main-container" class="menu-main-container">
             <div class="menu-info-panel">
@@ -31,33 +25,26 @@
             </div>
 
             <div class="menu-app-container">
-                <div class="scrollable-content">
-                    <a href="{{homeTool.url}}" target="_blank" class="{{homeTool.linkCls}}">
-                        <div class="app-row{{homeTool.rowCls}}">
-                            <div class="app-icon icon-dashboard"></div>
-                            <div class="app-info">
-                                <p class="app-name">{{homeTool.caption}}</p>
-
-                                <p class="app-description">{{homeTool.description}}</p>
-                            </div>
-                        </div>
+                <div class="app-grid">
+                    <a href="{{homeTool.url}}" class="app-tile{{#homeTool.isHomeApp}} home-app{{/homeTool.isHomeApp}}" title="{{homeTool.description}}" aria-description="{{homeTool.description}}">
+                        <div class="app-tile-icon icon-dashboard"></div>
+                        <span class="app-tile-name">{{homeTool.caption}}</span>
                     </a>
                     {{#adminTools}}
-                    <a href="{{uri}}" target="_blank">
-                        <div class="app-row {{cls}}" id="{{appId}}">
-                            <div class="app-icon">{{#icon}}{{{icon}}}{{/icon}}</div>
-                            <div class="app-info">
-                                <p class="app-name">{{displayName}}</p>
-
-                                <p class="app-description">{{#description}}{{description}}{{/description}}</p>
-                            </div>
-                        </div>
+                    <a href="{{uri}}" class="app-tile" id="{{appId}}" title="{{description}}" aria-description="{{description}}">
+                        <div class="app-tile-icon">{{#icon}}{{{icon}}}{{/icon}}</div>
+                        <span class="app-tile-name">{{displayName}}</span>
                     </a>
                     {{/adminTools}}
                 </div>
-
             </div>
 
         </div>
     </nav>
+    <div class="avatar-container">
+        <button id="avatar-button" class="avatar-button" type="button" title="{{user.displayName}}" aria-expanded="false" aria-haspopup="true" aria-controls="avatar-dropdown">{{userInitials}}</button>
+        <div id="avatar-dropdown" class="avatar-dropdown" role="menu">
+            <a href="{{logoutUrl}}" class="avatar-dropdown-item" role="menuitem">{{phrases.linkLogout}}</a>
+        </div>
+    </div>
 </div>
