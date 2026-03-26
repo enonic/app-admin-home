@@ -1,9 +1,7 @@
 import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/application/ApplicationEvent';
-import {Element as LibAdminElement} from '@enonic/lib-admin-ui/dom/Element';
 import {KeyBinding} from '@enonic/lib-admin-ui/ui/KeyBinding';
 import {KeyBindings} from '@enonic/lib-admin-ui/ui/KeyBindings';
-import {AppHelper} from '@enonic/lib-admin-ui/util/AppHelper';
-import {ExtensionHelper} from '@enonic/lib-admin-ui/extension/ExtensionHelper';
+
 
 type JSONObject = Record<string, string>;
 
@@ -100,9 +98,6 @@ export class Menu {
         .setGlobal(true)
         .setCallback(e => {
             if (this.isPanelExpanded()) {
-                if (this.isInfoLinkFocused()) {
-                    return true;
-                }
                 e.preventDefault();
                 e.returnValue = false;
 
@@ -229,10 +224,10 @@ export class Menu {
         return document.activeElement === this.menuButton;
     };
 
-    private fetchMenuContents = (): Promise<LibAdminElement> => {
+    private fetchMenuContents = (): Promise<Document> => {
         return fetch(this.config.menuUrl)
             .then(response => response.text())
-            .then((html: string) => ExtensionHelper.createFromHtml(html))
+            .then((html: string) => new DOMParser().parseFromString(html, 'text/html'))
             .catch((e: Error) => {
                 throw new Error(`Failed to fetch page: ${e.toString()}`);
             });
@@ -249,29 +244,10 @@ export class Menu {
         this.setFocusableElements();
     }
 
-    private isInfoLinkFocused = (): boolean => {
-        const active = this.root instanceof ShadowRoot ? this.root.activeElement : document.activeElement;
-        return active?.classList.contains('menu-info-link-row') ?? false;
-    };
-
     private initInfoPanelLinks = (): void => {
-        const links = Array.from(this.menuPanel.querySelectorAll('.menu-info-link-row'));
-        if (links.length === 0) {
-            return;
-        }
-
-        links[0].addEventListener('keydown', (e: KeyboardEvent) => {
-            if (e.key === 'Tab' && e.shiftKey) {
-                e.preventDefault();
-                this.menuButton.focus();
-            }
-        });
-
-        links[links.length - 1].addEventListener('keydown', (e: KeyboardEvent) => {
-            if (e.key === 'Tab' && !e.shiftKey) {
-                e.preventDefault();
-                this.selectApp(0);
-            }
+        const links = this.menuPanel.querySelectorAll('.menu-info-link-row');
+        links.forEach((link: HTMLElement) => {
+            link.setAttribute('tabindex', '-1');
         });
     };
 
@@ -360,11 +336,8 @@ export class Menu {
                 return;
             }
             if (!e.shiftKey) {
-                const firstLink = this.menuPanel.querySelector('.menu-info-link-row');
-                if (firstLink) {
-                    e.preventDefault();
-                    (firstLink as HTMLElement).focus();
-                }
+                e.preventDefault();
+                this.selectApp(0);
             } else {
                 e.preventDefault();
                 this.avatarButton.focus();
@@ -423,27 +396,28 @@ export class Menu {
         }
     };
 
-    private reloadMenu = (): void => {
-        return AppHelper.debounce(
-            () =>
-                this.fetchMenuContents()
-                    .then((menuEl: LibAdminElement) => {
-                        const oldGrid = this.menuPanel.querySelector(
-                            '.app-grid',
-                        );
+    private reloadTimer: ReturnType<typeof setTimeout> | null = null;
 
-                        const newGrid = menuEl.getHTMLElement().querySelector(
-                            '.app-grid',
+    private reloadMenu = (): void => {
+        if (this.reloadTimer) {
+            clearTimeout(this.reloadTimer);
+        }
+        this.reloadTimer = setTimeout(() => {
+            this.reloadTimer = null;
+            this.fetchMenuContents()
+                .then((doc: Document) => {
+                    const oldGrid = this.menuPanel.querySelector('.app-grid');
+                    const newGrid = doc.querySelector('.app-grid');
+                    if (oldGrid && newGrid) {
+                        oldGrid.parentNode.replaceChild(
+                            document.importNode(newGrid, true),
+                            oldGrid,
                         );
-                        const parent = oldGrid.parentNode;
-                        parent.replaceChild(newGrid, oldGrid);
                         this.addAppItemsListeners();
                         this.setFocusableElements();
-                    })
-            ,
-            1000,
-            false,
-        )();
+                    }
+                });
+        }, 1000);
     };
 
     private initApplicationsListeners = (): boolean => {
