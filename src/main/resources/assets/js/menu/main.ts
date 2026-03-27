@@ -350,7 +350,6 @@ export class Menu {
     };
 
     private openMenuPanel = (): void => {
-        this.avatarContainer?.classList.add('visible');
         this.listenToKeyboardEvents();
         this.toggleButton();
         this.menuPanel.classList.add('visible');
@@ -361,7 +360,6 @@ export class Menu {
 
     private closeMenuPanel = (): void => {
         this.closeAvatarDropdown();
-        this.avatarContainer?.classList.remove('visible');
         this.unlistenToKeyboardEvents();
         this.menuPanel.classList.remove('visible');
         this.toggleButton();
