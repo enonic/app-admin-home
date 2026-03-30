@@ -1,4 +1,5 @@
-displayName:
+kind: "AdminExtension"
+title:
   text: "Useful Links"
   i18n: "home.dashboard.widget.shortcuts.displayName"
 interfaces:

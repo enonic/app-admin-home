@@ -27,8 +27,8 @@ final class AdminToolMapper
         gen.value( "application", value.getKey().getApplicationKey().toString() );
         gen.value( "name", value.getKey().getName() );
         gen.end();
-        gen.value( "displayName",
-                   Optional.ofNullable( value.getDisplayNameI18nKey() ).map( messages::localize ).orElseGet( value::getDisplayName ) );
+        gen.value( "title",
+                   Optional.ofNullable( value.getTitleI18nKey() ).map( messages::localize ).orElseGet( value::getTitle ) );
         gen.value( "description",
                    Optional.ofNullable( value.getDescription() ).map( messages::localize ).orElseGet( value::getDescription ) );
         gen.value( "icon", value.getIcon() != null ? new String( value.getIcon().toByteArray(), StandardCharsets.UTF_8 ) : null );

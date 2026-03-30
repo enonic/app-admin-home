@@ -1,3 +1,5 @@
+kind: "AdminTool"
+title: "home"
 allow:
   - "role:system.admin"
   - "role:system.admin.login"
