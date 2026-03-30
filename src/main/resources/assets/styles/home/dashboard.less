@@ -3,7 +3,7 @@
   height: 100%;
   padding: 44px 10px 0 10px;
   box-sizing: border-box;
-  overflow: auto;
+  overflow: hidden;
 
   .dashboard-extension-panel {
     width: 100%;
@@ -12,8 +12,8 @@
     z-index: 1;
     position: relative;
     display: grid;
-    grid-template-columns: minmax(100%, 1fr);
-    grid-template-rows: repeat(2, minmax(50%, 1fr));
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, 1fr);
     grid-auto-flow: dense;
     gap: 20px;
 
@@ -124,7 +124,7 @@
 @media screen and (min-width: 481px) {
   #home-main-container {
     .dashboard-extension-panel {
-      grid-template-columns: repeat(2, minmax(50%, 1fr));
+      grid-template-columns: repeat(2, 1fr);
 
       .extension-placeholder {
 
@@ -147,7 +147,7 @@
 @media screen and (min-width: 769px) {
   #home-main-container {
     .dashboard-extension-panel {
-      grid-template-columns: repeat(3, minmax(33%, 1fr));
+      grid-template-columns: repeat(3, 1fr);
 
       .extension-placeholder {
         &.width- {
@@ -172,7 +172,7 @@
 @media screen and (min-width: 1201px) {
   #home-main-container {
     .dashboard-extension-panel {
-      grid-template-columns: repeat(4, minmax(25%, 1fr));
+      grid-template-columns: repeat(4, 1fr);
 
       .extension-placeholder {
         &.width- {
@@ -200,7 +200,7 @@
 @media screen and (min-height: 481px) {
   #home-main-container {
     .dashboard-extension-panel {
-      grid-template-rows: repeat(3, minmax(33%, 1fr));
+      grid-template-rows: repeat(3, 1fr);
 
       .extension-placeholder {
         &.height- {
@@ -225,7 +225,7 @@
 @media screen and (min-height: 769px) {
   #home-main-container {
     .dashboard-extension-panel {
-      grid-template-rows: repeat(4, minmax(25%, 1fr));
+      grid-template-rows: repeat(4, 1fr);
 
       .extension-placeholder {
         &.height- {

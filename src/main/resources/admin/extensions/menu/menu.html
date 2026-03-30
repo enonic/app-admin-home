@@ -44,6 +44,7 @@
     <div class="avatar-container">
         <button id="avatar-button" class="avatar-button" type="button" title="{{user.displayName}}" aria-expanded="false" aria-haspopup="true" aria-controls="avatar-dropdown">{{userInitials}}</button>
         <div id="avatar-dropdown" class="avatar-dropdown" role="menu">
+            <div class="avatar-dropdown-username">{{user.displayName}}</div>
             <a href="{{logoutUrl}}" class="avatar-dropdown-item" role="menuitem">{{phrases.linkLogout}}</a>
         </div>
     </div>

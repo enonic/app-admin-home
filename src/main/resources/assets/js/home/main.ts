@@ -84,6 +84,7 @@ const appendMenuPanel = () => {
                 const config = getMenuJsonConfig(shadowRoot);
                 if (config.autoOpen) {
                     document.addEventListener('menu-background-ready', showDashboard, {once: true});
+                    document.addEventListener('menu-panel-closed', showDashboard, {once: true});
                 } else {
                     showDashboard();
                 }

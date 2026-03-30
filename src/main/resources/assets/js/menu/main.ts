@@ -30,12 +30,31 @@ export class Menu {
     private menuMainContainer: HTMLElement;
     private focusableElements: HTMLElement[];
 
+    private getActiveElement = (): Element | null => {
+        return this.root instanceof ShadowRoot ? this.root.activeElement : document.activeElement;
+    };
+
     private nextApp: KeyBinding = new KeyBinding('down')
         .setGlobal(true)
         .setCallback((e: Event) => {
             if (!this.isPanelExpanded()) {
                 return false;
             }
+
+            if (this.isAvatarDropdownExpanded()) {
+                const activeElement = this.getActiveElement();
+                const focusIsInDropdown = this.avatarDropdown.contains(activeElement);
+
+                if (!focusIsInDropdown) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    this.focusFirstAvatarMenuItem();
+                }
+
+                return false;
+            }
+
             this.initKeyboardNavigation();
             this.selectNextApp();
             return false;
@@ -44,7 +63,7 @@ export class Menu {
     private prevApp: KeyBinding = new KeyBinding('up')
         .setGlobal(true)
         .setCallback((e: Event) => {
-            if (!this.isPanelExpanded()) {
+            if (!this.isPanelExpanded() || this.isAvatarDropdownExpanded()) {
                 return false;
             }
             this.initKeyboardNavigation();
@@ -142,12 +161,6 @@ export class Menu {
     }
 
     private addAppItemsListeners = (): void => {
-        this.getApps().forEach((app: HTMLElement, index: number) => {
-            app.addEventListener('mouseenter', () => {
-                this.selectApp(index);
-            });
-        });
-
         const dashboardIcon = this.menuPanel.querySelector('.icon-dashboard');
         const dashboardLink = dashboardIcon?.closest('a.app-tile');
         if (!(dashboardLink instanceof HTMLAnchorElement)) {
@@ -284,12 +297,42 @@ export class Menu {
 
         this.avatarButton.addEventListener('click', (e: Event) => {
             e.stopPropagation();
+            this.avatarButton.focus();
             this.toggleAvatarDropdown();
         });
 
         document.addEventListener('click', (e: Event) => {
             if (!container.contains(e.target as Node)) {
                 this.closeAvatarDropdown();
+            }
+        });
+
+        container.addEventListener('focusout', () => {
+            requestAnimationFrame(() => {
+                const rootActiveElement = this.root instanceof ShadowRoot ? this.root.activeElement : document.activeElement;
+                const documentActiveElement = document.activeElement;
+                const focusRemainsInsideContainer =
+                    container.contains(rootActiveElement) || container.contains(documentActiveElement);
+
+                if (this.isAvatarDropdownExpanded() && !focusRemainsInsideContainer) {
+                    this.closeAvatarDropdown();
+                }
+            });
+        });
+
+        this.avatarDropdown.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
+                this.closeAvatarDropdown();
+                this.avatarButton.focus();
+            } else if (e.key === 'Enter') {
+                const active = this.getActiveElement();
+                if (active instanceof HTMLElement && this.avatarDropdown.contains(active)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    active.click();
+                }
             }
         });
 
@@ -300,16 +343,26 @@ export class Menu {
             } else if (e.key === 'Escape') {
                 this.closeAvatarDropdown();
                 this.avatarButton.focus();
-            } else if (e.key === 'Tab' && !e.shiftKey) {
+            } else if (e.key === 'ArrowDown') {
                 e.preventDefault();
-                this.menuButton.focus();
-            } else if (e.key === 'Tab' && e.shiftKey) {
-                e.preventDefault();
-                const apps = this.getApps();
-                if (apps.length > 0) {
-                    this.selectApp(apps.length - 1);
-                } else {
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                if (!this.isAvatarDropdownExpanded()) {
+                    this.toggleAvatarDropdown();
+                }
+                this.focusFirstAvatarMenuItem();
+            } else if (e.key === 'Tab') {
+                if (!e.shiftKey) {
+                    e.preventDefault();
                     this.menuButton.focus();
+                } else {
+                    e.preventDefault();
+                    const apps = this.getApps();
+                    if (apps.length > 0) {
+                        this.selectApp(apps.length - 1);
+                    } else {
+                        this.menuButton.focus();
+                    }
                 }
             }
         });
@@ -325,6 +378,11 @@ export class Menu {
     private closeAvatarDropdown = (): void => {
         this.avatarDropdown.classList.remove('expanded');
         this.avatarButton.setAttribute('aria-expanded', 'false');
+    };
+
+    private focusFirstAvatarMenuItem = (): void => {
+        const firstItem = this.avatarDropdown.querySelector<HTMLElement>('.avatar-dropdown-item');
+        firstItem?.focus();
     };
 
     private initMenuButton = (): void => {
@@ -367,6 +425,7 @@ export class Menu {
         this.menuButton.setAttribute('aria-label', this.config.phrases['tooltipOpenMenu']);
         this.menuButton.setAttribute('aria-expanded', 'false');
         this.unselectCurrentApp();
+        document.dispatchEvent(new CustomEvent('menu-panel-closed'));
     };
 
     private listenToKeyboardEvents = (): void => KeyBindings.get().bindKeys(this.menuBindings);
