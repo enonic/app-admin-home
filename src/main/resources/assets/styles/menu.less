@@ -345,11 +345,12 @@ button.menu-button {
     }
 
     .app-tile-icon {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-top: 15px;
 
       svg {
         width: 100% !important;
@@ -357,7 +358,7 @@ button.menu-button {
       }
 
       &.icon-dashboard {
-        font-size: 36px;
+        font-size: 42px;
         color: white;
       }
     }
@@ -373,6 +374,7 @@ button.menu-button {
       max-width: 110px;
       padding: 0 6px;
       box-sizing: border-box;
+      margin-top: 5px;
     }
   }
 
@@ -428,4 +430,94 @@ button.menu-button {
 
 .app-tile-selected() {
   background: rgba(255, 255, 255, 0.15);
+}
+
+// Mobile layout
+@menu-mobile-padding: 20px;
+
+@media screen and (max-width: 768px) {
+  .menu-panel .menu-background {
+    filter: blur(10px);
+    transform: scale(1.1);
+  }
+
+  .menu-panel .menu-main-container {
+    flex-direction: column;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 70px @menu-mobile-padding 30px;
+    box-sizing: border-box;
+  }
+
+  .menu-main-container {
+    .menu-info-panel {
+      width: auto;
+      height: auto;
+      flex-shrink: 0;
+      background: none;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      overflow-y: visible;
+      display: contents;
+
+      .menu-info-content {
+        display: contents;
+      }
+
+      .menu-info-title {
+        order: 1;
+        font-size: 24px;
+      }
+
+      .menu-info-version {
+        order: 2;
+        margin-bottom: 20px;
+      }
+
+      .menu-info-links {
+        order: 4;
+        background: rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 20px 10px;
+      }
+
+      .menu-info-links-title {
+        margin-top: 0;
+        padding: 0 10px;
+      }
+
+      .menu-info-link-row {
+        height: 50px;
+      }
+    }
+
+    .menu-app-container {
+      order: 3;
+      flex: none;
+      overflow: visible;
+      display: block;
+      margin-bottom: 20px;
+
+      .app-grid {
+        grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+        width: 100%;
+        gap: 20px;
+      }
+
+      .app-tile {
+        width: auto;
+        height: auto;
+        aspect-ratio: 1;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+      }
+
+      .app-tile-name {
+        max-width: 100%;
+        margin-top: 0;
+      }
+    }
+  }
 }

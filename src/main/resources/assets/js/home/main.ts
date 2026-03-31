@@ -80,14 +80,14 @@ const appendMenuPanel = () => {
         .then(() => {
             const shadowRoot = menuElement.shadowRoot;
             const configEl = shadowRoot.getElementById('menu-config-json');
+            const config = getMenuJsonConfig(shadowRoot);
+            if (config.autoOpen) {
+                document.addEventListener('menu-background-ready', showDashboard, {once: true});
+                document.addEventListener('menu-panel-closed', showDashboard, {once: true});
+            } else {
+                showDashboard();
+            }
             if (configEl && !configEl.hasAttribute('data-menu-initialized')) {
-                const config = getMenuJsonConfig(shadowRoot);
-                if (config.autoOpen) {
-                    document.addEventListener('menu-background-ready', showDashboard, {once: true});
-                    document.addEventListener('menu-panel-closed', showDashboard, {once: true});
-                } else {
-                    showDashboard();
-                }
                 new Menu(config, shadowRoot);
             }
         })
