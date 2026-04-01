@@ -35,7 +35,7 @@ public final class GetAdminToolsScriptBean
             .stream()
             .filter( Predicate.not( adminToolDescriptor -> adminToolDescriptor.getKey().getApplicationKey().equals( appMainKey ) ) )
             .filter( adminToolDescriptor -> adminToolDescriptor.isAccessAllowed( principals ) )
-            .sorted( Comparator.nullsLast( Comparator.comparing( AdminToolDescriptor::getDisplayName ) ) )
+            .sorted( Comparator.nullsLast( Comparator.comparing( AdminToolDescriptor::getTitle ) ) )
             .map( adminToolDescriptor -> new AdminToolMapper( adminToolDescriptor,
                                                               getMessageBundle( adminToolDescriptor.getKey().getApplicationKey(),
                                                                                 locales ) ) )

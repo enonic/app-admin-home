@@ -1,4 +1,5 @@
-displayName:
+kind: "AdminExtension"
+title:
   text: "Launcher"
   i18n: "Launcher"
 allow:
