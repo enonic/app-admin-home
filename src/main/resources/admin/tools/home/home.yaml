@@ -4,6 +4,7 @@ allow:
   - "role:system.admin"
   - "role:system.admin.login"
 apis:
+  - "asset"
   - "admin:extension"
   - "admin:status"
   - "admin:event"
