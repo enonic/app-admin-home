@@ -1,4 +1,5 @@
-displayName:
+kind: "AdminExtension"
+title:
   text: "Menu"
   i18n: "Menu"
 allow:
