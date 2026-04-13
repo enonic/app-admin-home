@@ -405,6 +405,10 @@ export class Menu {
         button.classList.add('visible');
 
         this.menuButton = button;
+
+        setTimeout(() => {
+            this.menuButton.focus();
+        }, 200);
     };
 
     private openMenuPanel = (): void => {
