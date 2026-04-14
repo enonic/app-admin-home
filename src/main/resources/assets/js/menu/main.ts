@@ -294,6 +294,7 @@ export class Menu {
         }
 
         this.avatarContainer = container;
+        this.avatarButton.setAttribute('tabindex', '-1');
 
         this.avatarButton.addEventListener('click', (e: Event) => {
             e.stopPropagation();
@@ -390,7 +391,10 @@ export class Menu {
 
         button.addEventListener('click', this.togglePanelState);
         button.addEventListener('keydown', (e: KeyboardEvent) => {
-            if (e.key !== 'Tab' || !this.isPanelExpanded()) {
+            if (e.key !== 'Tab') {
+                return;
+            }
+            if (!this.isPanelExpanded()) {
                 return;
             }
             if (!e.shiftKey) {
@@ -418,6 +422,7 @@ export class Menu {
         this.menuButton.setAttribute('title', this.config.phrases['tooltipCloseMenu']);
         this.menuButton.setAttribute('aria-label', this.config.phrases['tooltipCloseMenu']);
         this.menuButton.setAttribute('aria-expanded', 'true');
+        this.avatarButton.removeAttribute('tabindex');
     };
 
     private closeMenuPanel = (): void => {
@@ -429,6 +434,7 @@ export class Menu {
         this.menuButton.setAttribute('aria-label', this.config.phrases['tooltipOpenMenu']);
         this.menuButton.setAttribute('aria-expanded', 'false');
         this.unselectCurrentApp();
+        this.avatarButton.setAttribute('tabindex', '-1');
         document.dispatchEvent(new CustomEvent('menu-panel-closed'));
     };
 
