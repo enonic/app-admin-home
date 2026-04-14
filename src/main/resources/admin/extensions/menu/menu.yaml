@@ -1,0 +1,9 @@
+kind: "AdminExtension"
+title:
+  text: "Menu"
+  i18n: "Menu"
+allow:
+  - "role:system.admin"
+  - "role:system.admin.login"
+interfaces:
+  - "generic"
