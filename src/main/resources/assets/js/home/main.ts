@@ -1,15 +1,14 @@
 import {Application} from '@enonic/lib-admin-ui/app/Application';
 import {AppBar} from '@enonic/lib-admin-ui/app/bar/AppBar';
 import {Body} from '@enonic/lib-admin-ui/dom/Body';
-import {DivEl} from '@enonic/lib-admin-ui/dom/DivEl';
 import {Element} from '@enonic/lib-admin-ui/dom/Element';
-import {ImgEl} from '@enonic/lib-admin-ui/dom/ImgEl';
 import {ServerEventsListener} from '@enonic/lib-admin-ui/event/ServerEventsListener';
 import {Path} from '@enonic/lib-admin-ui/rest/Path';
 import {ConnectionDetector} from '@enonic/lib-admin-ui/system/ConnectionDetector';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
-import {LauncherHelper} from '@enonic/lib-admin-ui/util/LauncherHelper';
 import {i18n, Messages} from '@enonic/lib-admin-ui/util/Messages';
+import {MenuElement} from '../menu/MenuElement';
+import {Menu, getMenuJsonConfig} from '../menu/main';
 import * as Q from 'q';
 import {resolveScriptConfig} from '../ConfigResolver';
 import {getModuleScript, getRequiredAttribute} from '../util/ModuleScriptHelper';
@@ -17,31 +16,22 @@ import {DashboardPanel} from './DashboardPanel';
 
 const containerId = 'home-main-container';
 
+const removeOpenMenuParamFromUrl = () => {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has('openMenu')) {
+        return;
+    }
+
+    url.searchParams.delete('openMenu');
+    const query = url.searchParams.toString();
+    const cleanUrl = `${url.pathname}${query ? `?${query}` : ''}${url.hash}`;
+    window.history.replaceState(window.history.state, '', cleanUrl);
+};
+
 const loadDOM = (): Q.Promise<void> => {
     const DOMLoaded: Q.Deferred<void> = Q.defer<void>();
     document.addEventListener('DOMContentLoaded', () => DOMLoaded.resolve());
     return DOMLoaded.promise;
-};
-
-const showBackgroundImage = () => {
-    const containerEl = document.getElementById(containerId);
-    if (!containerEl) {
-        throw new Error('Main container not found!');
-    }
-
-    const container: Element = Element.fromHtmlElement(containerEl);
-    const divEl = new DivEl('lazy-image empty');
-    divEl.setId('background-image');
-    const imgEl = new ImgEl(CONFIG.getString('backgroundUri'), 'lazy-image empty');
-
-    container.appendChildren(divEl, imgEl);
-
-    imgEl.onLoaded(() => {
-        divEl.getEl().setAttribute('style', `background-image: url('${imgEl.getSrc()}')`);
-        imgEl.remove();
-        divEl.removeClass('empty');
-    });
-    container.appendChild(imgEl);
 };
 
 const initConfig = (configScriptId: string) => {
@@ -77,6 +67,35 @@ const addListenersToDashboardItems = () => {
     });
 };
 
+const appendMenuPanel = () => {
+    const menuUrl = CONFIG.getString('menuUrl');
+    if (!menuUrl) {
+        throw new Error('Menu URL is not defined');
+    }
+    const menuElement = MenuElement.create();
+    document.body.appendChild(menuElement);
+    fetch(menuUrl)
+        .then(response => response.text())
+        .then((html: string) => menuElement.setHtml(html))
+        .then(() => {
+            const shadowRoot = menuElement.shadowRoot;
+            const configEl = shadowRoot.getElementById('menu-config-json');
+            const config = getMenuJsonConfig(shadowRoot);
+            if (config.autoOpen) {
+                document.addEventListener('menu-background-ready', showDashboard, {once: true});
+                document.addEventListener('menu-panel-closed', showDashboard, {once: true});
+            } else {
+                showDashboard();
+            }
+            if (configEl && !configEl.hasAttribute('data-menu-initialized')) {
+                new Menu(config, shadowRoot);
+            }
+        })
+        .catch((e: Error) => {
+            throw new Error(`Failed to fetch the Menu extension panel at ${menuUrl}: ${e.toString()}`);
+        });
+};
+
 const appendDashboardExtensions = () => {
     const extensionContainerEl = document.getElementById(containerId);
     if (!extensionContainerEl) {
@@ -102,6 +121,17 @@ const getApplication = (): Application => {
     return application;
 }
 
+const showDashboard = () => {
+    const containerEl = document.getElementById(containerId);
+    if (containerEl) {
+        containerEl.classList.add('visible');
+    }
+    const menuEl = document.querySelector('xp-menu');
+    if (menuEl) {
+        menuEl.classList.add('transparent');
+    }
+};
+
 const startApplication = () => {
     const appBar = new AppBar(getApplication());
     Body.get().appendChild(appBar);
@@ -109,17 +139,18 @@ const startApplication = () => {
     setupWebSocketListener();
     startLostConnectionDetector();
     addListenersToDashboardItems();
-    LauncherHelper.appendLauncherPanel();
+    appendMenuPanel();
     appendDashboardExtensions();
 }
 
 void (async () => {
+    removeOpenMenuParamFromUrl();
+
     const currentScript = getModuleScript('home');
 
     const configScriptId = getRequiredAttribute(currentScript, 'data-config-script-id');
 
     await loadDOM();
     initConfig(configScriptId);
-    showBackgroundImage();
     startApplication();
 })();
