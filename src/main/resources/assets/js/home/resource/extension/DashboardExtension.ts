@@ -55,12 +55,12 @@ class DashboardExtensionConfig extends ExtensionConfig {
     private order: number;
     private header: boolean;
 
-    fromJson(json: Record<string, string>): DashboardExtensionConfig {
-        this.width = WidgetSize[json.width?.toUpperCase()] as WidgetSize || WidgetSize.MEDIUM;
-        this.height = WidgetSize[json.height?.toUpperCase()] as WidgetSize || WidgetSize.MEDIUM;
-        this.style = WidgetStyle[json.style?.toUpperCase()] as WidgetStyle || WidgetStyle.AUTO;
-        this.order = Number.isNaN(json.order) ? Number.MAX_VALUE : parseInt(json.order);
-        this.header = json.header !== 'false';
+    fromJson(json: Record<string, unknown>): DashboardExtensionConfig {
+        this.width = WidgetSize[(json.width as string)?.toUpperCase()] as WidgetSize || WidgetSize.MEDIUM;
+        this.height = WidgetSize[(json.height as string)?.toUpperCase()] as WidgetSize || WidgetSize.MEDIUM;
+        this.style = WidgetStyle[(json.style as string)?.toUpperCase()] as WidgetStyle || WidgetStyle.AUTO;
+        this.order = Number.isNaN(Number(json.order)) ? Number.MAX_VALUE : parseInt(json.order as string);
+        this.header = json.header !== false && json.header !== 'false';
 
         return this;
     }

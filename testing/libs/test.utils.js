@@ -62,7 +62,7 @@ module.exports = {
         })
     },
     async getTextFromShadow(hostSelector, innerSelector) {
-        const host = await this.findElement('dashboard-extension');
+        const host = await this.findElement('dashboard-widget');
         //await host.waitForExist();
         const divs = await host.shadow$$('a > div');
 

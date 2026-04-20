@@ -3,7 +3,7 @@ const appConst = require('../libs/app_const');
 
 
 const locators = {
-    extensionHostElement: 'dashboard-extension',
+    extensionHostElement: 'dashboard-widget',
     container: "//div[contains(@id,'DashboardPanel')]",
     widgetShortcutsDiv: "//div[contains(@class,'extension-container')]",
     shortcutItemNameDiv: "//div[contains(@class,'extension-shortcuts-item')]/a/div",
@@ -72,7 +72,7 @@ class ShortcutsWidget extends Page {
 
     async waitForAboutItemDisplayed() {
         try {
-            const items = await this.getBrowser().$('dashboard-extension').shadow$$('a > div');
+            const items = await this.getBrowser().$('dashboard-widget').shadow$$('a > div');
             for (const item of items) {
                 const text = await item.getText();
                 if (text.includes('About')) {
@@ -97,7 +97,7 @@ class ShortcutsWidget extends Page {
 
     async getWidgetShortcutItems() {
         try {
-            const host = await this.findElement('dashboard-extension');
+            const host = await this.findElement('dashboard-widget');
             const divs = await host.shadow$$('a > div');
 
             for (const div of divs) {

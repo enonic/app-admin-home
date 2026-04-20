@@ -1,9 +1,6 @@
 import {Application} from '@enonic/lib-admin-ui/app/Application';
-import {AppBar} from '@enonic/lib-admin-ui/app/bar/AppBar';
-import {Body} from '@enonic/lib-admin-ui/dom/Body';
 import {Element} from '@enonic/lib-admin-ui/dom/Element';
 import {ServerEventsListener} from '@enonic/lib-admin-ui/event/ServerEventsListener';
-import {Path} from '@enonic/lib-admin-ui/rest/Path';
 import {ConnectionDetector} from '@enonic/lib-admin-ui/system/ConnectionDetector';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 import {i18n, Messages} from '@enonic/lib-admin-ui/util/Messages';
@@ -108,19 +105,6 @@ const appendDashboardExtensions = () => {
     extensionPanel.appendExtensions();
 };
 
-const getApplication = (): Application => {
-    const assetsUri: string = CONFIG.getString('assetsUri');
-    const application = new Application(
-        CONFIG.getString('appId'),
-        i18n('home.dashboard'),
-        '',
-        `${assetsUri}/icons/extensions/icon-white.svg`,
-    );
-    application.setPath(Path.fromString('/'));
-
-    return application;
-}
-
 const showDashboard = () => {
     const containerEl = document.getElementById(containerId);
     if (containerEl) {
@@ -133,9 +117,6 @@ const showDashboard = () => {
 };
 
 const startApplication = () => {
-    const appBar = new AppBar(getApplication());
-    Body.get().appendChild(appBar);
-
     setupWebSocketListener();
     startLostConnectionDetector();
     addListenersToDashboardItems();
