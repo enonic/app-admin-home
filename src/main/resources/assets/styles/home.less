@@ -7,7 +7,6 @@
 @import "home/progress-bar";
 @import "home/notify";
 @import "home/dashboard";
-@import "home/appbar";
 
 xp-menu {
   display: block;
@@ -21,6 +20,7 @@ xp-menu {
 
   &.transparent {
     background-color: transparent;
+    pointer-events: none;
   }
 }
 
@@ -36,10 +36,6 @@ xp-menu {
 
 .load-mask {
   z-index: 2002;
-}
-
-.xp-about-dialog + .body-mask {
-  background-color: @admin-black;
 }
 
 .notification-container {
@@ -67,7 +63,7 @@ body {
   overflow: hidden;
   font-family: @admin-font-family;
   font-size: @admin-font-size;
-  background-color: @admin-black;
+  background-color: var(--dashboard-panel-bg);
 
   button.launcher-button {
     &:focus-visible,
