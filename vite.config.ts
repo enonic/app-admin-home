@@ -51,8 +51,7 @@ export default defineConfig(({mode}) => {
           input: {
             'js/home/bundle': path.join(IN_PATH, 'js/home/main.ts'),
             'js/launcher/bundle': path.join(IN_PATH, 'js/launcher/main.ts'),
-            'js/menu/bundle': path.join(IN_PATH, 'js/menu/main.ts'),
-            'js/extensions/shortcuts': path.join(IN_PATH, 'js/extensions/shortcuts.ts')
+            'js/menu/bundle': path.join(IN_PATH, 'js/menu/main.ts')
           },
           output: {
             format: 'es',
@@ -117,7 +116,6 @@ export default defineConfig(({mode}) => {
             'styles/home': path.join(IN_PATH, 'styles/home.less'),
             'styles/launcher': path.join(IN_PATH, 'styles/launcher.less'),
             'styles/menu': path.join(IN_PATH, 'styles/menu.less'),
-            'styles/extensions/shortcuts': path.join(IN_PATH, 'styles/extensions/shortcuts.less'),
             'styles/extensions/youtube': path.join(IN_PATH, 'styles/extensions/youtube.less')
           },
           output: {

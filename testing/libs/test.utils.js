@@ -4,7 +4,6 @@
 const appConst = require("./app_const");
 const webDriverHelper = require("./WebDriverHelper");
 const LoginPage = require('../page_objects/login.page');
-const LauncherPanel = require('../page_objects/launcher.panel')
 const fs = require('fs');
 const path = require('path');
 module.exports = {
@@ -22,21 +21,7 @@ module.exports = {
         await loginPage.doLogin();
         await loginPage.pause(1000);
     },
-    async doLogout() {
-        const launcherPanel = new LauncherPanel();
-        const loginPage = new LoginPage();
-        try {
-            const isDisplayed = await launcherPanel.isPanelOpened();
-            if (!isDisplayed) {
-                await launcherPanel.clickOnLauncherToggler();
-            }
-            await launcherPanel.clickOnLogoutLink();
-            await loginPage.waitForPageLoaded();
-        } catch (err) {
-            return {success: false, err};
-        }
 
-    },
     doDeleteCookie() {
         return this.getBrowser().getCookies().then(result => {
             console.log(result);
@@ -62,7 +47,7 @@ module.exports = {
         })
     },
     async getTextFromShadow(hostSelector, innerSelector) {
-        const host = await this.findElement('dashboard-extension');
+        const host = await this.findElement('dashboard-widget');
         //await host.waitForExist();
         const divs = await host.shadow$$('a > div');
 
