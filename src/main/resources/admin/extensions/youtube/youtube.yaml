@@ -1,6 +1,0 @@
-kind: "AdminExtension"
-title: "Enonic Webinars"
-interfaces:
-  - "admin.dashboard.disabled"
-config:
-  width: "full"
