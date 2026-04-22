@@ -10,7 +10,7 @@ class HomePage extends Page {
 
     async waitForLoaded() {
         try {
-            await this.waitForElementDisplayed(XPATH.container, appConst.mediumTimeout);
+            await this.waitForElementDisplayed(XPATH.container);
             await this.pause(1000);
         } catch (err) {
             await this.handleError(`Home Page should be loaded`, 'err_home_page_load', err);
@@ -30,8 +30,12 @@ class HomePage extends Page {
     }
 
     async getEmptyStateText() {
-        await this.waitForElementDisplayed(XPATH.emptyState, appConst.mediumTimeout);
-        return (await this.getText(XPATH.emptyState)).trim();
+        try {
+            await this.waitForElementDisplayed(XPATH.emptyState);
+            return (await this.getText(XPATH.emptyState)).trim();
+        } catch (err) {
+            await this.handleError(`Home Page, tried to get empty state text`, 'err_get_empty_state_text', err);
+        }
     }
 }
 

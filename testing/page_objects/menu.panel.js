@@ -27,10 +27,14 @@ class MenuPanel extends Page {
     }
 
     async waitForMenuPanelOpened(ms = appConst.mediumTimeout) {
-        await this.getBrowser().waitUntil(
-            async () => await this.isMenuPanelOpened(),
-            {timeout: ms, timeoutMsg: 'Menu panel is not visible/opened'}
-        );
+        try {
+            await this.getBrowser().waitUntil(
+                async () => await this.isMenuPanelOpened(),
+                {timeout: ms, timeoutMsg: 'Menu panel is not visible/opened'}
+            );
+        } catch (err) {
+            await this.handleError('Menu panel is not visible/opened after waiting', 'err_menu_panel_not_opened', err);
+        }
     }
 
     async waitForMenuPanelClosed(ms = appConst.mediumTimeout) {
@@ -61,11 +65,15 @@ class MenuPanel extends Page {
     }
 
     async clickOnMenuButton() {
-        const host = await this.waitForHostPresent();
-        const btn = await host.shadow$('#menu-button');
-        await btn.waitForDisplayed({timeout: appConst.mediumTimeout});
-        await btn.click();
-        await this.pause(400);
+        try {
+            const host = await this.waitForHostPresent();
+            const btn = await host.shadow$('#menu-button');
+            await btn.waitForDisplayed({timeout: appConst.mediumTimeout});
+            await btn.click();
+            await this.pause(400);
+        } catch (err) {
+            await this.handleError('Error during clicking on menu button', 'err_click_menu_button', err);
+        }
     }
 }
 

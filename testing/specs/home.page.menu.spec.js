@@ -24,7 +24,7 @@ describe('Home Page, XP Menu specification', function () {
 
     beforeEach(async () => {
         // Navigate back to the home tool so the menu auto-opens afresh for every test.
-        await testUtils.getBrowser().url('/admin');
+        await testUtils.getBrowser().url('http://localhost:8080/admin');
         await testUtils.getBrowser().pause(500);
     });
 
@@ -34,6 +34,7 @@ describe('Home Page, XP Menu specification', function () {
             const menuPanel = new MenuPanel();
             await homePage.waitForLoaded();
             await menuPanel.waitForMenuPanelOpened();
+            await testUtils.saveScreenshot('menu_panel_opened');
             const opened = await menuPanel.isMenuPanelOpened();
             assert.ok(opened, 'Menu panel should be opened automatically after page load');
         });
@@ -44,6 +45,7 @@ describe('Home Page, XP Menu specification', function () {
             const menuPanel = new MenuPanel();
             await homePage.waitForLoaded();
             await menuPanel.waitForMenuPanelOpened();
+            await testUtils.saveScreenshot('menu_panel_opened_2');
             const captions = await menuPanel.getShortcutCaptions();
             for (const expected of EXPECTED_SHORTCUTS) {
                 assert.ok(
@@ -73,6 +75,7 @@ describe('Home Page, XP Menu specification', function () {
             await homePage.waitForLoaded();
             await menuPanel.waitForMenuPanelOpened();
             await menuPanel.clickOnMenuButton();
+            await testUtils.saveScreenshot('menu_panel_closed');
             await menuPanel.waitForMenuPanelClosed();
             await homePage.waitForDashboardVisible();
             const isVisible = await homePage.isDashboardVisible();
@@ -88,6 +91,7 @@ describe('Home Page, XP Menu specification', function () {
             await menuPanel.clickOnMenuButton();
             await menuPanel.waitForMenuPanelClosed();
             await homePage.waitForDashboardVisible();
+            await testUtils.saveScreenshot('no_widgets_text');
             const text = await homePage.getEmptyStateText();
             assert.strictEqual(
                 text,
