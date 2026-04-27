@@ -16,6 +16,10 @@
   pointer-events: auto;
 }
 
+button.menu-button[hidden] ~ .avatar-container {
+  right: 23px;
+}
+
 button.avatar-button {
   display: flex;
   align-items: center;
@@ -153,6 +157,10 @@ button.menu-button {
   justify-content: center;
   visibility: hidden;
   opacity: 0;
+
+  &[hidden] {
+    display: none !important;
+  }
   transition: opacity 0.3s, visibility 0.3s, background-color 0.3s;
   height: @menu-button-size;
   width: @menu-button-size;

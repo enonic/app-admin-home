@@ -156,7 +156,6 @@ export class Menu {
 
         if (this.config.autoOpen) {
             this.openMenuPanel();
-            this.menuButton.focus();
         }
     }
 
@@ -388,6 +387,7 @@ export class Menu {
 
     private initMenuButton = (): void => {
         const button = this.root.getElementById('menu-button');
+        this.menuButton = button;
 
         button.addEventListener('click', this.togglePanelState);
         button.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -408,11 +408,26 @@ export class Menu {
 
         button.classList.add('visible');
 
-        this.menuButton = button;
+        if (this.config.autoOpen) {
+            return;
+        }
 
         setTimeout(() => {
             this.menuButton.focus();
         }, 200);
+    };
+
+    private hideMenuButton = (): void => {
+        if (!this.config.autoOpen) {
+            return;
+        }
+        this.menuButton.hidden = true;
+        this.menuButton.setAttribute('tabindex', '-1');
+    };
+
+    private revealMenuButton = (): void => {
+        this.menuButton.hidden = false;
+        this.menuButton.removeAttribute('tabindex');
     };
 
     private openMenuPanel = (): void => {
@@ -423,12 +438,14 @@ export class Menu {
         this.menuButton.setAttribute('aria-label', this.config.phrases['tooltipCloseMenu']);
         this.menuButton.setAttribute('aria-expanded', 'true');
         this.avatarButton.removeAttribute('tabindex');
+        this.hideMenuButton();
     };
 
     private closeMenuPanel = (): void => {
         this.closeAvatarDropdown();
         this.unlistenToKeyboardEvents();
         this.menuPanel.classList.remove('visible');
+        this.revealMenuButton();
         this.toggleButton();
         this.menuButton.setAttribute('title', this.config.phrases['tooltipOpenMenu']);
         this.menuButton.setAttribute('aria-label', this.config.phrases['tooltipOpenMenu']);
