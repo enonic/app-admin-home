@@ -456,6 +456,8 @@ export class Menu {
         this.listenToKeyboardEvents();
         this.toggleButton();
         this.menuPanel.classList.add('visible');
+        this.menuButton.classList.add('menu-open');
+        this.avatarButton.classList.add('menu-open');
         this.menuButton.setAttribute('title', this.config.phrases['tooltipCloseMenu']);
         this.menuButton.setAttribute('aria-label', this.config.phrases['tooltipCloseMenu']);
         this.menuButton.setAttribute('aria-expanded', 'true');
@@ -467,6 +469,8 @@ export class Menu {
         this.closeAvatarDropdown();
         this.unlistenToKeyboardEvents();
         this.menuPanel.classList.remove('visible');
+        this.menuButton.classList.remove('menu-open');
+        this.avatarButton.classList.remove('menu-open');
         this.revealMenuButton();
         this.toggleButton();
         this.menuButton.setAttribute('title', this.config.phrases['tooltipOpenMenu']);

@@ -77,11 +77,9 @@ exports.get = function(req) {
 
     const user = auth.getUser();
     const userInitials = (user.displayName || '')
-        .split(/\s+/)
-        .filter(Boolean)
-        .map(function(word) { return word.charAt(0).toUpperCase(); })
-        .join('')
-        .substring(0, 2);
+        .trim()
+        .charAt(0)
+        .toUpperCase();
 
     const view = resolve('./menu.html');
     const params = {

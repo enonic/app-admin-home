@@ -20,6 +20,34 @@ button.menu-button[hidden] ~ .avatar-container {
   right: 23px;
 }
 
+button.avatar-button,
+button.menu-button {
+  &:focus {
+    outline: 3px solid @admin-black;
+    outline-offset: 4px;
+  }
+
+  &::-moz-focus-inner {
+    border: 0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: @admin-white;
+
+    &:focus {
+      outline-color: @admin-white;
+    }
+  }
+
+  &.menu-open {
+    color: @admin-white;
+
+    &:focus {
+      outline-color: @admin-white;
+    }
+  }
+}
+
 button.avatar-button {
   display: flex;
   align-items: center;
@@ -28,8 +56,8 @@ button.avatar-button {
   width: @avatar-button-size;
   border: none;
   border-radius: 50%;
-  background-color: @admin-white;
-  color: @admin-black;
+  background-color: #5B5F60;
+  color: #FFF;
   font-family: @admin-font-family;
   font-size: 12px;
   font-weight: 600;
@@ -38,24 +66,6 @@ button.avatar-button {
   box-sizing: border-box;
   letter-spacing: 0.6px;
   padding: 0;
-
-  &:focus {
-    outline: 2px solid @admin-black;
-    outline-offset: -2px;
-  }
-
-  &::-moz-focus-inner {
-    border: 0;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background-color: #242829;
-    color: @admin-white;
-
-    &:focus {
-      outline-color: @admin-white;
-    }
-  }
 }
 
 @avatar-dropdown-bg-light: @admin-white;
@@ -172,17 +182,12 @@ button.menu-button {
   top: 16px;
   padding: 0;
   background-color: transparent;
-  color: #000;
+  color: @admin-black;
   cursor: pointer;
   z-index: @z-index-launcher-button;
 
   &:hover {
     color: #5B5F60;
-  }
-
-  &:focus {
-    outline: 2px solid #000;
-    outline-offset: -2px;
   }
 
   .menu-icon-active {
@@ -208,19 +213,15 @@ button.menu-button {
     display: block;
   }
 
-  &::-moz-focus-inner {
-    border: 0;
-  }
-
   @media (prefers-color-scheme: dark) {
-    color: #fff;
-
     &:hover {
       color: #DDE1E2;
     }
+  }
 
-    &:focus {
-      outline-color: #fff;
+  &.menu-open {
+    &:hover {
+      color: #DDE1E2;
     }
   }
 }
