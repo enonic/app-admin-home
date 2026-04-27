@@ -104,8 +104,11 @@ export class Menu {
             const desiredIndexIsLessThanMinIndex = this.getSelectedAppIndex() - 1 < 0;
 
             if (desiredIndexIsLessThanMinIndex) {
+                e.preventDefault();
                 this.unselectCurrentApp();
-                return true;
+                const target = this.menuButton.hidden ? this.avatarButton : this.menuButton;
+                setTimeout(() => target.focus(), 0);
+                return false;
             }
 
             this.initKeyboardNavigation();
@@ -254,6 +257,21 @@ export class Menu {
         this.initInfoPanelLinks();
         this.addAppItemsListeners();
         this.setFocusableElements();
+
+        this.menuPanel.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.key !== 'Tab' || !e.shiftKey || !this.isPanelExpanded()) {
+                return;
+            }
+            const apps = this.getApps();
+            if (apps.length === 0 || this.getActiveElement() !== apps[0]) {
+                return;
+            }
+            e.preventDefault();
+            e.stopPropagation();
+            this.unselectCurrentApp();
+            const target = this.menuButton.hidden ? this.avatarButton : this.menuButton;
+            target.focus();
+        });
     }
 
     private initInfoPanelLinks = (): void => {
@@ -354,7 +372,11 @@ export class Menu {
             } else if (e.key === 'Tab') {
                 if (!e.shiftKey) {
                     e.preventDefault();
-                    this.menuButton.focus();
+                    if (this.menuButton.hidden) {
+                        this.selectApp(0);
+                    } else {
+                        this.menuButton.focus();
+                    }
                 } else {
                     e.preventDefault();
                     const apps = this.getApps();
@@ -394,16 +416,16 @@ export class Menu {
             if (e.key !== 'Tab') {
                 return;
             }
+            if (e.shiftKey) {
+                e.preventDefault();
+                this.avatarButton.focus();
+                return;
+            }
             if (!this.isPanelExpanded()) {
                 return;
             }
-            if (!e.shiftKey) {
-                e.preventDefault();
-                this.selectApp(0);
-            } else {
-                e.preventDefault();
-                this.avatarButton.focus();
-            }
+            e.preventDefault();
+            this.selectApp(0);
         });
 
         button.classList.add('visible');
