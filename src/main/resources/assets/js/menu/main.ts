@@ -162,35 +162,6 @@ export class Menu {
         }
     }
 
-    private addAppItemsListeners = (): void => {
-        const dashboardIcon = this.menuPanel.querySelector('.icon-dashboard');
-        const dashboardLink = dashboardIcon?.closest('a.app-tile');
-        if (!(dashboardLink instanceof HTMLAnchorElement)) {
-            return;
-        }
-
-        dashboardLink.addEventListener('click', (e: Event) => {
-            if (e instanceof MouseEvent) {
-                const modifiedClick = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
-                if (modifiedClick) {
-                    return;
-                }
-            }
-
-            e.preventDefault();
-            this.closeMenuPanel();
-
-            if (dashboardLink.classList.contains('home-app')) {
-                return;
-            }
-
-            // Keep direct home loads opening the menu; only disable it when coming from embedded Dashboard navigation.
-            const dashboardUrl = new URL(dashboardLink.href, window.location.href);
-            dashboardUrl.searchParams.set('openMenu', 'false');
-            window.top?.location.assign(dashboardUrl.toString());
-        });
-    };
-
     private isAppOnFocus(): boolean {
         const apps = this.getApps();
         return apps.some((app: HTMLElement) => app.classList.contains('selected'));
@@ -255,7 +226,6 @@ export class Menu {
         this.initBackgroundImage();
 
         this.initInfoPanelLinks();
-        this.addAppItemsListeners();
         this.setFocusableElements();
 
         this.menuPanel.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -523,7 +493,6 @@ export class Menu {
                             document.importNode(newGrid, true),
                             oldGrid,
                         );
-                        this.addAppItemsListeners();
                         this.setFocusableElements();
                     }
                 });

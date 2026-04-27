@@ -5,6 +5,7 @@ import {Element as LibAdminElement} from '@enonic/lib-admin-ui/dom/Element';
 import {H5El} from '@enonic/lib-admin-ui/dom/H5El';
 import {SpanEl} from '@enonic/lib-admin-ui/dom/SpanEl';
 import {LoadMask} from '@enonic/lib-admin-ui/ui/mask/LoadMask';
+import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 import {i18n} from '@enonic/lib-admin-ui/util/Messages';
 import * as Q from 'q';
 import {DashboardExtension} from './resource/extension/DashboardExtension';
@@ -39,7 +40,11 @@ export class DashboardPanel
 
     private createSidebar(): DivEl {
         const sidebar = new DivEl('dashboard-sidebar');
-        const logo = new DivEl('dashboard-sidebar-logo icon-dashboard');
+        const logo = new DivEl('dashboard-sidebar-logo');
+        const iconSvg = CONFIG.getString('dashboardIcon');
+        if (iconSvg) {
+            logo.setHtml(iconSvg, false);
+        }
         const title = new SpanEl('dashboard-sidebar-title');
         title.setHtml(i18n('home.dashboard'));
         sidebar.appendChild(logo);

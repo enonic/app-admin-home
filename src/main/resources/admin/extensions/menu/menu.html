@@ -27,10 +27,6 @@
 
             <div class="menu-app-container">
                 <div class="app-grid">
-                    <a href="{{homeTool.url}}" class="app-tile{{#homeTool.isHomeApp}} home-app{{/homeTool.isHomeApp}}" title="{{homeTool.description}}" aria-description="{{homeTool.description}}">
-                        <div class="app-tile-icon icon-dashboard"></div>
-                        <span class="app-tile-name">{{homeTool.caption}}</span>
-                    </a>
                     {{#adminTools}}
                     <a href="{{uri}}" class="app-tile" id="{{appId}}" title="{{description}}" aria-description="{{description}}">
                         <div class="app-tile-icon">{{#icon}}{{{icon}}}{{/icon}}</div>
