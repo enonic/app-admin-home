@@ -75,6 +75,25 @@ class MenuPanel extends Page {
             await this.handleError('Error during clicking on menu button', 'err_click_menu_button', err);
         }
     }
+
+    async clickOnDashboardTile() {
+        try {
+            const host = await this.waitForHostPresent();
+            const tiles = await host.shadow$$('.menu-app-container .app-grid .app-tile');
+            for (const tile of tiles) {
+                const nameEl = await tile.$('.app-tile-name');
+                const text = (await nameEl.getText()).trim();
+                if (text === 'Dashboard') {
+                    await tile.click();
+                    await this.pause(800);
+                    return;
+                }
+            }
+            throw new Error("Dashboard tile not found in app grid");
+        } catch (err) {
+            await this.handleError('Error during clicking on dashboard tile', 'err_click_dashboard_tile', err);
+        }
+    }
 }
 
 module.exports = MenuPanel;

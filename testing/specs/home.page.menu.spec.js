@@ -68,13 +68,13 @@ describe('Home Page, XP Menu specification', function () {
             );
         });
 
-    it('GIVEN XP Menu is opened WHEN the menu button is clicked THEN the menu closes and dashboard is revealed',
+    it('GIVEN XP Menu is opened WHEN the Dashboard tile is clicked THEN the menu closes and dashboard is revealed',
         async function () {
             const homePage = new HomePage();
             const menuPanel = new MenuPanel();
             await homePage.waitForLoaded();
             await menuPanel.waitForMenuPanelOpened();
-            await menuPanel.clickOnMenuButton();
+            await menuPanel.clickOnDashboardTile();
             await testUtils.saveScreenshot('menu_panel_closed');
             await menuPanel.waitForMenuPanelClosed();
             await homePage.waitForDashboardVisible();
@@ -88,7 +88,7 @@ describe('Home Page, XP Menu specification', function () {
             const menuPanel = new MenuPanel();
             await homePage.waitForLoaded();
             await menuPanel.waitForMenuPanelOpened();
-            await menuPanel.clickOnMenuButton();
+            await menuPanel.clickOnDashboardTile();
             await menuPanel.waitForMenuPanelClosed();
             await homePage.waitForDashboardVisible();
             await testUtils.saveScreenshot('no_widgets_text');

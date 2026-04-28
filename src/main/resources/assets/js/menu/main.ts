@@ -104,8 +104,11 @@ export class Menu {
             const desiredIndexIsLessThanMinIndex = this.getSelectedAppIndex() - 1 < 0;
 
             if (desiredIndexIsLessThanMinIndex) {
+                e.preventDefault();
                 this.unselectCurrentApp();
-                return true;
+                const target = this.menuButton.hidden ? this.avatarButton : this.menuButton;
+                setTimeout(() => target.focus(), 0);
+                return false;
             }
 
             this.initKeyboardNavigation();
@@ -156,38 +159,8 @@ export class Menu {
 
         if (this.config.autoOpen) {
             this.openMenuPanel();
-            this.menuButton.focus();
         }
     }
-
-    private addAppItemsListeners = (): void => {
-        const dashboardIcon = this.menuPanel.querySelector('.icon-dashboard');
-        const dashboardLink = dashboardIcon?.closest('a.app-tile');
-        if (!(dashboardLink instanceof HTMLAnchorElement)) {
-            return;
-        }
-
-        dashboardLink.addEventListener('click', (e: Event) => {
-            if (e instanceof MouseEvent) {
-                const modifiedClick = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
-                if (modifiedClick) {
-                    return;
-                }
-            }
-
-            e.preventDefault();
-            this.closeMenuPanel();
-
-            if (dashboardLink.classList.contains('home-app')) {
-                return;
-            }
-
-            // Keep direct home loads opening the menu; only disable it when coming from embedded Dashboard navigation.
-            const dashboardUrl = new URL(dashboardLink.href, window.location.href);
-            dashboardUrl.searchParams.set('openMenu', 'false');
-            window.top?.location.assign(dashboardUrl.toString());
-        });
-    };
 
     private isAppOnFocus(): boolean {
         const apps = this.getApps();
@@ -253,8 +226,22 @@ export class Menu {
         this.initBackgroundImage();
 
         this.initInfoPanelLinks();
-        this.addAppItemsListeners();
         this.setFocusableElements();
+
+        this.menuPanel.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.key !== 'Tab' || !e.shiftKey || !this.isPanelExpanded()) {
+                return;
+            }
+            const apps = this.getApps();
+            if (apps.length === 0 || this.getActiveElement() !== apps[0]) {
+                return;
+            }
+            e.preventDefault();
+            e.stopPropagation();
+            this.unselectCurrentApp();
+            const target = this.menuButton.hidden ? this.avatarButton : this.menuButton;
+            target.focus();
+        });
     }
 
     private initInfoPanelLinks = (): void => {
@@ -355,7 +342,11 @@ export class Menu {
             } else if (e.key === 'Tab') {
                 if (!e.shiftKey) {
                     e.preventDefault();
-                    this.menuButton.focus();
+                    if (this.menuButton.hidden) {
+                        this.selectApp(0);
+                    } else {
+                        this.menuButton.focus();
+                    }
                 } else {
                     e.preventDefault();
                     const apps = this.getApps();
@@ -388,47 +379,69 @@ export class Menu {
 
     private initMenuButton = (): void => {
         const button = this.root.getElementById('menu-button');
+        this.menuButton = button;
 
         button.addEventListener('click', this.togglePanelState);
         button.addEventListener('keydown', (e: KeyboardEvent) => {
             if (e.key !== 'Tab') {
                 return;
             }
+            if (e.shiftKey) {
+                e.preventDefault();
+                this.avatarButton.focus();
+                return;
+            }
             if (!this.isPanelExpanded()) {
                 return;
             }
-            if (!e.shiftKey) {
-                e.preventDefault();
-                this.selectApp(0);
-            } else {
-                e.preventDefault();
-                this.avatarButton.focus();
-            }
+            e.preventDefault();
+            this.selectApp(0);
         });
 
         button.classList.add('visible');
 
-        this.menuButton = button;
+        if (this.config.autoOpen) {
+            return;
+        }
 
         setTimeout(() => {
             this.menuButton.focus();
         }, 200);
     };
 
+    private hideMenuButton = (): void => {
+        if (!this.config.autoOpen) {
+            return;
+        }
+        this.menuButton.hidden = true;
+        this.menuButton.setAttribute('tabindex', '-1');
+    };
+
+    private revealMenuButton = (): void => {
+        this.menuButton.hidden = false;
+        this.menuButton.removeAttribute('tabindex');
+    };
+
     private openMenuPanel = (): void => {
         this.listenToKeyboardEvents();
         this.toggleButton();
         this.menuPanel.classList.add('visible');
+        this.menuButton.classList.add('menu-open');
+        this.avatarButton.classList.add('menu-open');
         this.menuButton.setAttribute('title', this.config.phrases['tooltipCloseMenu']);
         this.menuButton.setAttribute('aria-label', this.config.phrases['tooltipCloseMenu']);
         this.menuButton.setAttribute('aria-expanded', 'true');
         this.avatarButton.removeAttribute('tabindex');
+        this.hideMenuButton();
     };
 
     private closeMenuPanel = (): void => {
         this.closeAvatarDropdown();
         this.unlistenToKeyboardEvents();
         this.menuPanel.classList.remove('visible');
+        this.menuButton.classList.remove('menu-open');
+        this.avatarButton.classList.remove('menu-open');
+        this.revealMenuButton();
         this.toggleButton();
         this.menuButton.setAttribute('title', this.config.phrases['tooltipOpenMenu']);
         this.menuButton.setAttribute('aria-label', this.config.phrases['tooltipOpenMenu']);
@@ -480,7 +493,6 @@ export class Menu {
                             document.importNode(newGrid, true),
                             oldGrid,
                         );
-                        this.addAppItemsListeners();
                         this.setFocusableElements();
                     }
                 });

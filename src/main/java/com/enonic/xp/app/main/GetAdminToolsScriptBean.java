@@ -31,11 +31,18 @@ public final class GetAdminToolsScriptBean
 
         final PrincipalKeys principals = ContextAccessor.current().getAuthInfo().getPrincipals();
 
+        final Predicate<AdminToolDescriptor> isHomeOfThisApp = t ->
+            t.getKey().getApplicationKey().equals( appMainKey ) && "home".equals( t.getKey().getName() );
+
+        final Predicate<AdminToolDescriptor> isDashboardOfThisApp = t ->
+            t.getKey().getApplicationKey().equals( appMainKey ) && "dashboard".equals( t.getKey().getName() );
+
         return adminToolDescriptorService.getAll()
             .stream()
-            .filter( Predicate.not( adminToolDescriptor -> adminToolDescriptor.getKey().getApplicationKey().equals( appMainKey ) ) )
             .filter( adminToolDescriptor -> adminToolDescriptor.isAccessAllowed( principals ) )
-            .sorted( Comparator.nullsLast( Comparator.comparing( AdminToolDescriptor::getTitle ) ) )
+            .filter( isHomeOfThisApp.negate() )
+            .sorted( Comparator.comparing( (AdminToolDescriptor t) -> !isDashboardOfThisApp.test( t ) )
+                         .thenComparing( Comparator.nullsLast( Comparator.comparing( AdminToolDescriptor::getTitle ) ) ) )
             .map( adminToolDescriptor -> new AdminToolMapper( adminToolDescriptor,
                                                               getMessageBundle( adminToolDescriptor.getKey().getApplicationKey(),
                                                                                 locales ) ) )

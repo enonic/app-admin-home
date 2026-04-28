@@ -1,0 +1,17 @@
+kind: "AdminTool"
+title:
+  text: "Dashboard"
+  i18n: "home.dashboard"
+description:
+  text: "Enonic XP Dashboard"
+  i18n: "launcher.tools.home.description"
+allow:
+  - "role:system.admin"
+  - "role:system.admin.login"
+apis:
+  - "asset"
+  - "admin:extension"
+  - "admin:status"
+  - "admin:event"
+interfaces:
+  - "admin.dashboard"

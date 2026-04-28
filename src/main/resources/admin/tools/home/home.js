@@ -17,7 +17,8 @@ const addCSPHeaderToResponse = (response) => {
     }
 }
 
-const generateParams = (req) => {
+const generateParams = (req, openMenu) => {
+    req.params['openMenu'] = openMenu;
     return {
         assetsUri: assetLib.assetUrl({path: ''}),
         configScriptId: configLib.configScriptId,
@@ -25,9 +26,9 @@ const generateParams = (req) => {
     };
 }
 
-exports.get = (req) => {
+exports.renderHome = (req, openMenu) => {
     const view = resolve('./home.html');
-    const params = generateParams(req);
+    const params = generateParams(req, openMenu);
 
     const response = {
         contentType: 'text/html',
@@ -38,3 +39,5 @@ exports.get = (req) => {
 
     return response;
 };
+
+exports.get = (req) => exports.renderHome(req, 'true');
