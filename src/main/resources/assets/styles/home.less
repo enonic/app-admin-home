@@ -1,6 +1,5 @@
 @import "~enonic-admin-artifacts";
 @import "font";
-@import "icons";
 @import "home/button";
 @import "home/mask";
 @import "home/modal-dialog";
@@ -64,15 +63,4 @@ body {
   font-family: @admin-font-family;
   font-size: @admin-font-size;
   background-color: var(--dashboard-panel-bg);
-
-  button.launcher-button {
-    &:focus-visible,
-    &:focus {
-      outline-style: solid;
-    }
-
-    &:not(.toggled) {
-      outline-color: @admin-white;
-    }
-  }
 }

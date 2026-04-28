@@ -32,8 +32,7 @@ exports.get = function(req) {
         autoOpen: req.params['autoOpen'] === 'true' || false,
         menuUrl: req.url,
         backgroundUrl: assetLib.assetUrl({ path: 'images/background.webp' }),
-        phrases,
-        theme: req.params['theme'] || ''
+        phrases
     }
 
     const adminTools = __.toNativeObject(adminToolsBean.execute(locales) );
@@ -77,11 +76,9 @@ exports.get = function(req) {
 
     const user = auth.getUser();
     const userInitials = (user.displayName || '')
-        .split(/\s+/)
-        .filter(Boolean)
-        .map(function(word) { return word.charAt(0).toUpperCase(); })
-        .join('')
-        .substring(0, 2);
+        .trim()
+        .charAt(0)
+        .toUpperCase();
 
     const view = resolve('./menu.html');
     const params = {
@@ -89,15 +86,6 @@ exports.get = function(req) {
         user: user,
         userInitials: userInitials,
         logoutUrl: logoutUrl,
-        homeTool: {
-            url: admin.getHomeToolUrl(),
-            caption: localise('home.dashboard', locales),
-            description: localise(
-                'launcher.tools.home.description',
-                locales
-            ),
-            isHomeApp: app.name === config.appName,
-        },
         xpVersion: admin.getVersion(),
         usefulLinksTitle: localise('menu.info.usefulLinks', locales),
         usefulLinks: usefulLinks,

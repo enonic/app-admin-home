@@ -1,6 +1,5 @@
 @import "~enonic-admin-artifacts";
 @import 'font';
-@import "icons";
 
 @app-header-height: 44px;
 @panel-indent: 20px;
@@ -16,6 +15,38 @@
   pointer-events: auto;
 }
 
+button.menu-button[hidden] ~ .avatar-container {
+  right: 23px;
+}
+
+button.avatar-button,
+button.menu-button {
+  &:focus {
+    outline: 3px solid @admin-black;
+    outline-offset: 4px;
+  }
+
+  &::-moz-focus-inner {
+    border: 0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: @admin-white;
+
+    &:focus {
+      outline-color: @admin-white;
+    }
+  }
+
+  &.menu-open {
+    color: @admin-white;
+
+    &:focus {
+      outline-color: @admin-white;
+    }
+  }
+}
+
 button.avatar-button {
   display: flex;
   align-items: center;
@@ -24,8 +55,8 @@ button.avatar-button {
   width: @avatar-button-size;
   border: none;
   border-radius: 50%;
-  background-color: @admin-white;
-  color: @admin-black;
+  background-color: #5B5F60;
+  color: #FFF;
   font-family: @admin-font-family;
   font-size: 12px;
   font-weight: 600;
@@ -34,24 +65,6 @@ button.avatar-button {
   box-sizing: border-box;
   letter-spacing: 0.6px;
   padding: 0;
-
-  &:focus {
-    outline: 2px solid @admin-black;
-    outline-offset: -2px;
-  }
-
-  &::-moz-focus-inner {
-    border: 0;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background-color: #242829;
-    color: @admin-white;
-
-    &:focus {
-      outline-color: @admin-white;
-    }
-  }
 }
 
 @avatar-dropdown-bg-light: @admin-white;
@@ -153,6 +166,10 @@ button.menu-button {
   justify-content: center;
   visibility: hidden;
   opacity: 0;
+
+  &[hidden] {
+    display: none !important;
+  }
   transition: opacity 0.3s, visibility 0.3s, background-color 0.3s;
   height: @menu-button-size;
   width: @menu-button-size;
@@ -163,19 +180,26 @@ button.menu-button {
   right: 23px;
   top: 16px;
   padding: 0;
-  background-color: @admin-black;
-  color: @admin-white;
+  background-color: transparent;
+  color: @admin-black;
   cursor: pointer;
   z-index: @z-index-launcher-button;
 
-  &:focus {
-    outline: 2px solid @admin-white;
-    outline-offset: -2px;
+  &:hover {
+    color: #5B5F60;
+  }
+
+  .menu-icon-active {
+    display: none;
   }
 
   &.toggled {
-    color: @admin-white;
-    background-color: #009BF5;
+    .menu-icon-logo {
+      display: none;
+    }
+    .menu-icon-active {
+      display: block;
+    }
   }
 
   &.visible {
@@ -188,13 +212,16 @@ button.menu-button {
     display: block;
   }
 
-  &::-moz-focus-inner {
-    border: 0;
+  @media (prefers-color-scheme: dark) {
+    &:hover {
+      color: #DDE1E2;
+    }
   }
 
-  @media (prefers-color-scheme: dark) {
-    background-color: #797D7E;
-    color: @admin-white;
+  &.menu-open {
+    &:hover {
+      color: #DDE1E2;
+    }
   }
 }
 
@@ -369,11 +396,6 @@ button.menu-button {
       svg {
         width: 100% !important;
         height: 100% !important;
-      }
-
-      &.icon-dashboard {
-        font-size: 42px;
-        color: white;
       }
     }
 

@@ -5,6 +5,7 @@ import {Element as LibAdminElement} from '@enonic/lib-admin-ui/dom/Element';
 import {H5El} from '@enonic/lib-admin-ui/dom/H5El';
 import {SpanEl} from '@enonic/lib-admin-ui/dom/SpanEl';
 import {LoadMask} from '@enonic/lib-admin-ui/ui/mask/LoadMask';
+import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 import {i18n} from '@enonic/lib-admin-ui/util/Messages';
 import * as Q from 'q';
 import {DashboardExtension} from './resource/extension/DashboardExtension';
@@ -40,13 +41,10 @@ export class DashboardPanel
     private createSidebar(): DivEl {
         const sidebar = new DivEl('dashboard-sidebar');
         const logo = new DivEl('dashboard-sidebar-logo');
-        logo.setHtml(
-            `<svg width="25" height="28" viewBox="0 0 25 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">` +
-            `<path fill-rule="evenodd" clip-rule="evenodd" d="M2.62435 11.6897C3.5303 6.55501 7.63631 2.65065 12.4203 2.65065C17.2029 2.65065 21.306 6.55501 22.2119 11.6897H24.8407C23.9011 5.16101 18.7445 0 12.4203 0C6.14441 0 0.945406 5.16101 0 11.6897H2.62435Z" fill="currentColor"/>` +
-            `<path fill-rule="evenodd" clip-rule="evenodd" d="M22.2178 16.3125C21.3498 21.4384 17.2321 25.3165 12.4218 25.3165C7.60855 25.3165 3.48792 21.4384 2.62288 16.3125H0C0.90157 22.8266 6.11665 27.9964 12.4218 27.9964C18.7722 27.9964 23.9479 22.8266 24.8407 16.3125H22.2178Z" fill="currentColor"/>` +
-            `</svg>`,
-            false
-        );
+        const iconSvg = CONFIG.getString('dashboardIcon');
+        if (iconSvg) {
+            logo.setHtml(iconSvg, false);
+        }
         const title = new SpanEl('dashboard-sidebar-title');
         title.setHtml(i18n('home.dashboard'));
         sidebar.appendChild(logo);

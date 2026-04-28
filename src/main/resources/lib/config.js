@@ -5,6 +5,19 @@ const portal = require('/lib/xp/portal');
 const i18n = require('/lib/xp/i18n');
 const assetLib = require('/lib/enonic/asset');
 
+const adminToolsBean = __.newBean('com.enonic.xp.app.main.GetAdminToolsScriptBean');
+
+const getDashboardIcon = (locales) => {
+    const adminTools = __.toNativeObject(adminToolsBean.execute(locales || []));
+    for (let i = 0; i < adminTools.length; i++) {
+        const tool = adminTools[i];
+        if (tool.key.application === app.name && tool.key.name === 'dashboard') {
+            return tool.icon;
+        }
+    }
+    return null;
+};
+
 const getConfig = (req) => {
     const openMenu = req.params['openMenu'] !== 'false';
 
@@ -32,6 +45,7 @@ const getConfig = (req) => {
         eventApiUrl: portal.apiUrl({
             api: 'admin:event',
         }),
+        dashboardIcon: getDashboardIcon(req.locales),
         phrases: JSON.stringify(i18n.getPhrases(req.locales, ['i18n/phrases', 'i18n/common']), null, 4),
     };
 }
