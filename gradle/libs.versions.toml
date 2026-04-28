@@ -7,8 +7,9 @@ enonicXpGradle = "4.0.0-A2"
 nodeGradle = "7.1.0"
 
 # App
-libAsset = "2.0.0-SNAPSHOT"
+libStatic = "2.1.1"
 libMustache = "2.1.1"
+libRouter = "3.2.0"
 
 [libraries]
 
@@ -19,8 +20,9 @@ mockito-bom = { module = "org.mockito:mockito-bom", version.ref = "mockito" }
 mockito-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
 
 # App
-lib-asset = { module = "com.enonic.lib:lib-asset", version.ref = "libAsset" }
+lib-static = { module = "com.enonic.lib:lib-static", version.ref = "libStatic" }
 lib-mustache = { module = "com.enonic.lib:lib-mustache", version.ref = "libMustache" }
+lib-router = { module = "com.enonic.lib:lib-router", version.ref = "libRouter" }
 
 [plugins]
 enonic-defaults = { id = "com.enonic.defaults", version.ref = "enonicDefaults" }
