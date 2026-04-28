@@ -49,7 +49,8 @@ dependencies {
     include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
     devResources "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
     include libs.lib.mustache
-    include libs.lib.asset
+    include libs.lib.static
+    include libs.lib.router
 
     testImplementation(platform(libs.junit.bom))
     testImplementation(platform(libs.mockito.bom))

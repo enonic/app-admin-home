@@ -1,8 +1,7 @@
-/*global app, require*/
+/*global app, require, resolve*/
 
 const mustache = require('/lib/mustache');
 const configLib = require('/lib/config');
-const assetLib = require('/lib/enonic/asset');
 
 const addCSPHeaderToResponse = (response) => {
     const enableSecurityPolicy = app.config['contentSecurityPolicy.enabled'] !== 'false';
@@ -20,7 +19,7 @@ const addCSPHeaderToResponse = (response) => {
 const generateParams = (req, openMenu) => {
     req.params['openMenu'] = openMenu;
     return {
-        assetsUri: assetLib.assetUrl({path: ''}),
+        assetsUri: configLib.getAssetsUri(),
         configScriptId: configLib.configScriptId,
         configAsJson: JSON.stringify(configLib.getConfig(req), null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1")
     };

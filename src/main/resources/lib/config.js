@@ -3,7 +3,13 @@
 const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
 const i18n = require('/lib/xp/i18n');
-const assetLib = require('/lib/enonic/asset');
+
+const STATIC_BASE_PATH = '/_static';
+
+const getAssetsUri = () => admin.extensionUrl({
+    application: app.name,
+    extension: 'menu'
+}) + STATIC_BASE_PATH;
 
 const adminToolsBean = __.newBean('com.enonic.xp.app.main.GetAdminToolsScriptBean');
 
@@ -31,9 +37,7 @@ const getConfig = (req) => {
     return {
         appId: app.name,
         adminUrl: admin.getHomeToolUrl(),
-        assetsUri: assetLib.assetUrl({
-            path: ''
-        }),
+        assetsUri: getAssetsUri(),
         xpVersion: admin.getVersion(),
         menuUrl,
         extensionApiUrl: portal.apiUrl({
@@ -51,4 +55,5 @@ const getConfig = (req) => {
 }
 
 exports.getConfig = getConfig;
+exports.getAssetsUri = getAssetsUri;
 exports.configScriptId = 'home-tool-config-json';
