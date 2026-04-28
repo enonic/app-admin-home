@@ -399,14 +399,6 @@ export class Menu {
         });
 
         button.classList.add('visible');
-
-        if (this.config.autoOpen) {
-            return;
-        }
-
-        setTimeout(() => {
-            this.menuButton.focus();
-        }, 200);
     };
 
     private hideMenuButton = (): void => {
