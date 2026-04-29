@@ -4,7 +4,7 @@ title:
   i18n: "home.dashboard"
 description:
   text: "Enonic XP Dashboard"
-  i18n: "launcher.tools.home.description"
+  i18n: "home.dashboard.description"
 allow:
   - "role:system.admin"
   - "role:system.admin.login"

@@ -25,9 +25,9 @@ function localise(key, locales) {
 router.get('', function(req) {
     const locales = req.locales;
     const phrases = {
-        linkLogout: localise('launcher.link.logout', locales),
-        tooltipOpenMenu: localise('launcher.tooltip.openMenu', locales),
-        tooltipCloseMenu: localise('launcher.tooltip.closeMenu', locales),
+        linkLogout: localise('action.logout', locales),
+        tooltipOpenMenu: localise('tooltip.openMenu', locales),
+        tooltipCloseMenu: localise('tooltip.closeMenu', locales),
     };
 
     const menuExtensionUrl = admin.extensionUrl({

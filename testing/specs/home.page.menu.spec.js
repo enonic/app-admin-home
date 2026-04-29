@@ -5,7 +5,7 @@ const testUtils = require('../libs/test.utils');
 const HomePage = require('../page_objects/home.page');
 const MenuPanel = require('../page_objects/menu.panel');
 
-const EXPECTED_SHORTCUTS = ['Developer', 'Slack', 'Enonic forum', 'Enonic market'];
+const EXPECTED_SHORTCUTS = ['Developer', 'Slack', 'Enonic Forum', 'Enonic Market'];
 const DASHBOARD_TOOL_NAME = 'Dashboard';
 const NO_WIDGETS_TEXT = 'No dashboard widgets installed';
 
