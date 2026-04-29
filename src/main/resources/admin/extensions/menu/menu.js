@@ -36,6 +36,9 @@ router.get('', function(req) {
     });
     const baseAssetUrl = `${menuExtensionUrl}${STATIC_BASE_PATH}`;
 
+    const themeParam = req.params['theme'];
+    const theme = (themeParam === 'dark' || themeParam === 'light') ? themeParam : null;
+
     const config = {
         appName: req.params['appName'],
         autoOpen: req.params['autoOpen'] === 'true' || false,
@@ -102,6 +105,7 @@ router.get('', function(req) {
         stylesUrl: `${baseAssetUrl}/styles/menu.css`,
         jsUrl: `${baseAssetUrl}/js/menu/bundle.js`,
         phrases,
+        themeClass: theme ? `theme-${theme}` : '',
         configAsJson: JSON.stringify(config, null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1"),
     };
 
