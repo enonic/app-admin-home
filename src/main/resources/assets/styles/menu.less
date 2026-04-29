@@ -7,16 +7,26 @@
 @menu-button-size: 30px;
 @avatar-button-size: 30px;
 
+@icon-indent: 16px;
+
 .avatar-container {
   position: fixed;
-  right: 23px + @menu-button-size + 10px;
-  top: 16px;
+  right: @icon-indent + @menu-button-size + 10px;
+  top: @icon-indent;
   z-index: @z-index-launcher-button;
   pointer-events: auto;
 }
 
 button.menu-button[hidden] ~ .avatar-container {
-  right: 23px;
+  right: @icon-indent;
+}
+
+.icon-buttons-dark() {
+  color: @admin-white;
+
+  &:focus {
+    outline-color: @admin-white;
+  }
 }
 
 button.avatar-button,
@@ -31,11 +41,13 @@ button.menu-button {
   }
 
   @media (prefers-color-scheme: dark) {
-    color: @admin-white;
-
-    &:focus {
-      outline-color: @admin-white;
+    .menu-root:not(.theme-light) & {
+      .icon-buttons-dark();
     }
+  }
+
+  .menu-root.theme-dark & {
+    .icon-buttons-dark();
   }
 
   &.menu-open {
@@ -56,7 +68,7 @@ button.avatar-button {
   border: none;
   border-radius: 50%;
   background-color: #5B5F60;
-  color: #FFF;
+  color: @admin-white;
   font-family: @admin-font-family;
   font-size: 12px;
   font-weight: 600;
@@ -134,7 +146,7 @@ button.avatar-button {
     }
   }
 
-  @media (prefers-color-scheme: dark) {
+  .avatar-dropdown-dark() {
     background-color: @avatar-dropdown-bg-dark;
 
     &::before {
@@ -158,6 +170,16 @@ button.avatar-button {
       }
     }
   }
+
+  @media (prefers-color-scheme: dark) {
+    .menu-root:not(.theme-light) & {
+      .avatar-dropdown-dark();
+    }
+  }
+
+  .menu-root.theme-dark & {
+    .avatar-dropdown-dark();
+  }
 }
 
 button.menu-button {
@@ -177,8 +199,8 @@ button.menu-button {
   pointer-events: auto;
   border: none;
   border-radius: 50%;
-  right: 23px;
-  top: 16px;
+  right: @icon-indent;
+  top: @icon-indent;
   padding: 0;
   background-color: transparent;
   color: @admin-black;
@@ -212,10 +234,20 @@ button.menu-button {
     display: block;
   }
 
-  @media (prefers-color-scheme: dark) {
+  .menu-button-hover-dark() {
     &:hover {
       color: #DDE1E2;
     }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .menu-root:not(.theme-light) & {
+      .menu-button-hover-dark();
+    }
+  }
+
+  .menu-root.theme-dark & {
+    .menu-button-hover-dark();
   }
 
   &.menu-open {
