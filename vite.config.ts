@@ -49,7 +49,7 @@ export default defineConfig(({mode}) => {
             }),
           ],
           input: {
-            'js/home/bundle': path.join(IN_PATH, 'js/home/main.ts'),
+            'js/dashboard/bundle': path.join(IN_PATH, 'js/dashboard/main.ts'),
             'js/menu/bundle': path.join(IN_PATH, 'js/menu/main.ts')
           },
           output: {
@@ -112,7 +112,7 @@ export default defineConfig(({mode}) => {
         sourcemap: isDevelopment,
         rollupOptions: {
           input: {
-            'styles/home': path.join(IN_PATH, 'styles/home.less'),
+            'styles/dashboard': path.join(IN_PATH, 'styles/dashboard.less'),
             'styles/menu': path.join(IN_PATH, 'styles/menu.less'),
             'styles/extensions/youtube': path.join(IN_PATH, 'styles/extensions/youtube.less')
           },

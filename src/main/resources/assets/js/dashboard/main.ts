@@ -127,7 +127,7 @@ const startApplication = () => {
 void (async () => {
     removeOpenMenuParamFromUrl();
 
-    const currentScript = getModuleScript('home');
+    const currentScript = getModuleScript('dashboard');
 
     const configScriptId = getRequiredAttribute(currentScript, 'data-config-script-id');
 
