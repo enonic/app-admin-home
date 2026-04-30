@@ -120,18 +120,27 @@ export class Menu {
         .setGlobal(true)
         .setCallback(e => {
             if (this.isPanelExpanded()) {
-                e.preventDefault();
-                e.returnValue = false;
-
-                const selectedApp = this.getSelectedApp();
+                const selectedApp = this.getSelectedApp() || this.getFocusedApp();
                 if (selectedApp) {
+                    e.preventDefault();
+                    e.returnValue = false;
                     this.startApp(selectedApp);
                 } else if (this.menuButtonHasFocus()) {
+                    e.preventDefault();
+                    e.returnValue = false;
                     this.closeMenuPanel();
                 }
             }
             return false;
         });
+
+    private getFocusedApp = (): HTMLElement | null => {
+        const active = this.getActiveElement();
+        if (active instanceof HTMLElement && active.classList.contains('app-tile')) {
+            return active;
+        }
+        return null;
+    };
 
     private menuBindings: KeyBinding[] = [
         this.prevApp,
