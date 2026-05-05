@@ -1,0 +1,7 @@
+kind: "AdminExtension"
+title: "Menu Loader"
+allow:
+  - "role:system.admin"
+  - "role:system.admin.login"
+interfaces:
+  - "generic"

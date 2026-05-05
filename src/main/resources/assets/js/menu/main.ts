@@ -10,6 +10,7 @@ const INITIALIZED_ATTR = 'data-menu-initialized';
 interface MenuConfig {
     appName: string;
     autoOpen: boolean;
+    isHomeApp?: boolean;
     menuUrl: string;
     backgroundUrl: string;
     phrases: JSONObject;
@@ -411,7 +412,7 @@ export class Menu {
     };
 
     private hideMenuButton = (): void => {
-        if (!this.config.autoOpen) {
+        if (!this.config.autoOpen || !this.config.isHomeApp) {
             return;
         }
         this.menuButton.hidden = true;

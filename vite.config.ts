@@ -6,7 +6,7 @@ import postcssSortMediaQueries from 'postcss-sort-media-queries';
 import {fileURLToPath} from 'url';
 import {defineConfig, type UserConfig} from 'vite';
 
-const allowedTargets = ['js', 'css'] as const;
+const allowedTargets = ['js', 'css', 'loader'] as const;
 type BuildTarget = (typeof allowedTargets)[number];
 
 const isBuildTarget = (target: string | undefined): target is BuildTarget => {
@@ -98,6 +98,56 @@ export default defineConfig(({mode}) => {
         },
         clearScreen: false
       }),
+      ...(isProduction && {
+        logLevel: 'warn'
+      })
+    },
+    loader: {
+      root: IN_PATH,
+      base: './',
+      build: {
+        outDir: OUT_PATH,
+        emptyOutDir: false,
+        target: 'ES2023',
+        minify: isProduction,
+        sourcemap: isDevelopment ? true : false,
+        rollupOptions: {
+          plugins: [
+            inject({
+              $: 'jquery',
+              jQuery: 'jquery',
+              'window.jQuery': 'jquery'
+            }),
+          ],
+          input: path.join(IN_PATH, 'js/menu/loader.ts'),
+          output: {
+            format: 'es',
+            entryFileNames: 'js/menu/loader.js',
+            inlineDynamicImports: true,
+            ...(isProduction && {
+              compact: true,
+              generatedCode: {
+                constBindings: true
+              }
+            })
+          }
+        }
+      },
+      esbuild: {
+        minifyIdentifiers: false,
+        keepNames: true,
+        treeShaking: true,
+        ...(isProduction && {
+          drop: ['console', 'debugger'],
+          legalComments: 'none'
+        })
+      },
+      resolve: {
+        alias: {
+          '@enonic/lib-admin-ui': path.join(__dirname, '.xp/dev/lib-admin-ui')
+        },
+        extensions: ['.ts', '.js']
+      },
       ...(isProduction && {
         logLevel: 'warn'
       })
