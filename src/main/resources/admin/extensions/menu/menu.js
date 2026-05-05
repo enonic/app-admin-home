@@ -42,6 +42,7 @@ router.get('', function(req) {
     const config = {
         appName: req.params['appName'],
         autoOpen: req.params['autoOpen'] === 'true' || false,
+        isHomeApp: app.name === req.params['appName'],
         menuUrl: req.url,
         backgroundUrl: `${baseAssetUrl}/images/background.webp`,
         phrases
