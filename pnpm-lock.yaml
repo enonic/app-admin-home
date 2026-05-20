@@ -213,7 +213,7 @@ importers:
         specifier: ^9.27.1
         version: 9.27.1
       allure-commandline:
-        specifier: ^2.40.0
+        specifier: ^2.41.0
         version: 2.41.0
       properties-reader:
         specifier: ^2.3.0
