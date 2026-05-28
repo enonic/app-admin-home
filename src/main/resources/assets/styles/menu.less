@@ -379,15 +379,20 @@ button.menu-button {
   .menu-app-container {
     box-sizing: border-box;
     flex: 1;
+    min-width: 0;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 20px;
 
     .app-grid {
       display: grid;
-      grid-template-columns: repeat(5, 122px);
+      grid-template-columns: repeat(auto-fill, 122px);
       gap: 12px;
+      width: 100%;
+      max-width: 658px;
+      justify-content: center;
     }
 
     .app-tile {
@@ -571,10 +576,12 @@ button.menu-button {
       overflow: visible;
       display: block;
       margin-bottom: 20px;
+      padding: 0;
 
       .app-grid {
-        grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
         width: 100%;
+        max-width: none;
         gap: 20px;
       }
 
@@ -584,6 +591,10 @@ button.menu-button {
         aspect-ratio: 1;
         -webkit-backdrop-filter: none;
         backdrop-filter: none;
+      }
+
+      .app-tile-icon {
+        margin-top: 0;
       }
 
       .app-tile-name {
