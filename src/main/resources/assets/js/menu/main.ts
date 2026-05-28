@@ -1,6 +1,10 @@
+import {Application} from '@enonic/lib-admin-ui/app/Application';
 import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/application/ApplicationEvent';
+import {ServerEventsListener} from '@enonic/lib-admin-ui/event/ServerEventsListener';
 import {KeyBinding} from '@enonic/lib-admin-ui/ui/KeyBinding';
 import {KeyBindings} from '@enonic/lib-admin-ui/ui/KeyBindings';
+
+const SERVER_EVENTS_FLAG = '__xpMenuServerEventsListenerStarted';
 
 
 type JSONObject = Record<string, string>;
@@ -13,6 +17,7 @@ interface MenuConfig {
     isHomeApp?: boolean;
     menuUrl: string;
     backgroundUrl: string;
+    eventApiUrl?: string;
     phrases: JSONObject;
 }
 
@@ -165,6 +170,7 @@ export class Menu {
         this.initAvatarButton();
         this.initMenuButton();
         this.initMenuPanel();
+        this.initServerEventsListener();
         this.addApplicationsListeners();
 
         if (this.config.autoOpen) {
@@ -462,6 +468,21 @@ export class Menu {
         if (selectedApp) {
             selectedApp.classList.remove('selected');
         }
+    };
+
+    private initServerEventsListener = (): void => {
+        const eventApiUrl = this.config.eventApiUrl;
+        if (!eventApiUrl) {
+            return;
+        }
+        const w = window as unknown as Record<string, boolean>;
+        if (w[SERVER_EVENTS_FLAG]) {
+            return;
+        }
+        w[SERVER_EVENTS_FLAG] = true;
+        const dummyApp = new Application('xp-menu', 'xp-menu', 'xp-menu', '');
+        dummyApp.setWindow(window);
+        new ServerEventsListener([dummyApp], eventApiUrl).start();
     };
 
     private addApplicationsListeners = (): void => {

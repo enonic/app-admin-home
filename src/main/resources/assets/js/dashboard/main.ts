@@ -1,6 +1,4 @@
-import {Application} from '@enonic/lib-admin-ui/app/Application';
 import {Element} from '@enonic/lib-admin-ui/dom/Element';
-import {ServerEventsListener} from '@enonic/lib-admin-ui/event/ServerEventsListener';
 import {ConnectionDetector} from '@enonic/lib-admin-ui/system/ConnectionDetector';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 import {i18n, Messages} from '@enonic/lib-admin-ui/util/Messages';
@@ -34,14 +32,6 @@ const loadDOM = (): Q.Promise<void> => {
 const initConfig = (configScriptId: string) => {
     CONFIG.setConfig(resolveScriptConfig(configScriptId));
     Messages.addMessages(JSON.parse(CONFIG.getString('phrases')) as object);
-};
-
-const setupWebSocketListener = () => {
-    const dummyApp: Application = new Application('home', 'home', 'home', '');
-    dummyApp.setWindow(window);
-
-    const serverEventsListener: ServerEventsListener = new ServerEventsListener([dummyApp], CONFIG.getString('eventApiUrl'));
-    serverEventsListener.start();
 };
 
 const startLostConnectionDetector = () => {
@@ -117,7 +107,6 @@ const showDashboard = () => {
 };
 
 const startApplication = () => {
-    setupWebSocketListener();
     startLostConnectionDetector();
     addListenersToDashboardItems();
     appendMenuPanel();
