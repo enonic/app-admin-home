@@ -1,10 +1,12 @@
 import inject from '@rollup/plugin-inject';
 import autoprefixer from 'autoprefixer';
+import {readdirSync, readFileSync} from 'node:fs';
+import {brotliCompressSync, constants as zlibConstants, gzipSync} from 'node:zlib';
 import cssnano from 'cssnano';
 import path from 'path';
 import postcssSortMediaQueries from 'postcss-sort-media-queries';
 import {fileURLToPath} from 'url';
-import {defineConfig, type UserConfig} from 'vite';
+import {defineConfig, type Plugin, type UserConfig} from 'vite';
 
 const allowedTargets = ['js', 'css', 'loader'] as const;
 type BuildTarget = (typeof allowedTargets)[number];
@@ -22,13 +24,81 @@ export default defineConfig(({mode}) => {
   const isProduction = mode === 'production';
   const isDevelopment = mode === 'development';
 
+  const COMPRESSIBLE = /\.(js|mjs|css|svg|json|xml|txt|webmanifest)$/;
+
+  // Emits buildtime.json (a cache-busting timestamp embedded in asset URLs so
+  // lib-static's default "immutable" cache-control is safe across upgrades) and,
+  // in production, .gz/.br siblings for compressible assets. `stamp` should be
+  // true for exactly one build target so the timestamp is written once.
+  const assetPipeline = ({stamp}: {stamp: boolean}): Plugin => ({
+    name: 'admin-home:asset-pipeline',
+    apply: 'build',
+    generateBundle(_options, bundle) {
+      if (isProduction) {
+        for (const fileName of Object.keys(bundle)) {
+          if (!COMPRESSIBLE.test(fileName)) {
+            continue;
+          }
+          const chunk = bundle[fileName];
+          const source = Buffer.from(
+            (chunk.type === 'asset' ? chunk.source : chunk.code) as string | Uint8Array
+          );
+
+          const gz = gzipSync(source, {level: 9});
+          if (gz.length < source.length) {
+            this.emitFile({type: 'asset', fileName: `${fileName}.gz`, source: gz});
+          }
+
+          const br = brotliCompressSync(source, {
+            params: {[zlibConstants.BROTLI_PARAM_QUALITY]: 11}
+          });
+          if (br.length < source.length) {
+            this.emitFile({type: 'asset', fileName: `${fileName}.br`, source: br});
+          }
+        }
+      }
+
+      if (stamp) {
+        this.emitFile({
+          type: 'asset',
+          fileName: 'buildtime.json',
+          source: JSON.stringify({timeSinceEpoch: Date.now()})
+        });
+      }
+    }
+  });
+
   const IN_PATH = path.join(__dirname, 'src/main/resources/assets');
   const OUT_PATH = path.join(__dirname, 'build/resources/main/assets');
+
+  const copyStatic = (dirs: string[]): Plugin => ({
+    name: 'admin-home:copy-static',
+    apply: 'build',
+    generateBundle() {
+      const walk = (dir: string): string[] =>
+        readdirSync(dir, {withFileTypes: true}).flatMap((entry) => {
+          const full = path.join(dir, entry.name);
+          return entry.isDirectory() ? walk(full) : [full];
+        });
+
+      for (const dir of dirs) {
+        for (const file of walk(path.join(IN_PATH, dir))) {
+          this.emitFile({
+            type: 'asset',
+            fileName: path.relative(IN_PATH, file).split(path.sep).join('/'),
+            source: readFileSync(file)
+          });
+        }
+      }
+    }
+  });
 
   const CONFIGS: Record<BuildTarget, UserConfig> = {
     js: {
       root: IN_PATH,
       base: './',
+
+      plugins: [copyStatic(['icons', 'images']), assetPipeline({stamp: true})],
 
       build: {
         outDir: OUT_PATH,
@@ -105,6 +175,7 @@ export default defineConfig(({mode}) => {
     loader: {
       root: IN_PATH,
       base: './',
+      plugins: [assetPipeline({stamp: false})],
       build: {
         outDir: OUT_PATH,
         emptyOutDir: false,
@@ -155,6 +226,7 @@ export default defineConfig(({mode}) => {
     css: {
       root: IN_PATH,
       base: './',
+      plugins: [assetPipeline({stamp: false})],
       build: {
         outDir: OUT_PATH,
         emptyOutDir: false,

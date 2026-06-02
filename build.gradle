@@ -3,11 +3,13 @@ plugins {
     id 'jacoco'
     id 'maven-publish'
     alias(libs.plugins.enonic.defaults)
-    alias(libs.plugins.enonic.xp.app)
+    id 'com.enonic.xp.app'
     alias(libs.plugins.node.gradle)
 }
 
 allprojects {
+    version = xpVersion
+
     pluginManager.withPlugin( 'java' ) {
         java {
             toolchain {
@@ -39,13 +41,14 @@ configurations {
 }
 
 dependencies {
-    implementation "com.enonic.xp:admin-api:${version}"
-    implementation "com.enonic.xp:script-api:${version}"
+    implementation xplibs.api.admin
+    implementation xplibs.api.script
 
-    include "com.enonic.xp:lib-admin:${version}"
-    include "com.enonic.xp:lib-portal:${version}"
-    include "com.enonic.xp:lib-auth:${version}"
-    include "com.enonic.xp:lib-i18n:${version}"
+    include xplibs.admin
+    include xplibs.portal
+    include xplibs.auth
+    include xplibs.i18n
+    include xplibs.io
     include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
     devResources "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
     include libs.lib.mustache
@@ -62,10 +65,8 @@ dependencies {
 
 app {
     name = "${group}.${projectName}"
-    displayName = 'Enonic XP Home App'
     systemVersion = "${version}"
     systemApp = true
-    devSourcePaths += file( "$rootDir/../lib-admin-ui/src/main/resources" )
 }
 
 // Verification tasks
@@ -132,13 +133,7 @@ tasks.named( 'jar' ).configure {
 }
 
 tasks.named( 'processResources' ).configure {
-    // Don't need source files
-    exclude 'assets/js/**'
-    exclude 'assets/styles/**'
-
-    // Inlined by the Vite into CSS
-    exclude 'assets/fonts/**'
-    exclude 'assets/img/**'
+    exclude 'assets/**'
 
     includeEmptyDirs = false
 }

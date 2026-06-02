@@ -3,13 +3,14 @@
 const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
 const i18n = require('/lib/xp/i18n');
+const buildtime = require('/lib/buildtime');
 
 const STATIC_BASE_PATH = '/_static';
 
 const getAssetsUri = () => admin.extensionUrl({
     application: app.name,
     extension: 'menu'
-}) + STATIC_BASE_PATH;
+}) + `${STATIC_BASE_PATH}/${buildtime.getBuildTime()}`;
 
 const adminToolsBean = __.newBean('com.enonic.xp.app.main.GetAdminToolsScriptBean');
 
