@@ -8,8 +8,6 @@ plugins {
 }
 
 allprojects {
-    version = xpVersion
-
     pluginManager.withPlugin( 'java' ) {
         java {
             toolchain {
