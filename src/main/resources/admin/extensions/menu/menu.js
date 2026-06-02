@@ -6,9 +6,11 @@ const portal = require('/lib/xp/portal');
 const i18n = require('/lib/xp/i18n');
 const admin = require('/lib/xp/admin');
 const staticLib = require('/lib/enonic/static');
+const buildtime = require('/lib/buildtime');
 const router = require('/lib/router')();
 
 const STATIC_BASE_PATH = '/_static';
+const VERSIONED_BASE_PATH = `${STATIC_BASE_PATH}/${buildtime.getBuildTime()}`;
 
 const adminToolsBean = __.newBean(
     'com.enonic.xp.app.main.GetAdminToolsScriptBean'
@@ -34,7 +36,7 @@ router.get('', function(req) {
         application: app.name,
         extension: 'menu'
     });
-    const baseAssetUrl = `${menuExtensionUrl}${STATIC_BASE_PATH}`;
+    const baseAssetUrl = `${menuExtensionUrl}${VERSIONED_BASE_PATH}`;
 
     const themeParam = req.params['theme'];
     const theme = (themeParam === 'dark' || themeParam === 'light') ? themeParam : null;
@@ -121,7 +123,7 @@ router.get(`${STATIC_BASE_PATH}/{path:.*}`, (req) => {
     return staticLib.requestHandler(req, {
         index: false,
         root: '/assets',
-        relativePath: staticLib.mappedRelativePath(STATIC_BASE_PATH),
+        relativePath: staticLib.mappedRelativePath(VERSIONED_BASE_PATH),
     });
 });
 
