@@ -2,7 +2,7 @@ import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
 plugins {
     id 'base'
-    alias( libs.plugins.enonic.xp.base )
+    id 'com.enonic.xp.base'
     alias( libs.plugins.node.gradle )
 }
 
