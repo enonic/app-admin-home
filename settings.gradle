@@ -1,7 +1,4 @@
 plugins {
-    // Creates the `xplibs` version catalog from the `xpVersion` property, and
-    // puts the XP Gradle plugin on the classpath (base/app are applied without
-    // a version in the build scripts). Single source for the plugin version.
     id 'com.enonic.xp.settings' version '4.0.0-B1'
 }
 

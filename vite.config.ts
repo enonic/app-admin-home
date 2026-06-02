@@ -24,7 +24,6 @@ export default defineConfig(({mode}) => {
   const isProduction = mode === 'production';
   const isDevelopment = mode === 'development';
 
-  // Text-ish outputs worth pre-compressing for lib-static (staticCompress).
   const COMPRESSIBLE = /\.(js|mjs|css|svg|json|xml|txt|webmanifest)$/;
 
   // Emits buildtime.json (a cache-busting timestamp embedded in asset URLs so
@@ -72,10 +71,6 @@ export default defineConfig(({mode}) => {
   const IN_PATH = path.join(__dirname, 'src/main/resources/assets');
   const OUT_PATH = path.join(__dirname, 'build/resources/main/assets');
 
-  // Copies static asset dirs (icons, images) into the build output, preserving
-  // their relative paths so the server controllers' URLs keep working. Run
-  // before assetPipeline so the emitted files are compressed too. These dirs are
-  // excluded from Gradle processResources to avoid a double copy.
   const copyStatic = (dirs: string[]): Plugin => ({
     name: 'admin-home:copy-static',
     apply: 'build',

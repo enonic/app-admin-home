@@ -124,6 +124,7 @@ router.get(`${STATIC_BASE_PATH}/{path:.*}`, (req) => {
         index: false,
         root: '/assets',
         relativePath: staticLib.mappedRelativePath(VERSIONED_BASE_PATH),
+        cacheControl: () => staticLib.RESPONSE_CACHE_CONTROL.IMMUTABLE,
     });
 });
 
