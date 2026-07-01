@@ -1,8 +1,8 @@
-import {Application} from '@enonic/lib-admin-ui/app/Application';
 import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/application/ApplicationEvent';
-import {ServerEventsListener} from '@enonic/lib-admin-ui/event/ServerEventsListener';
 import {KeyBinding} from '@enonic/lib-admin-ui/ui/KeyBinding';
 import {KeyBindings} from '@enonic/lib-admin-ui/ui/KeyBindings';
+import {WorkerServerEventsConnection} from './server-events/WorkerServerEventsConnection';
+import {WorkerServerEventsListener} from './server-events/WorkerServerEventsListener';
 
 const SERVER_EVENTS_FLAG = '__xpMenuServerEventsListenerStarted';
 
@@ -17,7 +17,8 @@ interface MenuConfig {
     isHomeApp?: boolean;
     menuUrl: string;
     backgroundUrl: string;
-    eventApiUrl?: string;
+    sharedSocketUrl?: string;
+    eventsUrl?: string;
     phrases: JSONObject;
 }
 
@@ -471,8 +472,8 @@ export class Menu {
     };
 
     private initServerEventsListener = (): void => {
-        const eventApiUrl = this.config.eventApiUrl;
-        if (!eventApiUrl) {
+        const {sharedSocketUrl, eventsUrl} = this.config;
+        if (!sharedSocketUrl || !eventsUrl) {
             return;
         }
         const w = window as unknown as Record<string, boolean>;
@@ -480,9 +481,8 @@ export class Menu {
             return;
         }
         w[SERVER_EVENTS_FLAG] = true;
-        const dummyApp = new Application('xp-menu', 'xp-menu', 'xp-menu', '');
-        dummyApp.setWindow(window);
-        new ServerEventsListener([dummyApp], eventApiUrl).start();
+        const connection = new WorkerServerEventsConnection(sharedSocketUrl, eventsUrl);
+        new WorkerServerEventsListener(connection).start();
     };
 
     private addApplicationsListeners = (): void => {

@@ -47,6 +47,8 @@ dependencies {
     include xplibs.auth
     include xplibs.i18n
     include xplibs.io
+    include xplibs.event
+    include xplibs.websocket
     include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
     devResources "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
     include libs.lib.mustache
