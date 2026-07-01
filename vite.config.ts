@@ -8,7 +8,7 @@ import postcssSortMediaQueries from 'postcss-sort-media-queries';
 import {fileURLToPath} from 'url';
 import {defineConfig, type Plugin, type UserConfig} from 'vite';
 
-const allowedTargets = ['js', 'css', 'loader'] as const;
+const allowedTargets = ['js', 'css', 'loader', 'worker'] as const;
 type BuildTarget = (typeof allowedTargets)[number];
 
 const isBuildTarget = (target: string | undefined): target is BuildTarget => {
@@ -218,6 +218,28 @@ export default defineConfig(({mode}) => {
           '@enonic/lib-admin-ui': path.join(__dirname, '.xp/dev/lib-admin-ui')
         },
         extensions: ['.ts', '.js']
+      },
+      ...(isProduction && {
+        logLevel: 'warn'
+      })
+    },
+    worker: {
+      root: IN_PATH,
+      base: './',
+      plugins: [assetPipeline({stamp: false})],
+      build: {
+        outDir: OUT_PATH,
+        emptyOutDir: false,
+        target: 'ES2023',
+        minify: isProduction,
+        sourcemap: isDevelopment,
+        rollupOptions: {
+          input: path.join(IN_PATH, 'js/shared-socket/worker.ts'),
+          output: {
+            format: 'es',
+            entryFileNames: 'shared-socket.js'
+          }
+        }
       },
       ...(isProduction && {
         logLevel: 'warn'
