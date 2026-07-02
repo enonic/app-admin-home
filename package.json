@@ -51,8 +51,7 @@
     "extends browserslist-config-enonic"
   ],
   "engines": {
-    "node": ">= 24.13.0",
-    "pnpm": ">= 10.30.0",
-    "npm": ">= 11.6.2"
+    "node": ">= 24.15.0",
+    "pnpm": ">= 10.33.4"
   }
 }
