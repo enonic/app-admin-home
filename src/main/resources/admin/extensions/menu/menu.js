@@ -48,7 +48,10 @@ router.get('', function(req) {
         menuUrl: req.url,
         backgroundUrl: `${baseAssetUrl}/images/background.webp`,
         sharedSocketUrl: `${baseAssetUrl}/shared-socket.js`,
-        eventsUrl: portal.apiUrl({api: `${app.name}:events`}),
+        eventsUrl: portal.apiUrl({
+            api: `${app.name}:events`,
+            type: 'absolute'
+        }),
         phrases
     }
 
