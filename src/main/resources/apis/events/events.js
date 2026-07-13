@@ -1,4 +1,5 @@
 const websocketLib = require('/lib/xp/websocket');
+const events = require('/lib/events');
 
 const WS_PROTOCOL = 'json';
 
@@ -24,6 +25,8 @@ exports.get = function get(request) {
             body: `Expected <${WS_PROTOCOL}>.`
         };
     }
+
+    events.init();
 
     return {
         status: 101,
@@ -52,6 +55,8 @@ exports.webSocketEvent = function webSocketEvent(event) {
 }
 
 function handleMessage(event) {
+    events.init();
+
     const socketId = event.session.id;
     const message = parseMessage(event.message);
     if (!message) {
