@@ -26,7 +26,11 @@
     "fix": "eslint --fix **/*.ts"
   },
   "dependencies": {
-    "@enonic/lib-admin-ui": "workspace:*",
+    "@enonic/lib-admin-ui": "link:.xp/dev/lib-admin-ui",
+    "dompurify": "~3.3.1",
+    "jquery": "^3.7.1",
+    "jquery-ui": "^1.14.2",
+    "mousetrap": "^1.6.5",
     "q": "^1.5.1"
   },
   "devDependencies": {
@@ -38,9 +42,11 @@
     "cross-env": "^10.0.0",
     "cssnano": "^7.1.1",
     "enonic-admin-artifacts": "^2.3.2",
+    "esbuild": "^0.28.1",
     "eslint": "^9.39.4",
     "globals": "^16.3.0",
     "jiti": "^2.5.1",
+    "less": "^4.6.0",
     "postcss": "^8.5.6",
     "postcss-sort-media-queries": "^5.2.0",
     "typescript": "^5.9.2",
