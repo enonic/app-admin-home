@@ -1,11 +1,6 @@
 packages:
   - .
 
-allowBuilds:
-  edgedriver: false
-  esbuild: false
-  geckodriver: false
-
 ignoredBuiltDependencies:
   - edgedriver
   - esbuild
