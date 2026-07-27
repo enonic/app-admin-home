@@ -47,8 +47,8 @@ importers:
   .:
     devDependencies:
       '@wdio/allure-reporter':
-        specifier: 9.29.1
-        version: 9.29.1
+        specifier: 9.30.0
+        version: 9.30.0
       '@wdio/cli':
         specifier: ^9.29.1
         version: 9.29.1(@types/node@26.1.1)(expect-webdriverio@5.7.0)
@@ -479,8 +479,8 @@ packages:
   '@vitest/utils@4.1.10':
     resolution: {integrity: sha512-fy9am/HWxbaGt/Sawrp90vt6Y6jQwf1RX77cz3uwoJwJVMli/e1IEwRPnMNJ7vKfPTwo0diXifkpPvwH9v7nGA==}
 
-  '@wdio/allure-reporter@9.29.1':
-    resolution: {integrity: sha512-NroTqEN+l0WHVbqS6CH7sTrFtd3d0mgxjPFvFcbzCER1+GA0chTzFT/GCwl4WvNrbbX6a/z7QWT+UwWdXJQJvQ==}
+  '@wdio/allure-reporter@9.30.0':
+    resolution: {integrity: sha512-hV/TNy7x1ENkX5cfWLN4CyVczfqBQYWqGdNhRdtX6+8nZFwRBtMRcC770MABFJyeVZzwAvyliZNgJMphxtEPMQ==}
     engines: {node: '>=18.20.0'}
 
   '@wdio/cli@9.29.1':
@@ -2227,7 +2227,7 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.0
 
-  '@wdio/allure-reporter@9.29.1':
+  '@wdio/allure-reporter@9.30.0':
     dependencies:
       '@types/node': 20.19.43
       '@wdio/reporter': 9.29.1
