@@ -10,3 +10,5 @@ apis:
   - "events"
 interfaces:
   - "admin.dashboard"
+config:
+  hideFromMenu: true
