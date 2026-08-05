@@ -15,6 +15,7 @@ import com.enonic.xp.script.bean.BeanContext;
 import com.enonic.xp.script.bean.ScriptBean;
 import com.enonic.xp.script.serializer.MapSerializable;
 import com.enonic.xp.security.PrincipalKeys;
+import com.enonic.xp.util.GenericValue;
 
 public final class GetAdminToolsScriptBean
     implements ScriptBean
@@ -31,23 +32,27 @@ public final class GetAdminToolsScriptBean
 
         final PrincipalKeys principals = ContextAccessor.current().getAuthInfo().getPrincipals();
 
-        final Predicate<AdminToolDescriptor> isHomeOfThisApp = t ->
-            t.getKey().getApplicationKey().equals( appMainKey ) && "home".equals( t.getKey().getName() );
-
-        final Predicate<AdminToolDescriptor> isDashboardOfThisApp = t ->
-            t.getKey().getApplicationKey().equals( appMainKey ) && "dashboard".equals( t.getKey().getName() );
-
         return adminToolDescriptorService.getAll()
             .stream()
             .filter( adminToolDescriptor -> adminToolDescriptor.isAccessAllowed( principals ) )
-            .filter( isHomeOfThisApp.negate() )
-            .sorted( Comparator.comparing( (AdminToolDescriptor t) -> !isDashboardOfThisApp.test( t ) )
+            .filter( Predicate.not( this::isHiddenFromMenu ) )
+            .sorted( Comparator.comparing( (AdminToolDescriptor t) -> !isDashboardOfThisApp( t ) )
                          .thenComparing( Comparator.nullsLast( Comparator.comparing( AdminToolDescriptor::getTitle ) ) ) )
             .map( adminToolDescriptor -> new AdminToolMapper( adminToolDescriptor,
                                                               getMessageBundle( adminToolDescriptor.getKey().getApplicationKey(),
                                                                                 locales ) ) )
             .toList();
 
+    }
+
+    private boolean isHiddenFromMenu( final AdminToolDescriptor descriptor )
+    {
+        return descriptor.getSchemaConfig().optional( "hideFromMenu" ).map( GenericValue::asBoolean ).orElse( false );
+    }
+
+    private boolean isDashboardOfThisApp( final AdminToolDescriptor descriptor )
+    {
+        return descriptor.getKey().getApplicationKey().equals( appMainKey ) && "dashboard".equals( descriptor.getKey().getName() );
     }
 
     private MessageBundle getMessageBundle( final ApplicationKey appKey, final List<Locale> locales )
