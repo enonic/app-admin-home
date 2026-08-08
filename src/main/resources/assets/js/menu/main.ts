@@ -1,8 +1,6 @@
-import {ApplicationEvent, ApplicationEventType} from '@enonic/lib-admin-ui/application/ApplicationEvent';
 import {KeyBinding} from '@enonic/lib-admin-ui/ui/KeyBinding';
 import {KeyBindings} from '@enonic/lib-admin-ui/ui/KeyBindings';
 import {WorkerServerEventsConnection} from './server-events/WorkerServerEventsConnection';
-import {WorkerServerEventsListener} from './server-events/WorkerServerEventsListener';
 
 const SERVER_EVENTS_FLAG = '__xpMenuServerEventsListenerStarted';
 
@@ -11,8 +9,15 @@ type JSONObject = Record<string, string>;
 
 const INITIALIZED_ATTR = 'data-menu-initialized';
 
+const TOOL_ID_ATTR = 'data-tool-id';
+
+const ADMIN_TOOLS_CHANGED_MESSAGE = 'adminToolsChanged';
+
+const ADMIN_TOOLS_CHANGED_EVENT = 'xp-admin-tools-changed';
+
+const RELOAD_DEBOUNCE_MS = 250;
+
 interface MenuConfig {
-    appName: string;
     autoOpen: boolean;
     isHomeApp?: boolean;
     menuUrl: string;
@@ -41,7 +46,7 @@ export class Menu {
         return this.root instanceof ShadowRoot ? this.root.activeElement : document.activeElement;
     };
 
-    private nextApp: KeyBinding = new KeyBinding('down')
+    private nextTool: KeyBinding = new KeyBinding('down')
         .setGlobal(true)
         .setCallback((e: Event) => {
             if (!this.isPanelExpanded()) {
@@ -63,75 +68,75 @@ export class Menu {
             }
 
             this.initKeyboardNavigation();
-            this.selectNextApp();
+            this.selectNextTool();
             return false;
         });
 
-    private prevApp: KeyBinding = new KeyBinding('up')
+    private prevTool: KeyBinding = new KeyBinding('up')
         .setGlobal(true)
         .setCallback((e: Event) => {
             if (!this.isPanelExpanded() || this.isAvatarDropdownExpanded()) {
                 return false;
             }
             this.initKeyboardNavigation();
-            this.selectPreviousApp();
+            this.selectPreviousTool();
             return false;
         });
 
 
-    private tabNextApp: KeyBinding = new KeyBinding('tab')
+    private tabNextTool: KeyBinding = new KeyBinding('tab')
         .setGlobal(true)
         .setCallback((e: Event) => {
-            if (!this.isPanelExpanded() || !this.isAppOnFocus()) {
+            if (!this.isPanelExpanded() || !this.isToolFocused()) {
                 return true;
             }
 
-            const selectedIndex = this.getSelectedAppIndex();
-            const isLastApp = selectedIndex >= this.getApps().length - 1;
+            const selectedIndex = this.getSelectedToolIndex();
+            const isLastTool = selectedIndex >= this.getTools().length - 1;
 
-            if (isLastApp) {
-                this.unselectCurrentApp();
+            if (isLastTool) {
+                this.unselectCurrentTool();
                 e.preventDefault();
                 this.avatarButton.focus();
                 return false;
             }
 
             this.initKeyboardNavigation();
-            this.selectNextApp();
+            this.selectNextTool();
             return true;
         });
 
-    private shiftTabPrevApp: KeyBinding = new KeyBinding('shift+tab')
+    private shiftTabPrevTool: KeyBinding = new KeyBinding('shift+tab')
         .setGlobal(true)
         .setCallback((e: Event) => {
-            if (!this.isPanelExpanded() || !this.isAppOnFocus()) {
+            if (!this.isPanelExpanded() || !this.isToolFocused()) {
                 return true;
             }
 
-            const desiredIndexIsLessThanMinIndex = this.getSelectedAppIndex() - 1 < 0;
+            const desiredIndexIsLessThanMinIndex = this.getSelectedToolIndex() - 1 < 0;
 
             if (desiredIndexIsLessThanMinIndex) {
                 e.preventDefault();
-                this.unselectCurrentApp();
+                this.unselectCurrentTool();
                 const target = this.menuButton.hidden ? this.avatarButton : this.menuButton;
                 setTimeout(() => target.focus(), 0);
                 return false;
             }
 
             this.initKeyboardNavigation();
-            this.selectPreviousApp();
+            this.selectPreviousTool();
             return true;
         });
 
-    private runApp: KeyBinding = new KeyBinding('enter')
+    private runTool: KeyBinding = new KeyBinding('enter')
         .setGlobal(true)
         .setCallback(e => {
             if (this.isPanelExpanded()) {
-                const selectedApp = this.getSelectedApp() || this.getFocusedApp();
-                if (selectedApp) {
+                const selectedTool = this.getSelectedTool() || this.getFocusedTool();
+                if (selectedTool) {
                     e.preventDefault();
                     e.returnValue = false;
-                    this.startApp(selectedApp);
+                    this.openTool(selectedTool);
                 } else if (this.menuButtonHasFocus()) {
                     e.preventDefault();
                     e.returnValue = false;
@@ -141,7 +146,7 @@ export class Menu {
             return false;
         });
 
-    private getFocusedApp = (): HTMLElement | null => {
+    private getFocusedTool = (): HTMLElement | null => {
         const active = this.getActiveElement();
         if (active instanceof HTMLElement && active.classList.contains('app-tile')) {
             return active;
@@ -150,11 +155,11 @@ export class Menu {
     };
 
     private menuBindings: KeyBinding[] = [
-        this.prevApp,
-        this.nextApp,
-        this.tabNextApp,
-        this.shiftTabPrevApp,
-        this.runApp,
+        this.prevTool,
+        this.nextTool,
+        this.tabNextTool,
+        this.shiftTabPrevTool,
+        this.runTool,
     ];
 
     readonly config: MenuConfig;
@@ -172,16 +177,16 @@ export class Menu {
         this.initMenuButton();
         this.initMenuPanel();
         this.initServerEventsListener();
-        this.addApplicationsListeners();
+        document.addEventListener(ADMIN_TOOLS_CHANGED_EVENT, this.scheduleMenuReload);
 
         if (this.config.autoOpen) {
             this.openMenuPanel();
         }
     }
 
-    private isAppOnFocus(): boolean {
-        const apps = this.getApps();
-        return apps.some((app: HTMLElement) => app.classList.contains('selected'));
+    private isToolFocused(): boolean {
+        const tools = this.getTools();
+        return tools.some((tool: HTMLElement) => tool.classList.contains('selected'));
     }
 
     private setFocusableElements(): void {
@@ -229,7 +234,12 @@ export class Menu {
 
     private fetchMenuContents = (): Promise<Document> => {
         return fetch(this.config.menuUrl)
-            .then(response => response.text())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Unexpected status ${response.status}`);
+                }
+                return response.text();
+            })
             .then((html: string) => new DOMParser().parseFromString(html, 'text/html'))
             .catch((e: Error) => {
                 throw new Error(`Failed to fetch page: ${e.toString()}`);
@@ -249,13 +259,13 @@ export class Menu {
             if (e.key !== 'Tab' || !e.shiftKey || !this.isPanelExpanded()) {
                 return;
             }
-            const apps = this.getApps();
-            if (apps.length === 0 || this.getActiveElement() !== apps[0]) {
+            const tools = this.getTools();
+            if (tools.length === 0 || this.getActiveElement() !== tools[0]) {
                 return;
             }
             e.preventDefault();
             e.stopPropagation();
-            this.unselectCurrentApp();
+            this.unselectCurrentTool();
             const target = this.menuButton.hidden ? this.avatarButton : this.menuButton;
             target.focus();
         });
@@ -360,15 +370,15 @@ export class Menu {
                 if (!e.shiftKey) {
                     e.preventDefault();
                     if (this.menuButton.hidden) {
-                        this.selectApp(0);
+                        this.selectTool(0);
                     } else {
                         this.menuButton.focus();
                     }
                 } else {
                     e.preventDefault();
-                    const apps = this.getApps();
-                    if (apps.length > 0) {
-                        this.selectApp(apps.length - 1);
+                    const tools = this.getTools();
+                    if (tools.length > 0) {
+                        this.selectTool(tools.length - 1);
                     } else {
                         this.menuButton.focus();
                     }
@@ -412,7 +422,7 @@ export class Menu {
                 return;
             }
             e.preventDefault();
-            this.selectApp(0);
+            this.selectTool(0);
         });
 
         button.classList.add('visible');
@@ -455,7 +465,7 @@ export class Menu {
         this.menuButton.setAttribute('title', this.config.phrases['tooltipOpenMenu']);
         this.menuButton.setAttribute('aria-label', this.config.phrases['tooltipOpenMenu']);
         this.menuButton.setAttribute('aria-expanded', 'false');
-        this.unselectCurrentApp();
+        this.unselectCurrentTool();
         this.avatarButton.setAttribute('tabindex', '-1');
         document.dispatchEvent(new CustomEvent('menu-panel-closed'));
     };
@@ -464,10 +474,10 @@ export class Menu {
 
     private unlistenToKeyboardEvents = (): void => KeyBindings.get().unbindKeys(this.menuBindings);
 
-    private unselectCurrentApp = (): void => {
-        const selectedApp = this.getSelectedApp();
-        if (selectedApp) {
-            selectedApp.classList.remove('selected');
+    private unselectCurrentTool = (): void => {
+        const selectedTool = this.getSelectedTool();
+        if (selectedTool) {
+            selectedTool.classList.remove('selected');
         }
     };
 
@@ -482,69 +492,78 @@ export class Menu {
         }
         w[SERVER_EVENTS_FLAG] = true;
         const connection = new WorkerServerEventsConnection(sharedSocketUrl, eventsUrl);
-        new WorkerServerEventsListener(connection).start();
-    };
-
-    private addApplicationsListeners = (): void => {
-        if (!this.initApplicationsListeners()) {
-            let triesLeft = 3;
-            const intervalID = setInterval(() => {
-                const initialized = this.initApplicationsListeners();
-                if (!initialized && triesLeft > 0) {
-                    triesLeft -= 1;
-                } else {
-                    clearInterval(intervalID);
-                }
-            }, 3000);
-        }
+        connection.onReceived(message => {
+            if (message?.type === ADMIN_TOOLS_CHANGED_MESSAGE) {
+                document.dispatchEvent(new CustomEvent(ADMIN_TOOLS_CHANGED_EVENT));
+            }
+        });
+        connection.start();
     };
 
     private reloadTimer: ReturnType<typeof setTimeout> | null = null;
 
-    private reloadMenu = (): void => {
+    private scheduleMenuReload = (): void => {
         if (this.reloadTimer) {
             clearTimeout(this.reloadTimer);
         }
         this.reloadTimer = setTimeout(() => {
             this.reloadTimer = null;
-            this.fetchMenuContents()
-                .then((doc: Document) => {
-                    const oldGrid = this.menuPanel.querySelector('.app-grid');
-                    const newGrid = doc.querySelector('.app-grid');
-                    if (oldGrid && newGrid) {
-                        oldGrid.parentNode.replaceChild(
-                            document.importNode(newGrid, true),
-                            oldGrid,
-                        );
-                        this.setFocusableElements();
-                    }
-                });
-        }, 1000);
+            this.reloadMenu();
+        }, RELOAD_DEBOUNCE_MS);
     };
 
-    private initApplicationsListeners = (): boolean => {
-        if (ApplicationEvent) {
-            ApplicationEvent.on(e => {
-                const eventType: ApplicationEventType = e.getEventType();
-                const statusChanged: boolean =
-                    ApplicationEventType.STARTED === eventType ||
-                    ApplicationEventType.STOPPED === eventType ||
-                    ApplicationEventType.UNINSTALLED === eventType;
-
-                if (statusChanged) {
-                    this.reloadMenu();
-                }
+    private reloadMenu = (): Promise<void> => {
+        return this.fetchMenuContents()
+            .then((doc: Document) => this.applyMenuContents(doc))
+            .catch((e: Error) => {
+                console.error('[xp-menu] Failed to reload menu:', e);
             });
-            return true;
+    };
+
+    private applyMenuContents = (doc: Document): void => {
+        const oldGrid = this.menuPanel.querySelector('.app-grid');
+        const newGrid = doc.querySelector('.app-grid');
+
+        if (!oldGrid || !newGrid) {
+            return;
         }
-        return false;
+
+        if (this.sameGrid(oldGrid, newGrid)) {
+            return;
+        }
+
+        const selectedToolId = this.getSelectedTool()?.getAttribute(TOOL_ID_ATTR);
+        const focusedToolId = this.getFocusedTool()?.getAttribute(TOOL_ID_ATTR);
+
+        oldGrid.parentNode.replaceChild(
+            document.importNode(newGrid, true),
+            oldGrid,
+        );
+        this.setFocusableElements();
+
+        this.restoreSelectedTool(selectedToolId, focusedToolId);
+    };
+
+    private sameGrid = (oldGrid: Element, newGrid: Element): boolean => {
+        const rendered = oldGrid.cloneNode(true) as Element;
+        rendered.querySelectorAll('.selected').forEach(tool => tool.classList.remove('selected'));
+        return rendered.outerHTML === newGrid.outerHTML;
+    };
+
+    private restoreSelectedTool = (selectedToolId: string | undefined, focusedToolId: string | undefined): void => {
+        const tools = this.getTools();
+        const find = (toolId: string | undefined): HTMLElement | undefined =>
+            toolId ? tools.find(tool => tool.getAttribute(TOOL_ID_ATTR) === toolId) : undefined;
+
+        find(selectedToolId)?.classList.add('selected');
+        find(focusedToolId)?.focus();
     };
 
     private listenToMouseMove = (): void => window.addEventListener('mousemove', this.disableKeyboardNavigation, true);
 
     private disableKeyboardNavigation = (): void => {
         this.getMenuMainContainer().classList.remove('keyboard-navigation');
-        this.unselectCurrentApp();
+        this.unselectCurrentTool();
         window.removeEventListener('mousemove', this.disableKeyboardNavigation, true);
     };
 
@@ -556,36 +575,36 @@ export class Menu {
         }
     };
 
-    private getApps(): HTMLElement[] {
+    private getTools(): HTMLElement[] {
         return Array.from(this.getMenuMainContainer().querySelectorAll('.app-tile'));
     }
 
-    private getSelectedApp = (): HTMLElement => this.menuPanel.querySelector('.app-tile.selected');
+    private getSelectedTool = (): HTMLElement => this.menuPanel.querySelector('.app-tile.selected');
 
-    private getSelectedAppIndex = (): number => {
-        const apps = this.getApps();
-        for (let i = 0; i < apps.length; i++) {
-            if (apps[i].classList.contains('selected')) {
+    private getSelectedToolIndex = (): number => {
+        const tools = this.getTools();
+        for (let i = 0; i < tools.length; i++) {
+            if (tools[i].classList.contains('selected')) {
                 return i;
             }
         }
         return -1;
     };
 
-    private selectNextApp = (): void => {
+    private selectNextTool = (): void => {
         const firstAppIndex = 0;
-        const selectedIndex = this.getSelectedAppIndex();
-        const apps = this.getApps();
+        const selectedIndex = this.getSelectedToolIndex();
+        const tools = this.getTools();
 
-        this.selectApp(
-            selectedIndex + 1 === apps.length || selectedIndex === -1
+        this.selectTool(
+            selectedIndex + 1 === tools.length || selectedIndex === -1
             ? firstAppIndex
             : selectedIndex + 1,
         );
     };
 
-    private selectPreviousApp = (): void => {
-        const selectedIndex = this.getSelectedAppIndex();
+    private selectPreviousTool = (): void => {
+        const selectedIndex = this.getSelectedToolIndex();
         let nextIndex;
         if (selectedIndex === -1) {
             nextIndex = 0;
@@ -595,32 +614,32 @@ export class Menu {
             nextIndex = selectedIndex - 1;
         }
 
-        this.selectApp(nextIndex);
+        this.selectTool(nextIndex);
     };
 
-    private selectApp = (index: number): void => {
-        this.unselectCurrentApp();
-        const app = this.getAppByIndex(index);
+    private selectTool = (index: number): void => {
+        this.unselectCurrentTool();
+        const tool = this.getToolByIndex(index);
         setTimeout(() => {
-            (app as HTMLElement).focus();
-            app.classList.add('selected');
+            (tool as HTMLElement).focus();
+            tool.classList.add('selected');
         }, 1);
     };
 
-    private getAppByIndex = (index: number): Element => {
-        const apps = this.getApps();
-        for (let i = 0; i < apps.length; i++) {
+    private getToolByIndex = (index: number): Element => {
+        const tools = this.getTools();
+        for (let i = 0; i < tools.length; i++) {
             if (i === index) {
-                return apps[i];
+                return tools[i];
             }
         }
         return null;
     };
 
-    private startApp = (app: HTMLElement): void => {
-        if (app.tagName === 'A' && app.click) {
-            this.unselectCurrentApp();
-            app.click();
+    private openTool = (tool: HTMLElement): void => {
+        if (tool.tagName === 'A' && tool.click) {
+            this.unselectCurrentTool();
+            tool.click();
         }
     };
 

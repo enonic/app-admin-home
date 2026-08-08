@@ -1,8 +1,7 @@
 const websocketLib = require('/lib/xp/websocket');
+const protocol = require('/lib/socket-protocol');
 
 const WS_PROTOCOL = 'json';
-
-const APPLICATION_GROUP = 'application';
 
 exports.get = function get(request) {
     if (!request.webSocket) {
@@ -66,7 +65,7 @@ function handleMessage(event) {
             websocketLib.send(socketId, JSON.stringify({type: 'connected'}));
             break;
         case 'subscribe':
-            websocketLib.addToGroup(APPLICATION_GROUP, socketId);
+            websocketLib.addToGroup(protocol.getAdminToolsGroup(), socketId);
             break;
         default:
             break;
