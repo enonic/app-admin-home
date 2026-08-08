@@ -42,7 +42,6 @@ router.get('', function(req) {
     const theme = (themeParam === 'dark' || themeParam === 'light') ? themeParam : null;
 
     const config = {
-        appName: req.params['appName'],
         autoOpen: req.params['autoOpen'] === 'true' || false,
         isHomeApp: app.name === req.params['appName'],
         menuUrl: req.url,
@@ -55,12 +54,11 @@ router.get('', function(req) {
     const adminTools = __.toNativeObject(adminToolsBean.execute(locales));
 
     for (let i = 0; i < adminTools.length; i++) {
-        adminTools[i].appId = adminTools[i].key.application;
+        adminTools[i].toolId = `${adminTools[i].key.application}:${adminTools[i].key.name}`;
         adminTools[i].uri = admin.getToolUrl(
             adminTools[i].key.application,
             adminTools[i].key.name
         );
-        adminTools[i].cls = adminTools[i].appId === config.appName ? 'active' : '';
     }
 
     const iconsPath = '/icons/extensions/';
@@ -116,6 +114,9 @@ router.get('', function(req) {
 
     return {
         contentType: 'text/html',
+        headers: {
+            'Cache-Control': 'no-store'
+        },
         body: mustache.render(view, params)
     };
 });
