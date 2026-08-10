@@ -47,8 +47,8 @@ importers:
   .:
     devDependencies:
       '@wdio/allure-reporter':
-        specifier: 9.30.0
-        version: 9.30.0
+        specifier: 9.30.1
+        version: 9.30.1
       '@wdio/cli':
         specifier: ^9.30.1
         version: 9.30.1(@types/node@26.2.0)(expect-webdriverio@5.7.0)
@@ -479,8 +479,8 @@ packages:
   '@vitest/utils@4.1.10':
     resolution: {integrity: sha512-fy9am/HWxbaGt/Sawrp90vt6Y6jQwf1RX77cz3uwoJwJVMli/e1IEwRPnMNJ7vKfPTwo0diXifkpPvwH9v7nGA==}
 
-  '@wdio/allure-reporter@9.30.0':
-    resolution: {integrity: sha512-hV/TNy7x1ENkX5cfWLN4CyVczfqBQYWqGdNhRdtX6+8nZFwRBtMRcC770MABFJyeVZzwAvyliZNgJMphxtEPMQ==}
+  '@wdio/allure-reporter@9.30.1':
+    resolution: {integrity: sha512-HqbZzfoUHgXJ/NmZdQb0jCIGabqEPVthTcYo/ohuws/wwCCTyiv9PH3IgVogHDYJv/uXIwZBP40eQHnJI3YhIg==}
     engines: {node: '>=18.20.0'}
 
   '@wdio/cli@9.30.1':
@@ -531,10 +531,6 @@ packages:
 
   '@wdio/repl@9.16.2':
     resolution: {integrity: sha512-FLTF0VL6+o5BSTCO7yLSXocm3kUnu31zYwzdsz4n9s5YWt83sCtzGZlZpt7TaTzb3jVUfxuHNQDTb8UMkCu0lQ==}
-    engines: {node: '>=18.20.0'}
-
-  '@wdio/reporter@9.29.1':
-    resolution: {integrity: sha512-CKAcVy9BGwvufokMcl3H+yNcvD11Klku/1BPz8bKSRv7/KzueXR06s1cPbJH3tv9r9zxPErxgdVMpulN8I0qAg==}
     engines: {node: '>=18.20.0'}
 
   '@wdio/reporter@9.30.1':
@@ -2141,7 +2137,7 @@ snapshots:
 
   '@jest/pattern@30.4.0':
     dependencies:
-      '@types/node': 20.19.43
+      '@types/node': 26.2.0
       jest-regex-util: 30.4.0
 
   '@jest/schemas@30.4.1':
@@ -2154,7 +2150,7 @@ snapshots:
       '@jest/schemas': 30.4.1
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 20.19.43
+      '@types/node': 26.2.0
       '@types/yargs': 17.0.35
       chalk: 4.1.2
 
@@ -2208,7 +2204,6 @@ snapshots:
   '@types/node@26.2.0':
     dependencies:
       undici-types: 8.3.0
-    optional: true
 
   '@types/normalize-package-data@2.4.4': {}
 
@@ -2220,7 +2215,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 20.19.43
+      '@types/node': 26.2.0
 
   '@types/yargs-parser@21.0.3': {}
 
@@ -2260,11 +2255,11 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.1
 
-  '@wdio/allure-reporter@9.30.0':
+  '@wdio/allure-reporter@9.30.1':
     dependencies:
       '@types/node': 20.19.43
-      '@wdio/reporter': 9.29.1
-      '@wdio/types': 9.29.1
+      '@wdio/reporter': 9.30.1
+      '@wdio/types': 9.30.1
       allure-js-commons: 3.10.2
       csv-stringify: 6.8.3
       html-entities: 2.6.0
@@ -2409,14 +2404,6 @@ snapshots:
   '@wdio/repl@9.16.2':
     dependencies:
       '@types/node': 20.19.43
-
-  '@wdio/reporter@9.29.1':
-    dependencies:
-      '@types/node': 20.19.43
-      '@wdio/logger': 9.29.1
-      '@wdio/types': 9.29.1
-      diff: 9.0.0
-      object-inspect: 1.13.4
 
   '@wdio/reporter@9.30.1':
     dependencies:
@@ -3216,7 +3203,7 @@ snapshots:
   jest-mock@30.4.1:
     dependencies:
       '@jest/types': 30.4.1
-      '@types/node': 20.19.43
+      '@types/node': 26.2.0
       jest-util: 30.4.1
 
   jest-regex-util@30.4.0: {}
@@ -3224,7 +3211,7 @@ snapshots:
   jest-util@30.4.1:
     dependencies:
       '@jest/types': 30.4.1
-      '@types/node': 20.19.43
+      '@types/node': 26.2.0
       chalk: 4.1.2
       ci-info: 4.4.0
       graceful-fs: 4.2.11
@@ -3751,8 +3738,7 @@ snapshots:
 
   undici-types@6.21.0: {}
 
-  undici-types@8.3.0:
-    optional: true
+  undici-types@8.3.0: {}
 
   undici@6.28.0: {}
 
