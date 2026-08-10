@@ -86,7 +86,7 @@ router.get('', function(req) {
     ];
 
     const logoutUrl = portal.logoutUrl({
-        redirect: admin.getHomeToolUrl({ type: 'absolute' })
+        redirect: admin.getHomeToolUrl()
     });
 
     const user = auth.getUser();
