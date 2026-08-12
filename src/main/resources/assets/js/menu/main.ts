@@ -11,8 +11,6 @@ const INITIALIZED_ATTR = 'data-menu-initialized';
 
 const TOOL_ID_ATTR = 'data-tool-id';
 
-const ADMIN_TOOLS_CHANGED_MESSAGE = 'adminToolsChanged';
-
 const ADMIN_TOOLS_CHANGED_EVENT = 'xp-admin-tools-changed';
 
 const RELOAD_DEBOUNCE_MS = 250;
@@ -24,6 +22,7 @@ interface MenuConfig {
     backgroundUrl: string;
     sharedSocketUrl?: string;
     eventsUrl?: string;
+    eventsTopic?: string;
     phrases: JSONObject;
 }
 
@@ -482,8 +481,8 @@ export class Menu {
     };
 
     private initServerEventsListener = (): void => {
-        const {sharedSocketUrl, eventsUrl} = this.config;
-        if (!sharedSocketUrl || !eventsUrl) {
+        const {sharedSocketUrl, eventsUrl, eventsTopic} = this.config;
+        if (!sharedSocketUrl || !eventsUrl || !eventsTopic) {
             return;
         }
         const w = window as unknown as Record<string, boolean>;
@@ -492,12 +491,16 @@ export class Menu {
         }
         w[SERVER_EVENTS_FLAG] = true;
         const connection = new WorkerServerEventsConnection(sharedSocketUrl, eventsUrl);
-        connection.onReceived(message => {
-            if (message?.type === ADMIN_TOOLS_CHANGED_MESSAGE) {
-                document.dispatchEvent(new CustomEvent(ADMIN_TOOLS_CHANGED_EVENT));
+        connection.onReceived(notification => {
+            if (notification.topic !== eventsTopic) {
+                return;
             }
+            // an event says the tools changed; a loss says a change may have been missed -
+            // the topic is contentless, so both get the same answer: refetch the menu
+            document.dispatchEvent(new CustomEvent(ADMIN_TOOLS_CHANGED_EVENT));
         });
         connection.start();
+        connection.subscribe(eventsTopic);
     };
 
     private reloadTimer: ReturnType<typeof setTimeout> | null = null;

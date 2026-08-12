@@ -1,8 +1,9 @@
-import {ServerEventsSocket} from './socket';
+import {AdminEventsSocket} from './socket';
 
-interface InitMessage {
-    type: 'init';
-    wsUrl: string;
+interface PortMessage {
+    type: 'init' | 'subscribe';
+    wsUrl?: string;
+    topic?: string;
 }
 
 interface SharedWorkerConnectEvent {
@@ -13,7 +14,11 @@ const scope = self as unknown as {onconnect: ((event: SharedWorkerConnectEvent) 
 
 const ports = new Set<MessagePort>();
 
-let socket: ServerEventsSocket | null = null;
+// The union of every page's interest. Never unsubscribed: a SharedWorker cannot reliably tell
+// when a page is gone, and an idle subscription costs one group membership on the server.
+const topics = new Set<string>();
+
+let socket: AdminEventsSocket | null = null;
 
 function broadcast(message: Record<string, unknown>): void {
     ports.forEach(port => {
@@ -29,8 +34,20 @@ function ensureSocket(wsUrl: string): void {
     if (socket) {
         return;
     }
-    socket = new ServerEventsSocket(wsUrl, payload => broadcast({type: 'event', payload}));
+    socket = new AdminEventsSocket(wsUrl, {
+        onEvent: event => broadcast({type: 'event', topic: event.topic, data: event.data}),
+        onLoss: loss => broadcast({type: 'loss', topic: loss.topic, count: loss.count}),
+    });
     socket.connect();
+    topics.forEach(topic => socket.subscribe(topic));
+}
+
+function subscribe(topic: string): void {
+    if (topics.has(topic)) {
+        return;
+    }
+    topics.add(topic);
+    socket?.subscribe(topic);
 }
 
 scope.onconnect = (event: SharedWorkerConnectEvent): void => {
@@ -38,9 +55,14 @@ scope.onconnect = (event: SharedWorkerConnectEvent): void => {
     ports.add(port);
 
     port.onmessage = (e: MessageEvent) => {
-        const message = e.data as Partial<InitMessage>;
-        if (message && message.type === 'init' && typeof message.wsUrl === 'string') {
+        const message = e.data as Partial<PortMessage>;
+        if (!message) {
+            return;
+        }
+        if (message.type === 'init' && typeof message.wsUrl === 'string') {
             ensureSocket(message.wsUrl);
+        } else if (message.type === 'subscribe' && typeof message.topic === 'string') {
+            subscribe(message.topic);
         }
     };
 
