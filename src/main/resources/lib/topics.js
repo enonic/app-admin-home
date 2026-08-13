@@ -1,13 +1,16 @@
 /*global app*/
 
-// Admin events hub topics owned by this application. Names are free-form on the hub, so the
-// application key prefix is what keeps them collision-free by convention.
+// Admin events hub topics owned by this application. The local name is what createTopic and
+// sendToTopic take; the canonical name - qualified with the application key by the platform -
+// is what subscribers use.
 
-let adminToolsChangedTopic;
+exports.ADMIN_TOOLS_CHANGED = 'adminToolsChanged';
+
+let canonicalAdminToolsChanged;
 
 exports.getAdminToolsChangedTopic = () => {
-    if (adminToolsChangedTopic === undefined) {
-        adminToolsChangedTopic = `${app.name}.adminToolsChanged`;
+    if (canonicalAdminToolsChanged === undefined) {
+        canonicalAdminToolsChanged = `${app.name}:${exports.ADMIN_TOOLS_CHANGED}`;
     }
-    return adminToolsChangedTopic;
+    return canonicalAdminToolsChanged;
 };

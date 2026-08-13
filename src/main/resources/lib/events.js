@@ -9,7 +9,7 @@ exports.init = function init() {
     // The topic lives for this application incarnation; the hub clears it when the app stops.
     // Subscribers that arrive before this runs are held off with a retryable deny by the hub.
     adminLib.createTopic({
-        name: topics.getAdminToolsChangedTopic(),
+        name: topics.ADMIN_TOOLS_CHANGED,
         allow: ['role:system.admin.login']
     });
 
@@ -22,7 +22,7 @@ exports.init = function init() {
             }
             // Contentless on purpose: subscribers refetch the menu over an authenticated request,
             // so nothing here needs per-user filtering.
-            adminLib.sendToTopic(topics.getAdminToolsChangedTopic());
+            adminLib.sendToTopic(topics.ADMIN_TOOLS_CHANGED);
         }
     });
 };
