@@ -14,8 +14,7 @@ const scope = self as unknown as {onconnect: ((event: SharedWorkerConnectEvent) 
 
 const ports = new Set<MessagePort>();
 
-// The union of every page's interest. Never unsubscribed: a SharedWorker cannot reliably tell
-// when a page is gone, and an idle subscription costs one group membership on the server.
+// union of every page's interest; never unsubscribed - a SharedWorker cannot tell when a page is gone
 const topics = new Set<string>();
 
 let socket: AdminEventsSocket | null = null;

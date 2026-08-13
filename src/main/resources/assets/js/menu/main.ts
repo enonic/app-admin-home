@@ -495,8 +495,7 @@ export class Menu {
             if (notification.topic !== eventsTopic) {
                 return;
             }
-            // an event says the tools changed; a loss says a change may have been missed -
-            // the topic is contentless, so both get the same answer: refetch the menu
+            // event or detected loss: refetch the menu either way
             document.dispatchEvent(new CustomEvent(ADMIN_TOOLS_CHANGED_EVENT));
         });
         connection.start();

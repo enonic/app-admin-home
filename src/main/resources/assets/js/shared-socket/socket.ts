@@ -32,12 +32,11 @@ interface Subscription {
 }
 
 /**
- * Client for the admin events hub (`admin:events`). Holds the wanted-subscription set - the
- * server keeps no state for subscriptions it has not acked - and resubscribes it on every
- * reconnect. A subscription denied as `unknown` (topic not registered yet, e.g. the producing
- * application is restarting) is retried with backoff; `forbidden` is terminal for the connection.
- * Loss is reported per subscription: a sequence gap inside an epoch is countable, an epoch change
- * means an unknown amount was missed.
+ * Client for the admin events hub (`admin:events`). Holds the wanted-subscription set and
+ * resubscribes it on every reconnect. A subscription denied as `unknown` is retried with
+ * backoff; `forbidden` ends retries until the next reconnect. Loss is reported per
+ * subscription: a sequence gap within an epoch is countable, an epoch change is an unknown
+ * loss.
  */
 export class AdminEventsSocket {
 
@@ -211,7 +210,6 @@ export class AdminEventsSocket {
 
         if (subscription.everAcked) {
             if (epoch !== subscription.epoch) {
-                // different hub incarnation: whatever happened in between is uncountable
                 this.handlers.onLoss({topic, count: null});
             } else if (seq > subscription.seq) {
                 this.handlers.onLoss({topic, count: seq - subscription.seq});
@@ -235,14 +233,11 @@ export class AdminEventsSocket {
         subscription.acked = false;
 
         if (message.reason === 'unknown') {
-            // topic not registered (yet) - the producing app may just be restarting
             subscription.retryAttempts += 1;
             const delay = Math.min(2 ** subscription.retryAttempts * 1000, MAX_SUBSCRIBE_RETRY_DELAY);
             clearTimeout(subscription.retryTimeout);
             subscription.retryTimeout = setTimeout(() => this.send({type: 'subscribe', topic}), delay);
         } else {
-            // forbidden is terminal for this connection: principals are fixed at the handshake,
-            // so retrying cannot change the answer - the next reconnect will try again
             console.warn(`[admin-events] Subscription to '${topic}' denied:`, message.reason);
         }
     }
