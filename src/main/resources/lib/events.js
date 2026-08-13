@@ -6,7 +6,7 @@ const topics = require('/lib/topics');
 const RELEVANT_EVENT_TYPES = ['STARTED', 'STOPPED', 'UNINSTALLED'];
 
 exports.init = function init() {
-    adminLib.createTopic({
+    adminLib.setTopic({
         name: topics.ADMIN_TOOLS_CHANGED,
         allow: ['role:system.admin.login']
     });
