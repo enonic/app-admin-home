@@ -1,6 +1,5 @@
 import {KeyBinding} from '@enonic/lib-admin-ui/ui/KeyBinding';
 import {KeyBindings} from '@enonic/lib-admin-ui/ui/KeyBindings';
-import {WorkerServerEventsConnection} from './server-events/WorkerServerEventsConnection';
 
 const SERVER_EVENTS_FLAG = '__xpMenuServerEventsListenerStarted';
 
@@ -32,6 +31,11 @@ export const getMenuJsonConfig = (root: {getElementById(id: string): HTMLElement
     }
     return JSON.parse(scriptTagElement.innerText) as MenuConfig;
 };
+
+// the client the hub serves at `${eventsUrl}/client.js`
+interface AdminEventsClient {
+    connect(handlers: {onEvent: () => void; onLoss: () => void}): {subscribe(topic: string): void};
+}
 
 export class Menu {
     private readonly root: ShadowRoot | Document;
@@ -489,16 +493,17 @@ export class Menu {
             return;
         }
         w[SERVER_EVENTS_FLAG] = true;
-        const connection = new WorkerServerEventsConnection(eventsUrl);
-        connection.onReceived(notification => {
-            if (notification.topic !== eventsTopic) {
-                return;
-            }
-            // event or detected loss: refetch the menu either way
+
+        // event or detected loss: refetch the menu either way
+        const refetch = (): void => {
             document.dispatchEvent(new CustomEvent(ADMIN_TOOLS_CHANGED_EVENT));
-        });
-        connection.start();
-        connection.subscribe(eventsTopic);
+        };
+
+        import(/* @vite-ignore */ `${eventsUrl}/client.js`)
+            .then((client: AdminEventsClient) => {
+                client.connect({onEvent: refetch, onLoss: refetch}).subscribe(eventsTopic);
+            })
+            .catch(e => console.error('[xp-menu] Failed to load the admin events client:', e));
     };
 
     private reloadTimer: ReturnType<typeof setTimeout> | null = null;
