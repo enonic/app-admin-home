@@ -39,6 +39,8 @@ export class WorkerServerEventsConnection {
 
     private localSocket: AdminEventsSocket | null = null;
 
+    private localSocketStarting = false;
+
     constructor(eventsUrl: string) {
         this.eventsUrl = eventsUrl;
     }
@@ -64,10 +66,11 @@ export class WorkerServerEventsConnection {
                 this.startSharedWorker();
                 return;
             } catch (e) {
+                // no module worker support, or the browser refused it
                 console.error('[xp-menu] Failed to start SharedWorker, using direct socket:', e);
             }
         }
-        void this.startLocalSocket();
+        this.startLocalSocket();
     }
 
     private get clientUrl(): string {
@@ -88,24 +91,35 @@ export class WorkerServerEventsConnection {
         worker.onerror = () => {
             console.error('[xp-menu] SharedWorker error, using direct socket');
             this.worker = null;
-            void this.startLocalSocket();
+            this.startLocalSocket();
         };
 
         worker.port.start();
         this.topics.forEach(topic => worker.port.postMessage({type: 'subscribe', topic}));
     }
 
-    private async startLocalSocket(): Promise<void> {
-        if (this.localSocket) {
+    private startLocalSocket(): void {
+        // the client arrives over the network here, so the guard has to cover the wait, not just
+        // a socket that already exists
+        if (this.localSocket || this.localSocketStarting) {
             return;
         }
-        const module = await import(/* @vite-ignore */ this.clientUrl) as AdminEventsClientModule;
-        const socket = new module.AdminEventsSocket(this.eventsUrl, {
-            onEvent: event => this.receivedHandler({type: 'event', topic: event.topic, data: event.data}),
-            onLoss: loss => this.receivedHandler({type: 'loss', topic: loss.topic, count: loss.count}),
-        });
-        this.localSocket = socket;
-        socket.connect();
-        this.topics.forEach(topic => socket.subscribe(topic));
+        this.localSocketStarting = true;
+
+        import(/* @vite-ignore */ this.clientUrl)
+            .then((module: AdminEventsClientModule) => {
+                const socket = new module.AdminEventsSocket(this.eventsUrl, {
+                    onEvent: event => this.receivedHandler({type: 'event', topic: event.topic, data: event.data}),
+                    onLoss: loss => this.receivedHandler({type: 'loss', topic: loss.topic, count: loss.count}),
+                });
+                this.localSocket = socket;
+                socket.connect();
+                // topics asked for while the client was loading
+                this.topics.forEach(topic => socket.subscribe(topic));
+            })
+            .catch(e => {
+                this.localSocketStarting = false;
+                console.error('[xp-menu] Failed to load the admin events client:', e);
+            });
     }
 }
