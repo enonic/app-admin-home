@@ -20,7 +20,6 @@ interface MenuConfig {
     isHomeApp?: boolean;
     menuUrl: string;
     backgroundUrl: string;
-    sharedSocketUrl?: string;
     eventsUrl?: string;
     eventsTopic?: string;
     phrases: JSONObject;
@@ -481,8 +480,8 @@ export class Menu {
     };
 
     private initServerEventsListener = (): void => {
-        const {sharedSocketUrl, eventsUrl, eventsTopic} = this.config;
-        if (!sharedSocketUrl || !eventsUrl || !eventsTopic) {
+        const {eventsUrl, eventsTopic} = this.config;
+        if (!eventsUrl || !eventsTopic) {
             return;
         }
         const w = window as unknown as Record<string, boolean>;
@@ -490,7 +489,7 @@ export class Menu {
             return;
         }
         w[SERVER_EVENTS_FLAG] = true;
-        const connection = new WorkerServerEventsConnection(sharedSocketUrl, eventsUrl);
+        const connection = new WorkerServerEventsConnection(eventsUrl);
         connection.onReceived(notification => {
             if (notification.topic !== eventsTopic) {
                 return;

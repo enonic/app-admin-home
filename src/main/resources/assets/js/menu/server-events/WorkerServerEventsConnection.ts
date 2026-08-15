@@ -1,5 +1,3 @@
-import {AdminEventsSocket} from '../../shared-socket/socket';
-
 export interface TopicNotification {
     type: 'event' | 'loss';
     topic: string;
@@ -9,13 +7,27 @@ export interface TopicNotification {
 
 export type ReceivedHandler = (notification: TopicNotification) => void;
 
+interface AdminEventsSocket {
+    connect(): void;
+
+    subscribe(topic: string): void;
+}
+
+interface AdminEventsClientModule {
+    AdminEventsSocket: new (url: string, handlers: {
+        onEvent: (event: {topic: string; data?: unknown}) => void;
+        onLoss: (loss: {topic: string; count: number | null}) => void;
+    }) => AdminEventsSocket;
+}
+
+// the worker is shared by script url and name, so both must match whatever other admin tools use
+const WORKER_NAME = 'xp-admin-events-socket';
+
 /**
- * Connects to the admin events hub through the shared worker when available - one socket per
- * browser, whichever admin pages are open - falling back to a socket of this page's own.
+ * Connects to the admin events hub through the shared worker the hub itself serves - one socket
+ * per browser, whichever admin pages are open - falling back to a socket of this page's own.
  */
 export class WorkerServerEventsConnection {
-
-    private readonly sharedSocketUrl: string;
 
     private readonly eventsUrl: string;
 
@@ -27,8 +39,7 @@ export class WorkerServerEventsConnection {
 
     private localSocket: AdminEventsSocket | null = null;
 
-    constructor(sharedSocketUrl: string, eventsUrl: string) {
-        this.sharedSocketUrl = sharedSocketUrl;
+    constructor(eventsUrl: string) {
         this.eventsUrl = eventsUrl;
     }
 
@@ -56,11 +67,15 @@ export class WorkerServerEventsConnection {
                 console.error('[xp-menu] Failed to start SharedWorker, using direct socket:', e);
             }
         }
-        this.startLocalSocket();
+        void this.startLocalSocket();
+    }
+
+    private get clientUrl(): string {
+        return `${this.eventsUrl}/client.js`;
     }
 
     private startSharedWorker(): void {
-        const worker = new SharedWorker(this.sharedSocketUrl, {type: 'module', name: 'xp-admin-events-socket'});
+        const worker = new SharedWorker(this.clientUrl, {type: 'module', name: WORKER_NAME});
         this.worker = worker;
 
         worker.port.onmessage = (e: MessageEvent) => {
@@ -73,23 +88,24 @@ export class WorkerServerEventsConnection {
         worker.onerror = () => {
             console.error('[xp-menu] SharedWorker error, using direct socket');
             this.worker = null;
-            this.startLocalSocket();
+            void this.startLocalSocket();
         };
 
         worker.port.start();
-        worker.port.postMessage({type: 'init', wsUrl: this.eventsUrl});
         this.topics.forEach(topic => worker.port.postMessage({type: 'subscribe', topic}));
     }
 
-    private startLocalSocket(): void {
+    private async startLocalSocket(): Promise<void> {
         if (this.localSocket) {
             return;
         }
-        this.localSocket = new AdminEventsSocket(this.eventsUrl, {
+        const module = await import(/* @vite-ignore */ this.clientUrl) as AdminEventsClientModule;
+        const socket = new module.AdminEventsSocket(this.eventsUrl, {
             onEvent: event => this.receivedHandler({type: 'event', topic: event.topic, data: event.data}),
             onLoss: loss => this.receivedHandler({type: 'loss', topic: loss.topic, count: loss.count}),
         });
-        this.localSocket.connect();
-        this.topics.forEach(topic => this.localSocket.subscribe(topic));
+        this.localSocket = socket;
+        socket.connect();
+        this.topics.forEach(topic => socket.subscribe(topic));
     }
 }

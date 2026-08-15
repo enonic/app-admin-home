@@ -47,7 +47,6 @@ router.get('', function(req) {
         isHomeApp: app.name === req.params['appName'],
         menuUrl: req.url,
         backgroundUrl: `${baseAssetUrl}/images/background.webp`,
-        sharedSocketUrl: `${baseAssetUrl}/shared-socket.js`,
         eventsUrl: portal.apiUrl({api: 'admin:events'}),
         eventsTopic: topics.getAdminToolsChangedTopic(),
         phrases
