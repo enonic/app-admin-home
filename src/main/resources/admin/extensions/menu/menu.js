@@ -7,6 +7,7 @@ const i18n = require('/lib/xp/i18n');
 const admin = require('/lib/xp/admin');
 const staticLib = require('/lib/enonic/static');
 const buildtime = require('/lib/buildtime');
+const events = require('/lib/events');
 const router = require('/lib/router')();
 
 const STATIC_BASE_PATH = '/_static';
@@ -46,8 +47,8 @@ router.get('', function(req) {
         isHomeApp: app.name === req.params['appName'],
         menuUrl: req.url,
         backgroundUrl: `${baseAssetUrl}/images/background.webp`,
-        sharedSocketUrl: `${baseAssetUrl}/shared-socket.js`,
-        eventsUrl: portal.apiUrl({api: `${app.name}:events`}),
+        eventsUrl: portal.apiUrl({api: 'admin:events'}),
+        eventsTopic: events.ADMIN_TOOLS_CHANGED_TOPIC,
         phrases
     }
 

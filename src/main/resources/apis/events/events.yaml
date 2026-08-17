@@ -1,3 +1,0 @@
-kind: "API"
-allow:
-  - "role:system.authenticated"

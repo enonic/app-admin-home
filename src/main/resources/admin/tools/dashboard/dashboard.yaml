@@ -12,6 +12,6 @@ apis:
   - "asset"
   - "admin:extension"
   - "admin:status"
-  - "events"
+  - "admin:events"
 interfaces:
   - "admin.dashboard"

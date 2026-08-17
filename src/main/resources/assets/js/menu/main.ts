@@ -1,6 +1,5 @@
 import {KeyBinding} from '@enonic/lib-admin-ui/ui/KeyBinding';
 import {KeyBindings} from '@enonic/lib-admin-ui/ui/KeyBindings';
-import {WorkerServerEventsConnection} from './server-events/WorkerServerEventsConnection';
 
 const SERVER_EVENTS_FLAG = '__xpMenuServerEventsListenerStarted';
 
@@ -11,8 +10,6 @@ const INITIALIZED_ATTR = 'data-menu-initialized';
 
 const TOOL_ID_ATTR = 'data-tool-id';
 
-const ADMIN_TOOLS_CHANGED_MESSAGE = 'adminToolsChanged';
-
 const ADMIN_TOOLS_CHANGED_EVENT = 'xp-admin-tools-changed';
 
 const RELOAD_DEBOUNCE_MS = 250;
@@ -22,8 +19,8 @@ interface MenuConfig {
     isHomeApp?: boolean;
     menuUrl: string;
     backgroundUrl: string;
-    sharedSocketUrl?: string;
     eventsUrl?: string;
+    eventsTopic?: string;
     phrases: JSONObject;
 }
 
@@ -34,6 +31,11 @@ export const getMenuJsonConfig = (root: {getElementById(id: string): HTMLElement
     }
     return JSON.parse(scriptTagElement.innerText) as MenuConfig;
 };
+
+// the client the hub serves at `${eventsUrl}/client.js`
+interface AdminEventsClient {
+    connect(handlers: {onEvent: () => void; onLoss: () => void}): {subscribe(topic: string): void};
+}
 
 export class Menu {
     private readonly root: ShadowRoot | Document;
@@ -482,8 +484,8 @@ export class Menu {
     };
 
     private initServerEventsListener = (): void => {
-        const {sharedSocketUrl, eventsUrl} = this.config;
-        if (!sharedSocketUrl || !eventsUrl) {
+        const {eventsUrl, eventsTopic} = this.config;
+        if (!eventsUrl || !eventsTopic) {
             return;
         }
         const w = window as unknown as Record<string, boolean>;
@@ -491,13 +493,17 @@ export class Menu {
             return;
         }
         w[SERVER_EVENTS_FLAG] = true;
-        const connection = new WorkerServerEventsConnection(sharedSocketUrl, eventsUrl);
-        connection.onReceived(message => {
-            if (message?.type === ADMIN_TOOLS_CHANGED_MESSAGE) {
-                document.dispatchEvent(new CustomEvent(ADMIN_TOOLS_CHANGED_EVENT));
-            }
-        });
-        connection.start();
+
+        // event or detected loss: refetch the menu either way
+        const refetch = (): void => {
+            document.dispatchEvent(new CustomEvent(ADMIN_TOOLS_CHANGED_EVENT));
+        };
+
+        import(/* @vite-ignore */ `${eventsUrl}/client.js`)
+            .then((client: AdminEventsClient) => {
+                client.connect({onEvent: refetch, onLoss: refetch}).subscribe(eventsTopic);
+            })
+            .catch(e => console.error('[xp-menu] Failed to load the admin events client:', e));
     };
 
     private reloadTimer: ReturnType<typeof setTimeout> | null = null;
