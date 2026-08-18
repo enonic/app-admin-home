@@ -33,37 +33,43 @@ export default defineConfig(({mode}) => {
   const assetPipeline = ({stamp}: {stamp: boolean}): Plugin => ({
     name: 'admin-home:asset-pipeline',
     apply: 'build',
-    generateBundle(_options, bundle) {
-      if (isProduction) {
-        for (const fileName of Object.keys(bundle)) {
-          if (!COMPRESSIBLE.test(fileName)) {
-            continue;
-          }
-          const chunk = bundle[fileName];
-          const source = Buffer.from(
-            (chunk.type === 'asset' ? chunk.source : chunk.code) as string | Uint8Array
-          );
+    generateBundle: {
+      // Runs after Vite's own generateBundle hooks: vite:build-import-analysis
+      // substitutes the __VITE_PRELOAD__ marker there, so compressing any earlier
+      // ships .gz/.br siblings whose code still contains the raw marker.
+      order: 'post',
+      handler(_options, bundle) {
+        if (isProduction) {
+          for (const fileName of Object.keys(bundle)) {
+            if (!COMPRESSIBLE.test(fileName)) {
+              continue;
+            }
+            const chunk = bundle[fileName];
+            const source = Buffer.from(
+              (chunk.type === 'asset' ? chunk.source : chunk.code) as string | Uint8Array
+            );
 
-          const gz = gzipSync(source, {level: 9});
-          if (gz.length < source.length) {
-            this.emitFile({type: 'asset', fileName: `${fileName}.gz`, source: gz});
-          }
+            const gz = gzipSync(source, {level: 9});
+            if (gz.length < source.length) {
+              this.emitFile({type: 'asset', fileName: `${fileName}.gz`, source: gz});
+            }
 
-          const br = brotliCompressSync(source, {
-            params: {[zlibConstants.BROTLI_PARAM_QUALITY]: 11}
-          });
-          if (br.length < source.length) {
-            this.emitFile({type: 'asset', fileName: `${fileName}.br`, source: br});
+            const br = brotliCompressSync(source, {
+              params: {[zlibConstants.BROTLI_PARAM_QUALITY]: 11}
+            });
+            if (br.length < source.length) {
+              this.emitFile({type: 'asset', fileName: `${fileName}.br`, source: br});
+            }
           }
         }
-      }
 
-      if (stamp) {
-        this.emitFile({
-          type: 'asset',
-          fileName: 'buildtime.json',
-          source: JSON.stringify({timeSinceEpoch: Date.now()})
-        });
+        if (stamp) {
+          this.emitFile({
+            type: 'asset',
+            fileName: 'buildtime.json',
+            source: JSON.stringify({timeSinceEpoch: Date.now()})
+          });
+        }
       }
     }
   });
