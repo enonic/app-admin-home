@@ -53,8 +53,8 @@ importers:
         specifier: ^9.30.1
         version: 9.30.1(@types/node@26.2.0)(expect-webdriverio@5.7.0)
       '@wdio/concise-reporter':
-        specifier: ^9.29.1
-        version: 9.30.1
+        specifier: ^9.31.2
+        version: 9.31.2
       '@wdio/local-runner':
         specifier: ^9.30.0
         version: 9.30.1(@wdio/globals@9.29.1)(webdriverio@9.30.1)
@@ -488,8 +488,8 @@ packages:
     engines: {node: '>=18.20.0'}
     hasBin: true
 
-  '@wdio/concise-reporter@9.30.1':
-    resolution: {integrity: sha512-vzDdfiPgi0AG8PNJAgi9z6tb5LMJ/E1Ja9aYHBl4VhuUt3W6VZAPAd0nfUYBgBcsC7eUiTzGoVG0psqMXcsJaQ==}
+  '@wdio/concise-reporter@9.31.2':
+    resolution: {integrity: sha512-tx5kdWAKbSxky/fAPqrLH7jC1N1lq2TCEgiCXQ5MpH+O+LMl4lt9/U6IidLxZTQN6U5znDHlr1dwvamt+YoL5g==}
     engines: {node: '>=18.20.0'}
 
   '@wdio/config@9.30.1':
@@ -530,6 +530,10 @@ packages:
     resolution: {integrity: sha512-0whWaLfJtOAy3PzbGUxGrCAGitgaUCMe8qUgAuP2l7ess70AXqvp1wJibw74a/Z2giegJlJiAc4PxS0abs9/tw==}
     engines: {node: '>=18.20.0'}
 
+  '@wdio/reporter@9.31.2':
+    resolution: {integrity: sha512-3cKE6vCOsro/Ep9dGTIbo3FBn3WNvJ++BIn32lFd9m19pFdjuwlVgLtPXHb9jWNCJs740h5AIUcVkcscqUYhAA==}
+    engines: {node: '>=18.20.0'}
+
   '@wdio/runner@9.30.1':
     resolution: {integrity: sha512-mZIqnpUupSFUpw4TH+aMU7ecyi2dZuSwJ0vQHC7oYCL4gCOlUgZ8+JRe2ZGvQdp/9GfaUSr7H8/sB86znkggdw==}
     engines: {node: '>=18.20.0'}
@@ -537,12 +541,12 @@ packages:
       expect-webdriverio: ^5.6.5
       webdriverio: ^9.0.0
 
-  '@wdio/types@9.29.1':
-    resolution: {integrity: sha512-jp8jgMv6TS35G96YzHZxw3PVN0Dz6xQ6tnMAicndAJ8Jt9AIXb0ywIse4TjaFywakO3dLoEhlyA3ZtR26vmt+w==}
-    engines: {node: '>=18.20.0'}
-
   '@wdio/types@9.30.1':
     resolution: {integrity: sha512-umKQDbSmu3/ucUsIA5UUTK5gCWnClyVpWz3fC39044rCXQ3zCd1a3GoJibbAITKiwnPFf2yU3LvTa+C78sh9Lg==}
+    engines: {node: '>=18.20.0'}
+
+  '@wdio/types@9.31.2':
+    resolution: {integrity: sha512-lQKaiQDCJJ6VC1K/cKzaAxCpwB9pL1U0VbmX2uGksMxO4EDbNuLvIxWryuUDJ7OaSYTjxILTKYFErdbT/xEikg==}
     engines: {node: '>=18.20.0'}
 
   '@wdio/utils@9.30.1':
@@ -2276,10 +2280,10 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@wdio/concise-reporter@9.30.1':
+  '@wdio/concise-reporter@9.31.2':
     dependencies:
-      '@wdio/reporter': 9.30.1
-      '@wdio/types': 9.30.1
+      '@wdio/reporter': 9.31.2
+      '@wdio/types': 9.31.2
       chalk: 5.6.2
       pretty-ms: 9.3.0
 
@@ -2367,6 +2371,14 @@ snapshots:
       diff: 9.0.0
       object-inspect: 1.13.4
 
+  '@wdio/reporter@9.31.2':
+    dependencies:
+      '@types/node': 20.19.43
+      '@wdio/logger': 9.29.1
+      '@wdio/types': 9.31.2
+      diff: 9.0.0
+      object-inspect: 1.13.4
+
   '@wdio/runner@9.30.1(expect-webdriverio@5.7.0)(webdriverio@9.30.1)':
     dependencies:
       '@types/node': 20.19.43
@@ -2388,11 +2400,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@wdio/types@9.29.1':
+  '@wdio/types@9.30.1':
     dependencies:
       '@types/node': 20.19.43
 
-  '@wdio/types@9.30.1':
+  '@wdio/types@9.31.2':
     dependencies:
       '@types/node': 20.19.43
 
