@@ -44,7 +44,7 @@
     "eslint": "^9.39.4",
     "globals": "^17.11.0",
     "jiti": "^2.5.1",
-    "less": "^4.8.1",
+    "less": "^4.9.0",
     "postcss": "^8.5.26",
     "postcss-sort-media-queries": "^6.7.1",
     "typescript": "^5.9.2",
