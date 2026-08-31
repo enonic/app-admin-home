@@ -41,7 +41,7 @@
     "cssnano": "^9.0.1",
     "enonic-admin-artifacts": "^2.3.2",
     "esbuild": "^0.28.2",
-    "eslint": "^9.39.4",
+    "eslint": "^10.9.1",
     "globals": "^17.11.0",
     "jiti": "^2.5.1",
     "less": "^4.9.0",
