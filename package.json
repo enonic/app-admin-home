@@ -35,7 +35,7 @@
     "@enonic/eslint-config": "^2.1.0",
     "@rollup/plugin-inject": "^5.0.5",
     "@types/q": "^1.5.8",
-    "autoprefixer": "^10.4.21",
+    "autoprefixer": "^10.5.5",
     "browserslist-config-enonic": "^1.0.8",
     "cross-env": "^10.0.0",
     "cssnano": "^9.0.2",
