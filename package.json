@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@enonic/eslint-config": "^2.1.0",
+    "@eslint/js": "^10.0.1",
     "@rollup/plugin-inject": "^5.0.5",
     "@types/q": "^1.5.8",
     "autoprefixer": "^10.6.1",
@@ -41,7 +42,7 @@
     "cssnano": "^9.2.0",
     "enonic-admin-artifacts": "^2.3.2",
     "esbuild": "^0.28.2",
-    "eslint": "^9.39.4",
+    "eslint": "^10.12.0",
     "globals": "^17.13.0",
     "jiti": "^2.5.1",
     "less": "^4.9.1",
