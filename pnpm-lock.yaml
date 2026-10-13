@@ -52,8 +52,8 @@ importers:
         version: 1.5.1
     devDependencies:
       '@enonic/eslint-config':
-        specifier: ^2.1.0
-        version: 2.3.0(@typescript-eslint/parser@8.71.0(eslint@10.12.0(jiti@2.7.0))(typescript@5.9.3))(typescript-eslint@8.71.0(eslint@10.12.0(jiti@2.7.0))(typescript@5.9.3))(typescript@5.9.3)
+        specifier: ^3.0.0
+        version: 3.0.0(@typescript-eslint/parser@8.71.0(eslint@10.12.0(jiti@2.7.0))(typescript@5.9.3))(eslint@10.12.0(jiti@2.7.0))(typescript-eslint@8.71.0(eslint@10.12.0(jiti@2.7.0))(typescript@5.9.3))(typescript@5.9.3)
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.12.0(jiti@2.7.0))
@@ -124,10 +124,11 @@ packages:
     resolution: {integrity: sha512-OoKoR0f76dCY666JlcbhmVTs2drYj1GUXZTYTcbUgJjh9Nv41aFfZ21bPQTERm5+L5cBDo466NltB2lplS5GBw==}
     engines: {node: '>=20.19.0'}
 
-  '@enonic/eslint-config@2.3.0':
-    resolution: {integrity: sha512-k7e7acKN6WamFGvRXP6ZYE8tEdUgtWtgnIUcKxeCp1q4Z+UkY32l+x29a/Z3n+moX0qTWR/5pJ5xPrv4JihVUw==}
+  '@enonic/eslint-config@3.0.0':
+    resolution: {integrity: sha512-sV3F7G96F+Sbj4I9a7K3kjMik1BOS+ngY0S2cTBF1DcUzO1fuT+adhfD5wTGbD6OTEXFozlIaze2cgpMV7i3Aw==}
     peerDependencies:
       '@typescript-eslint/parser': ^8.50.0
+      eslint: ^10.0.0
       typescript: ^5.8.3
       typescript-eslint: ^8.50.0
 
@@ -1464,9 +1465,11 @@ snapshots:
 
   '@csstools/css-tokenizer@4.0.2': {}
 
-  '@enonic/eslint-config@2.3.0(@typescript-eslint/parser@8.71.0(eslint@10.12.0(jiti@2.7.0))(typescript@5.9.3))(typescript-eslint@8.71.0(eslint@10.12.0(jiti@2.7.0))(typescript@5.9.3))(typescript@5.9.3)':
+  '@enonic/eslint-config@3.0.0(@typescript-eslint/parser@8.71.0(eslint@10.12.0(jiti@2.7.0))(typescript@5.9.3))(eslint@10.12.0(jiti@2.7.0))(typescript-eslint@8.71.0(eslint@10.12.0(jiti@2.7.0))(typescript@5.9.3))(typescript@5.9.3)':
     dependencies:
+      '@eslint/js': 10.0.1(eslint@10.12.0(jiti@2.7.0))
       '@typescript-eslint/parser': 8.71.0(eslint@10.12.0(jiti@2.7.0))(typescript@5.9.3)
+      eslint: 10.12.0(jiti@2.7.0)
       globals: 17.13.0
       typescript: 5.9.3
       typescript-eslint: 8.71.0(eslint@10.12.0(jiti@2.7.0))(typescript@5.9.3)
