@@ -44,8 +44,8 @@ const getConfig = (req) => {
         extensionApiUrl: portal.apiUrl({
             api: 'admin:extension'
         }),
-        statusApiUrl: portal.apiUrl({
-            api: 'admin:status',
+        eventsUrl: portal.apiUrl({
+            api: 'admin:events',
         }),
         dashboardIcon: getDashboardIcon(req.locales),
         phrases: JSON.stringify(i18n.getPhrases(req.locales, ['i18n/phrases', 'i18n/common']), null, 4),

@@ -1,5 +1,6 @@
 import {Element} from '@enonic/lib-admin-ui/dom/Element';
-import {ConnectionDetector} from '@enonic/lib-admin-ui/system/ConnectionDetector';
+import {Message} from '@enonic/lib-admin-ui/notify/Message';
+import {NotifyManager} from '@enonic/lib-admin-ui/notify/NotifyManager';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 import {i18n, Messages} from '@enonic/lib-admin-ui/util/Messages';
 import {MenuElement} from '../menu/MenuElement';
@@ -34,12 +35,27 @@ const initConfig = (configScriptId: string) => {
     Messages.addMessages(JSON.parse(CONFIG.getString('phrases')) as object);
 };
 
-const startLostConnectionDetector = () => {
-    ConnectionDetector.get(CONFIG.getString('statusApiUrl'))
-        .setAuthenticated(true)
-        .setSessionExpireRedirectUrl(CONFIG.getString('adminUrl'))
-        .setNotificationMessage(i18n('notify.connection.loss'))
-        .startPolling(true);
+interface AdminEventsClient {
+    connect(handlers: {onEvent: () => void; onLoss: () => void; onSessionEnd: () => void}): {subscribe(topic: string): void};
+}
+
+const showSessionEnded = () => {
+    const message = Message.newError(i18n('notify.session.expired'), false);
+    message.addAction(i18n('action.refresh'), () => window.location.reload());
+    NotifyManager.get().notify(message);
+};
+
+const startSessionEndDetector = () => {
+    const eventsUrl = CONFIG.getString('eventsUrl');
+    if (!eventsUrl) {
+        return;
+    }
+
+    import(/* @vite-ignore */ `${eventsUrl}/client.js`)
+        .then((client: AdminEventsClient) => {
+            client.connect({onEvent: () => undefined, onLoss: () => undefined, onSessionEnd: showSessionEnded});
+        })
+        .catch(e => console.error('Failed to load the admin events client:', e));
 };
 
 const addListenersToDashboardItems = () => {
@@ -107,7 +123,7 @@ const showDashboard = () => {
 };
 
 const startApplication = () => {
-    startLostConnectionDetector();
+    startSessionEndDetector();
     addListenersToDashboardItems();
     appendMenuPanel();
     appendDashboardExtensions();
