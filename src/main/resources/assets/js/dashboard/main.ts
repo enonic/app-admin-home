@@ -35,7 +35,6 @@ const initConfig = (configScriptId: string) => {
     Messages.addMessages(JSON.parse(CONFIG.getString('phrases')) as object);
 };
 
-// the client the hub serves at `${eventsUrl}/client.js`
 interface AdminEventsClient {
     connect(handlers: {onEvent: () => void; onLoss: () => void; onSessionEnd: () => void}): {subscribe(topic: string): void};
 }
