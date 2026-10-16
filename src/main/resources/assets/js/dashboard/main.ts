@@ -40,7 +40,7 @@ interface AdminEventsClient {
 }
 
 const showSessionEnded = () => {
-    const message = Message.newError(i18n('notify.session.ended'), false);
+    const message = Message.newError(i18n('notify.session.expired'), false);
     message.addAction(i18n('action.refresh'), () => window.location.reload());
     NotifyManager.get().notify(message);
 };
