@@ -14,6 +14,10 @@ const ADMIN_TOOLS_CHANGED_EVENT = 'xp-admin-tools-changed';
 
 const RELOAD_DEBOUNCE_MS = 250;
 
+const THEME_STORAGE_KEY = 'enonic:theme';
+
+const THEME_CLASSES = ['theme-light', 'theme-dark'];
+
 interface MenuConfig {
     autoOpen: boolean;
     isHomeApp?: boolean;
@@ -175,6 +179,7 @@ export class Menu {
             configEl.setAttribute(INITIALIZED_ATTR, '');
         }
 
+        this.initTheme();
         this.initAvatarButton();
         this.initMenuButton();
         this.initMenuPanel();
@@ -185,6 +190,40 @@ export class Menu {
             this.openMenuPanel();
         }
     }
+
+    private initTheme = (): void => {
+        const menuRoot = this.root.querySelector('.menu-root');
+        if (!menuRoot || THEME_CLASSES.some(cls => menuRoot.classList.contains(cls))) {
+            return;
+        }
+
+        const applyStoredTheme = (): void => {
+            let theme: string | null;
+            try {
+                theme = localStorage.getItem(THEME_STORAGE_KEY);
+            } catch {
+                return;
+            }
+            if (theme !== 'light' && theme !== 'dark' && theme !== 'system') {
+                return;
+            }
+            menuRoot.classList.remove(...THEME_CLASSES);
+            if (theme !== 'system') {
+                menuRoot.classList.add(`theme-${theme}`);
+            }
+        };
+
+        applyStoredTheme();
+
+        window.addEventListener('storage', (e: StorageEvent) => {
+            if (e.key === THEME_STORAGE_KEY) {
+                applyStoredTheme();
+            }
+        });
+
+        new MutationObserver(applyStoredTheme)
+            .observe(document.documentElement, {attributes: true, attributeFilter: ['class']});
+    };
 
     private isToolFocused(): boolean {
         const tools = this.getTools();
