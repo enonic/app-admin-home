@@ -49,7 +49,7 @@
     "postcss": "^8.5.29",
     "postcss-sort-media-queries": "^6.7.1",
     "typescript": "^5.9.2",
-    "typescript-eslint": "^8.71.1",
+    "typescript-eslint": "^8.71.2",
     "vite": "^8.3.4"
   },
   "browserslist": [
