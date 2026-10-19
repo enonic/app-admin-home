@@ -36,16 +36,42 @@ const initConfig = (configScriptId: string) => {
 };
 
 interface AdminEventsClient {
-    connect(handlers: {onEvent: () => void; onLoss: () => void; onSessionEnd: () => void}): {subscribe(topic: string): void};
+    connect(handlers: {
+        onEvent: () => void;
+        onLoss: () => void;
+        onConnectionChange: (connected: boolean) => void;
+        onSessionEnd: () => void;
+    }): {subscribe(topic: string): void};
 }
 
-const showSessionEnded = () => {
-    const message = Message.newError(i18n('notify.session.expired'), false);
-    message.addAction(i18n('action.refresh'), () => window.location.reload());
-    NotifyManager.get().notify(message);
+let connectionMessageId: string;
+let connectionLostTimeout: number;
+
+const hideConnectionMessage = () => {
+    window.clearTimeout(connectionLostTimeout);
+    if (connectionMessageId) {
+        NotifyManager.get().hide(connectionMessageId);
+        connectionMessageId = null;
+    }
 };
 
-const startSessionEndDetector = () => {
+const handleConnectionChange = (connected: boolean) => {
+    hideConnectionMessage();
+    if (!connected) {
+        connectionLostTimeout = window.setTimeout(() => {
+            connectionMessageId = NotifyManager.get().showError(i18n('notify.connection.loss'), false);
+        }, 1000);
+    }
+};
+
+const handleSessionEnd = () => {
+    hideConnectionMessage();
+    const message = Message.newError(i18n('notify.session.expired'), false);
+    message.addAction(i18n('action.refresh'), () => window.location.reload());
+    connectionMessageId = NotifyManager.get().notify(message);
+};
+
+const startConnectionNotifier = () => {
     const eventsUrl = CONFIG.getString('eventsUrl');
     if (!eventsUrl) {
         return;
@@ -53,7 +79,12 @@ const startSessionEndDetector = () => {
 
     import(/* @vite-ignore */ `${eventsUrl}/client.js`)
         .then((client: AdminEventsClient) => {
-            client.connect({onEvent: () => undefined, onLoss: () => undefined, onSessionEnd: showSessionEnded});
+            client.connect({
+                onEvent: () => undefined,
+                onLoss: () => undefined,
+                onConnectionChange: handleConnectionChange,
+                onSessionEnd: handleSessionEnd,
+            });
         })
         .catch(e => console.error('Failed to load the admin events client:', e));
 };
@@ -123,7 +154,7 @@ const showDashboard = () => {
 };
 
 const startApplication = () => {
-    startSessionEndDetector();
+    startConnectionNotifier();
     addListenersToDashboardItems();
     appendMenuPanel();
     appendDashboardExtensions();
