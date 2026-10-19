@@ -1,5 +1,6 @@
 import {Element} from '@enonic/lib-admin-ui/dom/Element';
-import {ConnectionDetector} from '@enonic/lib-admin-ui/system/ConnectionDetector';
+import {Message} from '@enonic/lib-admin-ui/notify/Message';
+import {NotifyManager} from '@enonic/lib-admin-ui/notify/NotifyManager';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 import {i18n, Messages} from '@enonic/lib-admin-ui/util/Messages';
 import {MenuElement} from '../menu/MenuElement';
@@ -34,12 +35,58 @@ const initConfig = (configScriptId: string) => {
     Messages.addMessages(JSON.parse(CONFIG.getString('phrases')) as object);
 };
 
-const startLostConnectionDetector = () => {
-    ConnectionDetector.get(CONFIG.getString('statusApiUrl'))
-        .setAuthenticated(true)
-        .setSessionExpireRedirectUrl(CONFIG.getString('adminUrl'))
-        .setNotificationMessage(i18n('notify.connection.loss'))
-        .startPolling(true);
+interface AdminEventsClient {
+    connect(handlers: {
+        onEvent: () => void;
+        onLoss: () => void;
+        onConnectionChange: (connected: boolean) => void;
+        onSessionEnd: () => void;
+    }): {subscribe(topic: string): void};
+}
+
+let connectionMessageId: string;
+let connectionLostTimeout: number;
+
+const hideConnectionMessage = () => {
+    window.clearTimeout(connectionLostTimeout);
+    if (connectionMessageId) {
+        NotifyManager.get().hide(connectionMessageId);
+        connectionMessageId = null;
+    }
+};
+
+const handleConnectionChange = (connected: boolean) => {
+    hideConnectionMessage();
+    if (!connected) {
+        connectionLostTimeout = window.setTimeout(() => {
+            connectionMessageId = NotifyManager.get().showError(i18n('notify.connection.loss'), false);
+        }, 1000);
+    }
+};
+
+const handleSessionEnd = () => {
+    hideConnectionMessage();
+    const message = Message.newError(i18n('notify.session.expired'), false);
+    message.addAction(i18n('action.refresh'), () => window.location.reload());
+    connectionMessageId = NotifyManager.get().notify(message);
+};
+
+const startConnectionNotifier = () => {
+    const eventsUrl = CONFIG.getString('eventsUrl');
+    if (!eventsUrl) {
+        return;
+    }
+
+    import(/* @vite-ignore */ `${eventsUrl}/client.js`)
+        .then((client: AdminEventsClient) => {
+            client.connect({
+                onEvent: () => undefined,
+                onLoss: () => undefined,
+                onConnectionChange: handleConnectionChange,
+                onSessionEnd: handleSessionEnd,
+            });
+        })
+        .catch(e => console.error('Failed to load the admin events client:', e));
 };
 
 const addListenersToDashboardItems = () => {
@@ -107,7 +154,7 @@ const showDashboard = () => {
 };
 
 const startApplication = () => {
-    startLostConnectionDetector();
+    startConnectionNotifier();
     addListenersToDashboardItems();
     appendMenuPanel();
     appendDashboardExtensions();

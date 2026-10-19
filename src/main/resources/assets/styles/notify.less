@@ -1,0 +1,76 @@
+.notification-container {
+  font-size: 0.75rem;
+  position: fixed;
+  bottom: 0;
+  z-index: @z-index-shader + 1;
+
+  @media screen and (max-width: 799px) {
+    width: 100%;
+  }
+
+  @media screen and (min-width: 800px) {
+    left: 50%;
+    margin-left: -400px;
+  }
+
+  .notification-wrapper {
+    margin: auto;
+    opacity: 0.8;
+
+    @media screen and (min-width: 800px) {
+      width: 800px;
+    }
+
+    .notification {
+      overflow: hidden;
+      color: @admin-white;
+      font-size: 1.2em;
+      padding: 10px 10px 10px 20px;
+      display: flex;
+      align-items: center;
+      background-color: @admin-blue;
+
+      &.error {
+        background-color: red;
+      }
+
+      &.warning {
+        background-color: orange;
+      }
+
+      &.action,
+      &.success {
+        background-color: @admin-green;
+      }
+
+      .notification-inner {
+        flex: 1;
+
+        .notification-text,
+        .notification-actions {
+          display: inline;
+        }
+
+        .notification-actions a {
+          color: @admin-white;
+          margin-left: 10px;
+          cursor: pointer;
+          text-decoration: underline;
+        }
+      }
+
+      .notification-remove {
+        cursor: pointer;
+        color: @admin-white;
+        height: 18px;
+        width: 18px;
+
+        &::before {
+          content: '\00d7';
+          font-size: 18px;
+          line-height: 18px;
+        }
+      }
+    }
+  }
+}
