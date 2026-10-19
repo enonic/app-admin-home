@@ -1,5 +1,6 @@
 import {KeyBinding} from '@enonic/lib-admin-ui/ui/KeyBinding';
 import {KeyBindings} from '@enonic/lib-admin-ui/ui/KeyBindings';
+import {readTheme, subscribeTheme} from '@enonic/ui-utils';
 
 const SERVER_EVENTS_FLAG = '__xpMenuServerEventsListenerStarted';
 
@@ -13,8 +14,6 @@ const TOOL_ID_ATTR = 'data-tool-id';
 const ADMIN_TOOLS_CHANGED_EVENT = 'xp-admin-tools-changed';
 
 const RELOAD_DEBOUNCE_MS = 250;
-
-const THEME_STORAGE_KEY = 'enonic:theme';
 
 const THEME_CLASSES = ['theme-light', 'theme-dark'];
 
@@ -197,32 +196,15 @@ export class Menu {
             return;
         }
 
-        const applyStoredTheme = (): void => {
-            let theme: string | null;
-            try {
-                theme = localStorage.getItem(THEME_STORAGE_KEY);
-            } catch {
-                return;
-            }
-            if (theme !== 'light' && theme !== 'dark' && theme !== 'system') {
-                return;
-            }
+        const applyTheme = (theme: string): void => {
             menuRoot.classList.remove(...THEME_CLASSES);
             if (theme !== 'system') {
                 menuRoot.classList.add(`theme-${theme}`);
             }
         };
 
-        applyStoredTheme();
-
-        window.addEventListener('storage', (e: StorageEvent) => {
-            if (e.key === THEME_STORAGE_KEY) {
-                applyStoredTheme();
-            }
-        });
-
-        new MutationObserver(applyStoredTheme)
-            .observe(document.documentElement, {attributes: true, attributeFilter: ['class']});
+        applyTheme(readTheme());
+        subscribeTheme(applyTheme);
     };
 
     private isToolFocused(): boolean {
