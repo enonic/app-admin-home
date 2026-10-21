@@ -1,7 +1,6 @@
-/*global app, resolve*/
+/*global app*/
 
 const auth = require('/lib/xp/auth');
-const mustache = require('/lib/mustache');
 const portal = require('/lib/xp/portal');
 const i18n = require('/lib/xp/i18n');
 const admin = require('/lib/xp/admin');
@@ -25,100 +24,83 @@ function localise(key, locales) {
     });
 }
 
-router.get('', function(req) {
+router.get('', function (req) {
     const locales = req.locales;
-    const phrases = {
-        linkLogout: localise('action.logout', locales),
-        tooltipOpenMenu: localise('tooltip.openMenu', locales),
-        tooltipCloseMenu: localise('tooltip.closeMenu', locales),
-    };
 
     const menuExtensionUrl = admin.extensionUrl({
         application: app.name,
         extension: 'menu'
     });
     const baseAssetUrl = `${menuExtensionUrl}${VERSIONED_BASE_PATH}`;
+    const iconsUrl = `${baseAssetUrl}/icons/extensions`;
 
-    const themeParam = req.params['theme'];
-    const theme = (themeParam === 'dark' || themeParam === 'light') ? themeParam : null;
+    const tools = __.toNativeObject(adminToolsBean.execute(locales)).map((tool) => ({
+        id: `${tool.key.application}:${tool.key.name}`,
+        url: admin.getToolUrl(tool.key.application, tool.key.name),
+        title: tool.title,
+        description: tool.description,
+        icon: tool.icon
+    }));
 
-    const config = {
-        autoOpen: req.params['autoOpen'] === 'true' || false,
-        isHomeApp: app.name === req.params['appName'],
-        menuUrl: req.url,
-        backgroundUrl: `${baseAssetUrl}/images/background.webp`,
-        eventsUrl: portal.apiUrl({api: 'admin:events'}),
-        eventsTopic: events.ADMIN_TOOLS_CHANGED_TOPIC,
-        phrases
-    }
-
-    const adminTools = __.toNativeObject(adminToolsBean.execute(locales));
-
-    for (let i = 0; i < adminTools.length; i++) {
-        adminTools[i].toolId = `${adminTools[i].key.application}:${adminTools[i].key.name}`;
-        adminTools[i].uri = admin.getToolUrl(
-            adminTools[i].key.application,
-            adminTools[i].key.name
-        );
-    }
-
-    const iconsPath = '/icons/extensions/';
-    const usefulLinks = [
+    const links = [
         {
-            iconUrl: `${baseAssetUrl}${iconsPath}developer.svg`,
+            iconUrl: `${iconsUrl}/developer.svg`,
             caption: localise('menu.info.link.developer', locales),
-            link: 'https://developer.enonic.com/'
+            url: 'https://developer.enonic.com/'
         },
         {
-            iconUrl: `${baseAssetUrl}${iconsPath}slack.svg`,
+            iconUrl: `${iconsUrl}/slack.svg`,
             caption: localise('menu.info.link.slack', locales),
-            link: 'https://slack.enonic.com/'
+            url: 'https://slack.enonic.com/'
         },
         {
-            iconUrl: `${baseAssetUrl}${iconsPath}discuss.svg`,
+            iconUrl: `${iconsUrl}/discuss.svg`,
             caption: localise('menu.info.link.forum', locales),
-            link: 'https://discuss.enonic.com/'
+            url: 'https://discuss.enonic.com/'
         },
         {
-            iconUrl: `${baseAssetUrl}${iconsPath}market.svg`,
+            iconUrl: `${iconsUrl}/market.svg`,
             caption: localise('menu.info.link.market', locales),
-            link: 'https://market.enonic.com/'
+            url: 'https://market.enonic.com/'
         }
     ];
 
-    const logoutUrl = portal.logoutUrl({
-        redirect: admin.getHomeToolUrl()
-    });
-
     const user = auth.getUser();
-    const userInitials = (user.displayName || '')
-        .trim()
-        .charAt(0)
-        .toUpperCase();
-
-    const view = resolve('./menu.html');
-    const params = {
-        adminTools: adminTools,
-        user: user,
-        userInitials: userInitials,
-        logoutUrl: logoutUrl,
-        xpVersion: admin.getVersion(),
-        usefulLinksTitle: localise('menu.info.usefulLinks', locales),
-        usefulLinks: usefulLinks,
-        installation: admin.getInstallation() || 'Tools',
-        stylesUrl: `${baseAssetUrl}/styles/menu.css`,
-        jsUrl: `${baseAssetUrl}/js/menu/bundle.js`,
-        phrases,
-        themeClass: theme ? `theme-${theme}` : '',
-        configAsJson: JSON.stringify(config, null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1"),
-    };
+    const displayName = user.displayName || '';
 
     return {
-        contentType: 'text/html',
+        contentType: 'application/json',
         headers: {
             'Cache-Control': 'no-store'
         },
-        body: mustache.render(view, params)
+        body: {
+            installation: admin.getInstallation() || 'Tools',
+            xpVersion: admin.getVersion(),
+            user: {
+                displayName: displayName,
+                initials: displayName.trim().charAt(0).toUpperCase()
+            },
+            logoutUrl: portal.logoutUrl({
+                redirect: admin.getHomeToolUrl()
+            }),
+            tools: tools,
+            links: links,
+            phrases: {
+                openMenu: localise('tooltip.openMenu', locales),
+                closeMenu: localise('tooltip.closeMenu', locales),
+                logout: localise('action.logout', locales),
+                usefulLinks: localise('menu.info.usefulLinks', locales)
+            },
+            assets: {
+                styles: `${baseAssetUrl}/styles/menu.css`,
+                fonts: `${baseAssetUrl}/fonts`,
+                background: `${baseAssetUrl}/images/background.webp`
+            },
+            events: {
+                url: portal.apiUrl({api: 'admin:events'}),
+                topic: events.ADMIN_TOOLS_CHANGED_TOPIC
+            }
+        }
     };
 });
 

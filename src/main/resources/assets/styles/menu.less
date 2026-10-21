@@ -1,5 +1,6 @@
-@import "~enonic-admin-artifacts";
-@import 'font';
+@import 'tokens';
+
+@font-family: "Open Sans", Helvetica, sans-serif;
 
 @app-header-height: 44px;
 @panel-indent: 20px;
@@ -24,18 +25,10 @@ button.menu-button[hidden] ~ .avatar-container {
   right: @icon-indent;
 }
 
-.icon-buttons-dark() {
-  color: @admin-white;
-
-  &:focus {
-    outline-color: @admin-white;
-  }
-}
-
 button.avatar-button,
 button.menu-button {
   &:focus {
-    outline: 3px solid @admin-black;
+    outline: 3px solid var(--color-ring);
     outline-offset: 4px;
   }
 
@@ -43,21 +36,11 @@ button.menu-button {
     border: 0;
   }
 
-  @media (prefers-color-scheme: dark) {
-    .menu-root:not(.theme-light) & {
-      .icon-buttons-dark();
-    }
-  }
-
-  .menu-root.theme-dark & {
-    .icon-buttons-dark();
-  }
-
   &.menu-open {
-    color: @admin-white;
+    color: var(--color-white);
 
     &:focus {
-      outline-color: @admin-white;
+      outline-color: var(--color-white);
     }
   }
 }
@@ -70,9 +53,9 @@ button.avatar-button {
   width: @avatar-button-size;
   border: none;
   border-radius: 50%;
-  background-color: #5B5F60;
-  color: @admin-white;
-  font-family: @admin-font-family;
+  background-color: var(--color-grey-800);
+  color: var(--color-white);
+  font-family: @font-family;
   font-size: 12px;
   font-weight: 600;
   line-height: normal;
@@ -82,10 +65,6 @@ button.avatar-button {
   padding: 0;
 }
 
-@avatar-dropdown-bg-light: @admin-white;
-@avatar-dropdown-bg-dark: #242829;
-@avatar-dropdown-hover-light: #F1F5F6;
-@avatar-dropdown-hover-dark: #3D4142;
 @avatar-dropdown-caret-size: 8px;
 @avatar-dropdown-min-width: 160px;
 @avatar-dropdown-max-width: 240px;
@@ -97,8 +76,8 @@ button.avatar-button {
   right: 0;
   min-width: @avatar-dropdown-min-width;
   max-width: @avatar-dropdown-max-width;
-  background-color: @avatar-dropdown-bg-light;
-  border: 1px solid #5b5f60;
+  background-color: var(--color-surface-neutral);
+  border: 1px solid var(--color-grey-800);
   border-radius: 0.25rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   overflow: hidden;
@@ -110,7 +89,7 @@ button.avatar-button {
     right: (@avatar-button-size / 2) - (@avatar-dropdown-caret-size / 2) - 1px;
     border-left: @avatar-dropdown-caret-size solid transparent;
     border-right: @avatar-dropdown-caret-size solid transparent;
-    border-bottom: @avatar-dropdown-caret-size solid @avatar-dropdown-bg-light;
+    border-bottom: @avatar-dropdown-caret-size solid var(--color-surface-neutral);
   }
 
   &.expanded {
@@ -120,8 +99,8 @@ button.avatar-button {
   .avatar-dropdown-username,
   .avatar-dropdown-item {
     padding: 14px 20px;
-    color: @admin-black;
-    font-family: @admin-font-family;
+    color: var(--color-main);
+    font-family: @font-family;
     font-size: 14px;
     font-weight: 600;
     -webkit-font-smoothing: antialiased;
@@ -137,63 +116,28 @@ button.avatar-button {
   .avatar-dropdown-item {
     display: block;
     text-decoration: none;
-    background-color: @avatar-dropdown-bg-light;
+    background-color: var(--color-surface-neutral);
 
     &:hover {
-      background-color: @avatar-dropdown-hover-light;
+      background-color: var(--color-surface-neutral-hover);
     }
 
     &:focus {
-      outline: 2px solid @admin-black;
+      outline: 2px solid var(--color-ring);
       outline-offset: -2px;
     }
-  }
-
-  .avatar-dropdown-dark() {
-    background-color: @avatar-dropdown-bg-dark;
-
-    &::before {
-      border-bottom-color: @avatar-dropdown-bg-dark;
-    }
-
-    .avatar-dropdown-username {
-      color: @admin-white;
-    }
-
-    .avatar-dropdown-item {
-      color: @admin-white;
-      background-color: @avatar-dropdown-bg-dark;
-
-      &:focus {
-        outline-color: @admin-white;
-      }
-
-      &:hover {
-        background-color: @avatar-dropdown-hover-dark;
-      }
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .menu-root:not(.theme-light) & {
-      .avatar-dropdown-dark();
-    }
-  }
-
-  .menu-root.theme-dark & {
-    .avatar-dropdown-dark();
   }
 }
 
 button.menu-button {
-  display: flex !important;
+  display: flex;
   align-items: center;
   justify-content: center;
   visibility: hidden;
   opacity: 0;
 
   &[hidden] {
-    display: none !important;
+    display: none;
   }
   transition: opacity 0.3s, visibility 0.3s, background-color 0.3s;
   height: @menu-button-size;
@@ -206,12 +150,12 @@ button.menu-button {
   top: @icon-indent;
   padding: 0;
   background-color: transparent;
-  color: @admin-black;
+  color: var(--color-main);
   cursor: pointer;
   z-index: @z-index-menu-icons;
 
   &:hover {
-    color: #5B5F60;
+    color: var(--color-main-hover);
   }
 
   .menu-icon-active {
@@ -237,32 +181,16 @@ button.menu-button {
     display: block;
   }
 
-  .menu-button-hover-dark() {
-    &:hover {
-      color: #DDE1E2;
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .menu-root:not(.theme-light) & {
-      .menu-button-hover-dark();
-    }
-  }
-
-  .menu-root.theme-dark & {
-    .menu-button-hover-dark();
-  }
-
   &.menu-open {
     &:hover {
-      color: #DDE1E2;
+      color: var(--color-grey-200);
     }
   }
 }
 
 .menu-main-container {
   height: 100%;
-  font-family: @admin-font-family;
+  font-family: @font-family;
   display: flex;
   flex-direction: row;
 
@@ -299,8 +227,8 @@ button.menu-button {
     }
 
     .menu-info-title {
-      color: @admin-white;
-      font-family: @admin-font-family;
+      color: var(--color-white);
+      font-family: @font-family;
       font-size: 32px;
       font-weight: 300;
       margin: 0 0 4px 0;
@@ -310,7 +238,7 @@ button.menu-button {
 
     .menu-info-version {
       color: rgba(255, 255, 255, 0.7);
-      font-family: @admin-font-family;
+      font-family: @font-family;
       font-size: 16px;
       font-weight: 400;
       margin: 0 0 40px 0;
@@ -319,8 +247,8 @@ button.menu-button {
     }
 
     .menu-info-links-title {
-      color: @admin-white;
-      font-family: @admin-font-family;
+      color: var(--color-white);
+      font-family: @font-family;
       font-size: 18px;
       font-weight: 600;
       margin: 0 0 10px 0;
@@ -341,7 +269,7 @@ button.menu-button {
       gap: 10px;
       align-self: stretch;
       border-radius: 6px;
-      color: @admin-white;
+      color: var(--color-white);
       text-decoration: none;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
@@ -353,7 +281,7 @@ button.menu-button {
 
       &:focus-visible {
         background: rgba(255, 255, 255, 0.15);
-        outline: 2px solid @admin-white;
+        outline: 2px solid var(--color-white);
         outline-offset: -2px;
       }
 
@@ -369,7 +297,7 @@ button.menu-button {
       }
 
       .menu-info-link-caption {
-        font-family: @admin-font-family;
+        font-family: @font-family;
         font-size: 16px;
         font-weight: 400;
       }
@@ -406,7 +334,7 @@ button.menu-button {
       background: rgba(0, 0, 0, 0.25);
       -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
-      color: @admin-white;
+      color: var(--color-white);
       text-decoration: none;
       cursor: pointer;
       box-sizing: border-box;
@@ -416,7 +344,7 @@ button.menu-button {
 
       &:focus-visible {
         .app-tile-selected();
-        outline: 2px solid @admin-white;
+        outline: 2px solid var(--color-white);
         outline-offset: -2px;
       }
 
@@ -432,6 +360,7 @@ button.menu-button {
       align-items: center;
       justify-content: center;
       margin-top: 15px;
+      color: var(--color-white);
 
       svg {
         width: 100% !important;
@@ -440,7 +369,7 @@ button.menu-button {
     }
 
     .app-tile-name {
-      font-family: @admin-font-family;
+      font-family: @font-family;
       font-size: 12px;
       font-weight: 400;
       text-align: center;
@@ -457,7 +386,7 @@ button.menu-button {
 }
 
 .menu-panel {
-  display: block !important;
+  display: block;
   position: fixed;
   top: 0;
   left: 0;
@@ -468,7 +397,7 @@ button.menu-button {
   width: 100%;
   height: 100%;
   outline: none;
-  background-color: rgb(61, 65, 66);
+  background-color: var(--color-grey-900);
   visibility: hidden;
   opacity: 0;
   transition: opacity .3s, visibility 0s .3s;

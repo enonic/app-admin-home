@@ -26,21 +26,12 @@ const getDashboardIcon = (locales) => {
 };
 
 const getConfig = (req) => {
-    const openMenu = req.params['openMenu'] !== 'false';
-
-    const menuBaseUrl = admin.extensionUrl({
-        application: app.name,
-        extension: 'menu'
-    });
-    const separator = menuBaseUrl.indexOf('?') >= 0 ? '&' : '?';
-    const menuUrl = `${menuBaseUrl}${separator}appName=${encodeURIComponent(app.name)}&autoOpen=${openMenu}`;
-
     return {
         appId: app.name,
         adminUrl: admin.getHomeToolUrl(),
         assetsUri: getAssetsUri(),
         xpVersion: admin.getVersion(),
-        menuUrl,
+        autoOpen: req.params['openMenu'] !== 'false',
         extensionApiUrl: portal.apiUrl({
             api: 'admin:extension'
         }),
@@ -54,4 +45,8 @@ const getConfig = (req) => {
 
 exports.getConfig = getConfig;
 exports.getAssetsUri = getAssetsUri;
+exports.getMenuLoaderUrl = () => admin.extensionUrl({
+    application: app.name,
+    extension: 'menu-loader'
+});
 exports.configScriptId = 'home-tool-config-json';

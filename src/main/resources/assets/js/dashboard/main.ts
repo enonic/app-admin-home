@@ -3,11 +3,10 @@ import {Message} from '@enonic/lib-admin-ui/notify/Message';
 import {NotifyManager} from '@enonic/lib-admin-ui/notify/NotifyManager';
 import {CONFIG} from '@enonic/lib-admin-ui/util/Config';
 import {i18n, Messages} from '@enonic/lib-admin-ui/util/Messages';
-import {MenuElement} from '../menu/MenuElement';
-import {Menu, getMenuJsonConfig} from '../menu/main';
+import type {XpMenuApi} from '../menu/loader';
 import * as Q from 'q';
 import {resolveScriptConfig} from '../ConfigResolver';
-import {getModuleScript, getRequiredAttribute} from '../util/ModuleScriptHelper';
+import {getRequiredAttribute} from '../util/ModuleScriptHelper';
 import {DashboardPanel} from './DashboardPanel';
 
 const containerId = 'home-main-container';
@@ -102,31 +101,23 @@ const addListenersToDashboardItems = () => {
 };
 
 const appendMenuPanel = () => {
-    const menuUrl = CONFIG.getString('menuUrl');
-    if (!menuUrl) {
-        throw new Error('Menu URL is not defined');
+    const menu: XpMenuApi | undefined = window.XpMenu;
+    if (!menu) {
+        throw new Error('The menu loader is not on the page');
     }
-    const menuElement = MenuElement.create();
-    document.body.appendChild(menuElement);
-    fetch(menuUrl)
-        .then(response => response.text())
-        .then((html: string) => menuElement.setHtml(html))
+    const autoOpen = CONFIG.isTrue('autoOpen');
+    if (autoOpen) {
+        document.addEventListener('menu-background-ready', showDashboard, {once: true});
+        document.addEventListener('menu-panel-closed', showDashboard, {once: true});
+    }
+    menu.mount({autoOpen, hideButtonWhenOpen: autoOpen})
         .then(() => {
-            const shadowRoot = menuElement.shadowRoot;
-            const configEl = shadowRoot.getElementById('menu-config-json');
-            const config = getMenuJsonConfig(shadowRoot);
-            if (config.autoOpen) {
-                document.addEventListener('menu-background-ready', showDashboard, {once: true});
-                document.addEventListener('menu-panel-closed', showDashboard, {once: true});
-            } else {
+            if (!autoOpen) {
                 showDashboard();
-            }
-            if (configEl && !configEl.hasAttribute('data-menu-initialized')) {
-                new Menu(config, shadowRoot);
             }
         })
         .catch((e: Error) => {
-            throw new Error(`Failed to fetch the Menu extension panel at ${menuUrl}: ${e.toString()}`);
+            throw new Error(`Failed to mount the menu: ${e.toString()}`);
         });
 };
 
@@ -163,7 +154,10 @@ const startApplication = () => {
 void (async () => {
     removeOpenMenuParamFromUrl();
 
-    const currentScript = getModuleScript('dashboard');
+    const currentScript = Array.from(document.querySelectorAll('script')).find(script => script.src === import.meta.url);
+    if (!currentScript) {
+        throw Error('Could not find the dashboard module script');
+    }
 
     const configScriptId = getRequiredAttribute(currentScript, 'data-config-script-id');
 

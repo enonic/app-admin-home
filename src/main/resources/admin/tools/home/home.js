@@ -20,6 +20,7 @@ const generateParams = (req, openMenu) => {
     req.params['openMenu'] = openMenu;
     return {
         assetsUri: configLib.getAssetsUri(),
+        menuLoaderUrl: configLib.getMenuLoaderUrl(),
         configScriptId: configLib.configScriptId,
         configAsJson: JSON.stringify(configLib.getConfig(req), null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1")
     };
