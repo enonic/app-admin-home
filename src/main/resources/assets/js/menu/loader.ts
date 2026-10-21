@@ -1,13 +1,8 @@
-import {MenuElement} from './MenuElement';
-import {Menu, getMenuJsonConfig} from './main';
+import {mountMenu, unmountMenu, type MenuOptions} from './mount';
 
-interface MountOptions {
-    appName?: string;
-    autoOpen?: boolean;
-    theme?: 'light' | 'dark';
-}
+export type MountOptions = Partial<Omit<MenuOptions, 'menuUrl'>>;
 
-interface XpMenuApi {
+export interface XpMenuApi {
     mount(options?: MountOptions): Promise<HTMLElement>;
     unmount(): void;
 }
@@ -22,7 +17,7 @@ const LOADER_SUFFIX = '-loader';
 
 const loaderUrl = new URL(import.meta.url);
 
-const baseMenuUrl: string = (() => {
+const menuUrl: string = (() => {
     const u = new URL(loaderUrl.href);
     u.search = '';
     u.hash = '';
@@ -33,7 +28,8 @@ const baseMenuUrl: string = (() => {
     return u.toString();
 })();
 
-const loaderScript: HTMLScriptElement | null = document.querySelector(`script[src="${import.meta.url}"]`);
+const loaderScript: HTMLScriptElement | undefined = Array.from(document.querySelectorAll('script'))
+    .find(script => script.src === import.meta.url);
 
 const readUrlOptions = (): MountOptions => {
     const opts: MountOptions = {};
@@ -46,6 +42,10 @@ const readUrlOptions = (): MountOptions => {
     if (autoOpen != null) {
         opts.autoOpen = autoOpen === 'true';
     }
+    const hideButtonWhenOpen = sp.get('hideButtonWhenOpen');
+    if (hideButtonWhenOpen != null) {
+        opts.hideButtonWhenOpen = hideButtonWhenOpen === 'true';
+    }
     const theme = sp.get('theme');
     if (theme === 'light' || theme === 'dark') {
         opts.theme = theme;
@@ -53,61 +53,10 @@ const readUrlOptions = (): MountOptions => {
     return opts;
 };
 
-const buildMenuUrl = (opts: MountOptions): string => {
-    const params = new URLSearchParams();
-    if (opts.appName) {
-        params.set('appName', opts.appName);
-    }
-    if (opts.autoOpen != null) {
-        params.set('autoOpen', String(opts.autoOpen));
-    }
-    if (opts.theme) {
-        params.set('theme', opts.theme);
-    }
-    const qs = params.toString();
-    return qs ? `${baseMenuUrl}?${qs}` : baseMenuUrl;
-};
+const mount = (options: MountOptions = {}): Promise<HTMLElement> =>
+    mountMenu({menuUrl, ...readUrlOptions(), ...options});
 
-let currentMenuElement: MenuElement | null = null;
-
-const mount = async (options: MountOptions = {}): Promise<HTMLElement> => {
-    const opts: MountOptions = {...readUrlOptions(), ...options};
-
-    if (currentMenuElement) {
-        currentMenuElement.remove();
-        currentMenuElement = null;
-    }
-
-    const menuElement = MenuElement.create();
-    document.body.appendChild(menuElement);
-    currentMenuElement = menuElement;
-
-    const url = buildMenuUrl(opts);
-    const response = await fetch(url, {credentials: 'same-origin'});
-    if (!response.ok) {
-        throw new Error(`XpMenu loader: failed to fetch ${url} — ${response.status}`);
-    }
-    const html = await response.text();
-    await menuElement.setHtml(html);
-
-    const shadowRoot = menuElement.shadowRoot;
-    if (shadowRoot) {
-        const configEl = shadowRoot.getElementById('menu-config-json');
-        if (configEl && !configEl.hasAttribute('data-menu-initialized')) {
-            const config = getMenuJsonConfig(shadowRoot);
-            new Menu(config, shadowRoot);
-        }
-    }
-
-    return menuElement;
-};
-
-const unmount = (): void => {
-    currentMenuElement?.remove();
-    currentMenuElement = null;
-};
-
-window.XpMenu = {mount, unmount};
+window.XpMenu = {mount, unmount: unmountMenu};
 
 const autoMount = loaderScript?.dataset.autoMount !== 'false';
 if (autoMount) {
