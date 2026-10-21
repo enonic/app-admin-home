@@ -16,7 +16,9 @@
         "skipLibCheck": true,
         "incremental": true,
         "isolatedModules": true,
-        "types": ["q"]
+        "types": ["q"],
+        "jsx": "react-jsx",
+        "jsxImportSource": "preact"
     },
     "include": ["src/**/*"],
     "compileOnSave": false,

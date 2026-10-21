@@ -104,7 +104,7 @@ export default defineConfig(({mode}) => {
       root: IN_PATH,
       base: './',
 
-      plugins: [copyStatic(['icons', 'images']), assetPipeline({stamp: true})],
+      plugins: [copyStatic(['icons', 'images', 'fonts']), assetPipeline({stamp: true})],
 
       build: {
         outDir: OUT_PATH,
@@ -125,8 +125,7 @@ export default defineConfig(({mode}) => {
             }),
           ],
           input: {
-            'js/dashboard/bundle': path.join(IN_PATH, 'js/dashboard/main.ts'),
-            'js/menu/bundle': path.join(IN_PATH, 'js/menu/main.ts')
+            'js/dashboard/bundle': path.join(IN_PATH, 'js/dashboard/main.ts')
           },
           output: {
             format: 'es',
@@ -165,7 +164,7 @@ export default defineConfig(({mode}) => {
         alias: {
           '@enonic/lib-admin-ui': path.join(__dirname, '.xp/dev/lib-admin-ui')
         },
-        extensions: ['.ts', '.js']
+        extensions: ['.ts', '.tsx', '.js']
       },
       ...(isDevelopment && {
         server: {
@@ -189,13 +188,6 @@ export default defineConfig(({mode}) => {
         minify: isProduction,
         sourcemap: isDevelopment ? true : false,
         rollupOptions: {
-          plugins: [
-            inject({
-              $: 'jquery',
-              jQuery: 'jquery',
-              'window.jQuery': 'jquery'
-            }),
-          ],
           input: path.join(IN_PATH, 'js/menu/loader.ts'),
           output: {
             format: 'es',
@@ -220,10 +212,7 @@ export default defineConfig(({mode}) => {
         })
       },
       resolve: {
-        alias: {
-          '@enonic/lib-admin-ui': path.join(__dirname, '.xp/dev/lib-admin-ui')
-        },
-        extensions: ['.ts', '.js']
+        extensions: ['.ts', '.tsx', '.js']
       },
       ...(isProduction && {
         logLevel: 'warn'

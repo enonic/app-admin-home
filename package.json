@@ -29,6 +29,7 @@
     "jquery": "^4.0.0",
     "jquery-ui": "^1.14.2",
     "mousetrap": "^1.6.5",
+    "preact": "^10.29.8",
     "q": "^1.5.1"
   },
   "devDependencies": {
