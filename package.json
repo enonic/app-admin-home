@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@enonic/lib-admin-ui": "link:.xp/dev/lib-admin-ui",
-    "@enonic/ui-utils": "^0.5.2",
+    "@enonic/ui-utils": "^0.6.0",
     "dompurify": "~3.4.17",
     "jquery": "^4.0.0",
     "jquery-ui": "^1.14.2",
