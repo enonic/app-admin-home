@@ -1,4 +1,5 @@
 import type {HTMLAttributes, Ref} from 'preact';
+import {importHtml} from '../shared/inline-styles';
 
 const TAG = 'dashboard-widget';
 
@@ -148,15 +149,19 @@ export class DashboardWidgetElement extends HTMLElement {
     }
 
     async setHtml(html: string, isCurrent: () => boolean = () => true): Promise<void> {
-        const doc = new DOMParser().parseFromString(html, 'text/html');
-        const links = Array.from(doc.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]'));
-        const styles = Array.from(doc.querySelectorAll('style'));
-        const scripts = Array.from(doc.querySelectorAll('script'))
-            .filter(script => !DATA_SCRIPT_TYPES.includes(script.type.toLowerCase()));
-        [...links, ...styles, ...scripts].forEach(element => element.remove());
-        if (scripts.length > 0) {
-            console.warn(`The dashboard does not run widget scripts; ${scripts.length} dropped`, scripts.map(script => script.src || 'inline'));
-        }
+        const links: HTMLLinkElement[] = [];
+        const styles: HTMLStyleElement[] = [];
+        const fragment = document.createDocumentFragment();
+        importHtml(html, fragment, doc => {
+            links.push(...doc.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]'));
+            styles.push(...doc.querySelectorAll('style'));
+            const scripts = Array.from(doc.querySelectorAll('script'))
+                .filter(script => !DATA_SCRIPT_TYPES.includes(script.type.toLowerCase()));
+            [...links, ...styles, ...scripts].forEach(element => element.remove());
+            if (scripts.length > 0) {
+                console.warn(`The dashboard does not run widget scripts; ${scripts.length} dropped`, scripts.map(script => script.src || 'inline'));
+            }
+        });
 
         const hrefs = links.map(link => resolveUrl(link.getAttribute('href') ?? '', document.baseURI));
         const loaded = await settled([
@@ -174,7 +179,7 @@ export class DashboardWidgetElement extends HTMLElement {
         root.replaceChildren();
         root.adoptedStyleSheets = loaded.map(({sheet}) => sheet);
         loaded.forEach(({sheet, key}) => hoistFontFaces(sheet, key));
-        Array.from(doc.body.childNodes).forEach(node => root.appendChild(document.importNode(node, true)));
+        root.appendChild(fragment);
     }
 }
 

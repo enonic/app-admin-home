@@ -5,6 +5,7 @@
 @source '../../../../../node_modules/@enonic/ui/';
 @source '../js/dashboard/';
 @source '../js/shared/';
+@source '../../admin/tools/home/';
 
 @theme {
   --font-sans: 'Open Sans', Helvetica, sans-serif;

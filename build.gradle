@@ -18,24 +18,12 @@ allprojects {
 
     apply from: "$rootDir/gradle/env.gradle"
     apply from: "$rootDir/gradle/node.gradle"
-
-    if ( project.name != 'testing' ) {
-        apply from: "$rootDir/gradle/lib-admin.gradle"
-    }
 }
 
 repositories {
     mavenLocal()
     mavenCentral()
     xp.enonicRepo( 'dev' )
-}
-
-configurations {
-    devResources {
-        attributes {
-            attribute( LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named( LibraryElements, 'dev-resources' ) )
-        }
-    }
 }
 
 dependencies {
@@ -48,8 +36,6 @@ dependencies {
     include xplibs.i18n
     include xplibs.io
     include xplibs.event
-    include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
-    devResources "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
     include libs.lib.mustache
     include libs.lib.static
     include libs.lib.router
@@ -96,7 +82,6 @@ tasks.register( 'pnpmBuild', PnpmTask ) {
     environment = ['NODE_ENV': nodeEnvironment()]
     description = 'Build UI resources (ts, css, etc) with Vite.'
     args = ['run', nodeEnvironment() == 'production' ? 'build:prod' : 'build']
-    inputs.dir '.xp/dev'
     inputs.dir 'src/main'
     inputs.file 'vite.config.ts'
     outputs.dir "$buildDir/resources/main/assets"

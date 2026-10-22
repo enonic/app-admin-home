@@ -6,22 +6,7 @@ node {
     download = true
 }
 
-tasks.register('copyDevResources') {
-    onlyIf {
-        configurations.hasProperty( 'devResources' )
-    }
-    doLast {
-        copy {
-            from configurations.devResources.files.collect { zipTree( it ) }
-            include 'dev/**'
-            into '.xp'
-        }
-    }
-}
-
-// Configure pnpmInstall dependency lazily
 tasks.named( 'pnpmInstall' ).configure {
-    dependsOn rootProject.tasks.named( 'copyDevResources' )
     //! Temporary fix for CI environment, back to npm-like behavior
     if ( System.getenv( 'CI' ) == 'true' || project.hasProperty( 'ci' ) ) {
         pnpmCommand.set( ['install', '--no-frozen-lockfile'] )

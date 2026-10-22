@@ -24,28 +24,20 @@
     "fix": "eslint --fix **/*.ts"
   },
   "dependencies": {
-    "@enonic/lib-admin-ui": "link:.xp/dev/lib-admin-ui",
     "@enonic/ui": "^1.5.0",
     "@enonic/ui-utils": "^0.6.0",
     "@nanostores/preact": "^1.1.1",
-    "dompurify": "~3.4.17",
-    "jquery": "^4.0.0",
-    "jquery-ui": "^1.14.2",
-    "mousetrap": "^1.6.5",
     "nanostores": "^1.5.5",
-    "preact": "^10.29.8",
-    "q": "^1.5.1"
+    "preact": "^10.29.8"
   },
   "devDependencies": {
     "@enonic/eslint-config": "^3.0.0",
     "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.3.3",
-    "@types/q": "^1.5.8",
     "autoprefixer": "^10.6.1",
     "browserslist-config-enonic": "^1.0.8",
     "cross-env": "^10.0.0",
     "cssnano": "^9.8.0",
-    "enonic-admin-artifacts": "^2.3.2",
     "esbuild": "^0.28.2",
     "eslint": "^10.13.0",
     "globals": "^17.13.0",

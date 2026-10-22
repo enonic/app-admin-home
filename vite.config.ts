@@ -4,6 +4,7 @@ import {readdirSync, readFileSync} from 'node:fs';
 import {brotliCompressSync, constants as zlibConstants, gzipSync} from 'node:zlib';
 import cssnano from 'cssnano';
 import path from 'path';
+import type {Plugin as PostcssPlugin} from 'postcss';
 import postcssSortMediaQueries from 'postcss-sort-media-queries';
 import {fileURLToPath} from 'url';
 import {defineConfig, type Plugin, type UserConfig} from 'vite';
@@ -74,6 +75,15 @@ export default defineConfig(({mode}) => {
     }
   });
 
+  // menu.less inlines @enonic/ui/tokens.css for its shadow root; the Tailwind-only at-rules in it have no reader there
+  const dropTailwindAtRules = (): PostcssPlugin => ({
+    postcssPlugin: 'admin-home:drop-tailwind-at-rules',
+    AtRule: {
+      theme: (rule) => rule.remove(),
+      'custom-variant': (rule) => rule.remove()
+    }
+  });
+
   const IN_PATH = path.join(__dirname, 'src/main/resources/assets');
   const OUT_PATH = path.join(__dirname, 'build/resources/main/assets');
 
@@ -133,13 +143,7 @@ export default defineConfig(({mode}) => {
                 return 'fonts/[name][extname]';
               }
               return '[name][extname]';
-            },
-            ...(isProduction && {
-              compact: true,
-              generatedCode: {
-                constBindings: true
-              }
-            })
+            }
           },
           external: []
         }
@@ -189,13 +193,7 @@ export default defineConfig(({mode}) => {
           output: {
             format: 'es',
             entryFileNames: 'js/menu/loader.js',
-            inlineDynamicImports: true,
-            ...(isProduction && {
-              compact: true,
-              generatedCode: {
-                constBindings: true
-              }
-            })
+            codeSplitting: false
           }
         }
       },
@@ -249,9 +247,6 @@ export default defineConfig(({mode}) => {
         }
       },
       resolve: {
-        alias: {
-          '~enonic-admin-artifacts': 'enonic-admin-artifacts/index.less'
-        },
         extensions: ['.less', '.css']
       },
       css: {
@@ -262,6 +257,7 @@ export default defineConfig(({mode}) => {
         },
         postcss: {
           plugins: [
+            dropTailwindAtRules(),
             autoprefixer(),
             postcssSortMediaQueries({sort: 'desktop-first'}),
             ...(isProduction ? [cssnano({preset: ['default', {normalizeUrl: false}]})] : [])
