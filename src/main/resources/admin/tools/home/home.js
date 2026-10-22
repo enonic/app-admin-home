@@ -19,6 +19,7 @@ const addCSPHeaderToResponse = (response) => {
 const generateParams = (req, openMenu) => {
     req.params['openMenu'] = openMenu;
     return {
+        lang: (req.locales || [])[0] || 'en',
         assetsUri: configLib.getAssetsUri(),
         menuLoaderUrl: configLib.getMenuLoaderUrl(),
         configScriptId: configLib.configScriptId,

@@ -1,27 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{lang}}" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
     <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
+    <meta name="color-scheme" content="light dark">
     <meta name="theme-color" content="#1B1B1B">
 
     <title>Enonic XP Home</title>
 
-    <!-- favicons -->
     <link rel="icon" href="{{assetsUri}}/icons/favicon.ico" sizes="32x32">
     <link rel="icon" type="image/svg+xml" href="{{assetsUri}}/icons/favicon.svg">
     <link rel="apple-touch-icon" href="{{assetsUri}}/icons/apple-touch-icon.png">
     <link rel="manifest" href="{{assetsUri}}/icons/manifest.webmanifest" crossorigin="use-credentials">
 
-    <!-- Styles -->
     <link rel="stylesheet" type="text/css" href="{{assetsUri}}/styles/dashboard.css">
 
     <script type="module" src="{{menuLoaderUrl}}" data-auto-mount="false"></script>
     <script type="module" src="{{assetsUri}}/js/dashboard/bundle.js" data-config-script-id="{{configScriptId}}"></script>
     <script type="application/json" id="{{configScriptId}}">{{{configAsJson}}}</script>
 </head>
-<body>
-    <div class="home-main-container" id="home-main-container"></div>
+<body class="h-full">
+    <div id="home-main-container" class="home-main-container h-full"></div>
 </body>
 </html>

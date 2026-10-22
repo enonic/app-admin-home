@@ -1,4 +1,4 @@
-import inject from '@rollup/plugin-inject';
+import tailwindcss from '@tailwindcss/vite';
 import autoprefixer from 'autoprefixer';
 import {readdirSync, readFileSync} from 'node:fs';
 import {brotliCompressSync, constants as zlibConstants, gzipSync} from 'node:zlib';
@@ -117,15 +117,8 @@ export default defineConfig(({mode}) => {
           chunkSizeWarningLimit: 1000
         }),
         rollupOptions: {
-          plugins: [
-            inject({
-              $: 'jquery',
-              jQuery: 'jquery',
-              'window.jQuery': 'jquery'
-            }),
-          ],
           input: {
-            'js/dashboard/bundle': path.join(IN_PATH, 'js/dashboard/main.ts')
+            'js/dashboard/bundle': path.join(IN_PATH, 'js/dashboard/main.tsx')
           },
           output: {
             format: 'es',
@@ -162,8 +155,12 @@ export default defineConfig(({mode}) => {
       },
       resolve: {
         alias: {
-          '@enonic/lib-admin-ui': path.join(__dirname, '.xp/dev/lib-admin-ui')
+          react: 'preact/compat',
+          'react-dom': 'preact/compat',
+          'react-dom/client': 'preact/compat',
+          'react/jsx-runtime': 'preact/jsx-runtime'
         },
+        dedupe: ['preact', 'preact/compat'],
         extensions: ['.ts', '.tsx', '.js']
       },
       ...(isDevelopment && {
@@ -221,7 +218,7 @@ export default defineConfig(({mode}) => {
     css: {
       root: IN_PATH,
       base: './',
-      plugins: [assetPipeline({stamp: false})],
+      plugins: [tailwindcss(), assetPipeline({stamp: false})],
       build: {
         outDir: OUT_PATH,
         emptyOutDir: false,
@@ -229,7 +226,7 @@ export default defineConfig(({mode}) => {
         sourcemap: isDevelopment,
         rollupOptions: {
           input: {
-            'styles/dashboard': path.join(IN_PATH, 'styles/dashboard.less'),
+            'styles/dashboard': path.join(IN_PATH, 'styles/dashboard.css'),
             'styles/menu': path.join(IN_PATH, 'styles/menu.less'),
             'styles/extensions/youtube': path.join(IN_PATH, 'styles/extensions/youtube.less')
           },
