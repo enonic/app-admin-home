@@ -1,9 +1,15 @@
+import {createAdminEvents, createTopicReaction, documentVisibility} from '@enonic/ui-utils/admin-events';
 import {useEffect, useRef, useState} from 'preact/hooks';
 import {fetchMenuData, type MenuData} from './data';
-import {subscribeTopic} from './events';
 import type {MenuOptions, MenuTheme} from './mount';
 
-const RELOAD_DEBOUNCE_MS = 250;
+const importHubClient = (url: string): Promise<unknown> => import(/* @vite-ignore */ url).catch((e: unknown) => {
+    console.warn(
+        `[xp-menu] The admin events hub is not reachable at ${url}: the tools list will not refresh until the page reloads. `
+        + 'The hub is mounted under the admin tool that hosts the menu, so that tool has to list "admin:events" in the `apis` of its descriptor.',
+    );
+    throw e;
+});
 
 const THEME_STORAGE_KEY = 'enonic:theme';
 
@@ -77,27 +83,30 @@ const useMenuData = (initial: MenuData, menuUrl: string): MenuData => {
             return;
         }
         let active = true;
-        let timer: ReturnType<typeof setTimeout> | undefined;
-
         const reload = (): void => {
-            clearTimeout(timer);
-            timer = setTimeout(() => {
-                fetchMenuData(menuUrl)
-                    .then(fresh => {
-                        if (active) {
-                            setData(fresh);
-                        }
-                    })
-                    .catch(e => console.error('[xp-menu] Failed to reload menu:', e));
-            }, RELOAD_DEBOUNCE_MS);
+            fetchMenuData(menuUrl)
+                .then(fresh => {
+                    if (active) {
+                        setData(fresh);
+                    }
+                })
+                .catch(e => console.error('[xp-menu] Failed to reload menu:', e));
         };
-
-        const unsubscribe = subscribeTopic(events.url, events.topic, reload);
+        const hub = createAdminEvents(events.url, importHubClient);
+        const reaction = createTopicReaction({
+            events: hub,
+            topic: events.topic,
+            parse: () => true,
+            visible: documentVisibility(),
+            apply: reload,
+            refresh: reload,
+        });
+        reaction.start();
+        hub.connect();
 
         return () => {
             active = false;
-            clearTimeout(timer);
-            unsubscribe();
+            reaction.stop();
         };
     }, [menuUrl]);
 

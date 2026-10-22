@@ -3,7 +3,7 @@
         "module": "ES2022",
         "moduleResolution": "bundler",
         "target": "ES2023",
-        "lib": ["ES2023", "DOM"],
+        "lib": ["ES2023", "DOM", "DOM.Iterable"],
         "baseUrl": ".",
         "outDir": "build/resources/main/assets/js/",
         "allowSyntheticDefaultImports": true,
@@ -16,9 +16,13 @@
         "skipLibCheck": true,
         "incremental": true,
         "isolatedModules": true,
-        "types": ["q"],
         "jsx": "react-jsx",
-        "jsxImportSource": "preact"
+        "jsxImportSource": "preact",
+        "paths": {
+            "react": ["./node_modules/preact/compat"],
+            "react-dom": ["./node_modules/preact/compat"],
+            "react-dom/client": ["./node_modules/preact/compat"]
+        }
     },
     "include": ["src/**/*"],
     "compileOnSave": false,

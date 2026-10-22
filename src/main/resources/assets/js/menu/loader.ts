@@ -1,15 +1,12 @@
+import type {AdminMenu} from '@enonic/ui-utils/admin-menu';
 import {mountMenu, unmountMenu, type MenuOptions} from './mount';
 
-export type MountOptions = Partial<Omit<MenuOptions, 'menuUrl'>>;
-
-export interface XpMenuApi {
-    mount(options?: MountOptions): Promise<HTMLElement>;
-    unmount(): void;
-}
+// what `@enonic/ui-utils/admin-menu` types as AdminMenuOptions, plus `theme` for a host that remounts on a theme switch
+type MountOptions = Partial<Omit<MenuOptions, 'menuUrl'>>;
 
 declare global {
     interface Window {
-        XpMenu?: XpMenuApi;
+        XpMenu?: AdminMenu;
     }
 }
 
