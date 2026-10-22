@@ -5,15 +5,3 @@ plugins {
 rootProject.name = 'app-main'
 
 include 'testing'
-
-if ( hasProperty( 'env' ) ) {
-    addBuild( '../lib-admin-ui' )
-}
-
-def addBuild( name )
-{
-    def dir = new File( (File) settingsDir, name )
-    if (dir.directory) {
-        includeBuild name
-    }
-}

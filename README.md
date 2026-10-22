@@ -3,7 +3,7 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a6ab0dd0d4d04b3d96e563a11056e536)](https://www.codacy.com/app/enonic/app-admin-home?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=enonic/app-admin-home&amp;utm_campaign=Badge_Grade)
 
-This is the Home application for Enonic XP which contains Dashboard, shortcuts and Launcher panel.
+This is the Home application for Enonic XP which contains the Dashboard and the XP menu that every admin tool embeds.
 
 ## Usage
 
@@ -15,44 +15,35 @@ Just copy the built JAR files to the `$XP_HOME/deploy` folder, or use the `deplo
 
 ## Building
 
-#### Default
-
-Run the following command to build all applications with default options:
+Run the following command to build the application:
 ```
 ./gradlew build
 ```
 
-With default build, applications will use the remote `lib-admin-ui` dependency and the environment variable won't be set.
-
-#### Environment
-
-To use the specific environment, you must set its value explicitly with `env` parameter (only `prod` or `dev`):
+The `env` parameter picks the build mode (`prod` or `dev`). The default is production; a development build keeps sourcemaps and skips minification:
 
 ```
 ./gradlew build -Penv=dev
 ```
 
-If the environment is set, the Gradle will look for the local `lib-admin-ui` repository in the parent folder of your `app-admin-home` repo. And if any present, will build them, along with building applications, instead of downloading the remote `lib-admin-ui` dependency.
-The environment parameter will also be passed to `lib-admin-ui`.
+## Embedding the XP menu
 
-Both environments are almost identical, except that building in the development environment will result in creating the DTS files, sourcemaps and other things, critical for the debugging.
-The build itself may also be a bit slower sometimes.
+An admin tool embeds the menu with the `menu-loader` extension of this app. The loader is a module script that mounts the menu into an `<xp-menu>` host on `document.body`, in a shadow root with its own styles:
 
-#### Quick
-
-Sometimes, you may want to build your project faster. To do so, just skip some tasks. You can skip them manually, like this:
-
-```
-./gradlew build -x check -x test
+```js
+const menuLoaderUrl = admin.extensionUrl({
+    application: 'com.enonic.xp.app.main',
+    extension: 'menu-loader',
+    params: {theme: 'dark'}
+});
 ```
 
-or run even faster with the `yolo` task, that will skip all tasks, that won't affect the code operability, and do deploy build:
-
-```
-./gradlew yolo
+```html
+<script type="module" src="{{menuLoaderUrl}}"></script>
 ```
 
-<!-- Links -->
+- `theme=light|dark` pins the menu theme for a tool without theming of its own. Without it the menu follows the theme stored by `@enonic/ui-utils` and the OS.
+- `data-auto-mount="false"` on the script leaves mounting to the page: `window.XpMenu.mount({autoOpen, hideButtonWhenOpen})` and `window.XpMenu.unmount()`. `@enonic/ui-utils/admin-menu` wraps this.
+- The menu refreshes its list of tools through the `admin:events` hub, which XP mounts under the admin tool that hosts the page. List `admin:events` in the `apis` of the tool descriptor, or the menu warns in the console and keeps the list it loaded.
+- Under a Content-Security-Policy the menu needs `connect-src`, `img-src`, `font-src`, `script-src` and `worker-src` to allow `'self'`. It does not need `'unsafe-inline'` in `style-src`: its styles are constructed stylesheets, and inline styles in tool icons are applied through CSSOM.
 
-[license-url]: LICENSE.txt
-[license-image]: https://img.shields.io/github/license/enonic/app-users.svg "GPL 3.0"

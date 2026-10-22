@@ -2,6 +2,7 @@ import {Skeleton} from '@enonic/ui';
 import {useEffect, useState} from 'preact/hooks';
 import type {DashboardConfig} from '../shared/config';
 import {i18n} from '../shared/i18n';
+import {InlineHtml} from '../shared/InlineHtml';
 import {WidgetCard} from './WidgetCard';
 import {fetchWidgets, type DashboardWidget} from './widgets';
 
@@ -36,7 +37,7 @@ export const DashboardPanel = ({config, generation}: DashboardPanelProps) => {
     return (
         <div className="dashboard-widget-panel relative flex h-full w-full items-stretch bg-surface-primary">
             <aside className="dashboard-sidebar flex w-15 shrink-0 flex-col items-center bg-surface-neutral py-[15px] text-main">
-                <div className="dashboard-sidebar-logo flex items-center justify-center [&_svg]:block [&_svg]:size-7" dangerouslySetInnerHTML={{__html: config.dashboardIcon ?? ''}}/>
+                <InlineHtml className="dashboard-sidebar-logo flex items-center justify-center [&_svg]:block [&_svg]:size-7" html={config.dashboardIcon}/>
                 <span className="dashboard-sidebar-title mt-4 text-base font-semibold whitespace-nowrap [writing-mode:vertical-rl]">{i18n('home.dashboard')}</span>
             </aside>
             <div className="dashboard-widgets-grid min-w-0 flex-1 px-2.5 py-12.5">

@@ -1,6 +1,7 @@
 import {createAdminEvents, createTopicReaction, documentVisibility} from '@enonic/ui-utils/admin-events';
 import {useEffect, useRef, useState} from 'preact/hooks';
 import {fetchMenuData, type MenuData} from './data';
+import {InlineHtml} from '../shared/InlineHtml';
 import type {MenuOptions, MenuTheme} from './mount';
 
 const importHubClient = (url: string): Promise<unknown> => import(/* @vite-ignore */ url).catch((e: unknown) => {
@@ -460,7 +461,7 @@ export const Menu = ({data: initial, options, root}: MenuProps) => {
                                     title={tool.description}
                                     aria-description={tool.description}
                                 >
-                                    <div class="app-tile-icon" dangerouslySetInnerHTML={{__html: tool.icon ?? ''}}/>
+                                    <InlineHtml class="app-tile-icon" html={tool.icon}/>
                                     <span class="app-tile-name">{tool.title}</span>
                                 </a>
                             ))}

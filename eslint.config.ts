@@ -60,7 +60,6 @@ export default [
             "build/**/*",
             "dist/**/*",
             "node_modules/**/*",
-            "**/.xp/**/*",
             "**/*.js",
             "**/*.d.ts",
             "**/spec/**/*",

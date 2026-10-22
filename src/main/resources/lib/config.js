@@ -43,7 +43,7 @@ const getConfig = (req) => {
         }),
         eventsTopic: events.ADMIN_TOOLS_CHANGED_TOPIC,
         dashboardIcon: getDashboardIcon(req.locales),
-        phrases: i18n.getPhrases(req.locales, ['i18n/phrases', 'i18n/common']),
+        phrases: i18n.getPhrases(req.locales, ['i18n/phrases']),
     };
 }
 
