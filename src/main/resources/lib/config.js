@@ -4,6 +4,7 @@ const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
 const i18n = require('/lib/xp/i18n');
 const buildtime = require('/lib/buildtime');
+const version = require('/lib/version');
 
 const STATIC_BASE_PATH = '/_static';
 
@@ -39,7 +40,7 @@ const getConfig = (req) => {
         appId: app.name,
         adminUrl: admin.getHomeToolUrl(),
         assetsUri: getAssetsUri(),
-        xpVersion: admin.getVersion(),
+        xpVersion: version.getXpVersion(),
         menuUrl,
         extensionApiUrl: portal.apiUrl({
             api: 'admin:extension'
