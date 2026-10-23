@@ -10,7 +10,7 @@ const getXpVersion = () => {
         return version;
     }
     const shortHash = buildShortHashBean.execute();
-    return shortHash ? `${version} (${shortHash})` : version;
+    return shortHash ? `${version}+${shortHash}` : version;
 };
 
 exports.getXpVersion = getXpVersion;
