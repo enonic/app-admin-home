@@ -7,6 +7,7 @@ const i18n = require('/lib/xp/i18n');
 const admin = require('/lib/xp/admin');
 const staticLib = require('/lib/enonic/static');
 const buildtime = require('/lib/buildtime');
+const version = require('/lib/version');
 const events = require('/lib/events');
 const router = require('/lib/router')();
 
@@ -102,7 +103,7 @@ router.get('', function(req) {
         user: user,
         userInitials: userInitials,
         logoutUrl: logoutUrl,
-        xpVersion: admin.getVersion(),
+        xpVersion: version.getXpVersion(),
         usefulLinksTitle: localise('menu.info.usefulLinks', locales),
         usefulLinks: usefulLinks,
         installation: admin.getInstallation() || 'Tools',
