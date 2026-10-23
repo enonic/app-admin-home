@@ -1,3 +1,4 @@
+import {readResolvedTheme, subscribeResolvedTheme} from '@enonic/ui-utils';
 import {createAdminEvents, createTopicReaction, documentVisibility} from '@enonic/ui-utils/admin-events';
 import {useEffect, useRef, useState} from 'preact/hooks';
 import {fetchMenuData, type MenuData} from './data';
@@ -12,12 +13,6 @@ const importHubClient = (url: string): Promise<unknown> => import(/* @vite-ignor
     throw e;
 });
 
-const THEME_STORAGE_KEY = 'enonic:theme';
-
-const THEME_CHANGE_EVENT = 'enonic:theme';
-
-const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)';
-
 interface MenuProps {
     data: MenuData;
     options: MenuOptions;
@@ -26,50 +21,17 @@ interface MenuProps {
 
 const cls = (...names: (string | false | null | undefined)[]): string => names.filter(Boolean).join(' ');
 
-const storedTheme = (): string | null => {
-    try {
-        return localStorage.getItem(THEME_STORAGE_KEY);
-    } catch {
-        return null;
-    }
-};
-
-const resolveDark = (theme?: MenuTheme): boolean => {
-    if (theme) {
-        return theme === 'dark';
-    }
-    const stored = storedTheme();
-    if (stored === 'light' || stored === 'dark') {
-        return stored === 'dark';
-    }
-    return window.matchMedia(DARK_SCHEME_QUERY).matches;
-};
+const isDark = (theme?: MenuTheme): boolean => (theme ?? readResolvedTheme()) === 'dark';
 
 const useDarkTheme = (theme?: MenuTheme): boolean => {
-    const [dark, setDark] = useState(() => resolveDark(theme));
+    const [dark, setDark] = useState(() => isDark(theme));
 
     useEffect(() => {
         if (theme) {
             return;
         }
-        const update = (): void => setDark(resolveDark());
-        const onStorage = (e: StorageEvent): void => {
-            if (e.key === THEME_STORAGE_KEY || e.key === null) {
-                update();
-            }
-        };
-        const media = window.matchMedia(DARK_SCHEME_QUERY);
-        const observer = new MutationObserver(update);
-        window.addEventListener('storage', onStorage);
-        window.addEventListener(THEME_CHANGE_EVENT, update);
-        media.addEventListener('change', update);
-        observer.observe(document.documentElement, {attributes: true, attributeFilter: ['class']});
-        return () => {
-            window.removeEventListener('storage', onStorage);
-            window.removeEventListener(THEME_CHANGE_EVENT, update);
-            media.removeEventListener('change', update);
-            observer.disconnect();
-        };
+        setDark(isDark());
+        return subscribeResolvedTheme(resolved => setDark(resolved === 'dark'));
     }, [theme]);
 
     return dark;
