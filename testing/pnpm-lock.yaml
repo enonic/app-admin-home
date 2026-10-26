@@ -53,8 +53,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0(@types/node@26.6.5)(expect-webdriverio@8.0.0(@wdio/types@10.0.1)(webdriverio@10.0.2(yauzl@2.10.0)))(yauzl@2.10.0)
       '@wdio/concise-reporter':
-        specifier: ^10.0.1
-        version: 10.0.1
+        specifier: ^10.1.0
+        version: 10.1.0
       '@wdio/local-runner':
         specifier: ^10.0.2
         version: 10.0.2(tsx@4.23.15)(webdriverio@10.0.2(yauzl@2.10.0))(yauzl@2.10.0)
@@ -500,8 +500,8 @@ packages:
     engines: {node: '>=22.19.0'}
     hasBin: true
 
-  '@wdio/concise-reporter@10.0.1':
-    resolution: {integrity: sha512-ho/qdrVQrJG7cRXNmYfy21ADn1SFP8ZIVlwJ39osNKy0Boag+bWbitzyseow1ON7qWHYuZe0vRGga9znvguQEA==}
+  '@wdio/concise-reporter@10.1.0':
+    resolution: {integrity: sha512-0u8KDP/T/sG1RJKhMPl9xMKTqwivQxbHSNLuUrwhiKfQ0GMiGCX7y1e6f62/VcHpfXQOb8cNHl6NaCVj1mSYRg==}
     engines: {node: '>=22.19.0'}
 
   '@wdio/config@10.0.1':
@@ -568,6 +568,10 @@ packages:
 
   '@wdio/reporter@10.0.1':
     resolution: {integrity: sha512-A917SeniucyosspqazR9tGH6t9JaecU5SRP3VzRGyIo0JBEKV6walJU1VBauMH+7n043huzgiQvNJ414Vi8dmQ==}
+    engines: {node: '>=22.19.0'}
+
+  '@wdio/reporter@10.1.0':
+    resolution: {integrity: sha512-VijtnGZHgwKFRzWwfGQSTF5WCxtwZLMstTQurKgXFUUh6rJi5ORkfL2515q5/7hbHm9ziMbAeBrfUdiDJCk1dQ==}
     engines: {node: '>=22.19.0'}
 
   '@wdio/runner@10.0.2':
@@ -2116,11 +2120,11 @@ snapshots:
       - utf-8-validate
       - yauzl
 
-  '@wdio/concise-reporter@10.0.1':
+  '@wdio/concise-reporter@10.1.0':
     dependencies:
-      '@wdio/reporter': 10.0.1
-      '@wdio/types': 10.0.1
-      chalk: 5.6.2
+      '@wdio/reporter': 10.1.0
+      '@wdio/types': 10.1.0
+      chalk: 6.0.1
       pretty-ms: 9.3.1
 
   '@wdio/config@10.0.1(yauzl@2.10.0)':
@@ -2254,6 +2258,13 @@ snapshots:
       '@types/node': 22.20.5
       '@wdio/types': 10.0.1
       diff: 8.0.4
+      object-inspect: 1.13.4
+
+  '@wdio/reporter@10.1.0':
+    dependencies:
+      '@types/node': 22.20.5
+      '@wdio/types': 10.1.0
+      diff: 9.0.0
       object-inspect: 1.13.4
 
   '@wdio/runner@10.0.2(expect-webdriverio@8.0.0(@wdio/types@10.0.1)(webdriverio@10.0.2(yauzl@2.10.0)))(tsx@4.23.15)(webdriverio@10.0.2(yauzl@2.10.0))(yauzl@2.10.0)':
