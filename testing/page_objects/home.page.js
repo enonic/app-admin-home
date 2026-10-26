@@ -10,8 +10,8 @@ class HomePage extends Page {
 
     async waitForLoaded() {
         try {
-            await this.waitForElementDisplayed(XPATH.container);
-            await this.pause(1000);
+            // the dashboard is revealed only after the menu background finishes its 2s opacity transition
+            await this.waitForElementDisplayed(XPATH.container, appConst.longTimeout);
         } catch (err) {
             await this.handleError(`Home Page should be loaded`, 'err_home_page_load', err);
         }
@@ -22,7 +22,7 @@ class HomePage extends Page {
         return (cls || '').includes('visible');
     }
 
-    async waitForDashboardVisible(ms = appConst.mediumTimeout) {
+    async waitForDashboardVisible(ms = appConst.longTimeout) {
         await this.getBrowser().waitUntil(
             async () => await this.isDashboardVisible(),
             {timeout: ms, timeoutMsg: 'Dashboard (home-main-container) did not become visible'}

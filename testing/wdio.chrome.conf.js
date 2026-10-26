@@ -27,9 +27,6 @@ exports.config = {
         }
     }],
     logLevel: 'info',
-    //
-    // Enables colors for log output.
-    coloredLogs: true,
 
     baseUrl: 'http://localhost:8080/admin',
     //
@@ -54,9 +51,4 @@ exports.config = {
     reporters: ['concise',
         ['allure', {outputDir: './build/reports/allure', disableWebdriverStepsReporting: true, disableWebdriverScreenshotsReporting: true,}],
     ],
-
-    // Hook that gets executed before the suite starts
-    beforeSuite: function (suite) {
-        browser.url(this.baseUrl);
-    },
 };
