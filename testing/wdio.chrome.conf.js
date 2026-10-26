@@ -45,6 +45,9 @@ exports.config = {
         ui: 'bdd',
         timeout: 120000
     },
+    beforeSuite: function (suite) {
+        browser.url(this.baseUrl);
+    },
     // Set directory to store all logs into
     outputDir: "./build/reports/logs/",
 
