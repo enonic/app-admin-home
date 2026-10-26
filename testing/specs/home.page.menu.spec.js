@@ -92,6 +92,7 @@ describe('Home Page, XP Menu specification', function () {
             await menuPanel.waitForMenuPanelClosed();
             await homePage.waitForDashboardVisible();
             await testUtils.saveScreenshot('no_widgets_text');
+            // Verify the empty-state text is present and correct.
             const text = await homePage.getEmptyStateText();
             assert.strictEqual(
                 text,

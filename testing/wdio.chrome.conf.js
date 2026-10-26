@@ -27,9 +27,6 @@ exports.config = {
         }
     }],
     logLevel: 'info',
-    //
-    // Enables colors for log output.
-    coloredLogs: true,
 
     baseUrl: 'http://localhost:8080/admin',
     //
@@ -48,15 +45,13 @@ exports.config = {
         ui: 'bdd',
         timeout: 120000
     },
+    beforeSuite: function (suite) {
+        browser.url(this.baseUrl);
+    },
     // Set directory to store all logs into
     outputDir: "./build/reports/logs/",
 
     reporters: ['concise',
         ['allure', {outputDir: './build/reports/allure', disableWebdriverStepsReporting: true, disableWebdriverScreenshotsReporting: true,}],
     ],
-
-    // Hook that gets executed before the suite starts
-    beforeSuite: function (suite) {
-        browser.url(this.baseUrl);
-    },
 };
