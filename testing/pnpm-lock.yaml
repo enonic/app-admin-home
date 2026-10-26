@@ -47,8 +47,8 @@ importers:
   .:
     devDependencies:
       '@wdio/allure-reporter':
-        specifier: 10.0.1
-        version: 10.0.1
+        specifier: 10.1.0
+        version: 10.1.0
       '@wdio/cli':
         specifier: ^10.1.0
         version: 10.1.0(@types/node@26.6.5)(expect-webdriverio@8.0.0(@wdio/types@10.0.1)(webdriverio@10.0.2(yauzl@2.10.0)))(yauzl@2.10.0)
@@ -491,8 +491,8 @@ packages:
   '@vitest/utils@5.0.5':
     resolution: {integrity: sha512-/rBu7gzLDQI/SC79Tn98b5DwOgaHU/Gt4I9OVeP3YofzNaYtbImRCOJQmT1S6vOJg9gEIlWC+r3QxKkjuSa1nQ==}
 
-  '@wdio/allure-reporter@10.0.1':
-    resolution: {integrity: sha512-Unxlc1THjU8V3DDRqcFMWvFvZVdaeYUrNgQO4RlZvLF+ygio7mOkYjfz7SGmrrCsy7xye5Elqn4VCw/ic0pstQ==}
+  '@wdio/allure-reporter@10.1.0':
+    resolution: {integrity: sha512-+GRmFuEwVB3O5sNvbuA20qpteSE8Ub86G5FRu+yPoWRFgxu9aRhI0ju5FvgDw5r3FdqKYmzNRfRDM+jWpTxu1g==}
     engines: {node: '>=22.19.0'}
 
   '@wdio/cli@10.1.0':
@@ -678,10 +678,10 @@ packages:
     resolution: {integrity: sha512-4HTxbXR9D2+cJV9z4MO/IUa7sfYiLLXBP3/4MWSqC63ey55wBMvXAk83yZYwJ2t+jKU1Z7QW6LgCUx0BhPy9EQ==}
     hasBin: true
 
-  allure-js-commons@3.13.0:
-    resolution: {integrity: sha512-NC4qcbmfpuYTstdw+EgimzhpHD2T85wzBNWRMPpu9rukkLzRlLvSmUCo5hy6vEvwQd9BUQh2yMFplJ+shIpVrA==}
+  allure-js-commons@3.14.0:
+    resolution: {integrity: sha512-Qr/F/tvc+PJv7Q5mniFF2DUJIOvVXmfaFqDZMgSpM2dfzPmSO/D//zGiO8w6kidJMB0VHuPdHPLx5ncLcxj3Gg==}
     peerDependencies:
-      allure-playwright: 3.13.0
+      allure-playwright: 3.14.0
     peerDependenciesMeta:
       allure-playwright:
         optional: true
@@ -2068,12 +2068,12 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.2.0
 
-  '@wdio/allure-reporter@10.0.1':
+  '@wdio/allure-reporter@10.1.0':
     dependencies:
       '@types/node': 22.20.5
-      '@wdio/reporter': 10.0.1
-      '@wdio/types': 10.0.1
-      allure-js-commons: 3.13.0
+      '@wdio/reporter': 10.1.0
+      '@wdio/types': 10.1.0
+      allure-js-commons: 3.14.0
       csv-stringify: 6.9.0
       html-entities: 2.6.0
       strip-ansi: 7.2.0
@@ -2460,7 +2460,7 @@ snapshots:
 
   allure-commandline@2.46.1: {}
 
-  allure-js-commons@3.13.0:
+  allure-js-commons@3.14.0:
     dependencies:
       md5: 2.3.0
 
