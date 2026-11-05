@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import '@enonic/ui/preset.css';
+@import '@enonic/ui-kit/preset.css';
 
 @source '../../../../../node_modules/@enonic/ui/';
 @source '../js/dashboard/';
