@@ -1,3 +1,4 @@
+import {fromPhrases} from '@enonic/ui-utils';
 import {atom} from 'nanostores';
 
 export type Phrases = Readonly<Record<string, string>>;
@@ -16,3 +17,5 @@ export const i18n = (key: string, ...values: (string | number)[]): string => {
         return value === undefined ? placeholder : String(value);
     });
 };
+
+export const translate = fromPhrases(() => $phrases.get());
