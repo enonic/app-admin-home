@@ -88,8 +88,8 @@ importers:
         specifier: ^6.7.1
         version: 6.7.1(postcss@8.5.32)
       tailwindcss:
-        specifier: ^4.3.3
-        version: 4.3.3
+        specifier: ^4.3.5
+        version: 4.3.5
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
