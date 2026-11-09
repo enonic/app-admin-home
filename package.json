@@ -33,7 +33,7 @@
   "devDependencies": {
     "@enonic/eslint-config": "^3.0.0",
     "@eslint/js": "^10.0.1",
-    "@tailwindcss/vite": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.5",
     "autoprefixer": "^10.6.2",
     "browserslist-config-enonic": "^1.0.8",
     "cross-env": "^10.0.0",
