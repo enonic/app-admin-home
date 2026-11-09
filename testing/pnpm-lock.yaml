@@ -53,8 +53,8 @@ importers:
         specifier: ^10.2.0
         version: 10.2.0(@types/node@26.6.5)(expect-webdriverio@8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0)))(yauzl@2.10.0)
       '@wdio/concise-reporter':
-        specifier: ^10.1.0
-        version: 10.1.0
+        specifier: ^10.2.0
+        version: 10.2.0
       '@wdio/local-runner':
         specifier: ^10.2.0
         version: 10.2.0(tsx@4.23.15)(webdriverio@10.1.0(yauzl@2.10.0))(yauzl@2.10.0)
@@ -484,9 +484,9 @@ packages:
     engines: {node: '>=22.23.4 <23 || >=24.22.1 <25 || >=26.12.1'}
     hasBin: true
 
-  '@wdio/concise-reporter@10.1.0':
-    resolution: {integrity: sha512-0u8KDP/T/sG1RJKhMPl9xMKTqwivQxbHSNLuUrwhiKfQ0GMiGCX7y1e6f62/VcHpfXQOb8cNHl6NaCVj1mSYRg==}
-    engines: {node: '>=22.19.0'}
+  '@wdio/concise-reporter@10.2.0':
+    resolution: {integrity: sha512-ZfiKRt9G/xJnHQjn9Mad6vVuJ8ZcdL34f1WOIXMP/mQxARuGo2EtqY7IKy8isFAsw5JMaHrFITwm0EOFPc1wFQ==}
+    engines: {node: '>=22.23.4 <23 || >=24.22.1 <25 || >=26.12.1'}
 
   '@wdio/config@10.1.0':
     resolution: {integrity: sha512-V4G0uIhLTlSJRKLfr0ypu3SJLL90+LCuo9niBgqTmpNpJz4K3nwK2Mz//JuAKmz/OVXPb1HxJlrm2snfSOI2WQ==}
@@ -1317,6 +1317,10 @@ packages:
     resolution: {integrity: sha512-byhRAPguVKMQIj4kjJwJ5lAskVhfuiSdiYl/aLTWpgkGEmic2jYhJh1yE9ih8Ox44Xg9ccCT11/S6QrzSJuNrg==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
 
+  pretty-ms@10.0.0:
+    resolution: {integrity: sha512-6BWuxY2dCNgT45VnGzZcfNy7WeLqXiZqhhy4aHThTE6KI56R2ZBw9HQ7spPFKYchDizvJbPxTEknIpmW4FSmQA==}
+    engines: {node: '>=22'}
+
   pretty-ms@9.3.1:
     resolution: {integrity: sha512-HzMy3Geq23nVALD/M2LliU+F+M+gVNsvkQWWqeBZ8HDiCgzo6YPJ/Omrmtq24EFrIsk0a3EkQGEd7bDOo+IhGA==}
     engines: {node: '>=18'}
@@ -2039,12 +2043,12 @@ snapshots:
       - utf-8-validate
       - yauzl
 
-  '@wdio/concise-reporter@10.1.0':
+  '@wdio/concise-reporter@10.2.0':
     dependencies:
-      '@wdio/reporter': 10.1.0
-      '@wdio/types': 10.1.0
+      '@wdio/reporter': 10.2.0
+      '@wdio/types': 10.2.0
       chalk: 6.0.1
-      pretty-ms: 9.3.1
+      pretty-ms: 10.0.0
 
   '@wdio/config@10.1.0(yauzl@2.10.0)':
     dependencies:
@@ -3058,6 +3062,8 @@ snapshots:
       '@jest/react-is-19': react-is@19.3.1
       '@jest/schemas': 30.5.0
       ansi-styles: 5.2.0
+
+  pretty-ms@10.0.0: {}
 
   pretty-ms@9.3.1:
     dependencies:
