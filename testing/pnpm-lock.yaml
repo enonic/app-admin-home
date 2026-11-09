@@ -51,13 +51,13 @@ importers:
         version: 10.1.0
       '@wdio/cli':
         specifier: ^10.2.0
-        version: 10.2.0(@types/node@26.6.5)(expect-webdriverio@8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0)))(yauzl@2.10.0)
+        version: 10.2.0(@types/node@26.6.5)(expect-webdriverio@8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0)))(yauzl@2.10.0)
       '@wdio/concise-reporter':
         specifier: ^10.1.0
         version: 10.1.0
       '@wdio/local-runner':
-        specifier: ^10.1.0
-        version: 10.1.0(tsx@4.23.15)(webdriverio@10.1.0(yauzl@2.10.0))(yauzl@2.10.0)
+        specifier: ^10.2.0
+        version: 10.2.0(tsx@4.23.15)(webdriverio@10.1.0(yauzl@2.10.0))(yauzl@2.10.0)
       '@wdio/mocha-framework':
         specifier: ^10.1.0
         version: 10.1.0(yauzl@2.10.0)
@@ -496,24 +496,13 @@ packages:
     resolution: {integrity: sha512-dCsMVpgmyL8fLRQVcxVyYXBG/pgtJeY897+LUxU/Vw+JvJOV2iTycHn5xUD5EehbNsstfxgJwkLCVunhJcbXdg==}
     engines: {node: '>=22.23.4 <23 || >=24.22.1 <25 || >=26.12.1'}
 
-  '@wdio/display-server@10.1.0':
-    resolution: {integrity: sha512-RxtgqUPj58HIZypiZDwiWvp0e2u1eiojlSHdLkN5Z+iC5lexG0W8BHum4ujlbzhX3yclOUdBw7PR1IbpCd8cKg==}
-    engines: {node: '>=22.19.0'}
-
   '@wdio/display-server@10.2.0':
     resolution: {integrity: sha512-Y6o6T5Fafo9i2gv4BeCoNLLcJrlL4LsK+/GicWzuATMclFlmA4DxGFUCQSAH33NWaTL1aoJ6qQZ6kMqIGCEnKQ==}
     engines: {node: '>=22.23.4 <23 || >=24.22.1 <25 || >=26.12.1'}
 
-  '@wdio/dot-reporter@10.1.0':
-    resolution: {integrity: sha512-zE4A0GRTCoBJycdDnaZWPybf+v3Q8tCOW5Vva1YlHHA8LZ/nAVer8bI5Vo1hN2Hhcq7XIIrZbJK5vW/ZmTdQuw==}
-    engines: {node: '>=22.19.0'}
-
-  '@wdio/globals@10.1.0':
-    resolution: {integrity: sha512-Y6FkkZz6jzMqIwI8R7BPj8bHuyRosxLZLGWRCHQFrU5mesjkW2NzYuPR7xwOPVmlaFJYUdzS1/EUYLr1BjpbSw==}
-    engines: {node: '>=22.19.0'}
-    peerDependencies:
-      expect-webdriverio: ^8.0.0
-      webdriverio: ^10.0.0-0 || ^10.0.0
+  '@wdio/dot-reporter@10.2.0':
+    resolution: {integrity: sha512-/cfaIAXBOdTIuQJNxAspjCso7WH+5ULh2dMByreF7L1lrfrN18ce7d5jvONmCttJuR+PBt1TkkFBP2nDP9cDgg==}
+    engines: {node: '>=22.23.4 <23 || >=24.22.1 <25 || >=26.12.1'}
 
   '@wdio/globals@10.2.0':
     resolution: {integrity: sha512-HYjfWeR4ANwDMIzYzW5nYvhq/TP9mIqH/D+vvddN9Ax2fzfBG1LJ686CFXbH9Kh/Crz9zTXL+JGkA+tJOYC0/Q==}
@@ -522,9 +511,9 @@ packages:
       expect-webdriverio: ^8.0.0
       webdriverio: ^10.0.0
 
-  '@wdio/local-runner@10.1.0':
-    resolution: {integrity: sha512-icWS+muUOAZzzW4SIThv36vpdyDiqZt2si/v1EK+h6g+D0lTMnTCN/Q+EmOk0iRwy8/d8JxmOcBty6Wdby8NxQ==}
-    engines: {node: '>=22.19.0'}
+  '@wdio/local-runner@10.2.0':
+    resolution: {integrity: sha512-Ce8k+B0TulUzi/EkTmr2TXlTce2InLw6oRifdD63Q9bJevJaXf3TM/9r6yM/mE453TokiGfZ4uOGdRi1WrM3IQ==}
+    engines: {node: '>=22.23.4 <23 || >=24.22.1 <25 || >=26.12.1'}
 
   '@wdio/logger@10.1.0':
     resolution: {integrity: sha512-zZn9TMaxzTAHOGX5fLTs9E8Gw436l6xSFh+wZyXfRpgnzgeS5W/U0I6pBAjsvMn8rr5HAJC8Vy+WhiUxmbKsvQ==}
@@ -558,34 +547,16 @@ packages:
     resolution: {integrity: sha512-VijtnGZHgwKFRzWwfGQSTF5WCxtwZLMstTQurKgXFUUh6rJi5ORkfL2515q5/7hbHm9ziMbAeBrfUdiDJCk1dQ==}
     engines: {node: '>=22.19.0'}
 
-  '@wdio/runner@10.1.0':
-    resolution: {integrity: sha512-QMy/sgHuysjwLMu2J1qToLomXTIM63bxMlhuGyqaApShQvSc+9/qPoAZvLkwZy40Sn9IvMcaJChaBlF9vL0IJA==}
-    engines: {node: '>=22.19.0'}
-    peerDependencies:
-      expect-webdriverio: ^8.0.0
-      webdriverio: ^10.0.0-0 || ^10.0.0
+  '@wdio/reporter@10.2.0':
+    resolution: {integrity: sha512-Cd3b9F3uUKEjICh9ClCJZ6x7MNcA5lX9GquylAtAwcSaJ1qmL0P2plVwRexyhybA9TM6sXWAe+0UK9kAS3SDVw==}
+    engines: {node: '>=22.23.4 <23 || >=24.22.1 <25 || >=26.12.1'}
 
-  '@wdio/session@10.1.0':
-    resolution: {integrity: sha512-jn25P/1gQqehBEJkq/kUQsT+f5oyM54iNXxhxOjh7wX9BK15RcrgvEYjBhFAk5TrPj1emIkmM4seKqRB/YuKEQ==}
-    engines: {node: '>=22.19.0'}
-    hasBin: true
+  '@wdio/runner@10.2.0':
+    resolution: {integrity: sha512-By72HtgEhr4IlRPSyV78r+2z3QxF7Fbp7r0kfOLoLUwhXHR4RJIYA6nu5jYh4lHjV2NduhrKqnIiRJ1YPnTu+g==}
+    engines: {node: '>=22.23.4 <23 || >=24.22.1 <25 || >=26.12.1'}
     peerDependencies:
-      '@wdio/electron-service': '*'
-      '@wdio/visual-service': ^10.0.0 || ^11.0.0
-      appium: ^3.0.0
       expect-webdriverio: ^8.0.0
-      tsx: '*'
-    peerDependenciesMeta:
-      '@wdio/electron-service':
-        optional: true
-      '@wdio/visual-service':
-        optional: true
-      appium:
-        optional: true
-      expect-webdriverio:
-        optional: true
-      tsx:
-        optional: true
+      webdriverio: ^10.0.0
 
   '@wdio/session@10.2.0':
     resolution: {integrity: sha512-bI3JTbSTxuUpvl0toJ6x4LYiEi6onlvNw/hkZYPe7X6TB1iP+mxhvOwDTcH4Y9Dh8J4mdohkZoDPn4fMfhkHoQ==}
@@ -609,10 +580,6 @@ packages:
         optional: true
       tsx:
         optional: true
-
-  '@wdio/snapshot@10.1.0':
-    resolution: {integrity: sha512-U4IitLvKGltDxtv0NoPPPBZRh3UKpsYms6mMdqGJhIC6riB9zG+faYxv/yk5J1CcPd25FMS0KkPfNpwTeE86rw==}
-    engines: {node: '>=22.19.0'}
 
   '@wdio/snapshot@10.2.0':
     resolution: {integrity: sha512-h582ogFJZZ1hvqPha05efQ9uf7BGDD9bArFaxGY3OB9slMF5fbmkkoIw/Xo4U0HBzZ6xA7JTpD76Nq0LH6QfNg==}
@@ -2031,14 +1998,14 @@ snapshots:
     transitivePeerDependencies:
       - allure-playwright
 
-  '@wdio/cli@10.2.0(@types/node@26.6.5)(expect-webdriverio@8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0)))(yauzl@2.10.0)':
+  '@wdio/cli@10.2.0(@types/node@26.6.5)(expect-webdriverio@8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0)))(yauzl@2.10.0)':
     dependencies:
       '@vitest/snapshot': 5.1.0
       '@wdio/config': 10.2.0(yauzl@2.10.0)
-      '@wdio/globals': 10.2.0(expect-webdriverio@8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0)))(webdriverio@10.2.0(yauzl@2.10.0))
+      '@wdio/globals': 10.2.0(expect-webdriverio@8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0)))(webdriverio@10.2.0(yauzl@2.10.0))
       '@wdio/logger': 10.2.0
       '@wdio/protocols': 10.2.0
-      '@wdio/session': 10.2.0(expect-webdriverio@8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0)))(tsx@4.23.15)(webdriverio@10.2.0(yauzl@2.10.0))(yauzl@2.10.0)
+      '@wdio/session': 10.2.0(expect-webdriverio@8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0)))(tsx@4.23.15)(webdriverio@10.2.0(yauzl@2.10.0))(yauzl@2.10.0)
       '@wdio/types': 10.2.0
       '@wdio/utils': 10.2.0(yauzl@2.10.0)
       async-exit-hook: 2.0.1
@@ -2107,56 +2074,47 @@ snapshots:
       - supports-color
       - yauzl
 
-  '@wdio/display-server@10.1.0':
-    dependencies:
-      '@wdio/logger': 10.1.0
-      '@wdio/types': 10.1.0
-
   '@wdio/display-server@10.2.0':
     dependencies:
       '@wdio/logger': 10.2.0
       '@wdio/types': 10.2.0
 
-  '@wdio/dot-reporter@10.1.0':
+  '@wdio/dot-reporter@10.2.0':
     dependencies:
-      '@wdio/reporter': 10.1.0
-      '@wdio/types': 10.1.0
+      '@wdio/reporter': 10.2.0
+      '@wdio/types': 10.2.0
       chalk: 6.0.1
 
-  '@wdio/globals@10.1.0(expect-webdriverio@8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0)))(webdriverio@10.1.0(yauzl@2.10.0))':
+  '@wdio/globals@10.2.0(expect-webdriverio@8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0)))(webdriverio@10.1.0(yauzl@2.10.0))':
     dependencies:
-      expect-webdriverio: 8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0))
+      expect-webdriverio: 8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0))
       webdriverio: 10.1.0(yauzl@2.10.0)
 
-  '@wdio/globals@10.2.0(expect-webdriverio@8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0)))(webdriverio@10.2.0(yauzl@2.10.0))':
+  '@wdio/globals@10.2.0(expect-webdriverio@8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0)))(webdriverio@10.2.0(yauzl@2.10.0))':
     dependencies:
-      expect-webdriverio: 8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0))
+      expect-webdriverio: 8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0))
       webdriverio: 10.2.0(yauzl@2.10.0)
 
-  '@wdio/local-runner@10.1.0(tsx@4.23.15)(webdriverio@10.1.0(yauzl@2.10.0))(yauzl@2.10.0)':
+  '@wdio/local-runner@10.2.0(tsx@4.23.15)(webdriverio@10.1.0(yauzl@2.10.0))(yauzl@2.10.0)':
     dependencies:
       '@types/node': 22.20.5
       '@types/split2': 4.2.3
-      '@wdio/display-server': 10.1.0
-      '@wdio/logger': 10.1.0
-      '@wdio/repl': 10.0.0
-      '@wdio/runner': 10.1.0(expect-webdriverio@8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0)))(tsx@4.23.15)(webdriverio@10.1.0(yauzl@2.10.0))(yauzl@2.10.0)
-      '@wdio/types': 10.1.0
+      '@wdio/display-server': 10.2.0
+      '@wdio/logger': 10.2.0
+      '@wdio/repl': 10.2.0
+      '@wdio/runner': 10.2.0(expect-webdriverio@8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0)))(tsx@4.23.15)(webdriverio@10.1.0(yauzl@2.10.0))(yauzl@2.10.0)
+      '@wdio/types': 10.2.0
       exit-hook: 5.1.0
-      expect-webdriverio: 8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0))
+      expect-webdriverio: 8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0))
       split2: 4.2.0
       stream-buffers: 3.0.3
     transitivePeerDependencies:
       - '@wdio/electron-service'
       - '@wdio/visual-service'
       - appium
-      - bare-abort-controller
-      - bare-buffer
       - bufferutil
       - kerberos
       - proxy-agent
-      - puppeteer-core
-      - react-native-b4a
       - supports-color
       - tsx
       - utf-8-validate
@@ -2211,45 +2169,48 @@ snapshots:
       diff: 9.0.0
       object-inspect: 1.13.4
 
-  '@wdio/runner@10.1.0(expect-webdriverio@8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0)))(tsx@4.23.15)(webdriverio@10.1.0(yauzl@2.10.0))(yauzl@2.10.0)':
+  '@wdio/reporter@10.2.0':
     dependencies:
       '@types/node': 22.20.5
-      '@wdio/config': 10.1.0(yauzl@2.10.0)
-      '@wdio/dot-reporter': 10.1.0
-      '@wdio/globals': 10.1.0(expect-webdriverio@8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0)))(webdriverio@10.1.0(yauzl@2.10.0))
-      '@wdio/logger': 10.1.0
-      '@wdio/session': 10.1.0(expect-webdriverio@8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0)))(tsx@4.23.15)(yauzl@2.10.0)
-      '@wdio/types': 10.1.0
-      '@wdio/utils': 10.1.0(yauzl@2.10.0)
+      '@wdio/types': 10.2.0
+      diff: 9.0.0
+      object-inspect: 1.13.4
+
+  '@wdio/runner@10.2.0(expect-webdriverio@8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0)))(tsx@4.23.15)(webdriverio@10.1.0(yauzl@2.10.0))(yauzl@2.10.0)':
+    dependencies:
+      '@types/node': 22.20.5
+      '@wdio/config': 10.2.0(yauzl@2.10.0)
+      '@wdio/dot-reporter': 10.2.0
+      '@wdio/globals': 10.2.0(expect-webdriverio@8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0)))(webdriverio@10.1.0(yauzl@2.10.0))
+      '@wdio/logger': 10.2.0
+      '@wdio/session': 10.2.0(expect-webdriverio@8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0)))(tsx@4.23.15)(webdriverio@10.1.0(yauzl@2.10.0))(yauzl@2.10.0)
+      '@wdio/types': 10.2.0
+      '@wdio/utils': 10.2.0(yauzl@2.10.0)
       deepmerge-ts: 8.0.2
-      expect-webdriverio: 8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0))
-      webdriver: 10.1.0(yauzl@2.10.0)
+      expect-webdriverio: 8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0))
+      webdriver: 10.2.0(yauzl@2.10.0)
       webdriverio: 10.1.0(yauzl@2.10.0)
     transitivePeerDependencies:
       - '@wdio/electron-service'
       - '@wdio/visual-service'
       - appium
-      - bare-abort-controller
-      - bare-buffer
       - bufferutil
       - kerberos
       - proxy-agent
-      - puppeteer-core
-      - react-native-b4a
       - supports-color
       - tsx
       - utf-8-validate
       - yauzl
 
-  '@wdio/session@10.1.0(expect-webdriverio@8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0)))(tsx@4.23.15)(yauzl@2.10.0)':
+  '@wdio/session@10.2.0(expect-webdriverio@8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0)))(tsx@4.23.15)(webdriverio@10.1.0(yauzl@2.10.0))(yauzl@2.10.0)':
     dependencies:
       '@types/node': 22.20.5
-      '@wdio/config': 10.1.0(yauzl@2.10.0)
-      '@wdio/display-server': 10.1.0
-      '@wdio/logger': 10.1.0
-      '@wdio/snapshot': 10.1.0(yauzl@2.10.0)
-      '@wdio/types': 10.1.0
-      '@wdio/utils': 10.1.0(yauzl@2.10.0)
+      '@wdio/config': 10.2.0(yauzl@2.10.0)
+      '@wdio/display-server': 10.2.0
+      '@wdio/logger': 10.2.0
+      '@wdio/snapshot': 10.2.0(webdriverio@10.1.0(yauzl@2.10.0))(yauzl@2.10.0)
+      '@wdio/types': 10.2.0
+      '@wdio/utils': 10.2.0(yauzl@2.10.0)
       acorn: 8.19.0
       get-port: 7.2.0
       image-size: 2.1.0
@@ -2258,21 +2219,14 @@ snapshots:
       webdriverio: 10.1.0(yauzl@2.10.0)
       yargs: 18.2.0
     optionalDependencies:
-      expect-webdriverio: 8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0))
+      expect-webdriverio: 8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0))
       tsx: 4.23.15
     transitivePeerDependencies:
-      - bare-abort-controller
-      - bare-buffer
-      - bufferutil
-      - kerberos
       - proxy-agent
-      - puppeteer-core
-      - react-native-b4a
       - supports-color
-      - utf-8-validate
       - yauzl
 
-  '@wdio/session@10.2.0(expect-webdriverio@8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0)))(tsx@4.23.15)(webdriverio@10.2.0(yauzl@2.10.0))(yauzl@2.10.0)':
+  '@wdio/session@10.2.0(expect-webdriverio@8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0)))(tsx@4.23.15)(webdriverio@10.2.0(yauzl@2.10.0))(yauzl@2.10.0)':
     dependencies:
       '@types/node': 22.20.5
       '@wdio/config': 10.2.0(yauzl@2.10.0)
@@ -2289,27 +2243,20 @@ snapshots:
       webdriverio: 10.2.0(yauzl@2.10.0)
       yargs: 18.2.0
     optionalDependencies:
-      expect-webdriverio: 8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0))
+      expect-webdriverio: 8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0))
       tsx: 4.23.15
     transitivePeerDependencies:
       - proxy-agent
       - supports-color
       - yauzl
 
-  '@wdio/snapshot@10.1.0(yauzl@2.10.0)':
+  '@wdio/snapshot@10.2.0(webdriverio@10.1.0(yauzl@2.10.0))(yauzl@2.10.0)':
     dependencies:
-      '@wdio/utils': 10.1.0(yauzl@2.10.0)
+      '@wdio/utils': 10.2.0(yauzl@2.10.0)
       webdriverio: 10.1.0(yauzl@2.10.0)
     transitivePeerDependencies:
-      - bare-abort-controller
-      - bare-buffer
-      - bufferutil
-      - kerberos
       - proxy-agent
-      - puppeteer-core
-      - react-native-b4a
       - supports-color
-      - utf-8-validate
       - yauzl
 
   '@wdio/snapshot@10.2.0(webdriverio@10.2.0(yauzl@2.10.0))(yauzl@2.10.0)':
@@ -2729,10 +2676,10 @@ snapshots:
 
   exit-hook@5.1.0: {}
 
-  expect-webdriverio@8.0.0(@wdio/types@10.1.0)(webdriverio@10.1.0(yauzl@2.10.0)):
+  expect-webdriverio@8.0.0(@wdio/types@10.2.0)(webdriverio@10.1.0(yauzl@2.10.0)):
     dependencies:
       '@vitest/snapshot': 5.1.0
-      '@wdio/types': 10.1.0
+      '@wdio/types': 10.2.0
       expect: 30.5.2
       jest-matcher-utils: 30.5.2
       webdriverio: 10.1.0(yauzl@2.10.0)
