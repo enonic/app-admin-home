@@ -24,7 +24,7 @@
     "fix": "eslint --fix **/*.ts"
   },
   "dependencies": {
-    "@enonic/ui": "^1.5.0",
+    "@enonic/ui": "^1.6.0",
     "@enonic/ui-kit": "^0.7.0",
     "@enonic/ui-utils": "^0.7.0",
     "nanostores": "^1.5.5",
