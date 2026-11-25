@@ -8,7 +8,7 @@ const addCSPHeaderToResponse = (response) => {
     const enableSecurityPolicy = app.config['contentSecurityPolicy.enabled'] !== 'false';
 
     if (enableSecurityPolicy) {
-        const contentSecurityPolicy = `default-src 'self'; connect-src 'self' raw.githubusercontent.com/enonic/ ws: wss:; font-src data: 'self'; img-src data: 'self'; object-src 'none'; style-src 'self' 'unsafe-inline'; frame-src 'self' https://*.youtube.com`;
+        const contentSecurityPolicy = `default-src 'self'; connect-src 'self' raw.githubusercontent.com/enonic/ ws: wss:; font-src data: 'self'; img-src data: 'self'; object-src 'none'; style-src 'self'; frame-src 'self' https://*.youtube.com`;
         const customContentSecurityPolicy = app.config['contentSecurityPolicy.header'];
 
         response.headers = {
