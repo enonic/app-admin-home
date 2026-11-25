@@ -1,8 +1,8 @@
-import type {JSX} from 'preact';
+import type {HTMLAttributes} from 'preact';
 import {useLayoutEffect, useRef} from 'preact/hooks';
 import {importHtml} from './inline-styles';
 
-type InlineHtmlProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, 'ref'> & {html?: string | null};
+type InlineHtmlProps = Omit<HTMLAttributes<HTMLDivElement>, 'ref'> & {html?: string | null};
 
 export const InlineHtml = ({html, ...props}: InlineHtmlProps) => {
     const ref = useRef<HTMLDivElement>(null);
