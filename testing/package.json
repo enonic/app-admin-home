@@ -14,7 +14,7 @@
     "@wdio/local-runner": "^10.2.0",
     "@wdio/mocha-framework": "^10.2.0",
     "allure-commandline": "^2.46.1",
-    "properties-reader": "^2.3.0",
+    "properties-reader": "^3.0.1",
     "webdriverio": "^10.2.0"
   },
   "engines": {
