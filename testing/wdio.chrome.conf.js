@@ -1,7 +1,7 @@
 const path = require('path');
-let PropertiesReader = require('properties-reader');
+const {propertiesReader} = require('properties-reader');
 const file = path.join(__dirname, '/browser.properties');
-const properties = PropertiesReader(file);
+const properties = propertiesReader({sourceFile: file});
 const browser_version = properties.get('browser.version');
 const width = properties.get('browser.width');
 const height = properties.get('browser.height');
@@ -27,9 +27,6 @@ exports.config = {
         }
     }],
     logLevel: 'info',
-    //
-    // Enables colors for log output.
-    coloredLogs: true,
 
     baseUrl: 'http://localhost:8080/admin',
     //
