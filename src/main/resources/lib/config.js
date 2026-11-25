@@ -3,6 +3,7 @@
 const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
 const i18n = require('/lib/xp/i18n');
+const i18nLib = require('/lib/i18n');
 const buildtime = require('/lib/buildtime');
 const events = require('/lib/events');
 
@@ -43,7 +44,7 @@ const getConfig = (req) => {
         }),
         eventsTopic: events.ADMIN_TOOLS_CHANGED_TOPIC,
         dashboardIcon: getDashboardIcon(req.locales),
-        phrases: i18n.getPhrases(req.locales, ['i18n/phrases']),
+        phrases: i18n.getPhrases(req.locales, i18nLib.BUNDLES),
     };
 }
 

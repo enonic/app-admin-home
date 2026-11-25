@@ -2,6 +2,7 @@
 
 const mustache = require('/lib/mustache');
 const configLib = require('/lib/config');
+const i18nLib = require('/lib/i18n');
 
 const addCSPHeaderToResponse = (response) => {
     const enableSecurityPolicy = app.config['contentSecurityPolicy.enabled'] !== 'false';
@@ -19,7 +20,7 @@ const addCSPHeaderToResponse = (response) => {
 const generateParams = (req, openMenu) => {
     req.params['openMenu'] = openMenu;
     return {
-        lang: (req.locales || [])[0] || 'en',
+        lang: i18nLib.resolvePhrasesLocale(req.locales),
         assetsUri: configLib.getAssetsUri(),
         menuLoaderUrl: configLib.getMenuLoaderUrl(),
         configScriptId: configLib.configScriptId,
